@@ -11,7 +11,6 @@
         <a href="https://github.com/hzh-cocong/SaveTabs/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hzh-cocong/SaveTabs" /></a>
     </div>
 </div>
-
 ---
 
 ## What is SaveTabs?
@@ -65,4 +64,6 @@ You can use the alfred workflow [Chrome-Workspace](https://github.com/hzh-cocong
 [Chrome Web Store](https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno)
 
 [Extfans](https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/)
+
+[CRX File](https://github.com/hzh-cocong/SaveTabs/releases/download/v1.0.0/ikjiakenkeediiafhihmipcdafkkhdno_main.crx)
 

@@ -1,24 +1,25 @@
 <p align="center">
-    <a href="https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno"><img src="./docs/images/icon.png" width="100"/></a>
+    <a href="https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno"><img src="../images/icon.png" width="100"/></a>
     <div align="center">
-        <span style="font-size:16px;">SaveTabs</span> - <span style="font-size:14px;font-weight:300;">A chrome extension of save multiple tabs</span>
+        <span style="font-size:16px;">SaveTabs</span> - <span style="font-size:14px;font-weight:300;">一个保存网页标签的插件</span>
     </div>
 </p>
 <div align="center">
-    <div><a style="font-size:12px" href="./docs/languages/README.cn.md">[中文文档]</a></div>
+    <div><a style="font-size:12px" href="../../README.md">[English README]</a></div>
     <div>
         <a href="https://github.com/hzh-cocong/SaveTabs/releases"><img src="https://img.shields.io/github/v/release/hzh-cocong/SaveTabs" /></a>
         <a href="https://github.com/hzh-cocong/SaveTabs/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hzh-cocong/SaveTabs" /></a>
     </div>
 </div>
-
 ---
 
-## What is SaveTabs?
+## SaveTabs 是什么?
 
-It's a chrome extension which can save browser tab's url as a file so that you can open it again just like a workspace.
+SaveTabs 读取网页标签地址并保存为 HTML 文件，当打开这些 HTML 文件时，它会重新打开之前保存的标签页面。
 
-It save the current tabs to the local file like ***\*.tabs.html***. Open this file and you can see the code like this:
+其保存和打开的是当前窗口的所有标签地址，就像 Workspace 一样。
+
+其生成的文件如下示例：
 
 ```html
 <!DOCTYPE>
@@ -56,13 +57,15 @@ It save the current tabs to the local file like ***\*.tabs.html***. Open this fi
 </html>
 ```
 
-If you open this file, it will reopen the tab website and you should allow the pop-up window.
+有一点要注意，该脚本文件需要你允许弹出窗口，因为它就是通过这种方式回复原来的标签的。
 
-You can use the alfred workflow [Chrome-Workspace](https://github.com/hzh-cocong/Chrome-Workspace) to open the file (***\*.tabs.html***) easily.
+你也可以下载 Alfred 插件 [Chrome-Workspace](https://github.com/hzh-cocong/Chrome-Workspace)，它会自动新建新的浏览器窗口来执行 HTML 文件。
 
-## Download
 
-[Chrome Web Store](https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno)
 
-[Extfans](https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/)
+## 下载
+
+[Chrome 应用商店](https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno)
+
+[扩展迷](https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/)
 

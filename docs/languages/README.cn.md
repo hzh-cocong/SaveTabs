@@ -69,3 +69,5 @@ SaveTabs 读取网页标签地址并保存为 HTML 文件，当打开这些 HTML
 
 [扩展迷](https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/)
 
+[CRX 文件](https://github.com/hzh-cocong/SaveTabs/releases/download/v1.0.0/ikjiakenkeediiafhihmipcdafkkhdno_main.crx)
+

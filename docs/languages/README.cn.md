@@ -11,7 +11,6 @@
         <a href="https://github.com/hzh-cocong/SaveTabs/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hzh-cocong/SaveTabs" /></a>
     </div>
 </div>
-
 ---
 
 ## SaveTabs 是什么?
@@ -63,8 +62,6 @@ SaveTabs 读取网页标签地址并保存为 HTML 文件，当打开这些 HTML
 你也可以下载 Alfred 插件 [Chrome-Workspace](https://github.com/hzh-cocong/Chrome-Workspace)，它会自动新建新的浏览器窗口来执行 HTML 文件。
 
 
-
-You can use the alfred workflow [Chrome-Workspace](https://github.com/hzh-cocong/Chrome-Workspace) to open the file (***\*.tabs.html***) easily.
 
 ## 下载
 

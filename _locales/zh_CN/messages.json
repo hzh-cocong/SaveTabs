@@ -1,5 +1,6 @@
 {
-    "inputTip": {"message": "请输入文件名"},
+    "inputTip": {"message": "请设置文件名"},
     "description": {"message": "SaveTabs 可以直接保存页面标签到文件中，下次打开该文件时将自动打开保存的页面标签。"},
-    "finishText": {"message": "下载完成"}
+    "content": {"message": "您还可以通过 Alfred 插件 来快速打开生成的文件，"},
+    "download": {"message": "点此下载。"}
 }

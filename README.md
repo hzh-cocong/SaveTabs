@@ -11,49 +11,48 @@
         <a href="https://github.com/hzh-cocong/SaveTabs/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hzh-cocong/SaveTabs" /></a>
     </div>
 </div>
+
 ---
 
 ## What is SaveTabs?
 
 It's a chrome extension which can save browser tab's url as a file so that you can open it again just like a workspace.
 
+![SaveTabs](docs/images/SaveTabs.gif)
+
+
+
 It save the current tabs to the local file like ***\*.tabs.html***. Open this file and you can see the code like this:
 
 ```html
 <!DOCTYPE>
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <title>SaveTabs</title>
 </head>
-
 <body>
-    <a href="https://github.com/hzh-cocong/SaveTabs">hzh-cocong/SaveTabs: Save brower tabs as a file so that you can
-        open them again just like a workspace.</a><br />
-    <a href="https://github.com/hzh-cocong/Chrome-Workspace">hzh-cocong/Chrome-Workspace: A alfred workflow for the
-        chrome extension of savetabs</a><br />
-    <a href="https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno?hl=zh-CN">SaveTabs -
-        Chrome 网上应用店</a><br />
-    <a href="https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/">SaveTabs Chrome插件,SaveTabs
-        谷歌浏览器插件下载_安装_教程-扩展迷</a><br />
+    <a href="http://cocong.cn/">聪聪，只为兴趣</a><br/>
+    <a href="http://www.packal.org/workflow/chrome-workspace">Chrome Workspace | Packal</a><br/>
+    <a href="https://github.com/hzh-cocong/SaveTabs">hzh-cocong/SaveTabs: Save brower tabs as a file so that you can open them again just like a workspace.</a><br/>
 
     <script>
         var res = new Object();
-        document.querySelectorAll('a').forEach(function (el) {
+        document.querySelectorAll('a').forEach(function(el){
             var res2 = window.open(el.getAttribute('href'));
-            if (res2 == null) {
+            if(res2 == null) {
                 res = null;
             }
         })
-        if (res != null) {
+        if(res != null) {
             window.close()
         };
     </script>
 </body>
-
 </html>
 ```
+
+
 
 If you open this file, it will reopen the tab website and you should allow the pop-up window.
 
@@ -64,6 +63,4 @@ You can use the alfred workflow [Chrome-Workspace](https://github.com/hzh-cocong
 [Chrome Web Store](https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno)
 
 [Extfans](https://www.extfans.com/productivity/ikjiakenkeediiafhihmipcdafkkhdno/)
-
-[CRX File](https://github.com/hzh-cocong/SaveTabs/releases/download/v1.0.0/ikjiakenkeediiafhihmipcdafkkhdno_main.crx)
 

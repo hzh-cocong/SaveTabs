@@ -3,14 +3,40 @@
 <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <div style="margin:10px;">
-        <p style="color:gray">SaveTabs</p>
-        <p style="color: green;" id="finish_text"></p>
-        <script src="../js/popup.js"></script>
-    </div>
 </head>
 <style>
+.title {
+    color: gray;
+}
+.title img {
+    width: 15px;
+    vertical-align: middle;
+    opacity: 0.6;
+}
+.title p{
+    display: inline-block;
+}
+.content {
+    color: gray;
+}
+.content a{
+    display: inline-block;
+    color: green;
+    opacity: 0.8;
+}
 </style>
 <body>
+    <div style="margin:10px;width:200px;">
+        <div class="title">
+            <a href="https://github.com/hzh-cocong/SaveTabs" target="_blank"><img src="/images/GitHub-Mark-32px.png" /></a>
+            <p>SaveTabs</p>
+        </div>
+        <div class="content">
+            <span id="content"></span>
+            <a href="http://www.packal.org/workflow/chrome-workspace" target="_blank" id="download"></a>
+        </div>
+    </div>
+
+    <script src="../js/popup.js"></script>
 </body>
 </html>

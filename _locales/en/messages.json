@@ -1,5 +1,6 @@
 {
-    "inputTip": {"message": "Please enter the file name."},
+    "inputTip": {"message": "Please set the file name."},
     "description": {"message": "Save browser tabs as a file so that you can open them again just like a workspace."},
-    "finishText": {"message": "Download completed"}
+    "content": {"message": "You can also use the Alfred Workflow to open the generated file quickly. "},
+    "download": {"message": "Click here !"}
 }

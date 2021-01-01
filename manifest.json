@@ -1,7 +1,7 @@
 {
   "name": "SaveTabs",
   "manifest_version": 2,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "__MSG_description__",
   "default_locale": "en",
   "icons": {
@@ -10,6 +10,11 @@
   "browser_action": {
     "default_icon": "images/icon_128.png",
     "default_popup": "html/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
   },
   "permissions": [
     "tabs",

@@ -76,7 +76,9 @@ import {
     Loading,
     MessageBox,
     Message,
-    Notification
+    Notification,
+    Avatar,
+    InfiniteScroll
   } from 'element-ui';
 
   Vue.use(Pagination);
@@ -152,6 +154,8 @@ import {
   Vue.use(Backtop);
   Vue.use(PageHeader);
   Vue.use(CascaderPanel);
+  Vue.use(Avatar);
+  Vue.use(InfiniteScroll);
 
   Vue.use(Loading.directive);
 

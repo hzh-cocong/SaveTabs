@@ -14,6 +14,7 @@
   "permissions": [
     "tabs",
     "storage",
+    "chrome://favicon/",
     "downloads"
   ]
 }

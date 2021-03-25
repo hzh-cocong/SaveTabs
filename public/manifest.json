@@ -9,8 +9,9 @@
   },
   "browser_action": {
     "default_icon": "icons/icon_128.png",
-    "default_popup": "index.html"
+    "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "permissions": [
     "tabs",
     "storage",

@@ -78,7 +78,8 @@ import {
     Message,
     Notification,
     Avatar,
-    InfiniteScroll
+    InfiniteScroll,
+    Popconfirm,
   } from 'element-ui';
 
   Vue.use(Pagination);
@@ -156,6 +157,7 @@ import {
   Vue.use(CascaderPanel);
   Vue.use(Avatar);
   Vue.use(InfiniteScroll);
+  Vue.use(Popconfirm);
 
   Vue.use(Loading.directive);
 

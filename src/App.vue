@@ -1,371 +1,744 @@
 <template>
-  <div id="app">
-    <div style="display:flex;margin-bottom: 10px;">
-          <input type="text" class="el-input__inner" placeholder="请输入分组名" v-model="keyword" @keydown.down.prevent="selectDown2"
-          @keydown.up.prevent="selectUp"
-          @keydown.enter="open"
-                @input="filter"
-          autofocus="autofocus"
-          style="flex:1;margin-right:10px"
-          >
-          <!-- <el-button>打开<i>↩</i></el-button>
-          <el-button @click="save2()">保存⌘↩</el-button> -->
-          <!-- <el-button @click="save2()">新增</el-button> -->
-          <el-button type="default" icon="el-icon-plus" circle  @click="save2()"></el-button>
+  <div id="app" class="search">
+
+    <div class="search-input">
+      <input
+        type="text"
+        class="el-input__inner"
+        v-model.trim="keyword"
+        placeholder="请输入分组名"
+        autofocus="autofocus"
+        @keydown.down.prevent="selectDelay('down')"
+        @keydown.up.prevent="selectDelay('up')"
+        @keydown.enter="openWindow"
+        @input="search">
+      <el-button
+        type="default"
+        icon="el-icon-download"
+        circle
+        @click="add"
+        :disabled="isInCurrentWindow || isGroupNameRepeat"
+        :title="isInCurrentWindow
+                ? '已保存'
+                : (isGroupNameRepeat ? '分组名重复' : '')"></el-button>
     </div>
-          <!-- <ul class="infinite-list" v-infinite-scroll="load"> -->
-          <ul class="infinite-list" >
-            <li class=" infinite-list-item"
-                      :class="{gray:index==now}"
-                      v-for="(value, index) in myData" :key="index"
-                @mouseover="now=index,operate=true"
-                @mouseleave="operate=false"
-                >
-                <el-avatar shape="square" :size="30" :src="value.group[0].icon" style="background:none"><img src="./assets/fallback.png"/></el-avatar>
 
+    <ul class="search-list">
+      <li
+        class="search-list-item"
+        :style="{
+          backgroundColor: item.windowId == currentWindowId
+                          ? ( index==currentIndex
+                              ? config.list_current_focus_background_color
+                              : config.list_current_background_color)
+                          : ( index==currentIndex
+                              ? config.list_focus_background_color
+                              : config.list_background_color),
+          color: item.windowId == currentWindowId
+                          ? ( index==currentIndex
+                              ? config.list_current_focus_font_color
+                              : config.list_current_font_color)
+                          : ( index==currentIndex
+                              ? config.list_focus_font_color
+                              : config.list_font_color)
+        }"
+        v-for="(item, index) in list"
+        :key="index"
+        @mouseenter="mouseStart ? (currentIndex=index,mouseEnter=true) : mouseStart=true;"
+        @mouseleave="mouseEnter=false"
+        @click="currentIndex=index;openWindow()">
 
-                <span class="text-success textprimary" v-html="value.name"></span>
-<!--
-                <span class="text-success textprimary">{{value.name+" "+value.group.length}}</span> -->
-<!--
-                 <el-popover
-                  placement="right-start"
-                  :title="value.name"
-                  width="500"
-                  trigger="hover"
-                   v-show="operate && now==index">
-                  <ul class="infinite-list">
-                    <li class=" infinite-list-item"
-                      v-for="(group, i) in value.group" :key="i">
-                      <el-avatar shape="square" :size="45" :src="group.icon" style="background:none"><img src="./assets/fallback.png"/></el-avatar>
-                      <span class="text-success textprimary">{{group.title}}</span>
-                    </li>
-                  </ul>
-                  <el-button slot="reference">hover 激活</el-button>
-                </el-popover> -->
-                <!-- <el-button v-show="operate && now==index">重命名</el-button>
-                <el-button v-show="operate  && now==index">删除</el-button> -->
-                <div v-show="operate  && now==index">
-                <el-button type="info" icon="el-icon-folder-opened" circle  @click="openInfo"></el-button>
-                <el-button type="primary" icon="el-icon-edit" circle></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle></el-button>
-                <el-button type="warning" icon="el-icon-refresh" circle></el-button>
-                </div>
+        <el-avatar
+          shape="square"
+          :size="30"
+          :src="item.tabs[0].icon"
+          style="background:none">
+          <img src="./assets/fallback.png" />
+        </el-avatar>
 
-                <div v-show=" !(operate && now==index)" :style="{color: now==index ? '#33FF66' : '#339966' }">
-                  <span style="margin-right: 5px;">已打开</span>
-                  <span v-if="now==index">↩</span>
-                </div>
-            </li>
-          </ul>
+        <span
+          class="group-name"
+          :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span>
+
+        <div v-if="mouseEnter && currentIndex==index">
+          <el-button type="success" icon="el-icon-folder-opened" circle @click.stop="openGroup"></el-button>
+          <el-button type="primary" icon="el-icon-edit" circle @click.stop="showGroupNameDialog"></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click.stop="deleteGroup"></el-button>
+          <el-badge
+            is-dot
+            class="item refresh"
+            v-if="isCurrentWindowChange && item.windowId == currentWindowId"
+            :style="{ borderColor: config.list_current_focus_state_color } " >
+            <el-button type="warning" icon="el-icon-refresh" circle @click.stop="updateGroup"></el-button>
+          </el-badge>
+        </div>
+        <div
+          v-else-if="item.windowId == currentWindowId"
+          :style="{
+            color: currentIndex==index
+                  ? config.list_current_focus_state_color
+                  : config.list_current_state_color,
+            borderColor: currentIndex==index
+                  ? config.list_current_focus_state_color
+                  : config.list_current_state_color }"
+          style="width: 65px;text-align: right;">
+          <template v-if="isCurrentWindowChange">
+            <el-badge
+              :value="12"
+              is-dot
+              class="item">
+              <span style="margin-right: 5px;" v-if="item.isActive">当前窗口</span>
+            </el-badge>
+          </template>
+          <template v-else>
+            <span style="margin-right: 5px;" v-if="item.isActive">当前窗口</span>
+          </template>
+        </div>
+        <div
+          v-else
+          :style="{
+            color: currentIndex==index
+                ? config.list_focus_state_color
+                : config.list_state_color }"
+          style="width: 65px;text-align: right;">
+          <span style="margin-right: 5px;" v-if="item.isActive">已打开</span>
+          <span v-show="currentIndex==index">↩</span>
+        </div>
+
+      </li>
+    </ul>
+
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon
+      v-if="list.length == ''"
+      style="position: relative;top: -377px;">
+      <slot>
+        <div style="display:flex;width: 444px;">
+          <div style="flex:1">请先输入分组名，然后单击 “↓” 按钮保存分组</div>
+          <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="praiseVisible=true"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="openTab('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="openTab('./options.html')"></el-button>
+        </div>
+      </slot>
+    </el-alert>
 
     <el-dialog
-      :title="group.name"
-      :visible.sync="detailVisible"
-      width="300px" style="padding:0;">
+      :visible.sync="groupVisible"
+      width="400px"
+      class="group">
+      <div slot="title" style="width: 100%;display:flex;">
+        <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link>
+        <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
+      </div>
+      <ul class="group-list">
+        <li class="group-list-item" v-for="(tab, index) in group.tabs" :key="index">
 
-       <ul class="info-list">
-          <li class=" info-list-item" v-for="(tab, index) in group.group" :key="index">
-        <el-avatar shape="square" :size="20" :src="tab.icon" style="background:none"><img src="./assets/fallback.png"/></el-avatar>
-        <span csss="text-success textprimary " style="font-size:15px;margin-left:10px;
-        cursor: pointer;
-        flex: 1;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;" type="default" @click="openTab(tab.url)">{{ tab.title }}</span>
-      </li>
-       </ul>
+          <el-avatar shape="square" :size="20" :src="tab.icon" style="background:none">
+            <img src="./assets/fallback.png" />
+          </el-avatar>
+
+          <span class="tab-name" type="default" @click="openTab(tab.url)">{{ tab.title }}</span>
+
+        </li>
+      </ul>
+    </el-dialog>
+
+    <el-dialog
+      title="分组名修改"
+      :visible.sync="groupChangeVisible"
+      width="80%">
+      <el-input
+        v-model="groupName"
+        placeholder="请输入分组名"
+        @focus="$event.target.select()"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="groupChangeVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="changeGroupName"
+          :disabled="groupName==''">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="支持一下"
+      :visible.sync="praiseVisible"
+      top="30px"
+      width="55%"
+      style="overflow:hidden">
+      <el-carousel height="320px">
+        <el-carousel-item>
+          <img src="./assets/Alipay.png" style="width:100%;" />
+        </el-carousel-item>
+        <el-carousel-item>
+          <img src="./assets/WeChatPay.png" style="width:100%;" />
+        </el-carousel-item>
+        <el-carousel-item>
+          <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
+        </el-carousel-item>
+      </el-carousel>
+      <div style="margin: 0 auto;text-align:center;">你的鼓励，是我的最大动力。</div>
     </el-dialog>
 
   </div>
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld.vue'
+import { nanoid } from 'nanoid'
+import config from './config.json'
 
 export default {
   name: 'app',
   data: () => ({
-      aa: "",
-      keyword: '',
-      myData: [],
-      now: 0,
-      operate: false,
-      scrollIndex: 0,
-      detailVisible: false,
-      group: {},
+    keyword: '',
+    list: [],
+    storageList: [],
+    currentIndex: 0,
+    scrollIndex: 0,
+    groupVisible: false,
+    group: {},
+
+    praiseVisible: false,
+
+    groupChangeVisible: false,
+    groupName: '',
+
+    currentWindowId: 0,
+    isCurrentWindowChange: false,
+    isInCurrentWindow: false,
+
+    mouseEnter: false,
+    mouseStart: false,
+
+    config: {},
+
+    w: {},
   }),
   methods: {
-    openTab: function(url) {
-      alert(url)
-    },
-    openInfo: function() {
-      this.group = this.myData[this.now];
-      console.log(this.group)
-      this.detailVisible = true;
-    },
-    selectDown2: function() {
-        let self = this;
-
-
-        if(window.lock == false) {
-            return;
-        }//*/
-
-        window.t = setTimeout(function(){
-          self.selectDown.call(self);
-          window.lock = true;
-        }, 1);
-        window.lock=false;
+    selectDelay: function(type) {
+      if(this.lock == false) return;
+      this.lock = setTimeout(() => {
+        type == 'down' ? this.selectDown() : this.selectUp();
+        this.lock = true;
+      }, 1);
+      this.lock = false;
     },
     selectDown:function () {
-      console.info("============================================")
-        this.now++;
-        if(this.now>=this.myData.length) {
-          this.now=0;
-
-          this.scrollIndex = 0;
-          let list = document.querySelector('.infinite-list');
-          list.scrollTop = 0;
-          console.log(list);
-        }
-        if(this.now >= this.scrollIndex+7) {
-          this.scrollIndex++;
-          let list = document.querySelector('.infinite-list');
-          list.scrollTop = list.scrollTop+54;
-          console.log(list);
-        }
+      this.currentIndex++;
+      if(this.currentIndex >= this.list.length) {
+        this.currentIndex=0;
+        let list = document.querySelector('.search .search-list');
+        list.scrollTop = 0;
+      }
+      if(this.currentIndex >= this.scrollIndex+7) {
+        this.scrollIndex++;
+        let list = document.querySelector('.search .search-list');
+        list.scrollTop = list.scrollTop+54;
+      }
     },
     selectUp:function () {
-        this.now--;
-        if(this.now<0) {
-          this.now=this.myData.length-1;
+      this.currentIndex--;
+      if(this.currentIndex < 0) {
+        this.currentIndex = this.list.length-1;
+        this.scrollIndex = this.list.length-7;
+        let list = document.querySelector('.search .search-list');
+        list.scrollTop = this.scrollIndex*54;
+      }
+      if(this.currentIndex < this.scrollIndex) {
+        this.scrollIndex--;
+        let list = document.querySelector('.search .search-list');
+        list.scrollTop = list.scrollTop-54;
+      }
+    },
 
-          this.scrollIndex = this.myData.length-7;
-          let list = document.querySelector('.infinite-list');
-          list.scrollTop =this.scrollIndex*54;
-          console.log(list);
+    search: function() {
+      let filterList = this.storageList.filter(group => {
+        let name = group.name.toUpperCase();
+        for(let keyword of this.keyword.trim().toUpperCase().split(/\s+/)) {
+          if(name.indexOf(keyword) == -1) {
+            return false;
+          }
         }
-        if(this.now < this.scrollIndex) {
-          this.scrollIndex--;
-          let list = document.querySelector('.infinite-list');
-          list.scrollTop = list.scrollTop-54;
-          console.log(list);
-        }
+        return true;
+      })
+
+      let currentList = filterList.filter(group => {
+        return group.windowId == this.currentWindowId;
+      });
+      let openedList = filterList.filter(group => {
+        return group.isActive && group.windowId != this.currentWindowId;
+      });
+      let closeList = filterList.filter(group => {
+        return ! group.isActive
+      });
+      this.list = currentList.concat(openedList).concat(closeList);
+
+      this.currentIndex = 0;
+      this.mouseStart = false;
+      this.mouseEnter = false;
     },
-    load: function()  {
-      console.log('ssssssssssss')
-      this.myData.push(...this.myData)
-    },
-    save2: function() {
+    add: function() {
+      this.keyword = this.keyword.trim();
+      if(this.keyword == '') {
+        this.$message({
+          type: 'warning',
+          message: '分组名不允许为空',
+          offset: 72,
+          duration: 2000,
+        });
+        return;
+      }
+
       chrome.tabs.query({
           currentWindow: true
       }, tabs => {
-        let group = [];
+        let ts = [];
         tabs.forEach(tab => {
           let icon = tab.favIconUrl;
-          console.log(tab)
           if(icon == '' || icon == undefined || icon.indexOf("chrome-extension://") > -1) {
             let res = tab.url.match(/[a-zA-z-]+:\/\/[^/]+/);
             icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
           }
 
-          group.push({
+          ts.push({
             url: tab.url,
             title: tab.title,
             icon: icon,
           });
         })
-        this.myData.push({
+        this.storageList.unshift({
           name: this.keyword,
-          group: group
+          tabs: ts,
+          windowId: tabs[0].windowId,
+          isActive: true,
+          id: nanoid(),
         });
-        localStorage.setItem('groups', JSON.stringify(this.myData));
+        chrome.storage.local.set({list: this.storageList}, () => {
+          this.keyword = '';
+          this.search();
+          this.isCurrentWindowChange = false;
+          this.isInCurrentWindow = true;
+        });
       })
     },
-    open: function() {console.log('ss')
-      let group = this.myData[this.now].group;
-      console.log(group)
-      let urls = group.map(value => value['url']);
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
-      {
-        //if(callback) callback(tabs.length ? tabs[0].id: null);
+
+    openWindow: function() {
+      let group = this.list[ this.currentIndex];
+      let urls = group.tabs.map(tab => tab['url']);
+
+      if(group.isActive) {
+        chrome.windows.update(group.windowId, { focused: true});
+
+        let index = this.getStorageIndex();
+        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        chrome.storage.local.set({list: this.storageList});
+
+        return;
+      }
+
+      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         chrome.windows.create({
           url: urls,
-          //tabId: tabs[0].id
-        }, function(w){
-          console.log(w)
-          //alert(tabs[0].url);
-          //alert(JSON.stringify(tabs));
+        }, window => {
+          let index = this.getStorageIndex();
+          this.storageList[index].windowId = window.id;
+          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+          chrome.storage.local.set({list: this.storageList});
         })
+
         if(tabs[0].url == "chrome://newtab/") {
-          //chrome.windows.remove(tabs[0].windowId);
           chrome.tabs.remove(tabs[0].id);
         }
       });
     },
-    filter: function() {
-      let s = '[{"name":"ae流口水的积分收到了加快速度flkjkljlkjlkjl;kj;lkj;jlsdf  是的是神盾神盾是否   sd lkj 尽快了解昆仑决 eaa","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":""},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"ff","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"}]},{"name":"3z","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"}]},{"name":"fffff","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"}]},{"name":"","group":[{"url":"chrome://sync-internals/","title":"Sync Internals","icon":"chrome://favicon/size/16@2x/chrome://sync-internals"}]},{"name":"eeeeeeeeee","group":[{"url":"chrome://sync-internals/","title":"Sync Internals","icon":"chrome://favicon/size/16@2x/chrome://sync-internals"}]}]';
-    //s = '[{"name":"ae流口水的积分收到了加快速度flkjkljlkjlkjl;kj;lkj;jl sd lkj 尽快了解昆仑决 eaa","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"}]}]';
-    // var s =window.localStorage.getItem('groups');console.log(s)
-    let find = JSON.parse(s || '[]');
-    // find.push(...this.myData)
-console.log('7', find)
-      // let data = [];
-      this.myData = find.filter(group => {
-        let name="";
-        for(let keyword of this.keyword.trim().toUpperCase().split(/\s+/)) {
-          let index = group.name.toUpperCase().indexOf(keyword);
-          if(index == -1) {
-            return false;
-          }
+    openGroup: function() {
+      this.group = this.list[this.currentIndex];
+      this.groupVisible = true;
+    },
+    showGroupNameDialog: function() {
+      this.group = this.list[this.currentIndex];
+      this.groupChangeVisible = true;
+      this.groupName = this.group.name;
+    },
+    changeGroupName: function() {
+      this.groupName = this.groupName.trim();
+      if(this.groupName == '') {
+        this.$message({
+          type: 'warning',
+          message: '分组名不允许为空',
+            offset: 12,
+          duration: 2000,
+        });
+        return;
+      }
 
-          let start = group.name.substr(0, index);
-          let middle = group.name.substr(index, keyword.length);
-          let end = group.name.substring(index+keyword.length);
-          name = start+"<font color='red'>"+middle+"</font>"+end;
+      let index = this.getStorageIndex();
+      for(let i in this.storageList) {
+        if(i != index && this.storageList[i].name == this.groupName) {
+          this.$message({
+            type: 'warning',
+            message: '分组名不允许重复',
+            offset: 12,
+            duration: 2000,
+          });
+          return;
         }
-        console.log(name)
-        //group.name=name;
-        return true;
-      })
-      this.now = 0;
-      // this.myData = find.filter(group => {
-      //   this.keyword.trim().toUpperCase().split(/\s+/).map( keyword => {
-      //     group.name.toUpperCase().indexOf(keyword)
-      //   }
-      // })
-      // this.keyword.trim().toUpperCase().split(/\s+/).map(function(a){
-      //   find.
-      // })
+      }
+
+      this.storageList[index].name = this.groupName;
+      chrome.storage.local.set({list: this.storageList}, () => {
+        this.groupChangeVisible = false;
+      });
+    },
+    deleteGroup: function() {
+      let group = this.list[this.currentIndex];
+      this.$confirm('确定删除分组【'+group.name+'】？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        let index = this.getStorageIndex();
+        this.storageList.splice(index , 1);
+        chrome.storage.local.set({list: this.storageList}, () => {
+          this.search();
+        });
+      }).catch(() => {
+      });
+    },
+    openTab: function(url) {
+      chrome.tabs.create({
+        url: url
+      });
+    },
+    updateGroup: function() {
+      let group = this.list[this.currentIndex];
+      this.$confirm('确定更新分组【'+group.name+'】？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+
+        chrome.tabs.query({
+          currentWindow: true
+        }, tabs => {
+        let ts = [];
+        tabs.forEach(tab => {
+          let icon = tab.favIconUrl;
+            if(icon == '' || icon == undefined || icon.indexOf("chrome-extension://") > -1) {
+              let res = tab.url.match(/[a-zA-z-]+:\/\/[^/]+/);
+              icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
+            }
+
+            ts.push({
+              url: tab.url,
+              title: tab.title,
+              icon: icon,
+            });
+          })
+
+          let index = this.getWindowIndex();
+          this.storageList[index].tabs = ts;
+          chrome.storage.local.set({list: this.storageList}, () => {
+            this.search();
+            this.isCurrentWindowChange = false;
+          });
+        })
+      }).catch(() => {
+
+      });
+    },
+
+    getStorageIndex: function() {
+      let group = this.list[ this.currentIndex ];
+      for(let i in this.storageList) {
+        if(this.storageList[i].id == group.id) {
+          return i;
+        }
+      }
+    },
+    getWindowIndex: function() {
+      for(let i in this.list) {
+        if(this.list[i].windowId == this.currentWindowId) {
+          return i;
+        }
+      }
+      return -1;
+    },
+    download: function() {
+      let group = this.list[this.currentIndex];
+      let filename = group.name + '.tabs.html';
+
+      let href = '';
+      group.tabs.forEach(tab => {
+          href += `    <a href="${tab.url}">${tab.title}</a><br/>\n`;
+      });
+
+
+      let data = `<!DOCTYPE>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>SaveTabs</title>
+</head>
+<body>
+${href}
+    <script>
+        var res = new Object();
+        document.querySelectorAll('a').forEach(function(el){
+            var res2 = window.open(el.getAttribute('href'));
+            if(res2 == null) {
+                res = null;
+            }
+        })
+        if(res != null) {
+            window.close()
+        };
+    `+"<\/script>\n<\/body>\n<\/html>";
+
+      var urlObject = window.URL || window.webkitURL || window;
+      var blob = new Blob([data], {type: "text/html"});
+      var url = urlObject.createObjectURL(blob);
+
+      chrome.downloads.download({
+          url: url,
+          filename: filename,
+          //saveAs: false,
+      });
+    }
+  },
+  computed: {
+    isGroupNameRepeat: function() {
+      for(let group of this.storageList) {
+        if(group.name == this.keyword) return true;
+      }
+      return false;
     },
   },
   mounted: function() {
-    let s = '[{"name":"ae流口水的积分收到了加快速度flkjkljlkjlkjl;kj;lkj;jlsdf  是的是神盾神盾是否   sd lkj 尽快了解昆仑决 eaa","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史地方是打发士大夫是否史蒂芬史蒂芬史蒂芬史蒂芬史蒂芬是否记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome://history/","title":"历史记录","icon":""},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":""},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"ff3史蒂芬","group":[{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"}]},{"name":"fff","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"},{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"}]},{"name":"","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"}]},{"name":"fffff","group":[{"url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","title":"OneTab","icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png"},{"url":"chrome://history/","title":"历史记录","icon":"chrome://favicon/size/16@2x/chrome://history"},{"url":"chrome-extension://gjldcdngmdknpinoemndlidpcabkggco/option.html","title":"Extension Manager","icon":"chrome://favicon/size/16@2x/chrome-extension://gjldcdngmdknpinoemndlidpcabkggco"},{"url":"chrome://extensions/","title":"扩展程序","icon":"chrome://favicon/size/16@2x/chrome://extensions"},{"url":"https://mp.toutiao.com/auth/page/login/?redirect_url=JTJG","title":"头条号 - 你创作的，就是头条","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"},{"url":"chrome://newtab/","title":"新标签页"}]},{"name":"","group":[{"url":"chrome://sync-internals/","title":"Sync Internals","icon":"chrome://favicon/size/16@2x/chrome://sync-internals"}]},{"name":"eeeeeeeeee","group":[{"url":"chrome://sync-internals/","title":"Sync Internals","icon":"chrome://favicon/size/16@2x/chrome://sync-internals"}]}]';
-    //s = '[{"name":"ae流口水的积分收到了加快速度flkjkljlkjlkjl;kj;lkj;jl sd lkj 尽快了解昆仑决 eaa","group":[{"url":"chrome://extensions/","title":"扩展程序","icon":"https://sf1-ttcdn-tos.pstatp.com/obj/ttfe/pgcfe/sz/mp_logo.png"}]}]';
-    // var s =window.localStorage.getItem('groups');console.log(s)
-    this.myData = JSON.parse(s || '[]');
-    this.myData.push(...this.myData)
-    // this.myData.push(...this.myData)
+    this.config = config;
 
+    chrome.storage.sync.get({'config': {}}, items => {
+      Object.assign(this.config, items.config);
+    });
 
-    window.aa=0;
-    window.i =0;
-    window.timer = null
-    window.t2 = window.t1=0;
-    window.flag=true;let self=this;
-    window.speed=100;
-    document.querySelector('.infinite-list').addEventListener("scroll", function (e) {
-      clearTimeout(window.timer);
-      //self.operate=false;
-        window.timer = setTimeout(function() {
-          window.t2 = e.target.scrollTop;
-          console.log('dingshi')
+    chrome.storage.local.get({'list': []}, items => {
+      this.storageList = items.list;
+      this.list = this.storageList.filter(() => true);
 
-          if(window.t2 == window.t1){
-            console.log('调整')
-            if(e.target.scrollTop%54 != 0) {
-              console.log('加成')
-              window.speed=1;
-              console.log(e.target.scrollTop%54, window.speed)
-              if(window.flag) { // 向下滚动
-                //window.speed = e.target.scrollTop%54/3;
-                e.target.scrollTop += 1;
-                //e.target.scrollTop = Math.ceil(e.target.scrollTop/54)*54;
-              } else {
-                //window.speed = (54-e.target.scrollTop%54)/3;
-                e.target.scrollTop -= 1;
-                //e.target.scrollTop = Math.floor(e.target.scrollTop/54)*54;
-              }
-            } else {
-              console.log('滚动结束了')
-              //self.operate=true;
-              window.speed=100;
-              self.scrollIndex=e.target.scrollTop/54;
-              if(self.now < self.scrollIndex) self.now = self.scrollIndex;
-              else if(self.now >= self.scrollIndex+7) self.now = self.scrollIndex+7-1;
-              console.log(self.now+" "+self.scrollIndex)
+      if(this.list.length <= 3) {
+        this.mouseStart = true;
+      }
+
+      chrome.windows.getCurrent({populate:true}, window => {
+        this.currentWindowId = window.id;
+
+        let index = this.getWindowIndex();
+        if(index >= 0) this.currentIndex = 1; // 有问题
+        if(index >= 0) this.isInCurrentWindow = true;
+
+        if(index < 0) return;
+
+        if(this.list[index].tabs.length != window.tabs.length) {
+          this.isCurrentWindowChange = true;
+          return;
+        }
+
+        for(let i in this.list[index].tabs) {
+          let tabs = this.list[index].tabs[i];
+          if(window.tabs[i].favIconUrl == ''
+            || window.tabs[i].favIconUrl == undefined
+            || window.tabs[i].favIconUrl.indexOf("chrome-extension://") > -1) {
+            let res = window.tabs[i].url.match(/[a-zA-z-]+:\/\/[^/]+/);
+            let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
+            if(tabs.icon != icon) {
+              this.isCurrentWindowChange = true;
+              break;
             }
           }
-        }, window.speed);
+          if(tabs.url != window.tabs[i].url
+            || tabs.title != window.tabs[i].title) {
+            this.isCurrentWindowChange = true;
+            break;
+          }
+        }
+      });
 
-        window.flag = window.t1 < e.target.scrollTop
-        window.t1 = e.target.scrollTop;
+      chrome.windows.getAll({}, windows => {
+        let map = {};
+        for(let window of windows) {
+          map[window.id] = window.focused;
+        }
 
-      console.log(e)
+        let openedList = this.storageList.filter(group => {
+          if(map[ group.windowId ] != undefined && map[ group.windowId ] == false) {
+            group.isActive = true;
+            return true;
+          }
+          return false;
+        });
+        let closeList = this.storageList.filter(group => {
+          if(map[ group.windowId ] == undefined) {
+            group.isActive = false;
+            return true;
+          }
+          return false;
+        });
+        let currentList = this.storageList.filter(group => {
+          if(map[ group.windowId ] != undefined && map[ group.windowId ] == true) {
+            group.isActive = true;
+            return true;
+          }
+          return false;
+        });
+        this.list = currentList.concat(openedList).concat(closeList);
+      });
+    });
+
+    let self=this;
+    self.w.timer = null
+    self.w.t2 = self.w.t1=0;
+    self.w.flag=true;
+    self.w.speed=100;
+    document.querySelector('.search .search-list').addEventListener("scroll", function (e) {
+      clearTimeout(self.w.timer);
+      self.w.timer = setTimeout(function() {
+        self.w.t2 = e.target.scrollTop;
+
+        if(self.w.t2 == self.w.t1){
+          if(e.target.scrollTop%54 != 0) {
+            self.w.speed=1;
+            if(self.w.flag) { // 向下滚动
+              e.target.scrollTop += 1;
+            } else {
+              e.target.scrollTop -= 1;
+            }
+          } else {
+            self.w.speed=100;
+            self.scrollIndex=e.target.scrollTop/54;
+            if(self.currentIndex < self.scrollIndex) self.currentIndex = self.scrollIndex;
+            else if(self.currentIndex >= self.scrollIndex+7) self.currentIndex = self.scrollIndex+7-1;
+          }
+        }
+      }, self.w.speed);
+
+      self.w.flag = self.w.t1 < e.target.scrollTop
+      self.w.t1 = e.target.scrollTop;
     })
-
-
   }
 }
 </script>
 
 <style>
-#app {
+
+.search {
   width: 500px;
-  border: 1px solid red;
   padding:10px;
 }
-.gray{
-    background: #82848a;
-    color: white !important;
+.search .search-input {
+  display: flex;
+  margin-bottom: 10px;
 }
-.textprimary{
-    text-align: left;
-    font-family: "Microsoft YaHei UI";
-    font-size: 20px;
-    margin-left:5px;
-    flex: 1;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+.search .search-input input {
+  flex:1;
+  margin-right:10px;
 }
-.infinite-list {
-    padding: 0;
-    margin: 0;
-    max-height: 376px;
-    min-height: 376px;
-    overflow: scroll;
+.search .search-list {
+  padding: 0;
+  margin: 0;
+  max-height: 376px;
+  min-height: 376px;
+  overflow: scroll;
 }
-.infinite-list-item {
-    padding: 2px 5px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    height: 50px;
-    color: black;
-    list-style: none;
-    display: flex;
+.search .search-list .search-list-item {
+  height: 50px;
+  padding: 2px 5px;
+  margin: 0;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
 }
-.info-list {
-    padding: 0;
-    margin: 0;
-    font-size: 15px;
+/* .search .search-list .search-list-item.active {
+  background: #7497de;
+  color: white;
+} */
+
+.group-name {
+  text-align: left;
+  /* color: black; */
+  /* font-size: 20px; */
+  margin-left: 5px;
+  cursor: default;
+  flex: 1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-.info-list-item {
-    padding: 5px;
-    align-items: center;
-    justify-content: left;
-    color: black;
-    list-style: none;
-    display: flex;
-}
-.info-list-item span:hover {
-  color: #409eff;
-  text-decoration: underline;
-}
-.el-dialog__header {
+
+.group .el-dialog__header {
   padding: 10px 53px 0 16px !important;
-  text-align: center;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-.el-dialog__body{
+.group .el-dialog__body{
   padding: 10px 10px 10px 10px !important;
+}
+.group .group-list {
+  padding: 0;
+  margin: 0;
   min-height: 90px;
   max-height: 210px;
   overflow: auto;
+  font-size: 15px;
+}
+.group .group-list-item {
+  padding: 5px;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
+}
+.group .group-list-item span:hover {
+  /* color: #409eff; */
+  text-decoration: underline;
+}
+
+.tab-name{
+  font-size:15px;
+  margin-left: 10px;
+  cursor: pointer;
+  flex: 1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+/* .search .search-list .search-list-item.current-window {
+  background: #c0c4cc;
+  color: white;
+} */
+/* .search .search-list .search-list-item.current-window.active {
+  background: #909399;
+  color: white;
+} */
+.el-badge__content {
+    background-color: inherit;
+    border-color: inherit;
+}
+.el-badge__content {
+    background-color: inherit;
+    border-color: inherit;
+}
+.el-badge {
+    margin-right: 5px;
+    border-color: inherit;
+}
+.el-badge.refresh {
+    margin-left: 10px;
 }
 </style>

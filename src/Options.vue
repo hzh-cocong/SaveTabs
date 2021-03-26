@@ -405,7 +405,7 @@ export default {
         });
 
         chrome.storage.local.get({'list': []}, items => {
-          items.list.push(...data);
+          items.list.unshift(...data);
           chrome.storage.local.set({list: items.list}, () => {
             this.$message({
               type: 'success',

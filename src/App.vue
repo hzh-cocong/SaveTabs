@@ -338,6 +338,8 @@ export default {
     },
 
     openWindow: function() {
+      if(this.list.length == 0) return;
+
       let group = this.list[ this.currentIndex];
       let urls = group.tabs.map(tab => tab['url']);
 
@@ -456,7 +458,7 @@ export default {
             });
           })
 
-          let index = this.getWindowIndex();
+          let index = this.getStorageIndex();
           this.storageList[index].tabs = ts;
           chrome.storage.local.set({list: this.storageList}, () => {
             this.search();
@@ -476,14 +478,6 @@ export default {
         }
       }
     },
-    getWindowIndex: function() {
-      for(let i in this.list) {
-        if(this.list[i].windowId == this.currentWindowId) {
-          return i;
-        }
-      }
-      return -1;
-    },
     download: function() {
       let group = this.list[this.currentIndex];
       let filename = group.name + '.tabs.html';
@@ -501,42 +495,47 @@ export default {
         return;
       }
 
-      let href = '';
-      group.tabs.forEach(tab => {
-          href += `    <a href="${tab.url}">${tab.title}</a><br/>\n`;
-      });
-
-
-      let data = `<!DOCTYPE>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title>SaveTabs</title>
-</head>
-<body>
-${href}
-    <script>
-        var res = new Object();
-        document.querySelectorAll('a').forEach(function(el){
-            var res2 = window.open(el.getAttribute('href'));
-            if(res2 == null) {
-                res = null;
-            }
-        })
-        if(res != null) {
-            window.close()
-        };
-    `+"<\/script>\n<\/body>\n<\/html>";
-
-      var urlObject = window.URL || window.webkitURL || window;
-      var blob = new Blob([data], {type: "text/html"});
-      var url = urlObject.createObjectURL(blob);
-
-      chrome.downloads.download({
-          url: url,
+      chrome.runtime.sendMessage({
           filename: filename,
-          //saveAs: false,
+          tabs: group.tabs,
       });
+
+//       let href = '';
+//       group.tabs.forEach(tab => {
+//           href += `    <a href="${tab.url}">${tab.title}</a><br/>\n`;
+//       });
+
+
+//       let data = `<!DOCTYPE>
+// <html>
+// <head>
+//     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+//     <title>SaveTabs</title>
+// </head>
+// <body>
+// ${href}
+//     <script>
+//         var res = new Object();
+//         document.querySelectorAll('a').forEach(function(el){
+//             var res2 = window.open(el.getAttribute('href'));
+//             if(res2 == null) {
+//                 res = null;
+//             }
+//         })
+//         if(res != null) {
+//             window.close()
+//         };
+//     `+"<\/script>\n<\/body>\n<\/html>";
+
+//       var urlObject = window.URL || window.webkitURL || window;
+//       var blob = new Blob([data], {type: "text/html"});
+//       var url = urlObject.createObjectURL(blob);
+
+//       chrome.downloads.download({
+//           url: url,
+//           filename: filename,
+//           //saveAs: false,
+//       });
     }
   },
   computed: {
@@ -556,28 +555,80 @@ ${href}
 
     chrome.storage.local.get({'list': []}, items => {
       this.storageList = items.list;
-      this.list = this.storageList.filter(() => true);
+      // this.list = this.storageList.filter(() => true);
 
-      if(this.list.length <= 3) {
+      if(this.storageList.length <= 3) {
         this.mouseStart = true;
       }
 
       chrome.windows.getCurrent({populate:true}, window => {
         this.currentWindowId = window.id;
 
-        let index = this.getWindowIndex();
-        if(index >= 0) this.currentIndex = 1; // 有问题
-        if(index >= 0) this.isInCurrentWindow = true;
+        // 判断窗口是否已打开
+        chrome.windows.getAll({}, windows => {
+          let map = {}; // window.focused 不准确
+          for(let window of windows) {
+            map[window.id] = this.currentWindowId == window.id;
+          }
 
-        if(index < 0) return;
+          let openedList = this.storageList.filter(group => {
+            if(map[ group.windowId ] != undefined && map[ group.windowId ] == false) {
+              group.isActive = true;
+              return true;
+            }
+            return false;
+          });
+          let closeList = this.storageList.filter(group => {
+            if(map[ group.windowId ] == undefined) {
+              group.isActive = false;
+              return true;
+            }
+            return false;
+          });
+          let currentList = this.storageList.filter(group => {
+            if(map[ group.windowId ] != undefined && map[ group.windowId ] == true) {
+              group.isActive = true;
+              return true;
+            }
+            return false;
+          });
+          // console.log(currentList, map);
+          // this.list = currentList.concat(openedList).concat(closeList);
 
-        if(this.list[index].tabs.length != window.tabs.length) {
+          let list = currentList.concat(openedList).concat(closeList);
+          for(let group of list) {
+            let url = group.tabs[0].url;
+            let res = url.match(/[a-zA-z-]+:\/\/[^/]+/);
+            let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
+            this.fastIcon[group.id] = icon;
+          }
+          this.list = list;
+          this.isLoading = false;
+        });
+
+        // 判断是否存在在当前分组
+        let index = -1;
+        for(let i in this.storageList) {
+          if(this.storageList[i].windowId == this.currentWindowId) {
+            index = i;
+            break;
+          }
+        }
+        if(index == -1) return;
+
+        // 标记
+        if(this.storageList.length > 1) this.currentIndex = 1;
+        this.isInCurrentWindow = true;
+
+        // 判断当前分组是否需要更新
+        let currentGroup = this.storageList[index];
+        if(currentGroup.tabs.length != window.tabs.length) {
           this.isCurrentWindowChange = true;
           return;
         }
 
-        for(let i in this.list[index].tabs) {
-          let tabs = this.list[index].tabs[i];
+        for(let i in currentGroup.tabs) {
+          let tabs = currentGroup.tabs[i];
 
           if(window.tabs[i].favIconUrl != ''
             && window.tabs[i].favIconUrl != undefined
@@ -593,46 +644,7 @@ ${href}
             break;
           }
         }
-      });
 
-      chrome.windows.getAll({}, windows => {
-        let map = {};
-        for(let window of windows) {
-          map[window.id] = window.focused;
-        }
-
-        let openedList = this.storageList.filter(group => {
-          if(map[ group.windowId ] != undefined && map[ group.windowId ] == false) {
-            group.isActive = true;
-            return true;
-          }
-          return false;
-        });
-        let closeList = this.storageList.filter(group => {
-          if(map[ group.windowId ] == undefined) {
-            group.isActive = false;
-            return true;
-          }
-          return false;
-        });
-        let currentList = this.storageList.filter(group => {
-          if(map[ group.windowId ] != undefined && map[ group.windowId ] == true) {
-            group.isActive = true;
-            return true;
-          }
-          return false;
-        });
-        // this.list = currentList.concat(openedList).concat(closeList);
-
-        let list = currentList.concat(openedList).concat(closeList);
-        for(let group of list) {
-          let url = group.tabs[0].url;
-          let res = url.match(/[a-zA-z-]+:\/\/[^/]+/);
-          let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
-          this.fastIcon[group.id] = icon;
-        }
-        this.list = list;
-        this.isLoading = false;
       });
     });
 

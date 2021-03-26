@@ -11,6 +11,11 @@
     "default_icon": "icons/icon_128.png",
     "default_popup": "popup.html"
   },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
   "options_page": "options.html",
   "permissions": [
     "tabs",

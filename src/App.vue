@@ -1,12 +1,12 @@
 <template>
   <div id="app" class="search">
 
-    <div class="search-input">
+    <div class="search-input" @mouseenter="mouseStart=true">
       <input
         type="text"
         class="el-input__inner"
         v-model.trim="keyword"
-        placeholder="请输入分组名"
+        :placeholder="lang('searchTip')"
         autofocus="autofocus"
         @keydown.down.prevent="selectDelay('down')"
         @keydown.up.prevent="selectDelay('up')"
@@ -19,8 +19,8 @@
         @click="add"
         :disabled="isInCurrentWindow || isGroupNameRepeat"
         :title="isInCurrentWindow
-                ? '已保存'
-                : (isGroupNameRepeat ? '分组名重复' : '')"></el-button>
+                ? lang('saved')
+                : (isGroupNameRepeat ? lang('repeatTip') : '')"></el-button>
     </div>
 
     <ul class="search-list">
@@ -51,7 +51,7 @@
         <el-avatar
           shape="square"
           :size="30"
-          :src="item.tabs[0].icon"
+          :src="fastIcon[item.id]"
           style="background:none">
           <img src="./assets/fallback.png" />
         </el-avatar>
@@ -87,11 +87,11 @@
               :value="12"
               is-dot
               class="item">
-              <span style="margin-right: 5px;" v-if="item.isActive">当前窗口</span>
+              <span style="margin-right: 5px;" v-if="item.isActive">{{ lang('currentWindow') }}</span>
             </el-badge>
           </template>
           <template v-else>
-            <span style="margin-right: 5px;" v-if="item.isActive">当前窗口</span>
+            <span style="margin-right: 5px;" v-if="item.isActive">{{ lang('currentWindow') }}</span>
           </template>
         </div>
         <div
@@ -101,7 +101,7 @@
                 ? config.list_focus_state_color
                 : config.list_state_color }"
           style="width: 65px;text-align: right;">
-          <span style="margin-right: 5px;" v-if="item.isActive">已打开</span>
+          <span style="margin-right: 5px;" v-if="item.isActive">{{ lang('opened') }}</span>
           <span v-show="currentIndex==index">↩</span>
         </div>
 
@@ -112,16 +112,14 @@
       type="info"
       :closable="false"
       show-icon
-      v-if="list.length == ''"
+      v-if="list.length == 0 && isLoading == false"
       style="position: relative;top: -377px;">
-      <slot>
-        <div style="display:flex;width: 444px;">
-          <div style="flex:1">请先输入分组名，然后单击 “↓” 按钮保存分组</div>
-          <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="praiseVisible=true"></el-button>
-          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="openTab('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="openTab('./options.html')"></el-button>
-        </div>
-      </slot>
+      <div slot="title" style="width: 444px;display:flex;align-items: center;">
+        <div style="flex:1;">{{ lang('noResult') }}</div>
+        <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="praiseVisible=true"></el-button>
+        <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="openTab('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
+        <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="openTab('./options.html')"></el-button>
+      </div>
     </el-alert>
 
     <el-dialog
@@ -146,40 +144,47 @@
     </el-dialog>
 
     <el-dialog
-      title="分组名修改"
+      :title="lang('updateGroupName')"
       :visible.sync="groupChangeVisible"
       width="80%">
       <el-input
         v-model="groupName"
-        placeholder="请输入分组名"
+        :placeholder="lang('groupNameInput')"
         @focus="$event.target.select()"></el-input>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="groupChangeVisible = false">取 消</el-button>
+        <el-button @click="groupChangeVisible = false">{{ lang('cancel' )}}</el-button>
         <el-button
           type="primary"
           @click="changeGroupName"
-          :disabled="groupName==''">确 定</el-button>
+          :disabled="groupName==''">{{ lang('sure' )}}</el-button>
       </span>
     </el-dialog>
 
     <el-dialog
-      title="支持一下"
+      :title="lang('praise')"
       :visible.sync="praiseVisible"
-      top="30px"
+      top="25px"
       width="55%"
+      class="praise"
       style="overflow:hidden">
-      <el-carousel height="320px">
+      <el-carousel height="320px" v-if="praiseVisible">
         <el-carousel-item>
-          <img src="./assets/Alipay.png" style="width:100%;" />
+          <el-card class="box-card" style="margin: 10px;">
+            <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
+          </el-card>
         </el-carousel-item>
         <el-carousel-item>
-          <img src="./assets/WeChatPay.png" style="width:100%;" />
+          <el-card class="box-card" style="margin: 10px;">
+            <img src="./assets/Alipay.png" style="width:100%;" />
+          </el-card>
         </el-carousel-item>
         <el-carousel-item>
-          <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
+          <el-card class="box-card" style="margin: 10px;">
+            <img src="./assets/WeChatPay.png" style="width:100%;" />
+          </el-card>
         </el-carousel-item>
       </el-carousel>
-      <div style="margin: 0 auto;text-align:center;">你的鼓励，是我的最大动力。</div>
+      <div style="margin: 0px auto -10px auto;text-align:center;">{{ lang('thankYou' )}}</div>
     </el-dialog>
 
   </div>
@@ -205,7 +210,7 @@ export default {
     groupChangeVisible: false,
     groupName: '',
 
-    currentWindowId: 0,
+    currentWindowId: -1,
     isCurrentWindowChange: false,
     isInCurrentWindow: false,
 
@@ -213,10 +218,15 @@ export default {
     mouseStart: false,
 
     config: {},
+    fastIcon: {},
+    isLoading: true,
 
     w: {},
   }),
   methods: {
+    lang: function(key) {
+      return chrome.i18n.getMessage(key);
+    },
     selectDelay: function(type) {
       if(this.lock == false) return;
       this.lock = setTimeout(() => {
@@ -284,7 +294,7 @@ export default {
       if(this.keyword == '') {
         this.$message({
           type: 'warning',
-          message: '分组名不允许为空',
+          message: this.lang('emptyGroupName'),
           offset: 72,
           duration: 2000,
         });
@@ -308,16 +318,19 @@ export default {
             icon: icon,
           });
         })
+        let id = nanoid();
         this.storageList.unshift({
           name: this.keyword,
           tabs: ts,
           windowId: tabs[0].windowId,
           isActive: true,
-          id: nanoid(),
+          id: id,
         });
+        this.fastIcon[id] = ts[0].icon;
         chrome.storage.local.set({list: this.storageList}, () => {
           this.keyword = '';
           this.search();
+          this.mouseStart = true;
           this.isCurrentWindowChange = false;
           this.isInCurrentWindow = true;
         });
@@ -367,7 +380,7 @@ export default {
       if(this.groupName == '') {
         this.$message({
           type: 'warning',
-          message: '分组名不允许为空',
+          message: this.lang('emptyGroupName'),
             offset: 12,
           duration: 2000,
         });
@@ -379,7 +392,7 @@ export default {
         if(i != index && this.storageList[i].name == this.groupName) {
           this.$message({
             type: 'warning',
-            message: '分组名不允许重复',
+            message: this.lang('groupNameRepeat'),
             offset: 12,
             duration: 2000,
           });
@@ -394,15 +407,18 @@ export default {
     },
     deleteGroup: function() {
       let group = this.list[this.currentIndex];
-      this.$confirm('确定删除分组【'+group.name+'】？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.lang('deleteConfirm')+' ('+group.name+') ?', this.lang('tip'), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
         type: 'warning',
         center: true
       }).then(() => {
         let index = this.getStorageIndex();
         this.storageList.splice(index , 1);
         chrome.storage.local.set({list: this.storageList}, () => {
+          if(group.windowId == this.currentWindowId) {
+            this.isInCurrentWindow = false;
+          }
           this.search();
         });
       }).catch(() => {
@@ -415,9 +431,9 @@ export default {
     },
     updateGroup: function() {
       let group = this.list[this.currentIndex];
-      this.$confirm('确定更新分组【'+group.name+'】？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.lang('changeConfirm')+' ('+group.name+') ?', this.lang('tip'), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
         type: 'warning',
         center: true
       }).then(() => {
@@ -472,6 +488,19 @@ export default {
       let group = this.list[this.currentIndex];
       let filename = group.name + '.tabs.html';
 
+      //^(?!\.)[^\\\/:\*\?"<>\|]{1,255}$/
+      // (?!\.)[^\\\/:\*\?"<>\|]{1,250}
+      let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
+      if( ! patt.test(filename)) {
+        this.$message({
+          type: 'warning',
+          message: this.lang('invalidGroupName'),
+          offset: 72,
+          duration: 2000,
+        });
+        return;
+      }
+
       let href = '';
       group.tabs.forEach(tab => {
           href += `    <a href="${tab.url}">${tab.title}</a><br/>\n`;
@@ -516,7 +545,7 @@ ${href}
         if(group.name == this.keyword) return true;
       }
       return false;
-    },
+    }
   },
   mounted: function() {
     this.config = config;
@@ -549,16 +578,15 @@ ${href}
 
         for(let i in this.list[index].tabs) {
           let tabs = this.list[index].tabs[i];
-          if(window.tabs[i].favIconUrl == ''
-            || window.tabs[i].favIconUrl == undefined
-            || window.tabs[i].favIconUrl.indexOf("chrome-extension://") > -1) {
-            let res = window.tabs[i].url.match(/[a-zA-z-]+:\/\/[^/]+/);
-            let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
-            if(tabs.icon != icon) {
-              this.isCurrentWindowChange = true;
-              break;
-            }
+
+          if(window.tabs[i].favIconUrl != ''
+            && window.tabs[i].favIconUrl != undefined
+            && window.tabs[i].favIconUrl.indexOf("chrome-extension://") < 0
+            && window.tabs[i].favIconUrl != tabs.icon) {
+            this.isCurrentWindowChange = true;
+            break;
           }
+
           if(tabs.url != window.tabs[i].url
             || tabs.title != window.tabs[i].title) {
             this.isCurrentWindowChange = true;
@@ -594,7 +622,17 @@ ${href}
           }
           return false;
         });
-        this.list = currentList.concat(openedList).concat(closeList);
+        // this.list = currentList.concat(openedList).concat(closeList);
+
+        let list = currentList.concat(openedList).concat(closeList);
+        for(let group of list) {
+          let url = group.tabs[0].url;
+          let res = url.match(/[a-zA-z-]+:\/\/[^/]+/);
+          let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
+          this.fastIcon[group.id] = icon;
+        }
+        this.list = list;
+        this.isLoading = false;
       });
     });
 
@@ -637,6 +675,10 @@ ${href}
 .search {
   width: 500px;
   padding:10px;
+
+  /* 放第一次加载慢而闪烁 */
+  height: 426px;
+  overflow: hidden;
 }
 .search .search-input {
   display: flex;
@@ -649,8 +691,9 @@ ${href}
 .search .search-list {
   padding: 0;
   margin: 0;
-  max-height: 376px;
-  min-height: 376px;
+  /* max-height: 376px;
+  min-height: 376px; */
+  height: 376px;
   overflow: scroll;
 }
 .search .search-list .search-list-item {
@@ -661,6 +704,7 @@ ${href}
   color: black;
   list-style: none;
   display: flex;
+  overflow: hidden;
 }
 /* .search .search-list .search-list-item.active {
   background: #7497de;
@@ -740,5 +784,8 @@ ${href}
 }
 .el-badge.refresh {
     margin-left: 10px;
+}
+.praise .el-dialog__body {
+  padding-top: 0;
 }
 </style>

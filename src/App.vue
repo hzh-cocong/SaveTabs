@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="search">
 
-    <div class="search-input" @mouseenter="mouseStart=true">
+    <div class="search-input">
       <input
         type="text"
         class="el-input__inner"
@@ -44,7 +44,7 @@
         }"
         v-for="(item, index) in list"
         :key="index"
-        @mouseenter="mouseStart ? (currentIndex=index,mouseEnter=true) : mouseStart=true;"
+        @mouseenter="mouseSelect(index)"
         @mouseleave="mouseEnter=false"
         @click="currentIndex=index;openWindow()">
 
@@ -115,7 +115,7 @@
       v-if="list.length == 0 && isLoading == false"
       style="position: relative;top: -377px;">
       <div slot="title" style="width: 444px;display:flex;align-items: center;">
-        <div style="flex:1;">{{ lang('noResult') }}</div>
+        <div style="flex:1;">{{ isInCurrentWindow ? lang('saved') : lang('noResult') }}</div>
         <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="praiseVisible=true"></el-button>
         <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="openTab('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
         <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="openTab('./options.html')"></el-button>
@@ -215,7 +215,8 @@ export default {
     isInCurrentWindow: false,
 
     mouseEnter: false,
-    mouseStart: false,
+    mouseStart: true,
+    recordIndex: -1,
 
     config: {},
     fastIcon: {},
@@ -285,8 +286,10 @@ export default {
       });
       this.list = currentList.concat(openedList).concat(closeList);
 
+      this.w.searchList.scrollTop = 0;
+      this.mouseRealMoveRegister();
       this.currentIndex = 0;
-      this.mouseStart = false;
+      // this.mouseStart = false;
       this.mouseEnter = false;
     },
     add: function() {
@@ -330,7 +333,7 @@ export default {
         chrome.storage.local.set({list: this.storageList}, () => {
           this.keyword = '';
           this.search();
-          this.mouseStart = true;
+          // this.mouseStart = true;
           this.isCurrentWindowChange = false;
           this.isInCurrentWindow = true;
         });
@@ -499,44 +502,34 @@ export default {
           filename: filename,
           tabs: group.tabs,
       });
+    },
+    mouseSelect: function(index) {
+      this.mouseStart == true ? (this.currentIndex=index,this.mouseEnter=true) : this.recordIndex=index
+      if(this.w.index == 0) this.w.index = 2;
+    },
+    mouseRealMoveRegister: function() {
+      if(this.mouseStart) {
+        this.mouseStart = false;
 
-//       let href = '';
-//       group.tabs.forEach(tab => {
-//           href += `    <a href="${tab.url}">${tab.title}</a><br/>\n`;
-//       });
+        let self = this;
+        self.w.searchList.addEventListener('mousemove', function mousemovewatch() {
+          // mouseSelect 可能会先触发
+          if(self.w.index == 0) self.w.index = 1;
 
-
-//       let data = `<!DOCTYPE>
-// <html>
-// <head>
-//     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-//     <title>SaveTabs</title>
-// </head>
-// <body>
-// ${href}
-//     <script>
-//         var res = new Object();
-//         document.querySelectorAll('a').forEach(function(el){
-//             var res2 = window.open(el.getAttribute('href'));
-//             if(res2 == null) {
-//                 res = null;
-//             }
-//         })
-//         if(res != null) {
-//             window.close()
-//         };
-//     `+"<\/script>\n<\/body>\n<\/html>";
-
-//       var urlObject = window.URL || window.webkitURL || window;
-//       var blob = new Blob([data], {type: "text/html"});
-//       var url = urlObject.createObjectURL(blob);
-
-//       chrome.downloads.download({
-//           url: url,
-//           filename: filename,
-//           //saveAs: false,
-//       });
-    }
+          if(self.w.index == 2) {
+            self.w.index = 1;
+          } else if(self.recordIndex != -1) {
+            if(self.recordIndex < self.list.length) {
+              self.currentIndex = self.recordIndex;
+              self.mouseEnter = true;
+            }
+            self.mouseStart = true;
+            self.recordIndex = -1;
+            this.removeEventListener('mousemove', mousemovewatch);
+          }
+        })
+      }
+    },
   },
   computed: {
     isGroupNameRepeat: function() {
@@ -547,6 +540,9 @@ export default {
     }
   },
   mounted: function() {
+    this.w.searchList = document.querySelector('.search-list');
+    this.w.index = 0;
+    this.mouseRealMoveRegister();
     this.config = config;
 
     chrome.storage.sync.get({'config': {}}, items => {
@@ -557,9 +553,9 @@ export default {
       this.storageList = items.list;
       // this.list = this.storageList.filter(() => true);
 
-      if(this.storageList.length <= 3) {
-        this.mouseStart = true;
-      }
+      // if(this.storageList.length <= 3) {
+      //   this.mouseStart = true;
+      // }
 
       chrome.windows.getCurrent({populate:true}, window => {
         this.currentWindowId = window.id;
@@ -592,7 +588,6 @@ export default {
             }
             return false;
           });
-          // console.log(currentList, map);
           // this.list = currentList.concat(openedList).concat(closeList);
 
           let list = currentList.concat(openedList).concat(closeList);
@@ -653,7 +648,7 @@ export default {
     self.w.t2 = self.w.t1=0;
     self.w.flag=true;
     self.w.speed=100;
-    document.querySelector('.search .search-list').addEventListener("scroll", function (e) {
+    self.w.searchList.addEventListener("scroll", function (e) {
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
         self.w.t2 = e.target.scrollTop;

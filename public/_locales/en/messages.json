@@ -1,11 +1,11 @@
 {
-    "description": {"message": "It can save all the tabs in the current window and open them all at once, realize the flexible switching of multiple windows, and save up to 99% of the memory."},
+    "description": {"message": "Window labels can be saved and opened all at once, switching between multiple windows can be realized, saving up to 99% of memory."},
 
     "searchTip": {"message": "Please enter the group name"},
     "noResult": {"message": "Please enter the group name first, and then click the \"↓\" button to save the group"},
     "currentWindow": {"message": "Current"},
     "opened": {"message": "Opened"},
-    "saved": {"message": "Opened"},
+    "saved": {"message": "It has been saved"},
     "cancel": {"message": "Cancel"},
     "sure": {"message": "OK"},
     "tip": {"message": "Tip"},

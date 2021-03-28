@@ -149,8 +149,7 @@
       width="80%">
       <el-input
         v-model="groupName"
-        :placeholder="lang('groupNameInput')"
-        @focus="$event.target.select()"></el-input>
+        :placeholder="lang('groupNameInput')"></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="groupChangeVisible = false">{{ lang('cancel' )}}</el-button>
         <el-button
@@ -237,6 +236,8 @@ export default {
       this.lock = false;
     },
     selectDown:function () {
+      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
+
       this.currentIndex++;
       if(this.currentIndex >= this.list.length) {
         this.currentIndex=0;
@@ -248,8 +249,11 @@ export default {
         let list = document.querySelector('.search .search-list');
         list.scrollTop = list.scrollTop+54;
       }
+      this.mouseRealMoveRegister();
     },
     selectUp:function () {
+      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
+
       this.currentIndex--;
       if(this.currentIndex < 0) {
         this.currentIndex = this.list.length-1;
@@ -262,6 +266,7 @@ export default {
         let list = document.querySelector('.search .search-list');
         list.scrollTop = list.scrollTop-54;
       }
+      this.mouseRealMoveRegister();
     },
 
     search: function() {
@@ -287,10 +292,10 @@ export default {
       this.list = currentList.concat(openedList).concat(closeList);
 
       this.w.searchList.scrollTop = 0;
-      this.mouseRealMoveRegister();
+      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
       this.currentIndex = 0;
-      // this.mouseStart = false;
       this.mouseEnter = false;
+      this.mouseRealMoveRegister();
     },
     add: function() {
       this.keyword = this.keyword.trim();
@@ -329,6 +334,7 @@ export default {
           isActive: true,
           id: id,
         });
+
         this.fastIcon[id] = ts[0].icon;
         chrome.storage.local.set({list: this.storageList}, () => {
           this.keyword = '';
@@ -462,6 +468,12 @@ export default {
           })
 
           let index = this.getStorageIndex();
+
+          let res = ts[0].url.match(/[a-zA-z-]+:\/\/[^/]+/);
+          let icon = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
+          let id = this.storageList[index].id;
+          this.fastIcon[id] = icon;
+
           this.storageList[index].tabs = ts;
           chrome.storage.local.set({list: this.storageList}, () => {
             this.search();
@@ -504,18 +516,19 @@ export default {
       });
     },
     mouseSelect: function(index) {
+      // console.log('mmm')
       this.mouseStart == true ? (this.currentIndex=index,this.mouseEnter=true) : this.recordIndex=index
       if(this.w.index == 0) this.w.index = 2;
     },
     mouseRealMoveRegister: function() {
       if(this.mouseStart) {
         this.mouseStart = false;
-
+// console.log('kk');
         let self = this;
         self.w.searchList.addEventListener('mousemove', function mousemovewatch() {
           // mouseSelect 可能会先触发
           if(self.w.index == 0) self.w.index = 1;
-
+// console.log('ss'+self.recordIndex);
           if(self.w.index == 2) {
             self.w.index = 1;
           } else if(self.recordIndex != -1) {

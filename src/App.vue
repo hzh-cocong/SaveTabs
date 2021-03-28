@@ -294,7 +294,7 @@ export default {
       this.w.searchList.scrollTop = 0;
       if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
       this.currentIndex = 0;
-      this.mouseEnter = false;
+      // this.mouseEnter = false;
       this.mouseRealMoveRegister();
     },
     add: function() {
@@ -523,6 +523,7 @@ export default {
     mouseRealMoveRegister: function() {
       if(this.mouseStart) {
         this.mouseStart = false;
+        this.mouseEnter=false;
 // console.log('kk');
         let self = this;
         self.w.searchList.addEventListener('mousemove', function mousemovewatch() {

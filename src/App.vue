@@ -236,7 +236,9 @@ export default {
       this.lock = false;
     },
     selectDown:function () {
-      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
+      if(this.recordIndex == -1 && this.mouseEnter == true) {
+        this.recordIndex = this.currentIndex;
+      }
 
       this.currentIndex++;
       if(this.currentIndex >= this.list.length) {
@@ -249,10 +251,15 @@ export default {
         let list = document.querySelector('.search .search-list');
         list.scrollTop = list.scrollTop+54;
       }
-      this.mouseRealMoveRegister();
+      if(this.mouseEnter == true) {
+        console.log('aaaaa');
+        this.mouseRealMoveRegister();
+      }
     },
     selectUp:function () {
-      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
+      if(this.recordIndex == -1 && this.mouseEnter == true) {
+        this.recordIndex = this.currentIndex;
+      }
 
       this.currentIndex--;
       if(this.currentIndex < 0) {
@@ -266,7 +273,10 @@ export default {
         let list = document.querySelector('.search .search-list');
         list.scrollTop = list.scrollTop-54;
       }
-      this.mouseRealMoveRegister();
+      if(this.mouseEnter == true) {
+        console.log('bbbbb');
+        this.mouseRealMoveRegister();
+      }
     },
 
     search: function() {
@@ -292,9 +302,10 @@ export default {
       this.list = currentList.concat(openedList).concat(closeList);
 
       this.w.searchList.scrollTop = 0;
-      if(this.recordIndex == -1) this.recordIndex = this.currentIndex;
+      if(this.recordIndex == -1 && this.mouseEnter) {
+        this.recordIndex = this.currentIndex;
+      }
       this.currentIndex = 0;
-      // this.mouseEnter = false;
       this.mouseRealMoveRegister();
     },
     add: function() {
@@ -516,20 +527,20 @@ export default {
       });
     },
     mouseSelect: function(index) {
-      // console.log('mmm')
+      console.log('mmm')
       this.mouseStart == true ? (this.currentIndex=index,this.mouseEnter=true) : this.recordIndex=index
       if(this.w.index == 0) this.w.index = 2;
     },
     mouseRealMoveRegister: function() {
       if(this.mouseStart) {
         this.mouseStart = false;
-        this.mouseEnter=false;
-// console.log('kk');
+        this.mouseEnter = false;
+console.log('kk');
         let self = this;
         self.w.searchList.addEventListener('mousemove', function mousemovewatch() {
           // mouseSelect 可能会先触发
           if(self.w.index == 0) self.w.index = 1;
-// console.log('ss'+self.recordIndex);
+console.log('ss'+self.recordIndex);
           if(self.w.index == 2) {
             self.w.index = 1;
           } else if(self.recordIndex != -1) {

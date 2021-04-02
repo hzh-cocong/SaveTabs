@@ -213,7 +213,7 @@ export default {
           delete group.windowId;
           return group;
         });
-        this.download('SaveTabsGroupData.json', JSON.stringify(data));
+        this.download('SaveTabsWindowData.json', JSON.stringify(data));
       })
     },
     leadIn: function() {

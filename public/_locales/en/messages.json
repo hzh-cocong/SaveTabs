@@ -3,9 +3,11 @@
 
     "searchTip": {"message": "Please enter the window name"},
     "noResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
+    "noResult2": {"message": "You can use spaces to separate multiple keywords to search"},
     "currentWindow": {"message": "Current"},
     "opened": {"message": "Opened"},
     "saved": {"message": "It has been saved"},
+    "saved2": {"message": "The current window has been saved, you can click the last button of the first item in the list to update the window"},
     "cancel": {"message": "Cancel"},
     "sure": {"message": "OK"},
     "tip": {"message": "Tip"},

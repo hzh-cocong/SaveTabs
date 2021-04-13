@@ -3,9 +3,11 @@
 
     "searchTip": {"message": "请输入窗口名"},
     "noResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口"},
+    "noResult2": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索"},
     "currentWindow": {"message": "当前窗口"},
     "opened": {"message": "已打开"},
-    "saved": {"message": "已保存"},
+    "saved": {"message": "当前窗口已保存"},
+    "saved2": {"message": "当前窗口已保存，你可以点击列表第一项的最后一个按钮更新窗口"},
     "cancel": {"message": "取 消"},
     "sure": {"message": "确 定"},
     "tip": {"message": "提示"},
@@ -58,7 +60,7 @@
     "praise": {"message": "支持一下"},
     "thankYou": {"message": "你的鼓励，是我的最大动力。"},
 
-    "advice1": {"message": "Chrome 网上应用店"},
-    "chromeWebStore": {"message": "你也可以登陆"},
+    "advice1": {"message": "你也可以登陆"},
+    "chromeWebStore": {"message": "Chrome 网上应用店"},
     "advice2": {"message": "给予好评 或 提供支持性建议"}
 }

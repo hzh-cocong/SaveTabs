@@ -19,7 +19,7 @@
         @click="add"
         :disabled="isInCurrentWindow || isGroupNameRepeat"
         :title="isInCurrentWindow
-                ? lang('saved')
+                ? (isCurrentWindowChange ? lang('saved2') : lang('saved'))
                 : (isGroupNameRepeat ? lang('repeatTip') : '')"></el-button>
     </div>
 
@@ -115,7 +115,7 @@
       v-if="list.length == 0 && isLoading == false"
       style="position: relative;top: -377px;">
       <div slot="title" style="width: 444px;display:flex;align-items: center;">
-        <div style="flex:1;">{{ isInCurrentWindow ? lang('saved') : lang('noResult') }}</div>
+        <div style="flex:1;">{{ storageList.length == 0 ? lang('noResult') : lang('noResult2') }}</div>
         <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="praiseVisible=true"></el-button>
         <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="openTab('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
         <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="openTab('./options.html')"></el-button>

@@ -23,7 +23,7 @@
                 : (isGroupNameRepeat ? lang('repeatTip') : '')"></el-button>
     </div>
 
-    <ul class="search-list">
+    <ul class="search-list" @mouseleave="mouseEnter=false">
       <li
         class="search-list-item"
         :style="{
@@ -45,7 +45,6 @@
         v-for="(item, index) in list"
         :key="index"
         @mouseenter="mouseSelect(index)"
-        @mouseleave="mouseEnter=false"
         @click="currentIndex=index;openWindow()">
 
         <el-avatar
@@ -674,6 +673,7 @@ console.log('ss'+self.recordIndex);
     self.w.flag=true;
     self.w.speed=100;
     self.w.searchList.addEventListener("scroll", function (e) {
+      console.log('a')
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
         self.w.t2 = e.target.scrollTop;

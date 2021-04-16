@@ -15,42 +15,67 @@
         @input="search">
     </div>
 
-    <el-carousel :autoplay="false" height="150px" width="200" indicator-position="none" arrow="never" ref="carousel">
-      <el-carousel-item v-for="item in 4" :key="item">
-        <h3 :class="'small'+item">{{ item }}</h3>
+    <el-carousel
+      :autoplay="false"
+      height="350px"
+      indicator-position="none"
+      arrow="never"
+      ref="carousel"
+      :loop="true">
+      <el-carousel-item>
+        <List
+          :list="list1"
+          :itemHeight="50"
+          :itemShowCount="7"
+          style="margin:5px;"
+          v-model="currentIndex">
+          <template #item="{ index, item, isActive, isSelected }">
+            <div
+              style="border: 11px solid red;border-top: 0; border-bottom: 0;height:100%;"
+              :style="{ color: isSelected ? 'red' : 'inherit',
+                        backgroundColor: isActive ? 'green' : isSelected ? 'blue' : 'white'}">
+              {{ '【'+index+'】'+item.name+' |（'+isActive+'）'+' |（'+isSelected+'）' }}
+            </div>
+          </template>
+        </List>
+      </el-carousel-item>
+      <el-carousel-item>
+        <List
+          :list="list2"
+          :itemHeight="50"
+          :itemShowCount="7"
+          style="margin:5px;"
+          v-model="currentIndex2">
+          <template #item="{ index, item, isActive, isSelected }">
+            <div
+              style="border: 11px solid red;height:100%;"
+              :style="{ color: isSelected ? 'red' : 'inherit',
+                        backgroundColor: isActive ? 'green' : isSelected ? 'blue' : 'white'}">
+              {{ '【'+index+'】'+item.name+' |（'+isActive+'）'+' |（'+isSelected+'）' }}
+            </div>
+          </template>
+        </List>
+      </el-carousel-item>
+      <el-carousel-item>
+        <List
+          :list="list2"
+          :itemHeight="50"
+          :itemShowCount="7"
+          style="margin:5px;"
+          v-model="currentIndex2">
+          <template #item="{ index, item, isActive, isSelected }">
+            <div
+              style="border: 11px solid red;height:100%;"
+              :style="{ color: isSelected ? 'red' : 'inherit',
+                        backgroundColor: isActive ? 'green' : isSelected ? 'blue' : 'white'}">
+              {{ '【'+index+'】'+item.name+' |（'+isActive+'）'+' |（'+isSelected+'）' }}
+            </div>
+          </template>
+        </List>
       </el-carousel-item>
     </el-carousel>
 
-
-    <div style="width:300px; height: 300px; border: 1px solid blue;position:relative;overflow:hidden;">
-      <transition name="result">
-        <div class="result" v-if="show">
-          result
-        </div>
-      </transition>
-      <transition name="code">
-        <div class="code" v-if="!show">
-          code
-        </div>
-      </transition>
-    </div>
-
-    <List
-      :list="list1"
-      :itemHeight="50"
-      :itemShowCount="7"
-      style="width:250px;margin:5px;display:inline-block;"
-      v-model="currentIndex">
-      <template #item="{ index, item, isActive, isSelected }">
-        <div
-          style="border: 11px solid red;border-top: 0; border-bottom: 0;height:100%;"
-          :style="{ color: isSelected ? 'red' : 'inherit',
-                    backgroundColor: isActive ? 'green' : isSelected ? 'blue' : 'white'}">
-          {{ '【'+index+'】'+item.name+' |（'+isActive+'）'+' |（'+isSelected+'）' }}
-        </div>
-      </template>
-    </List>
-    <List
+    <!-- <List
       :list="list2"
       :itemHeight="50"
       :itemShowCount="7"
@@ -64,7 +89,8 @@
           {{ '【'+index+'】'+item.name+' |（'+isActive+'）'+' |（'+isSelected+'）' }}
         </div>
       </template>
-    </List>
+    </List> -->
+
   </div>
 </template>
 
@@ -176,86 +202,5 @@ export default {
   width: 500px; */
   /*height: 350px;
   overflow: hidden; */
-}
-.result {
-  width:300px;
-  height: 300px;
-  background-color:yellow;
-  position: absolute;
-  left:0;
-  top: 0;
-}
-.code {
-  width:300px;
-  height: 300px;
-  background-color:blue;
-  position: absolute;
-  left:0;
-  top: 0;
-}
-.result-leave{
-  /* opacity: 1; */
-  transform: translate(0, 0);
-}
-.result-leave-active {
-  transition: all .5s ease;
-}
-.result-leave-to {
-  /* opacity: 0; */
-  transform: translate(-100%, 0);
-}
-
-.code-enter{
-  /* opacity: 1; */
-  /* background-color: red; */
-  transform: translate(100%, 0);
-}
-.code-enter-active {
-  transition: all .5s ease;
-}
-.code-enter-to {
-  /* opacity: 0; */
-  transform: translate(0, 0);
-}
-
-
-.code-leave{
-  /* opacity: 1; */
-  transform: translate(0, 0);
-}
-.code-leave-active {
-  transition: all .5s ease;
-}
-.code-leave-to {
-  /* opacity: 0; */
-  transform: translate(100%, 0);
-}
-.result-enter{
-  /* opacity: 1; */
-  transform: translate(-100%, 0);
-}
-.result-enter-active {
-  transition: all .5s ease;
-}
-.result-enter-to {
-  /* opacity: 0; */
-  transform: translate(0, 0);
-}
-
-.small1 {
-  background-color:antiquewhite;
-  height: 150px
-}
-.small2 {
-  background-color:red;
-  height: 150px
-}
-.small3 {
-  background-color:black;
-  height: 150px
-}
-.small4 {
-  background-color:rgb(194, 165, 39);
-  height: 150px
 }
 </style>

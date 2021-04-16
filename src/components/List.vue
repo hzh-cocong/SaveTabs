@@ -7,7 +7,8 @@
       v-for="(item, index) in list"
       :key="index"
       @mouseenter="mouseSelect(index)"
-      @mouseleave="mouseIndex=-1;aa(index)">
+      @mouseleave="mouseIndex=-1"
+      :style="{ height: itemHeight+'px' }">
       <slot
         name="item"
         :index="index"
@@ -105,11 +106,9 @@ export default {
     },
   },
   methods: {
-    aa(index) {
-      console.warn('leave', index)
-    },
     mouseSelect(index) {
       console.warn('mouseSelect:'+this.mouseStart);
+      // 防溢出
       let scrollLines = this.listNode.scrollTop/this.itemHeight;
       if(index < scrollLines)
         index = scrollLines;
@@ -117,38 +116,40 @@ export default {
         index = scrollLines+this.itemShowCount-1;
 
       this.mouseIndex = index;
-      if(this.mouseStart==true) {
+      if(this.mouseStart == true) {
         this.$emit('change', index);
       }
       if(this.w.index == 0) this.w.index = 2;
     },
     mouseRealMoveRegister() {
-      if(this.mouseStart) {
-        this.mouseStart = false;
-        console.log('mouseRealMoveRegister');
+      if( ! this.mouseStart) return;
 
-        let self = this;
-        this.listNode.addEventListener('mousemove', function mousemovewatch() {
-          console.log('mousemovewatch')
+      // 关闭鼠标事件
+      this.mouseStart = false;
+      console.log('mouseRealMoveRegister');
 
-          // mouseSelect 可能会先触发
-          if(self.w.index == 2) {
-            self.w.index = 1;
-            return;
-          }
-          if(self.w.index == 0) self.w.index = 1;
+      let self = this;
+      this.listNode.addEventListener('mousemove', function mousemovewatch() {
+        console.log('mousemovewatch')
 
-          if(self.mouseIndex == -1) return;
-          if(self.mouseIndex >= self.list.length) return;
-          console.log('mousemovewatch2222')
+        // mouseSelect 可能会先触发
+        if(self.w.index == 2) {
+          self.w.index = 1;
+          return;
+        }
+        if(self.w.index == 0) self.w.index = 1;
 
-          // alert('move')
-          self.mouseStart = true;
-          this.removeEventListener('mousemove', mousemovewatch);
-          self.$emit('change', self.mouseIndex);
-          document.body.style.cursor = "default";
-        })
-      }
+        if(self.mouseIndex == -1) return;
+        if(self.mouseIndex >= self.list.length) return;
+        console.log('mousemovewatch2222')
+
+        // alert('move')
+        // 激活鼠标事件
+        self.mouseStart = true;
+        this.removeEventListener('mousemove', mousemovewatch);
+        self.$emit('change', self.mouseIndex);
+        document.body.style.cursor = "default";
+      })
     },
   },
   mounted() {
@@ -156,7 +157,8 @@ export default {
     window.list = this;
 
     document.body.style.cursor = "none";
-    this.listNode = document.querySelector('.list');
+    // this.listNode = document.querySelector('.list');
+    this.listNode = this.$el;
     this.w.index = 0;
     this.mouseRealMoveRegister();
 
@@ -189,6 +191,7 @@ export default {
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)) return;
 
             console.log('scroll-finish2');
+            // 保持当前窗口有被选中
             if(self.currentIndex < self.scrollLines)
               self.$emit('change', self.scrollLines);
             else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
@@ -210,5 +213,8 @@ export default {
   padding: 0;
   margin: 0;
   overflow: scroll;
+}
+.list-item {
+  overflow: hidden;
 }
 </style>

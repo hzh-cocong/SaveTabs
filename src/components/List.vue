@@ -51,7 +51,6 @@ export default {
       scrollLines: 0,
       mouseIndex: -1,
       mouseStart: true,
-      listNode: null,
       w: {},
     }
   },
@@ -73,23 +72,23 @@ export default {
         if(this.currentIndex >= this.list.length) {
           console.log('aaaa')
           this.scrollLines = 0;
-          this.listNode.scrollTop = 0;
+          this.$el.scrollTop = 0;
           this.$emit('change', 0);
         } else if(newVal >= this.scrollLines+this.itemShowCount) {
           console.log('bbbb')
           this.scrollLines++;
-          this.listNode.scrollTop = this.scrollLines*this.itemHeight;
+          this.$el.scrollTop = this.scrollLines*this.itemHeight;
         }
       } else {
         if(newVal < 0) {
           console.log('cccc')
           this.scrollLines = this.list.length-this.itemShowCount;
-          this.listNode.scrollTop = this.scrollLines*this.itemHeight;
+          this.$el.scrollTop = this.scrollLines*this.itemHeight;
           this.$emit('change', this.list.length-1);
         } else if(newVal < this.scrollLines) {
           console.log('dddd')
           this.scrollLines--;
-          this.listNode.scrollTop = this.scrollLines*this.itemHeight;
+          this.$el.scrollTop = this.scrollLines*this.itemHeight;
         }
       }
 
@@ -109,7 +108,7 @@ export default {
     mouseSelect(index) {
       console.warn('mouseSelect:'+this.mouseStart);
       // 防溢出
-      let scrollLines = this.listNode.scrollTop/this.itemHeight;
+      let scrollLines = this.$el.scrollTop/this.itemHeight;
       if(index < scrollLines)
         index = scrollLines;
       else if(index >= scrollLines+this.itemShowCount)
@@ -129,7 +128,7 @@ export default {
       console.log('mouseRealMoveRegister');
 
       let self = this;
-      this.listNode.addEventListener('mousemove', function mousemovewatch() {
+      this.$el.addEventListener('mousemove', function mousemovewatch() {
         console.log('mousemovewatch')
 
         // mouseSelect 可能会先触发
@@ -157,8 +156,6 @@ export default {
     window.list = this;
 
     document.body.style.cursor = "none";
-    // this.listNode = document.querySelector('.list');
-    this.listNode = this.$el;
     this.w.index = 0;
     this.mouseRealMoveRegister();
 
@@ -168,7 +165,7 @@ export default {
     self.w.t2 = self.w.t1 = 0;
     self.w.flag = true;
     self.w.speed = 100;
-    this.listNode.addEventListener("scroll", function (e) {
+    this.$el.addEventListener("scroll", function (e) {
       console.log("scroll")
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {

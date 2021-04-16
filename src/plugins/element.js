@@ -68,7 +68,7 @@ import {
     // TimelineItem,
     Link,
     Divider,
-    // Image,
+    Image,
     // Calendar,
     // Backtop,
     // PageHeader,
@@ -150,7 +150,7 @@ import {
   // Vue.use(TimelineItem);
   Vue.use(Link);
   Vue.use(Divider);
-  // Vue.use(Image);
+  Vue.use(Image);
   // Vue.use(Calendar);
   // Vue.use(Backtop);
   // Vue.use(PageHeader);

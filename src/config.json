@@ -14,5 +14,10 @@
 
     "list_current_focus_background_color": "#909399",
     "list_current_focus_font_color": "#ffffff",
-    "list_current_focus_state_color": "#ffffff"
+    "list_current_focus_state_color": "#ffffff",
+
+    "item_height": 50,
+    "item_show_count": 7,
+
+    "width": 500
 }

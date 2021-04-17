@@ -1,7 +1,7 @@
 {
   "name": "SaveTabs",
   "manifest_version": 2,
-  "version": "2.0.5",
+  "version": "3.0.0",
   "description": "__MSG_description__",
   "default_locale": "en",
   "icons": {
@@ -9,7 +9,7 @@
   },
   "browser_action": {
     "default_icon": "icons/icon_128.png",
-    "default_popup": "test.html"
+    "default_popup": "savetabs.html"
   },
   "background": {
     "scripts": [
@@ -17,11 +17,13 @@
     ]
   },
   "options_page": "options.html",
+  "offline_enabled": true,
   "permissions": [
     "tabs",
     "storage",
     "unlimitedStorage",
     "chrome://favicon/",
-    "downloads"
+    "downloads",
+    "history"
   ]
 }

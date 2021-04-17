@@ -68,19 +68,7 @@
       :height="(config.item_height*config.item_show_count)+'px'"
       @change="workspaceChange"
       ref="carousel">
-      <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
-        <component :is="workspace.type" :config="config" ref="workspaces"></component>
-        <!-- <list
-          :list="workspace.list"
-          :itemHeight="config.item_height"
-          :itemShowCount="config.item_show_count"
-          v-model="currentIndex"
-          @load="load">
-          <component :is="workspace.type" v-if="index==activeWorkspace"></component>
-
-        </list> -->
-      </el-carousel-item>
-      <!-- <el-carousel-item
+      <el-carousel-item
         v-for="(workspace, index) in workspaces"
         :key="index">
         <list
@@ -138,44 +126,30 @@
             </div>
           </template>
         </list>
-      </el-carousel-item> -->
+      </el-carousel-item>
     </el-carousel>
 
   </div>
 </template>
 
 <script>
-// import Vue from 'vue'
 import List from './components/List.vue'
-import Window from './components/Window.vue'
-import History from './components/History.vue'
 import config from './config.json'
 // import { nanoid } from 'nanoid'
-
-// const Window = Vue.component('Window', function (resolve) {
-//     setTimeout(function () {
-//         require(['./components/Window.vue'], resolve)
-//     }, 3000);
-// });
-// const History = Vue.component('History', function (resolve) {
-//     setTimeout(function () {
-//         require(['./components/History.vue'], resolve)
-//     }, 3000);
-// });
 
 export default {
   name: 'app',
   data() {
     return {
       keyword: '',
-      activeWorkspace: 0,
+      activeWorkspace: 2,
       toggle: true,
       list: [],
       list1: [],
       list2: [],
       storageList: [],
       workspaces: [],
-      currentIndex: 0,
+      currentIndex: 1,
       currentIndex2: 1,
       show: true,
       isLoad: false,
@@ -188,9 +162,7 @@ export default {
     }
   },
   components: {
-    List,
-    Window,
-    History,
+    List
   },
   methods: {
     openTab: function(url) {
@@ -268,13 +240,8 @@ export default {
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       this.lock = setTimeout(() => {
         if(type == 'down') {
-          this.$refs.workspaces[this.activeWorkspace].down();
-          // console.log(this.$refs)
-          // console.log(this.$refs.window[0].down())
-          // this.$refs[this.workspaces[this.activeWorkspace].type].down();
           this.workspaces[this.activeWorkspace].currentIndex++;
         } else if(type == 'up') {
-          this.$refs.workspaces[this.activeWorkspace].up();
           this.workspaces[this.activeWorkspace].currentIndex--;
         } else if(type == 'left') {
           this.$refs.carousel.prev();
@@ -339,18 +306,18 @@ export default {
     this.list1 = this.list2 = this.storageList;//.splice(0, 1);
     this.list1 =  this.storageList;//.splice(0, 1);
 
-    // this.workspaces.push({
-    //   'type': 'all',
-    //   'title': '全部',
-    //   'list': this.storageList,
-    //   'currentIndex': 1,
-    // });
-    // this.workspaces.push({
-    //   'type': 'temporary',
-    //   'title': '临时',
-    //   'list': this.storageList,
-    //   'currentIndex': 1,
-    // });
+    this.workspaces.push({
+      'type': 'all',
+      'title': '全部',
+      'list': this.storageList,
+      'currentIndex': 1,
+    });
+    this.workspaces.push({
+      'type': 'temporary',
+      'title': '临时',
+      'list': this.storageList,
+      'currentIndex': 1,
+    });
     this.workspaces.push({
       'type': 'window',
       'title': '窗口',
@@ -363,18 +330,17 @@ export default {
       'list': this.storageList,
       'currentIndex': 1,
     });
-    // this.workspaces.push({
-    //   'type': 'tab',
-    //   'title': '标签',
-    //   'list': this.storageList,
-    //   'currentIndex': 1,
-    // });
+    this.workspaces.push({
+      'type': 'tab',
+      'title': '标签',
+      'list': this.storageList,
+      'currentIndex': 1,
+    });
 
     console.log(this.workspaces);
     console.log(this.storageList);
     console.log(this.list);
     console.log(this.workspaces);
-    console.warn('list', this.workspaces[0].list)
   }
 }
 </script>

@@ -11,7 +11,6 @@
       @mouseleave="mouseIndex=-1"
       :style="{ height: itemHeight+'px' }">
       <slot
-        name="item"
         :index="index"
         :item="item"
         :isSelected="index==currentIndex"

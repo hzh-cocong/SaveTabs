@@ -10,10 +10,11 @@
         placeholder="请输入内容"
         v-model="keyword"
         autofocus="autofocus"
+        suffix-icon="el-icon-search"
         @keydown.down.native.prevent="selectDelay('down')"
         @keydown.up.native.prevent="selectDelay('up')"
-        @keydown.left.native.prevent="$refs.carousel.prev()"
-        @keydown.right.native.prevent="$refs.carousel.next()">
+        @keydown.left.native.prevent="selectDelay('left')"
+        @keydown.right.native.prevent="selectDelay('right')">
         <template slot="prepend">
           <el-select
             v-model="activeWorkspace"
@@ -27,6 +28,17 @@
               :label="workspace.title"
               :value="index"
               :key="index"></el-option>
+            <el-option
+              :value="activeWorkspace"
+              :disabled="true"
+              style="cursor: default">
+              <el-link
+                type="info"
+                style="margin-left: 5px; font-size: 18px; cursor:pointer;"
+                @click="openTab('./options.html')">
+                <i class="el-icon-s-tools"></i>
+              </el-link>
+            </el-option>
           </el-select>
         </template>
       </el-input>
@@ -63,7 +75,8 @@
           :list="workspace.list"
           :itemHeight=config.item_height
           :itemShowCount=config.item_show_count
-          v-model="workspace.currentIndex">
+          v-model="workspace.currentIndex"
+          @load="load">
           <template #item="{ index, item, isActive, isSelected }">
             <div
               style="border: 11px solid white;border-top: 0; border-bottom: 0;height:100%;display:flex;align-items: center;"
@@ -152,6 +165,73 @@ export default {
     List
   },
   methods: {
+    openTab: function(url) {
+      chrome.tabs.create({
+        url: url
+      });
+    },
+    load() {
+      this.workspaces[this.activeWorkspace].list.push(...[{
+        "name":"加载的",
+        "tabs":[{
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        }],
+      },
+      {
+        "name":"加载的",
+        "tabs":[{
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        }],
+      },
+      {
+        "name":"加载的",
+        "tabs":[{
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        }],
+      },
+      {
+        "name":"加载的",
+        "tabs":[{
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        },
+        {
+          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
+          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
+        }],
+      }]);
+    },
     changeList() {
       this.toggle = ! this.toggle;
     },
@@ -161,8 +241,12 @@ export default {
       this.lock = setTimeout(() => {
         if(type == 'down') {
           this.workspaces[this.activeWorkspace].currentIndex++;
-        } else {
+        } else if(type == 'up') {
           this.workspaces[this.activeWorkspace].currentIndex--;
+        } else if(type == 'left') {
+          this.$refs.carousel.prev();
+        } else if(type == 'right') {
+          this.$refs.carousel.next();
         }
         this.lock = true;
       }, 1);

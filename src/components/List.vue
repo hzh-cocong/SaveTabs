@@ -1,7 +1,8 @@
 <template>
   <ul
     class="list"
-    :style="{ height: (itemHeight*itemShowCount)+'px' }">
+    :style="{ height: (itemHeight*itemShowCount)+'px' }"
+    v-infinite-scroll="load">
     <li
       class="list-item"
       v-for="(item, index) in list"
@@ -119,6 +120,10 @@ export default {
         this.$emit('change', index);
       }
       if(this.w.index == 0) this.w.index = 2;
+    },
+    load() {
+      console.error('load', arguments);
+      this.$emit('load');
     },
     mouseRealMoveRegister() {
       if( ! this.mouseStart) return;

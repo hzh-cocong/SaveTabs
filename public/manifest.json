@@ -24,6 +24,7 @@
     "unlimitedStorage",
     "chrome://favicon/",
     "downloads",
-    "history"
+    "history",
+    "bookmarks"
   ]
 }

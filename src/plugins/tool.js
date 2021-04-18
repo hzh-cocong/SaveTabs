@@ -33,7 +33,20 @@ const tool = {
           if(size >= 256) return 256;
 
           return (2**Math.ceil(Math.log(size/16)/Math.log(2)))*16;
-        }
+        },
+        getIcon(url, size) {
+          size = this.getIconSize(size);
+          let res = url.match(/([a-zA-z-]+):\/\/[^/]+/);
+          let icon = '';
+          if(res != null) {
+            if(res[1] == 'http' || res[1] == 'https') {
+              icon = "https://s2.googleusercontent.com/s2/favicons?sz="+size+"&domain="+res[0];
+            } else {
+              icon = "chrome://favicon/size/"+(size/2)+"@2x/"+res[0];
+            }
+          }
+          return icon;
+        },
       },
       // 方便测试
       //*

@@ -3,6 +3,7 @@
     :list="list"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
+    :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     @load="load">
     <template #default="{ index, item, isActive, isSelected }">
@@ -24,7 +25,6 @@
                               ? config.list_focus_font_color
                               : config.list_font_color)
         }"
-        :key="index"
         @click="currentIndex=index;openWindow()">
 
         <span
@@ -33,7 +33,7 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            :src="isLoad ? item.tabs[0].icon : ''"
+            :src="isLoad ? getIcon(item.tabs[0].url, config.item_height-20) : ''"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
@@ -55,7 +55,7 @@
           :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span>
 
         <div class="right">
-          <div v-if="isActive || item.windowId == currentWindowId || item.isActive">
+          <div v-if="isActive || item.windowId == currentWindowId || activeWindows[item.windowId]">
             <div v-if="isActive">
               <el-button type="success" icon="el-icon-folder-opened" circle @click.stop="openGroup"></el-button>
               <el-button type="primary" icon="el-icon-edit" circle @click.stop="showGroupNameDialog"></el-button>
@@ -90,7 +90,7 @@
               </template>
             </div>
             <div
-              v-else-if="item.isActive"
+              v-else-if="activeWindows[item.windowId]"
               :style="{
                 fontSize: config.list_state_size+'px',
                 color: isSelected
@@ -113,10 +113,10 @@
             <span
               v-else
               :style="{
-                fontSize: item.isActive
+                fontSize: activeWindows[item.windowId]
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
-                color: item.isActive
+                color: activeWindows[item.windowId]
                     ? config.list_state_color
                     : config.list_keymap_color }">{{ '⌘'+(index+1) }}</span>
           </div>
@@ -141,17 +141,22 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
+    }
   },
   data() {
     return {
       list: [],
+      cacheList: [],
       storageList: [],
-      currentIndex: 0,
 
-      fastIcon: {},
-      isLoading: false,
+      page: 0,
+      scrollDisabled: false,
+      keywords: '',
+
+      currentIndex: 0,
       currentWindowId: -1,
+      activeWindows: {},
+
       isCurrentWindowChange: false,
       isInCurrentWindow: false,
     }
@@ -160,75 +165,66 @@ export default {
     List,
   },
   methods: {
+    test() {
+      return true;
+    },
     up() {
       this.currentIndex--;
     },
     down() {
       this.currentIndex++;
     },
+    search(keywords) {
+      if(this.keywords == keywords.trim()) return;
+      this.keywords = keywords.trim();
+      console.error('search', keywords, keywords.length);
+
+      // 查找
+      let filterList = this.storageList.filter(group => {
+        let name = group.name.toUpperCase();
+        for(let keyword of keywords.trim().toUpperCase().split(/\s+/)) {
+          if(name.indexOf(keyword) == -1) {
+            return false;
+          }
+        }
+        return true;
+      })
+
+      // 重新排序
+      let currentList = filterList.filter(group => {
+        return group.windowId == this.currentWindowId;
+      });
+      let openedList = filterList.filter(group => {
+        return this.activeWindows[group.windowId] && group.windowId != this.currentWindowId;
+      });
+      let closeList = filterList.filter(group => {
+        return ! this.activeWindows[group.windowId];
+      });
+
+      // 列表赋值
+      this.cacheList = currentList.concat(openedList).concat(closeList);
+      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.currentIndex = 0;
+      this.page = 1;
+      this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
+
+      console.warn('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
+    },
     load() {
-      var ss  = true;
-      if(ss) return;
-      this.list.push(...[{
-        "name":"加载的",
-        "tabs":[{
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        }],
-      },
-      {
-        "name":"加载的",
-        "tabs":[{
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        }],
-      },
-      {
-        "name":"加载的",
-        "tabs":[{
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        }],
-      },
-      {
-        "name":"加载的",
-        "tabs":[{
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        },
-        {
-          "icon":"https://ssl.gstatic.com/translate/favicon.ico",
-          "title":"Google 翻译","url":"https://translate.google.cn/?hl=zh"
-        }],
-      }]);
+      console.log('load', this.scrollDisabled);
+
+      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      if(data.length <= 0) {
+        this.scrollDisabled = true;
+        return;
+      }
+
+      this.list.push(...data);
+      this.page++;
+
+      if(data.length != this.config.list_page_count) {
+        this.scrollDisabled = true;
+      }
     },
   },
   mounted() {
@@ -265,7 +261,7 @@ export default {
       if(index == -1) return;
 
       // 标记
-      if(this.storageList.length > 1) this.currentIndex = 1;
+      // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
       this.isInCurrentWindow = true;
 
       // 判断当前分组是否需要更新
@@ -305,51 +301,37 @@ export default {
       // 排序处理
       let openedList = this.storageList.filter(group => {
         if(map[ group.windowId ] != undefined && map[ group.windowId ] == false) {
-          group.isActive = true;
+          // group.isActive = true;
+          this.activeWindows[ group.windowId ] = true;
           return true;
         }
         return false;
       });
       let closeList = this.storageList.filter(group => {
         if(map[ group.windowId ] == undefined) {
-          group.isActive = false;
+          // group.isActive = false;
+          this.activeWindows[ group.windowId ] = false;
           return true;
         }
         return false;
       });
       let currentList = this.storageList.filter(group => {
         if(map[ group.windowId ] != undefined && map[ group.windowId ] == true) {
-          group.isActive = true;
+          // group.isActive = true;
+          this.activeWindows[ group.windowId ] = true
           return true;
         }
         return false;
       });
 
-      // 图片处理
-      let list = currentList.concat(openedList).concat(closeList);
-      let size = this.getIconSize(this.config.item_height-20);
-      console.error('size', size );
-      for(let group of list) {
-        let url = group.tabs[0].url;
-        let res = url.match(/([a-zA-z-]+):\/\/[^/]+/);
-        let icon = '';
-        if(res != null) {
-          if(res[1] == 'http' || res[1] == 'https') {
-            icon = "https://s2.googleusercontent.com/s2/favicons?sz="+size+"&domain="+res[0];
-          } else {
-            icon = "chrome://favicon/size/"+(size/2)+"@2x/"+res[0];
-          }
-        }
-        // let icon2 = res ? "chrome://favicon/size/16@2x/"+res[0] : '';
-        // let icon = res ? "https://s2.googleusercontent.com/s2/favicons?sz=32&domain="+res[0] : '';
-        console.error('icon', icon, res)
-        group.tabs[0].icon = icon;//'https://ssl.gstatic.com/translate/favicon.ico';
-        // group.tabs[0].icon2 = icon2;
+      // 列表赋值
+      this.cacheList = currentList.concat(openedList).concat(closeList);
+      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.page = 1;
+      if(this.cacheList.length <= this.config.list_page_count) this.scrollDisabled = true;
 
-        this.fastIcon[group.id] = icon;
-      }
-      this.list = list;
-      this.isLoading = false;
+      // 命中第二行
+      if(this.storageList.length > 1 && this.isInCurrentWindow) this.currentIndex = 1;
     })
   }
 }

@@ -15,7 +15,8 @@
         @keydown.down.native.prevent="selectDelay('down')"
         @keydown.up.native.prevent="selectDelay('up')"
         @keydown.left.native.prevent="selectDelay('left')"
-        @keydown.right.native.prevent="selectDelay('right')">
+        @keydown.right.native.prevent="selectDelay('right')"
+        @input="search">
         <template slot="prepend">
           <el-select
             v-model="activeWorkspace"
@@ -70,7 +71,13 @@
       @change="workspaceChange"
       ref="carousel">
       <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
-        <component :is="workspace.type" :config="config" :isLoad="isLoad" ref="workspaces"></component>
+        <component
+          :is="workspace.type"
+          :config="config"
+          :isLoad="isLoad"
+          :keyword="keyword"
+          ref="workspaces"></component>
+
         <!-- <list
           :list="workspace.list"
           :itemHeight="config.item_height"
@@ -294,28 +301,7 @@ export default {
 
     },
     search: function() {
-      let filterList = this.storageList.filter(group => {
-        let name = group.name.toUpperCase();
-        for(let keyword of this.keyword.trim().toUpperCase().split(/\s+/)) {
-          if(name.indexOf(keyword) == -1) {
-            return false;
-          }
-        }
-        return true;
-      })
-
-      this.list = filterList;
-      if(this.toggle) {
-        this.list1 = filterList;
-      } else {
-        this.list2 = filterList;
-      }
-
-      if(this.toggle) {
-        this.currentIndex = 0;
-      } else {
-        this.currentIndex2 = 0;
-      }
+      this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
     },
   },
   mounted() {

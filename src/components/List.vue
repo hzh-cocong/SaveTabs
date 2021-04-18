@@ -2,6 +2,7 @@
   <ul
     class="list"
     :style="{ height: (itemHeight*itemShowCount)+'px' }"
+    infinite-scroll-disabled="scrollDisabled"
     v-infinite-scroll="load">
     <li
       class="list-item"
@@ -44,6 +45,11 @@ export default {
     currentIndex: {
       type: Number,
       required: require,
+    },
+    scrollDisabled: {
+      type: Boolean,
+      require: false,
+      default: true,
     }
   },
   data() {

@@ -35,7 +35,7 @@
               <el-link
                 type="info"
                 style="margin-left: 5px; font-size: 18px; cursor:pointer;"
-                @click="openTab('./options.html')">
+                @click="$open('./options.html')">
                 <i class="el-icon-s-tools"></i>
               </el-link>
             </el-option>
@@ -193,11 +193,6 @@ export default {
     History,
   },
   methods: {
-    openTab: function(url) {
-      chrome.tabs.create({
-        url: url
-      });
-    },
     load() {
       this.workspaces[this.activeWorkspace].list.push(...[{
         "name":"加载的",
@@ -325,6 +320,8 @@ export default {
   mounted() {
     // todo
     window.vue = this;
+    // this.$alert('ee');
+    // this.$tt('ees')
 
     this.config = config;
 

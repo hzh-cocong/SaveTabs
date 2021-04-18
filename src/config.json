@@ -2,11 +2,15 @@
     "list_font_color": "#000000",
     "list_background_color": "#ffffff",
     "list_state_color": "#339966",
+    "list_keymap_color": "#0066CC",
     "list_font_size": 20,
+    "list_state_size": 12,
+    "list_keymap_size": 16,
 
     "list_focus_background_color": "#7497de",
     "list_focus_font_color": "#ffffff",
     "list_focus_state_color": "#33FF66",
+    "list_focus_keymap_color": "#33FF66",
 
     "list_current_background_color": "#c0c4cc",
     "list_current_font_color": "#ffffff",
@@ -19,5 +23,6 @@
     "item_height": 50,
     "item_show_count": 7,
 
-    "width": 500
+    "width": 500,
+    "background_color": "#ffffff"
 }

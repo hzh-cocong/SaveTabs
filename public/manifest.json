@@ -18,6 +18,16 @@
   },
   "options_page": "options.html",
   "offline_enabled": true,
+  "commands": {
+    "open-window-manager": {
+      "description": "Open Window Manager",
+      "suggested_key": {
+          "default": "Ctrl+M",
+          "mac": "Command+M"
+      }
+    }
+  },
+  "content_security_policy": "https://s2.googleusercontent.com chrome://favicon;",
   "permissions": [
     "tabs",
     "storage",

@@ -103,6 +103,9 @@ export default {
     mouseStart: function (newVal, oldVal) {
       console.log('List:mouseStart', newVal, oldVal)
     },
+    list: function (newVal, oldVal) {
+      console.log('List:List', newVal, oldVal)
+    },
   },
   methods: {
     mouseSelect(index) {

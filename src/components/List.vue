@@ -160,7 +160,7 @@ export default {
         self.mouseStart = true;
         this.removeEventListener('mousemove', mousemovewatch);
         self.$emit('change', self.mouseIndex);
-        document.body.style.cursor = "default";
+        // document.body.style.cursor = "default";
       })
     },
   },
@@ -168,7 +168,7 @@ export default {
     // todo
     window.list = this;
 
-    document.body.style.cursor = "none";
+    // document.body.style.cursor = "none";
     this.w.index = 0;
     this.mouseRealMoveRegister();
 

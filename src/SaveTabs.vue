@@ -11,7 +11,8 @@
         :placeholder="lang('searchTip')"
         v-model="keyword"
         autofocus="autofocus"
-        suffix-icon="el-icon-search"
+        :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
+        :clearable="true"
         @keydown.down.native.prevent="selectDelay('down')"
         @keydown.up.native.prevent="selectDelay('up')"
         @keydown.left.native.prevent="selectDelay('left')"
@@ -49,6 +50,7 @@
         <el-button
           type="default"
           icon="el-icon-download"
+          @click="add"
           ></el-button>
         <el-button
           type="default"
@@ -201,6 +203,12 @@ export default {
     History,
   },
   methods: {
+    add() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
+    },
     load() {
       this.workspaces[this.activeWorkspace].list.push(...[{
         "name":"加载的",

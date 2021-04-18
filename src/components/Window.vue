@@ -63,7 +63,7 @@
               <el-badge
                 is-dot
                 class="refresh"
-                v-if="isCurrentWindowChange"
+                v-if="isCurrentWindowChange && item.windowId == currentWindowId"
                 :style="{ borderColor: config.list_current_focus_state_color } " >
                 <el-button type="warning" icon="el-icon-refresh" circle @click.stop="updateGroup"></el-button>
               </el-badge>
@@ -128,7 +128,7 @@
 
 <script>
 import List from './List.vue'
-// import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
@@ -151,7 +151,7 @@ export default {
 
       page: 0,
       scrollDisabled: false,
-      keywords: '',
+      keyword: '',
 
       currentIndex: 0,
       currentWindowId: -1,
@@ -165,24 +165,21 @@ export default {
     List,
   },
   methods: {
-    test() {
-      return true;
-    },
     up() {
       this.currentIndex--;
     },
     down() {
       this.currentIndex++;
     },
-    search(keywords) {
-      if(this.keywords == keywords.trim()) return;
-      this.keywords = keywords.trim();
-      console.error('search', keywords, keywords.length);
+    search(keyword) {
+      if(keyword != undefined && this.keyword == keyword.trim()) return;
+      if(keyword != undefined) this.keyword = keyword.trim();
+      console.error('search', keyword+'|');
 
       // 查找
       let filterList = this.storageList.filter(group => {
         let name = group.name.toUpperCase();
-        for(let keyword of keywords.trim().toUpperCase().split(/\s+/)) {
+        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
           if(name.indexOf(keyword) == -1) {
             return false;
           }
@@ -204,9 +201,13 @@ export default {
       // 列表赋值
       this.cacheList = currentList.concat(openedList).concat(closeList);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.currentIndex = 0;
       this.page = 1;
       this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
+      if(keyword == undefined && this.isInCurrentWindow && this.list.length > 1) {
+        this.currentIndex = 1;
+      } else {
+        this.currentIndex = 0;
+      }
 
       console.warn('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
     },
@@ -226,6 +227,79 @@ export default {
         this.scrollDisabled = true;
       }
     },
+    add(callback) {
+      // 当前窗口只能有一个
+      if(this.isInCurrentWindow) {
+        this.$message({
+          type: 'warning',
+          message: this.isCurrentWindowChange ? this.lang('saved2') : this.lang('saved'),
+          offset: 69,
+          duration: 2000,
+        });
+        return;
+      }
+      // 窗口名不允许为空
+      if(this.keyword == '') {
+        this.$message({
+          type: 'warning',
+          message: this.lang('emptyGroupName'),
+          offset: 69,
+          duration: 2000,
+        });
+        return;
+      }
+      // 窗口名不允许重复
+      for(let group of this.storageList) {
+        if(group.name == this.keyword) {
+          this.$message({
+            type: 'warning',
+            message: this.lang('emptyGroupName'),
+            offset: 69,
+            duration: 2000,
+          });
+          return;
+        }
+      }
+
+      new Promise((resolve) => {
+        // 获取当前窗口的所有标签
+        chrome.tabs.query({
+            currentWindow: true
+        }, tabs => {
+          console.log('tabs', tabs);
+          resolve(tabs)
+        })
+      }).then((tabs) => {
+        let ts = [];
+        tabs.forEach(tab => {
+          ts.push({
+            url: tab.url,
+            title: tab.title,
+          });
+        })
+        let id = nanoid();
+        let currentWindowId = tabs[0].windowId;
+        this.storageList.unshift({
+          name: this.keyword,
+          tabs: ts,
+          windowId: currentWindowId,
+          id: id,
+        });
+        console.error('add', this.storageList);
+        return currentWindowId;
+      }).then((currentWindowId) => {
+        console.error('currentWindowId', currentWindowId)
+        // 保存数据
+        chrome.storage.local.set({list: this.storageList}, () => {
+          this.currentWindowId = currentWindowId;
+          this.activeWindows[this.currentWindowId] = true;
+          this.isCurrentWindowChange = false;
+          this.isInCurrentWindow = true;
+          // this.search();
+          callback();
+        });
+      })
+    }
   },
   mounted() {
     // todo
@@ -292,46 +366,13 @@ export default {
     }).then((windows) => {
       console.error('window-windows2', windows)
 
-      // 处理所有窗口数据
-      let map = {}; // window.focused 不准确
+      // 保存活跃的窗口
       for(let window of windows) {
-        map[window.id] = this.currentWindowId == window.id;
+        this.activeWindows[ window.id ] = true;
       }
 
-      // 排序处理
-      let openedList = this.storageList.filter(group => {
-        if(map[ group.windowId ] != undefined && map[ group.windowId ] == false) {
-          // group.isActive = true;
-          this.activeWindows[ group.windowId ] = true;
-          return true;
-        }
-        return false;
-      });
-      let closeList = this.storageList.filter(group => {
-        if(map[ group.windowId ] == undefined) {
-          // group.isActive = false;
-          this.activeWindows[ group.windowId ] = false;
-          return true;
-        }
-        return false;
-      });
-      let currentList = this.storageList.filter(group => {
-        if(map[ group.windowId ] != undefined && map[ group.windowId ] == true) {
-          // group.isActive = true;
-          this.activeWindows[ group.windowId ] = true
-          return true;
-        }
-        return false;
-      });
-
-      // 列表赋值
-      this.cacheList = currentList.concat(openedList).concat(closeList);
-      this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.page = 1;
-      if(this.cacheList.length <= this.config.list_page_count) this.scrollDisabled = true;
-
-      // 命中第二行
-      if(this.storageList.length > 1 && this.isInCurrentWindow) this.currentIndex = 1;
+      // 更新列表
+      this.search();
     })
   }
 }

@@ -17,6 +17,7 @@
         @keydown.up.native.prevent="selectDelay('up')"
         @keydown.left.native.prevent="selectDelay('left')"
         @keydown.right.native.prevent="selectDelay('right')"
+        @keydown.native.enter="openWindow"
         @input="search">
         <template slot="prepend">
           <el-select
@@ -326,7 +327,8 @@ export default {
 
 
     openWindow() {
-
+      // alert('ss')
+      this.$refs.workspaces[this.activeWorkspace].openWindow();
     },
     search: function() {
       this.$refs.workspaces[this.activeWorkspace].search(this.keyword);

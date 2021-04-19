@@ -372,6 +372,7 @@ export default {
       })
     },
     openWindow() {
+      // alert('ss')
       let group = this.list[ this.currentIndex];
       let urls = group.tabs.map(tab => tab['url']);
 
@@ -449,21 +450,13 @@ export default {
         type: 'warning',
         center: true
       }).then(() => {
-
         let index = this.getStorageIndex();
-
-        // this.storageList.splice(index , 1);
-        let storageList = this.storageList;
-        storageList.splice(index , 1);
-
-        chrome.storage.local.set({list: storageList}, () => {
+        this.storageList.splice(index , 1);
+        chrome.storage.local.set({list: this.storageList}, () => {
           if(group.windowId == this.currentWindowId) {
             this.isInCurrentWindow = false;
           }
-
-          this.storageList.splice(index , 1);
-          alert('ss')
-          // this.search();
+          this.search();
         });
       }).catch(() => {
       });
@@ -568,11 +561,12 @@ export default {
       }
       for(let i in currentGroup.tabs) {
         let tabs = currentGroup.tabs[i];
-        if(tabs.url != window.tabs[i].url
-          || tabs.title != window.tabs[i].title
-          || (window.tabs[i].favIconUrl != undefined
-            && window.tabs[i].favIconUrl != ''
-            && tabs.icon != window.tabs[i].favIconUrl)) {
+        if(window.tabs[i].status == 'complete'
+          && ( tabs.url != window.tabs[i].url
+            || tabs.title != window.tabs[i].title
+            || (window.tabs[i].favIconUrl != undefined
+              && window.tabs[i].favIconUrl != ''
+              && tabs.icon != window.tabs[i].favIconUrl))) {
           this.isCurrentWindowChange = true;
           break;
         }

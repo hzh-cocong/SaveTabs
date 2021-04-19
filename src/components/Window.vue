@@ -1,11 +1,34 @@
 <template>
   <div>
+
+  <el-alert
+    type="info"
+    :closable="false"
+    show-icon
+    v-if="list.length == 0"
+    style="margin: 0 10px;"
+    :style="{ width: (config.width-20)+'px' }">
+    <div
+      slot="title"
+      style="display:flex;align-items: center;"
+      :style="{ width: (config.width-70)+'px' }">
+      <div style="flex:1;">
+        <div>{{ storageList.length == 0 ? lang('noResult') : lang('noResult2') }}</div>
+        <div v-if="storageList.length > 0">{{ '当前共存储 '+this.storageList.length+' 个窗口' }}</div>
+      </div>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
+    </div>
+  </el-alert>
+
   <list
     :list="list"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
+    ref="list"
     @load="load">
     <template #default="{ index, item, isActive, isSelected }">
       <div
@@ -26,7 +49,7 @@
                               ? config.list_focus_font_color
                               : config.list_font_color)
         }"
-        @click="currentIndex=index;openWindow()">
+        @click="currentIndex=index;_openWindow()">
 
         <span
           class="left"
@@ -124,14 +147,21 @@
                     ? config.list_focus_keymap_color
                     : config.list_focus_keymap_color }">↩</span>
             <span
-              v-else
+              v-else-if="platform != ''
+                      && index-$refs.list.scrollLines+1 <= config.item_show_count
+                      && index-$refs.list.scrollLines+1 <= 9
+                      && index-$refs.list.scrollLines+1 >= 1"
               :style="{
                 fontSize: activeWindows[item.windowId]
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
                 color: activeWindows[item.windowId]
                     ? config.list_state_color
-                    : config.list_keymap_color }">{{ '⌘'+(index+1) }}</span>
+                    : config.list_keymap_color }">{{
+                      platform == 'Win'
+                      ?  '⌃'+(index-$refs.list.scrollLines+1)
+                      : '⌥'+(index-$refs.list.scrollLines+1)
+                      }}</span>
           </div>
         </div>
       </div>
@@ -207,6 +237,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    platform: {
+      type: String,
+      required: false,
+      default: '',
     }
   },
   data() {
@@ -237,6 +272,12 @@ export default {
     List,
   },
   methods: {
+    set(i) {
+      console.log('set', i);
+      console.log('set2', 3)
+      this.currentIndex = i;
+
+    },
     up() {
       this.currentIndex--;
     },
@@ -246,7 +287,7 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.error('search', keyword+'|');
+      console.log('search', keyword+'|');
 
       // 查找
       let filterList = this.storageList.filter(group => {
@@ -306,7 +347,7 @@ export default {
           type: 'warning',
           message: this.isCurrentWindowChange ? this.lang('saved2') : this.lang('saved'),
           offset: 69,
-          duration: 200000,
+          duration: 2000,
           customClass: 'window-message-box',
         });
         return;
@@ -316,6 +357,7 @@ export default {
         this.$message({
           type: 'warning',
           message: this.lang('emptyGroupName'),
+          customClass: 'window-message-box',
           offset: 69,
           duration: 2000,
         });
@@ -327,6 +369,7 @@ export default {
           this.$message({
             type: 'warning',
             message: this.lang('groupNameRepeat'),
+            customClass: 'window-message-box',
             offset: 69,
             duration: 2000,
           });
@@ -359,10 +402,10 @@ export default {
           windowId: currentWindowId,
           id: id,
         });
-        console.error('add', this.storageList);
+        console.log('add', this.storageList);
         return currentWindowId;
       }).then((currentWindowId) => {
-        console.error('currentWindowId', currentWindowId)
+        console.log('currentWindowId', currentWindowId)
         // 保存数据
         chrome.storage.local.set({list: this.storageList}, () => {
           this.currentWindowId = currentWindowId;
@@ -374,7 +417,22 @@ export default {
         });
       })
     },
-    openWindow() {
+    openWindow(index) {
+      if(index == undefined) {
+        this._openWindow();
+        return;
+      }
+
+      let currentIndex = index+this.$refs.list.scrollLines-1;
+      if(currentIndex >= this.list.length) {
+        return;
+      }
+      console.log('openWindow', currentIndex);
+
+      this.currentIndex = currentIndex;
+      this._openWindow();
+    },
+    _openWindow() {
       // alert('ss')
       let group = this.list[ this.currentIndex];
       let urls = group.tabs.map(tab => tab['url']);
@@ -423,6 +481,7 @@ export default {
       //     message: this.lang('emptyGroupName'),
       //     offset: 12,
       //     duration: 2000,
+      //     customClass: 'window-message-box',
       //   });
       //   return;
       // }
@@ -435,6 +494,7 @@ export default {
             message: this.lang('groupNameRepeat'),
             offset: 12,
             duration: 2000,
+            customClass: 'window-message-box',
           });
           return;
         }
@@ -528,7 +588,7 @@ export default {
       // 获取本地数据
       chrome.storage.local.get({'list': []}, items => {
         this.storageList = items.list;
-        console.error('window-list', items)
+        console.log('window-list', items)
         resolve()
       });
     }).then(() => {
@@ -536,7 +596,7 @@ export default {
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
             this.currentWindowId = window.id;
-            console.error('window-window', window)
+            console.log('window-window', window)
             resolve(window)
         })
       })
@@ -582,12 +642,12 @@ export default {
       return new Promise((resolve) => {
         // 判断窗口是否已打开
         chrome.windows.getAll({}, windows => {
-          console.error('window-windows', windows)
+          console.log('window-windows', windows)
           resolve(windows);
         })
       })
     }).then((windows) => {
-      console.error('window-windows2', windows)
+      console.log('window-windows2', windows)
 
       // 保存活跃的窗口
       for(let window of windows) {

@@ -117,7 +117,13 @@ export default {
     mouseSelect(index) {
       console.warn('mouseSelect:'+this.mouseStart);
       // 防溢出
-      let scrollLines = this.$el.scrollTop/this.itemHeight;
+      // 无限滚动会出现浮点数的情况
+      let scrollLines;
+      if(self.w.flag == false) { // 向下滚动
+        scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
+      } else {
+        scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
+      }
       if(index < scrollLines)
         index = scrollLines;
       else if(index >= scrollLines+this.itemShowCount)
@@ -130,7 +136,7 @@ export default {
       if(this.w.index == 0) this.w.index = 2;
     },
     load() {
-      console.error('load', arguments);
+      console.log('load', arguments);
       this.$emit('load');
     },
     mouseRealMoveRegister() {

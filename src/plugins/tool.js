@@ -22,7 +22,7 @@ list88 = list88.map((item) => {
 list88 = list88.filter((item) => {
   return true || item.name=='动漫' || item.name=='头条' || item.name=='OneTab';
 })
-console.error('list88', list88)
+console.log('list88', list88)
 
 const tool = {
   install(Vue) {
@@ -74,7 +74,7 @@ const tool = {
         },
       },
       // 方便测试
-      //*
+      /*
       mounted: function() {
         // console.warn('start')
         // console.log(this);

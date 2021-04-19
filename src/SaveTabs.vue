@@ -17,7 +17,8 @@
         @keydown.up.native.prevent="selectDelay('up')"
         @keydown.left.native.prevent="selectDelay('left')"
         @keydown.right.native.prevent="selectDelay('right')"
-        @keydown.native.enter="openWindow"
+        @keydown.enter.native="openWindow"
+        @keydown.native="keydown"
         @input="search">
         <template slot="prepend">
           <el-select
@@ -94,6 +95,7 @@
           :config="config"
           :isLoad="isLoad"
           :keyword="keyword"
+          :platform="platform"
           ref="workspaces"></component>
       </el-carousel-item>
     </el-carousel>
@@ -130,6 +132,7 @@ export default {
       isLoad: false,
       config: {},
       themeMode: 'white',
+      platform: '',
     }
   },
   components: {
@@ -138,6 +141,28 @@ export default {
     History,
   },
   methods: {
+    keydown(event) {
+      console.warn('key', arguments)
+      console.warn('key', arguments[0].key)
+
+      if(this.platform == '') return;
+
+      let index = event.keyCode-49+1;
+      if(index <= 0 || index > 9) return;
+
+      if(this.platform == 'Mac' && event.altKey == true) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        this.$refs.workspaces[this.activeWorkspace].openWindow(index);
+      } else if(this.platform == 'Win' && event.ctrlKey == true) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        this.$refs.workspaces[this.activeWorkspace].openWindow(index);
+      }
+    },
+
     changeThemeMode() {
       this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
       document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
@@ -183,6 +208,14 @@ export default {
   mounted() {
     // todo
     window.vue = this;
+
+    if(navigator.platform.indexOf("Win") == 0) {
+      this.platform = 'Win';
+    } else if(navigator.platform.indexOf("Mac") == 0) {
+      this.platform = 'Mac';
+    }
+    console.log('platform', this.platform);
+    console.log('navigator', navigator);
 
     this.config = config;
     chrome.storage.sync.get({'config': {}}, items => {

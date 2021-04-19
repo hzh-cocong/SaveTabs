@@ -18,15 +18,6 @@
   },
   "options_page": "options.html",
   "offline_enabled": true,
-  "commands": {
-    "open-window-manager": {
-      "description": "Open Window Manager",
-      "suggested_key": {
-          "default": "Ctrl+M",
-          "mac": "Command+M"
-      }
-    }
-  },
   "permissions": [
     "tabs",
     "storage",

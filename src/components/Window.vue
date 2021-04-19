@@ -141,13 +141,15 @@
   <el-dialog
     :visible.sync="groupVisible"
     :append-to-body="true"
-    width="400px"
+    width="80%"
     class="group">
     <div slot="title" style="width: 100%;display:flex;">
       <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
     </div>
-    <ul class="group-list">
+    <ul
+      class="group-list"
+      :style="{ height: (30*config.item_show_count)+'px' }">
       <li class="group-list-item" v-for="(tab, index) in group.tabs" :key="index">
 
         <el-image
@@ -304,7 +306,8 @@ export default {
           type: 'warning',
           message: this.isCurrentWindowChange ? this.lang('saved2') : this.lang('saved'),
           offset: 69,
-          duration: 2000,
+          duration: 200000,
+          customClass: 'window-message-box',
         });
         return;
       }
@@ -448,7 +451,8 @@ export default {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
-        center: true
+        center: true,
+        customClass: 'window-message-box'
       }).then(() => {
         let index = this.getStorageIndex();
         this.storageList.splice(index , 1);
@@ -663,8 +667,6 @@ export default {
 .group .group-list {
   padding: 0;
   margin: 0;
-  min-height: 90px;
-  max-height: 210px;
   overflow: auto;
   font-size: 15px;
 }
@@ -681,7 +683,7 @@ export default {
   color: #1288ff;
 }
 .group .tab-name{
-  font-size:15px;
+  font-size:14px;
   margin-left: 10px;
   cursor: pointer;
   flex: 1;
@@ -689,5 +691,11 @@ export default {
   text-overflow:ellipsis;
   white-space:nowrap;
   color: #4682BE;
+}
+
+.window-message-box {
+  width: 80%;
+  min-width: auto !important;
+  max-width: 80% !important;
 }
 </style>

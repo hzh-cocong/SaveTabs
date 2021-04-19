@@ -118,12 +118,7 @@ export default {
       console.warn('mouseSelect:'+this.mouseStart);
       // 防溢出
       // 无限滚动会出现浮点数的情况
-      let scrollLines;
-      if(self.w.flag == false) { // 向下滚动
-        scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
-      } else {
-        scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
-      }
+      let scrollLines = parseInt(this.$el.scrollTop/this.itemHeight);
       if(index < scrollLines)
         index = scrollLines;
       else if(index >= scrollLines+this.itemShowCount)
@@ -185,16 +180,24 @@ export default {
     self.w.flag = true;
     self.w.speed = 100;
     this.$el.addEventListener("scroll", function (e) {
+
+      // 真实奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
+      console.log('qq  flag', self.w.t1 , e.target.scrollTop)
+      self.w.flag = self.w.t1 < e.target.scrollTop
+      self.w.t1 = e.target.scrollTop;
+
       console.log("scroll")
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
         self.w.t2 = e.target.scrollTop;
         // console.log('scroll-timeout', self.w.t2, self.w.t1)
         if(self.w.t2 == self.w.t1){
+          console.log('flag-------------', '结束');
           if(e.target.scrollTop%self.itemHeight != 0) {
             // console.log('scroll-update1', e.target.scrollTop)
             self.w.speed = 1;
-            if(self.w.flag) { // 向下滚动
+            console.log('flag=======', self.w.flag, self.w.flag == true ? '向上' : '向下');
+            if(self.w.flag) { // 向上滚动
               e.target.scrollTop += 1;
             } else {
               e.target.scrollTop -= 1;
@@ -215,9 +218,6 @@ export default {
           }
         }
       }, self.w.speed);
-
-      self.w.flag = self.w.t1 < e.target.scrollTop
-      self.w.t1 = e.target.scrollTop;
     })
   }
 }

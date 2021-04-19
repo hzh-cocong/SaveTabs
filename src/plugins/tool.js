@@ -34,27 +34,44 @@ const tool = {
 
           //return chrome.i18n.getMessage(key);
         },
-        // getIconSize: function(size) {
-        //   if(size <= 16) return 16;
-        //   if(size >= 256) return 256;
+        getIconSize: function(size) {
+          if(size <= 16) return 16;
+          if(size >= 256) return 256;
 
-        //   return (2**Math.ceil(Math.log(size/16)/Math.log(2)))*16;
-        // },
-        // getIcon(url, size) {
-        //   if(url == '') return '';
+          return (2**Math.ceil(Math.log(size/16)/Math.log(2)))*16;
+        },
+        getIcon(icon, url, size) {
+          // 网址空直接返回空
+          if(url == '' || url == undefined) return '';
 
-        //   size = this.getIconSize(size);
-        //   let res = url.match(/([a-zA-z-]+):\/\/[^/]+/);
-        //   let icon = '';
-        //   if(res != null) {
-        //     if(res[1] == 'http' || res[1] == 'https') {
-        //       icon = "https://s2.googleusercontent.com/s2/favicons?sz="+size+"&domain="+res[0];
-        //     } else {
-        //       icon = "chrome://favicon/size/"+size+"/"+res[0];
-        //     }
-        //   }
-        //   return icon;
-        // },
+          size = this.getIconSize(size);
+
+          // 图标为空或者是插件图标则返回缓存图标
+          if(icon == '' || icon == undefined || icon.indexOf("chrome-extension://") > -1) {
+            let res = url.match(/[a-zA-z-]+:\/\/[^/]+/);
+            return res ? "chrome://favicon/size/"+size+"/"+res[0] : '';
+          }
+
+          // 不安全的网址直接返回空
+          let res = url.match(/([a-zA-z-]+):\/\/[^/]+/);
+          if(res == null) return '';
+
+          // 不安全的网址直接返回空
+          if( ! (res[1] == 'http' || res[1] == 'https')) {
+            return  "chrome://favicon/size/"+size+"/"+res[0];
+          }
+
+          // 不安全的图标直接返回空
+          let res2 = icon.match(/([a-zA-z-]+):\/\/[^/]+/);
+          if(res2 == null) return '';
+
+          // 不安全的网址直接返回空
+          if( ! (res2[1] == 'http' || res2[1] == 'https')) {
+            return '';
+          }
+
+          return icon;
+        },
       },
       // 方便测试
       /*

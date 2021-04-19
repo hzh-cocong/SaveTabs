@@ -34,19 +34,15 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            :src="isLoad ? getIcon(item.tabs[0].url, config.item_height-20) : ''"
+            :src="isLoad ? getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20) : ''"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
             <div slot="error" class="image-slot" v-if="isLoad">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              <!-- <img :src="item.tabs[0].icon2" style="width:100%; height: 100%;" /> -->
             </div>
-            <div
-              slot="placeholder"
-              v-show="isLoad"
-              style="background-color:#c0c4cb;text-align:center;border-radius: 3px;color: white;">
-              <i class="el-icon-loading" :style="{ fontSize: (config.item_height-20)+'px' }"></i>
+            <div slot="placeholder" class="image-slot" v-if="isLoad">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
           </el-image>
         </span>
@@ -155,17 +151,15 @@
       <li class="group-list-item" v-for="(tab, index) in group.tabs" :key="index">
 
         <el-image
-          :src="getIcon(tab.url, 20)"
+          :src="getIcon(tab.icon, tab.url, 20)"
           style="width:20px; height:20px;"
           fit="cover"
           lazy>
           <div slot="error" class="image-slot">
             <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
-          <div
-            slot="placeholder"
-            style="background-color:#c0c4cb;text-align:center;border-radius: 3px;color: white;width:100%;height:100%;">
-            <i class="el-icon-loading"></i>
+          <div slot="placeholder" class="image-slot">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
         </el-image>
 
@@ -349,6 +343,7 @@ export default {
         let ts = [];
         tabs.forEach(tab => {
           ts.push({
+            icon: tab.favIconUrl,
             url: tab.url,
             title: tab.title,
           });
@@ -454,15 +449,54 @@ export default {
         type: 'warning',
         center: true
       }).then(() => {
+
         let index = this.getStorageIndex();
-        this.storageList.splice(index , 1);
-        chrome.storage.local.set({list: this.storageList}, () => {
+
+        // this.storageList.splice(index , 1);
+        let storageList = this.storageList;
+        storageList.splice(index , 1);
+
+        chrome.storage.local.set({list: storageList}, () => {
           if(group.windowId == this.currentWindowId) {
             this.isInCurrentWindow = false;
           }
-          this.search();
+
+          this.storageList.splice(index , 1);
+          alert('ss')
+          // this.search();
         });
       }).catch(() => {
+      });
+    },
+    updateGroup: function() {
+      let group = this.list[this.currentIndex];
+      this.$confirm(this.lang('changeConfirm')+' ('+group.name+') ?', this.lang('tip'), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true
+      }).then(() => {
+        chrome.tabs.query({
+          currentWindow: true
+        }, tabs => {
+          let ts = [];
+          tabs.forEach(tab => {
+            ts.push({
+              url: tab.url,
+              title: tab.title,
+              icon: tab.favIconUrl,
+            });
+          })
+
+          let index = this.getStorageIndex();
+          this.storageList[index].tabs = ts;
+          chrome.storage.local.set({list: this.storageList}, () => {
+            this.isCurrentWindowChange = false;
+            // this.search();
+          });
+        })
+      }).catch(() => {
+
       });
     },
 
@@ -535,7 +569,10 @@ export default {
       for(let i in currentGroup.tabs) {
         let tabs = currentGroup.tabs[i];
         if(tabs.url != window.tabs[i].url
-          || tabs.title != window.tabs[i].title) {
+          || tabs.title != window.tabs[i].title
+          || (window.tabs[i].favIconUrl != undefined
+            && window.tabs[i].favIconUrl != ''
+            && tabs.icon != window.tabs[i].favIconUrl)) {
           this.isCurrentWindowChange = true;
           break;
         }

@@ -27,7 +27,6 @@
       }
     }
   },
-  "content_security_policy": "https://s2.googleusercontent.com chrome://favicon;",
   "permissions": [
     "tabs",
     "storage",

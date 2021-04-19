@@ -1,4 +1,5 @@
 <template>
+  <div>
   <list
     :list="list"
     :itemHeight="config.item_height"
@@ -57,15 +58,31 @@
         <div class="right">
           <div v-if="isActive || item.windowId == currentWindowId || activeWindows[item.windowId]">
             <div v-if="isActive">
-              <el-button type="success" icon="el-icon-folder-opened" circle @click.stop="openGroup"></el-button>
-              <el-button type="primary" icon="el-icon-edit" circle @click.stop="showGroupNameDialog"></el-button>
-              <el-button type="danger" icon="el-icon-delete" circle @click.stop="deleteGroup"></el-button>
+              <el-button
+                type="success"
+                icon="el-icon-folder-opened"
+                circle
+                @click.stop="openGroup"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                circle
+                @click.stop="showGroupNameDialog"></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                @click.stop="deleteGroup"></el-button>
               <el-badge
                 is-dot
                 class="refresh"
                 v-if="isCurrentWindowChange && item.windowId == currentWindowId"
                 :style="{ borderColor: config.list_current_focus_state_color } " >
-                <el-button type="warning" icon="el-icon-refresh" circle @click.stop="updateGroup"></el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-refresh"
+                  circle
+                  @click.stop="updateGroup"></el-button>
               </el-badge>
             </div>
             <div
@@ -124,6 +141,59 @@
       </div>
     </template>
   </list>
+
+  <el-dialog
+    :visible.sync="groupVisible"
+    :append-to-body="true"
+    width="400px"
+    class="group">
+    <div slot="title" style="width: 100%;display:flex;">
+      <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link>
+      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
+    </div>
+    <ul class="group-list">
+      <li class="group-list-item" v-for="(tab, index) in group.tabs" :key="index">
+
+        <el-image
+          :src="getIcon(tab.url, 20)"
+          style="width:20px; height:20px;"
+          fit="cover"
+          lazy>
+          <div slot="error" class="image-slot">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div
+            slot="placeholder"
+            style="background-color:#c0c4cb;text-align:center;border-radius: 3px;color: white;width:100%;height:100%;">
+            <i class="el-icon-loading"></i>
+          </div>
+        </el-image>
+
+        <span class="tab-name" type="default" @click="$open(tab.url)">{{ tab.title }}</span>
+
+      </li>
+    </ul>
+  </el-dialog>
+
+  <el-dialog
+    :title="lang('updateGroupName')"
+    :visible.sync="groupChangeVisible"
+    :append-to-body="true"
+    :center="false"
+    width="80%">
+    <el-input
+      v-model="groupName"
+      :placeholder="lang('groupNameInput')"></el-input>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="groupChangeVisible = false">{{ lang('cancel' )}}</el-button>
+      <el-button
+        type="primary"
+        @click="changeGroupName"
+        :disabled="groupName==''">{{ lang('sure' )}}</el-button>
+    </span>
+  </el-dialog>
+
+  </div>
 </template>
 
 <script>
@@ -159,6 +229,12 @@ export default {
 
       isCurrentWindowChange: false,
       isInCurrentWindow: false,
+
+      groupVisible: false,
+      group: {},
+
+      groupChangeVisible: false,
+      groupName: '',
     }
   },
   components: {
@@ -253,7 +329,7 @@ export default {
         if(group.name == this.keyword) {
           this.$message({
             type: 'warning',
-            message: this.lang('emptyGroupName'),
+            message: this.lang('groupNameRepeat'),
             offset: 69,
             duration: 2000,
           });
@@ -299,7 +375,119 @@ export default {
           callback();
         });
       })
-    }
+    },
+    openWindow() {
+      let group = this.list[ this.currentIndex];
+      let urls = group.tabs.map(tab => tab['url']);
+
+      // 窗口已打开，直接切换
+      if(this.activeWindows[group.windowId]) {
+        chrome.windows.update(group.windowId, { focused: true});
+
+        let index = this.getStorageIndex();
+        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        chrome.storage.local.set({list: this.storageList});
+
+        return;
+      }
+
+      // 打开新窗口
+      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        chrome.windows.create({
+          url: urls,
+        }, window => {
+          let index = this.getStorageIndex();
+          this.storageList[index].windowId = window.id;
+          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+          chrome.storage.local.set({list: this.storageList});
+        })
+
+        if(tabs[0].url == "chrome://newtab/") {
+          chrome.tabs.remove(tabs[0].id);
+        }
+      });
+    },
+    openGroup: function() {
+      this.group = this.list[this.currentIndex];
+      this.groupVisible = true;
+    },
+    showGroupNameDialog: function() {
+      this.group = this.list[this.currentIndex];
+      this.groupChangeVisible = true;
+      this.groupName = this.group.name;
+    },
+    changeGroupName: function() {
+      this.groupName = this.groupName.trim();
+      // if(this.groupName == '') {
+      //   this.$message({
+      //     type: 'warning',
+      //     message: this.lang('emptyGroupName'),
+      //     offset: 12,
+      //     duration: 2000,
+      //   });
+      //   return;
+      // }
+
+      let index = this.getStorageIndex();
+      for(let i in this.storageList) {
+        if(i != index && this.storageList[i].name == this.groupName) {
+          this.$message({
+            type: 'warning',
+            message: this.lang('groupNameRepeat'),
+            offset: 12,
+            duration: 2000,
+          });
+          return;
+        }
+      }
+
+      this.storageList[index].name = this.groupName;
+      chrome.storage.local.set({list: this.storageList}, () => {
+        this.groupChangeVisible = false;
+      });
+    },
+    deleteGroup() {
+      let group = this.list[this.currentIndex];
+      this.$confirm(this.lang('deleteConfirm')+' ('+group.name+') ?', this.lang('tip'), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true
+      }).then(() => {
+        let index = this.getStorageIndex();
+        this.storageList.splice(index , 1);
+        chrome.storage.local.set({list: this.storageList}, () => {
+          if(group.windowId == this.currentWindowId) {
+            this.isInCurrentWindow = false;
+          }
+          this.search();
+        });
+      }).catch(() => {
+      });
+    },
+
+    getStorageIndex() {
+      let group = this.list[ this.currentIndex ];
+      for(let i in this.storageList) {
+        if(this.storageList[i].id == group.id) {
+          return i;
+        }
+      }
+    },
+    download: function() {
+      let group = this.list[this.currentIndex];
+      let filename = group.name + '.tabs.html';
+
+      let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
+      if( ! patt.test(filename)) {
+        filename = 'InvalidGroupName.tabs.html';
+      }
+
+      chrome.runtime.sendMessage({
+          filename: filename,
+          tabs: group.tabs,
+      });
+    },
   },
   mounted() {
     // todo
@@ -421,11 +609,54 @@ export default {
 .el-badge.refresh {
     margin-left: 10px;
 }
+
+
 </style>
 
 <style>
 .el-badge__content {
     background-color: inherit !important;
     border-color: inherit !important;
+}
+
+.group .el-dialog__header {
+  padding: 10px 53px 0 16px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.group .el-dialog__body{
+  padding: 10px 10px 10px 10px !important;
+}
+.group .group-list {
+  padding: 0;
+  margin: 0;
+  min-height: 90px;
+  max-height: 210px;
+  overflow: auto;
+  font-size: 15px;
+}
+.group .group-list-item {
+  padding: 5px;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
+}
+.group .group-list-item span:hover {
+  /* color: #409eff; */
+  text-decoration: underline;
+  color: #1288ff;
+}
+.group .tab-name{
+  font-size:15px;
+  margin-left: 10px;
+  cursor: pointer;
+  flex: 1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color: #4682BE;
 }
 </style>

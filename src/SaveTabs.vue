@@ -26,22 +26,37 @@
             @mouseenter.native="$refs['select'].$el.click()"
             ref="select"
             style="width:80px;">
-            <el-option
-              v-for="(workspace, index) in workspaces"
-              :label="workspace.title"
-              :value="index"
-              :key="index"></el-option>
-            <el-option
-              :value="activeWorkspace"
-              :disabled="true"
-              style="cursor: default">
-              <el-link
-                type="info"
-                style="margin-left: 5px; font-size: 18px; cursor:pointer;"
-                @click="$open('./options.html')">
-                <i class="el-icon-s-tools"></i>
-              </el-link>
-            </el-option>
+            <el-option-group>
+              <el-option
+                v-for="(workspace, index) in workspaces"
+                :label="workspace.title"
+                :value="index"
+                :key="index"></el-option>
+            </el-option-group>
+            <el-option-group>
+              <el-option
+                :value="activeWorkspace"
+                :disabled="true"
+                style="cursor: default">
+                <el-link
+                  type="info"
+                  style="margin-left: 5px; font-size: 18px; cursor:pointer;"
+                  @click="changeThemeMode">
+                  <i :class="themeMode == 'white' ? 'el-icon-sunny' : 'el-icon-moon'"></i>
+                </el-link>
+              </el-option>
+              <el-option
+                :value="activeWorkspace"
+                :disabled="true"
+                style="cursor: default">
+                <el-link
+                  type="info"
+                  style="margin-left: 5px; font-size: 18px; cursor:pointer;"
+                  @click="$open('./options.html')">
+                  <i class="el-icon-s-tools"></i>
+                </el-link>
+              </el-option>
+            </el-option-group>
           </el-select>
         </template>
       </el-input>
@@ -190,6 +205,7 @@ export default {
       show: true,
       isLoad: false,
       config: {},
+      themeMode: 'white',
     }
   },
   watch: {
@@ -203,6 +219,10 @@ export default {
     History,
   },
   methods: {
+    changeThemeMode() {
+      this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
+      document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+    },
     add() {
       this.$refs.workspaces[this.activeWorkspace].add(()=>{
         this.keyword = '';

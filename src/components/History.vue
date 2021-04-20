@@ -88,36 +88,34 @@
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color}"></i>
           </div>
-          <div v-else>
-            <div>
-              <span
-                :style="{
-                  fontSize: config.list_state_size+'px',
-                  color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_state_color,
-                }">{{ timeShow(item.lastVisitTime) }}</span>
-            </div>
-            <div>
-              <span
-                v-if="isSelected"
-                :style="{
-                  fontSize: config.list_keymap_size+'px',
-                  color: config.list_focus_keymap_color,
-                }">↩</span>
-              <span
-                v-else-if="platform != ''
-                  && index-$refs.list.scrollLines+1 <= config.item_show_count
-                  && index-$refs.list.scrollLines+1 >= 1"
-                :style="{
-                  fontSize: config.list_keymap_size+'px',
-                  color: config.list_keymap_color,
-                }">{{
-                    platform == 'Win'
-                  ?  '⌃'+(index-$refs.list.scrollLines+1)
-                  : '⌥'+(index-$refs.list.scrollLines+1)
-                  }}</span>
-            </div>
+          <div v-if=" ! isActive">
+            <span
+              :style="{
+                fontSize: config.list_state_size+'px',
+                color: isSelected
+                  ? config.list_focus_state_color
+                  : config.list_state_color,
+              }">{{ timeShow(item.lastVisitTime) }}</span>
+          </div>
+          <div v-if=" ! isActive">
+            <span
+              v-if="isSelected"
+              :style="{
+                fontSize: config.list_keymap_size+'px',
+                color: config.list_focus_keymap_color,
+              }">↩</span>
+            <span
+              v-else-if="platform != ''
+                && index-$refs.list.scrollLines+1 <= config.item_show_count
+                && index-$refs.list.scrollLines+1 >= 1"
+              :style="{
+                fontSize: config.list_keymap_size+'px',
+                color: config.list_keymap_color,
+              }">{{
+                  platform == 'Win'
+                ?  '⌃'+(index-$refs.list.scrollLines+1)
+                : '⌥'+(index-$refs.list.scrollLines+1)
+                }}</span>
           </div>
         </div>
 
@@ -329,6 +327,12 @@ export default {
   text-align: left;
   overflow: hidden;
   cursor: default;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+  justify-content: center;
 }
 .item .title {
   overflow: hidden;

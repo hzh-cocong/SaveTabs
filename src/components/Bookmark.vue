@@ -14,6 +14,7 @@
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
         <div>{{ '不存在该标签' }}</div>
+        <div>{{ '当前共存储 '+originList.length+' 个标签' }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -48,7 +49,7 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            :src="isLoad ? getIcon(item.favIconUrl, item.url, config.item_height-20) : ''"
+            :src="isLoad ? getIcon('', item.url, config.item_height-20) : ''"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
@@ -62,51 +63,39 @@
         </span>
 
         <div class="main">
-          <span
+          <div
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">{{
                 item.title
-            }}</span>
-          <span
-            v-show=" ! isSelected"
+            }}</div>
+          <div
             class="sub-title"
             :style="{
-              fontSize: config.list_font_size+'px',
+              fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">{{ getDomain(item.url) }}</span>
+                    : config.list_explain_font_color }">{{ item.url }}</div>
         </div>
 
         <div class="right">
-          <div v-if="isActive">
-            <i
-              class="el-icon-close"
-              style="color:#FF0033;font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="closeTab(index)"
-              :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
-          </div>
-          <div v-else>
-            <span
-              v-if="isSelected"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_focus_keymap_color,
-              }">↩</span>
-            <span
-              v-else-if="platform != ''
-                && index-$refs.list.scrollLines+1 <= config.item_show_count
-                && index-$refs.list.scrollLines+1 >= 1"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_keymap_color,
-              }">{{
-                  platform == 'Win'
-                ?  '⌃'+(index-$refs.list.scrollLines+1)
-                : '⌥'+(index-$refs.list.scrollLines+1)
-                }}</span>
-          </div>
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+          <span
+            v-else-if="platform != ''
+              && index-$refs.list.scrollLines+1 <= config.item_show_count
+              && index-$refs.list.scrollLines+1 >= 1"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color,
+            }">{{
+                platform == 'Win'
+              ?  '⌃'+(index-$refs.list.scrollLines+1)
+              : '⌥'+(index-$refs.list.scrollLines+1)
+              }}</span>
         </div>
 
       </div>
@@ -120,7 +109,7 @@
 import List from './List.vue'
 
 export default {
-  name: 'Tab',
+  name: 'Bookmark',
   props: {
     config: {
       type: Object,
@@ -171,9 +160,11 @@ export default {
       console.log('search', keyword+'|');
 
       // 查找
-      let filterList = this.originList.filter(tab => {
-        let title = tab.title.toUpperCase();
-        let url = tab.url.toUpperCase();
+      let filterList = this.originList.filter(bookmark => {
+        // if(bookmark.url == undefined) return false;
+
+        let title = bookmark.title.toUpperCase();
+        let url = bookmark.url.toUpperCase();
         for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
           if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
             return false;
@@ -219,16 +210,8 @@ export default {
       this._openWindow();
     },
     _openWindow() {
-      let tab = this.list[ this.currentIndex ];
-      chrome.tabs.update(tab.id, { active: true }, () => {
-        chrome.windows.update(tab.windowId, { focused: true});
-      })
-    },
-    closeTab(index) {
-      let id = this.list[index].id;
-      chrome.tabs.remove(id, () => {
-        this.list.splice(index, 1);
-      })
+      let bookmark = this.list[ this.currentIndex ];
+      this.$open(bookmark.url);
     }
   },
   mounted() {
@@ -236,10 +219,24 @@ export default {
     window.h = this;
 
     // 查找
-    chrome.tabs.query({}, (tabs)=>{
-      console.log('tabs.query', tabs);
+    chrome.bookmarks.search({}, (bookmarks)=>{
+      console.log('bookmarks.query', bookmarks);
 
-      this.originList = tabs;
+      // 过滤掉文件夹
+      bookmarks = bookmarks.filter(bookmark => {
+        if(bookmark.url == undefined) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+
+      // 最近添加的排在最前面
+      bookmarks = bookmarks.sort((a, b)=>{
+        return b.dateAdded-a.dateAdded;
+      });
+
+      this.originList = bookmarks;
 
       // 更新列表
       this.search();
@@ -267,7 +264,12 @@ export default {
   text-align: left;
   overflow: hidden;
   cursor: default;
+
+  height: 100%;
   display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+  justify-content: center;
 }
 .item .title {
   overflow: hidden;
@@ -275,7 +277,8 @@ export default {
   white-space: nowrap;
 }
 .item .sub-title {
-  margin: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 .item .right {

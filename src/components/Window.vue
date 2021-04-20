@@ -14,7 +14,7 @@
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
         <div>{{ storageList.length == 0 ? lang('noResult') : lang('noResult2') }}</div>
-        <div v-if="storageList.length > 0">{{ '当前共存储 '+this.storageList.length+' 个窗口' }}</div>
+        <div v-if="storageList.length > 0">{{ '当前共存储 '+storageList.length+' 个窗口' }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>

@@ -109,6 +109,7 @@ import List from './components/List.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
 import Tab from './components/Tab.vue'
+import Bookmark from './components/Bookmark.vue'
 import config from './config.json'
 // import { nanoid } from 'nanoid'
 
@@ -128,7 +129,7 @@ export default {
   data() {
     return {
       keyword: '',
-      activeWorkspace: 2,//0,
+      activeWorkspace: 3,//0,
       workspaces: [],
       isLoad: false,
       config: {},
@@ -141,6 +142,7 @@ export default {
     Window,
     History,
     Tab,
+    Bookmark
   },
   methods: {
     keydown(event) {
@@ -266,6 +268,10 @@ export default {
     this.workspaces.push({
       'type': 'tab',
       'title': '标签',
+    });
+    this.workspaces.push({
+      'type': 'bookmark',
+      'title': '书签',
     });
 
     console.log(this.workspaces);

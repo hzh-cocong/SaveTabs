@@ -20,16 +20,13 @@ history = JSON.parse(history);
 history[0].lastVisitTime = new Date().getTime()-1000*8;
 history[0].lastVisitTime = new Date().getTime()-1000*86400*2;
 
-let i = 0;
+// let i = 0;
 list88 = list88.map((item) => {
   if(item.name=='OneTab') {
     item.windowId=33;
-  }else {
-    item.windowId=++i;
+  }else if(item.name=='头条' || item.name=="视频号" || item.name=="扩展程序（Extensions）") {
+    item.windowId=34;
   }
-  // else if(falseitem.name=='头条' || item.name=="视频号" || item.name=="扩展程序（Extensions）") {
-  //   item.windowId=34;
-  // }
   return item;
 })
 // console.warn('lllllllllllll', list)

@@ -8,6 +8,10 @@
     "list_keymap_size": 16,
     "list_page_count": 8,
 
+    "list_explain_font_size": 12,
+    "list_explain_focus_font_color": "#e4e7ed",
+    "list_explain_font_color": "#909399",
+
     "list_focus_background_color": "#7497de",
     "list_focus_font_color": "#ffffff",
     "list_focus_state_color": "#33FF66",

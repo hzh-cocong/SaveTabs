@@ -2,7 +2,7 @@
   <ul
     class="list"
     :style="{ height: (itemHeight*itemShowCount)+'px' }"
-    infinite-scroll-disabled="scrollDisabled"
+    :infinite-scroll-disabled="scrollDisabled"
     v-infinite-scroll="load">
     <li
       class="list-item"
@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     mouseSelect(index) {
-      console.warn('mouseSelect:'+this.mouseStart);
+      console.log('mouseSelect:'+this.mouseStart);
       // 防溢出
       // 无限滚动会出现浮点数的情况
       let scrollLines = parseInt(this.$el.scrollTop/this.itemHeight);

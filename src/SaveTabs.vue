@@ -127,7 +127,7 @@ export default {
   data() {
     return {
       keyword: '',
-      activeWorkspace: 0,
+      activeWorkspace: 1,//0,
       workspaces: [],
       isLoad: false,
       config: {},
@@ -142,8 +142,8 @@ export default {
   },
   methods: {
     keydown(event) {
-      console.warn('key', arguments)
-      console.warn('key', arguments[0].key)
+      console.log('key', arguments)
+      console.log('key', arguments[0].key)
 
       if(this.platform == '') return;
 

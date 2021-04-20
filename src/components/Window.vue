@@ -141,7 +141,7 @@
               v-if="isSelected"
               :style="{
                 fontSize: isSelected
-                    ? config.list_state_color
+                    ? config.list_state_size
                     : config.list_keymap_size+'px',
                 color: isSelected
                     ? config.list_focus_keymap_color
@@ -149,7 +149,6 @@
             <span
               v-else-if="platform != ''
                       && index-$refs.list.scrollLines+1 <= config.item_show_count
-                      && index-$refs.list.scrollLines+1 <= 9
                       && index-$refs.list.scrollLines+1 >= 1"
               :style="{
                 fontSize: activeWindows[item.windowId]
@@ -251,10 +250,10 @@ export default {
       storageList: [],
 
       page: 0,
-      scrollDisabled: false,
+      scrollDisabled: true,
       keyword: '',
 
-      currentIndex: 0,
+      currentIndex: -1,
       currentWindowId: -1,
       activeWindows: {},
 
@@ -271,13 +270,12 @@ export default {
   components: {
     List,
   },
+  watch: {
+    scrollDisabled: function(newVal, oldVal) {
+      console.log('window.scrollDisabled', newVal, oldVal)
+    }
+  },
   methods: {
-    set(i) {
-      console.log('set', i);
-      console.log('set2', 3)
-      this.currentIndex = i;
-
-    },
     up() {
       this.currentIndex--;
     },
@@ -315,14 +313,16 @@ export default {
       this.cacheList = currentList.concat(openedList).concat(closeList);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
       this.page = 1;
-      this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
+
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
+      // this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
       if(keyword == undefined && this.isInCurrentWindow && this.list.length > 1) {
         this.currentIndex = 1;
       } else {
         this.currentIndex = 0;
       }
 
-      console.warn('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
+      console.log('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
     },
     load() {
       console.log('load', this.scrollDisabled);
@@ -335,10 +335,11 @@ export default {
 
       this.list.push(...data);
       this.page++;
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
 
-      if(data.length != this.config.list_page_count) {
-        this.scrollDisabled = true;
-      }
+      // if(data.length != this.config.list_page_count) {
+      //   this.scrollDisabled = true;
+      // }
     },
     add(callback) {
       // 当前窗口只能有一个
@@ -424,7 +425,7 @@ export default {
       }
 
       let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length) {
+      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
       console.log('openWindow', currentIndex);
@@ -434,7 +435,7 @@ export default {
     },
     _openWindow() {
       // alert('ss')
-      let group = this.list[ this.currentIndex];
+      let group = this.list[ this.currentIndex ];
       let urls = group.tabs.map(tab => tab['url']);
 
       // 窗口已打开，直接切换

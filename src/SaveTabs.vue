@@ -108,6 +108,7 @@
 import List from './components/List.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
+import Tab from './components/Tab.vue'
 import config from './config.json'
 // import { nanoid } from 'nanoid'
 
@@ -127,7 +128,7 @@ export default {
   data() {
     return {
       keyword: '',
-      activeWorkspace: 1,//0,
+      activeWorkspace: 2,//0,
       workspaces: [],
       isLoad: false,
       config: {},
@@ -139,6 +140,7 @@ export default {
     List,
     Window,
     History,
+    Tab,
   },
   methods: {
     keydown(event) {
@@ -202,6 +204,19 @@ export default {
       this.$refs.workspaces[this.activeWorkspace].openWindow();
     },
     search: function() {
+      // if(this.timer != undefined) clearTimeout(this.timer);
+      // this.timer = setTimeout(() => {
+      //   this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
+      // }, 100);
+
+      // if(this.lock2 == false) return;
+      // // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
+      // this.lock2 = setTimeout(() => {
+      //   this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
+      //   this.lock2 = true;
+      // }, 30);
+      // this.lock2 = false;
+
       this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
     },
   },
@@ -236,6 +251,10 @@ export default {
     //   'type': 'temporary',
     //   'title': '临时',
     // });
+    // this.workspaces.push({
+    //   'type': 'note',
+    //   'title': '便签',
+    // });
     this.workspaces.push({
       'type': 'window',
       'title': '窗口',
@@ -244,10 +263,10 @@ export default {
       'type': 'history',
       'title': '历史',
     });
-    // this.workspaces.push({
-    //   'type': 'tab',
-    //   'title': '标签',
-    // });
+    this.workspaces.push({
+      'type': 'tab',
+      'title': '标签',
+    });
 
     console.log(this.workspaces);
     console.log(this.storageList);

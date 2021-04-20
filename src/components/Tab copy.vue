@@ -62,21 +62,19 @@
           </el-image>
         </span>
 
-        <div class="main">
-          <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title || item.deleteUrl
-            }}</div>
-          <div
-            class="sub-title"
-            :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
-        </div>
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">{{
+              item.title || item.deleteUrl
+          }}</div>
+        <div
+          class="sub-title"
+          :style="{
+            fontSize: config.list_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
 
         <div class="right">
           <div v-if="isActive">
@@ -132,7 +130,7 @@
 import List from './List.vue'
 
 export default {
-  name: 'History',
+  name: 'ActiveTab',
   props: {
     config: {
       type: Object,
@@ -196,6 +194,11 @@ export default {
           return b.lastVisitTime-a.lastVisitTime;
         });
         // 谷歌提供的接口返回的结果过有时候会是错误的
+
+        historys = historys.map((history) => {
+          history.url = 'www.baidu.com';
+          return history;
+        })
 
         console.log('load.search', JSON.parse(JSON.stringify(historys)));
         console.log('load.search2', historys);
@@ -331,13 +334,12 @@ export default {
   cursor: default;
 }
 .item .title {
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .item .sub-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 .item .right {

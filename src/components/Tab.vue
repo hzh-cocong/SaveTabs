@@ -13,8 +13,7 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ '查无历史记录' }}</div>
-        <div>{{ '默认只展示一天内的数据' }}</div>
+        <div>{{ '不存在该标签' }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -49,7 +48,7 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            :src="isLoad ? getIcon('', item.url, config.item_height-20) : ''"
+            :src="isLoad ? getIcon(item.favIconUrl, item.url, config.item_height-20) : ''"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
@@ -63,19 +62,20 @@
         </span>
 
         <div class="main">
-          <div
+          <span
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title || item.deleteUrl
-            }}</div>
-          <div
+                item.title
+            }}</span>
+          <span
+            v-show=" ! isSelected"
             class="sub-title"
             :style="{
-              fontSize: config.list_explain_font_size+'px',
+              fontSize: config.list_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
+              direction: isSelected ? 'rtl' : 'ltr' }">{{ getDomain(item.url) }}</span>
         </div>
 
         <div class="right">
@@ -83,41 +83,30 @@
             <i
               class="el-icon-close"
               style="color:#FF0033;font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="deleteHistory(index)"
+              @click.stop="closeTab(index)"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color}"></i>
           </div>
           <div v-else>
-            <div>
-              <span
-                :style="{
-                  fontSize: config.list_state_size+'px',
-                  color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_state_color,
-                }">{{ timeShow(item.lastVisitTime) }}</span>
-            </div>
-            <div>
-              <span
-                v-if="isSelected"
-                :style="{
-                  fontSize: config.list_keymap_size+'px',
-                  color: config.list_focus_keymap_color,
-                }">↩</span>
-              <span
-                v-else-if="platform != ''
-                  && index-$refs.list.scrollLines+1 <= config.item_show_count
-                  && index-$refs.list.scrollLines+1 >= 1"
-                :style="{
-                  fontSize: config.list_keymap_size+'px',
-                  color: config.list_keymap_color,
-                }">{{
-                    platform == 'Win'
-                  ?  '⌃'+(index-$refs.list.scrollLines+1)
-                  : '⌥'+(index-$refs.list.scrollLines+1)
-                  }}</span>
-            </div>
+            <span
+              v-if="isSelected"
+              :style="{
+                fontSize: config.list_keymap_size+'px',
+                color: config.list_focus_keymap_color,
+              }">↩</span>
+            <span
+              v-else-if="platform != ''
+                && index-$refs.list.scrollLines+1 <= config.item_show_count
+                && index-$refs.list.scrollLines+1 >= 1"
+              :style="{
+                fontSize: config.list_keymap_size+'px',
+                color: config.list_keymap_color,
+              }">{{
+                  platform == 'Win'
+                ?  '⌃'+(index-$refs.list.scrollLines+1)
+                : '⌥'+(index-$refs.list.scrollLines+1)
+                }}</span>
           </div>
         </div>
 
@@ -132,7 +121,7 @@
 import List from './List.vue'
 
 export default {
-  name: 'History',
+  name: 'ActiveTab',
   props: {
     config: {
       type: Object,
@@ -152,14 +141,14 @@ export default {
   data() {
     return {
       list: [],
+      cacheList: [],
+      originList: [],
 
-      lastVisitTime: new Date().getTime(),
       scrollDisabled: true,
       keyword: '',
 
+      page: 0,
       currentIndex: -1,
-
-      startTime: 0,
     }
   },
   components: {
@@ -182,86 +171,38 @@ export default {
       if(keyword != undefined) this.keyword = keyword.trim();
       console.log('search', keyword+'|');
 
-      this.lastVisitTime = new Date().getTime();
-      this.startTime = this.keyword == '' ?  new Date().getTime()-86400000 : 0;
-
       // 查找
-      chrome.history.search({
-          text: this.keyword,
-          startTime: this.startTime,
-          endTime: this.lastVisitTime,
-          maxResults: this.config.list_page_count,
-        }, (historys)=>{
-        historys = historys.sort((a, b)=>{
-          return b.lastVisitTime-a.lastVisitTime;
-        });
-        // 谷歌提供的接口返回的结果过有时候会是错误的
-
-        console.log('load.search', JSON.parse(JSON.stringify(historys)));
-        console.log('load.search2', historys);
-
-        if(historys.length == 0) {
-          this.list = [];
-          this.currentIndex = -1;
-          this.scrollDisabled == true;
-          return;
+      let filterList = this.originList.filter(tab => {
+        let title = tab.title.toUpperCase();
+        let url = tab.url.toUpperCase();
+        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
+          if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
+            return false;
+          }
         }
-
-        let historys2 = historys.filter((history) => {
-          return history.lastVisitTime < this.lastVisitTime;
-        })
-
-        this.list = historys2;
-        this.currentIndex = 0;
-        if(this.list.length == 0) {
-          this.lastVisitTime = this.lastVisitTime-1000*1;
-        } else {
-          this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        }
-
-        console.log('test', historys.length, this.config.list_page_count, historys.length < this.config.list_page_count)
-
-        this.scrollDisabled = historys.length < this.config.list_page_count;
+        return true;
       })
+
+      // 列表赋值
+      this.cacheList = filterList;
+      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.page = 1;
+
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
+      this.currentIndex = 0;
     },
     load() {
-      // 查找
-      console.log('load.start', this.lastVisitTime, this.timeShow(this.lastVisitTime));
-      chrome.history.search({
-          text: this.keyword,
-          startTime: this.startTime,
-          endTime: this.lastVisitTime,
-          maxResults: this.config.list_page_count,
-        }, (historys)=>{
-        historys = historys.sort((a, b)=>{
-          return b.lastVisitTime-a.lastVisitTime;
-        });
+      console.log('load', this.scrollDisabled);
 
-        console.log('load.load', historys);
+      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      if(data.length <= 0) {
+        this.scrollDisabled = true;
+        return;
+      }
 
-        if(historys.length == 0) {
-          this.scrollDisabled = true;
-          return;
-        }
-
-        let historys2 = historys.filter((history) => {
-          if(history.lastVisitTime >= this.lastVisitTime) console.warn('aaaaaa');
-          return history.lastVisitTime < this.lastVisitTime;
-        })
-
-        this.list.push(...historys2);
-        // this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        this.scrollDisabled = historys.length < this.config.list_page_count;
-        let lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        console.warn('history.loading.result', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
-        if(this.lastVisitTime <= lastVisitTime) {
-          console.error('history.loading.result.wrong', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
-          lastVisitTime = this.lastVisitTime-1000*1;
-        }
-        this.lastVisitTime = lastVisitTime;
-
-        console.log('load.end', this.lastVisitTime, this.timeShow(this.lastVisitTime));
-      })
+      this.list.push(...data);
+      this.page++;
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     openWindow(index) {
       if(index == undefined) {
@@ -279,24 +220,15 @@ export default {
       this._openWindow();
     },
     _openWindow() {
-      // alert('ss')
-      let history = this.list[ this.currentIndex ];
-      let url = history.url;
-
-      // 打开新同页面
-      chrome.tabs.create({
-        url: url,
+      let tab = this.list[ this.currentIndex ];
+      chrome.tabs.update(tab.id, { active: true }, () => {
+        chrome.windows.update(tab.windowId, { focused: true});
       })
     },
-    deleteHistory(index) {
-      let url = this.list[index].url;
-      console.log('delete.history', url);
-      chrome.history.deleteUrl({ url: url }, () => {
+    closeTab(index) {
+      let id = this.list[index].id;
+      chrome.tabs.remove(id, () => {
         this.list.splice(index, 1);
-        if(this.list.length < this.config.list_page_count
-        && this.scrollDisabled == false) {
-          this.load();
-        }
       })
     }
   },
@@ -304,8 +236,15 @@ export default {
     // todo
     window.h = this;
 
-    // 更新列表
-    this.search();
+    // 查找
+    chrome.tabs.query({}, (tabs)=>{
+      console.log('tabs.query', tabs);
+
+      this.originList = tabs;
+
+      // 更新列表
+      this.search();
+    })
   }
 }
 </script>
@@ -329,6 +268,7 @@ export default {
   text-align: left;
   overflow: hidden;
   cursor: default;
+  display: flex;
 }
 .item .title {
   overflow: hidden;
@@ -336,8 +276,7 @@ export default {
   white-space: nowrap;
 }
 .item .sub-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0 10px;
   white-space: nowrap;
 }
 .item .right {

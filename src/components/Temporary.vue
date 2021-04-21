@@ -66,7 +66,8 @@
           :style="{
             height: (config.item_height ? config.item_height-5 : 0)+'px',
             margin: '2.5px 0 2.5px 0',
-            flexDirection: ! isSelected ? 'row' : 'column'}">
+            flexDirection: ! isSelected ? 'row' : 'column',
+            alignContent: ! isSelected ? 'center' : 'stretch' }">
           <template v-if="isSelected">
             <el-tag
               v-for="(tab, i) in item.tabs"
@@ -96,7 +97,7 @@
                 :style="{
                     width: isSelected
                         ? ( isActive ? '145px' : '55px')
-                        : '140px'}">{{ tab.title }}</span>
+                        : '140px'}">{{ tab.title || tab.url }}</span>
             </el-tag>
           </template>
           <template v-else>
@@ -259,13 +260,16 @@ export default {
       console.log('search', keyword+'|');
 
       // 查找
-      let keywords = this.keyword.toUpperCase().split(/\s+/);
+      let keywords = this.keyword == undefined ? '' : this.keyword.toUpperCase().split(/\s+/);
       let filterList = this.storageList.filter(temporary => {
         for(let tab of temporary.tabs) {
           let isMath = true;
           for(let keyword of keywords) {
             // 关键词需全部匹配
-            if(tab.title.indexOf(keyword) == -1 && tab.url.indexOf(keyword) == -1) {
+            let title = tab.title.toUpperCase();
+            let url = tab.url.toUpperCase();
+            if(title.indexOf(keyword) == -1
+            && url.indexOf(keyword) == -1) {
               isMath = false;
               break;
             }
@@ -358,14 +362,22 @@ export default {
       let temporary = this.list[ this.currentIndex ];
       let urls = temporary.tabs.map(tab => tab.url);
       let index = this.getStorageIndex();
-      let currentWindowId = -1;
+      let blankTabId = -1;
 
       // 打开新窗口
       new Promise(resolve => {
-        // 获取当前窗口信息
-        chrome.windows.getCurrent({populate: true}, window => {
-          currentWindowId = window.id;
-          resolve()
+        // // 获取当前窗口信息
+        // chrome.windows.getCurrent({populate: true}, window => {
+        //   currentWindowId = window.id;
+        //   resolve()
+        // })
+        // 获取当前标签信息
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+          // 关闭空白标签
+          if(tabs[0].url == "chrome://newtab/") {
+            blankTabId = tabs[0].id;
+          }
+          resolve();
         })
       }).then(() => {
         // 新建新窗口（先不激活，否则无法存储数据）
@@ -378,39 +390,52 @@ export default {
         // 更新数据（移除该临时窗口）
         this.storageList.splice(index , 1);
         return new Promise(resolve => {
-          chrome.storage.local.set({list: this.storageList}, () => {
+          chrome.storage.local.set({temporary: this.storageList}, () => {
             resolve(window);
           });
         })
       }).then((window) => {
         // 激活新窗口
         chrome.windows.update(window.id, { focused: true});
-        // 关闭当前窗口
-        chrome.windows.remove(currentWindowId);
+        // // 关闭当前窗口
+        // chrome.windows.remove(currentWindowId);
+
+        // 关闭空白标签
+        if(blankTabId != -1) {
+          chrome.tabs.remove(blankTabId);
+        }
       })
     },
     openTab(i) {
       // 先删除标签
       let url = this.list[ this.currentIndex ].tabs[i].url;
       let index = this.getStorageIndex();
-      this.storageList[index].tabs.splice(i , 1);
+      if(this.storageList[index].tabs.length == 1) {
+        this.storageList.splice(index, 1);
+      } else {
+        this.storageList[index].tabs.splice(i , 1);
+      }
       chrome.storage.local.set({temporary: this.storageList}, () => {
         // 再打开
         this.$open(url);
       });
     },
     deleteTab(i) {
+      if(this.list[ this.currentIndex ].tabs.length == 1) {
+        this.deleteTemporary();
+        return;
+      }
+
       let index = this.getStorageIndex();
       this.storageList[index].tabs.splice(i , 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
-        this.list[ this.currentIndex ].tabs.splice(i, 1);
       });
     },
     deleteTemporary() {
       let index = this.getStorageIndex();
       this.storageList.splice(index , 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
-        this.list[ this.currentIndex ].splice(this.currentIndex, 1);
+        this.list.splice(this.currentIndex, 1);
         if(this.list.length < this.config.list_page_count
         && this.scrollDisabled == false) {
           this.load();
@@ -500,6 +525,7 @@ export default {
   justify-content: center; */
 }
 .item .title {
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

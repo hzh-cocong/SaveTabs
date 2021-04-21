@@ -77,6 +77,7 @@
         <el-button
           type="default"
           icon="el-icon-paperclip"
+          @click="addTemporary"
           ></el-button>
       </el-button-group>
     </div>
@@ -112,6 +113,7 @@ import History from './components/History.vue'
 import Tab from './components/Tab.vue'
 import Bookmark from './components/Bookmark.vue'
 import Note from './components/Note.vue'
+import Temporary from './components/Temporary.vue'
 import config from './config.json'
 // import { nanoid } from 'nanoid'
 
@@ -145,7 +147,8 @@ export default {
     History,
     Tab,
     Bookmark,
-    Note
+    Note,
+    Temporary
   },
   methods: {
     keydown(event) {
@@ -181,6 +184,12 @@ export default {
       });
     },
     addTab() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
+    },
+    addTemporary() {
       this.$refs.workspaces[this.activeWorkspace].add(()=>{
         this.keyword = '';
         this.search();
@@ -258,10 +267,10 @@ export default {
     //   'type': 'all',
     //   'title': '全部',
     // });
-    // this.workspaces.push({
-    //   'type': 'temporary',
-    //   'title': '临时',
-    // });
+    this.workspaces.push({
+      'type': 'temporary',
+      'title': '临时',
+    });
     this.workspaces.push({
       'type': 'note',
       'title': '便签',

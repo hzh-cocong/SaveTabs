@@ -228,11 +228,10 @@ export default {
       let id = this.list[index].id;
       chrome.tabs.remove(id, () => {
         this.list.splice(index, 1);
-        // 待测试
-        // if(this.list.length < this.config.list_page_count
-        // && this.scrollDisabled == false) {
-        //   this.load();
-        // }
+        if(this.list.length < this.config.list_page_count
+        && this.scrollDisabled == false) {
+          this.load();
+        }
       })
     }
   },

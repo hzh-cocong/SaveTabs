@@ -388,6 +388,7 @@ export default {
           resolve(tabs)
         })
       }).then((tabs) => {
+        // 处理数据
         let ts = [];
         tabs.forEach(tab => {
           ts.push({
@@ -438,34 +439,55 @@ export default {
       // alert('ss')
       let group = this.list[ this.currentIndex ];
       let urls = group.tabs.map(tab => tab['url']);
+      let index = this.getStorageIndex();
+      let blankTabId = -1;
 
       // 窗口已打开，直接切换
       if(this.activeWindows[group.windowId]) {
-        chrome.windows.update(group.windowId, { focused: true});
-
-        let index = this.getStorageIndex();
+        // 存储新数据（排序发生变化）
         this.storageList.unshift(this.storageList.splice(index , 1)[0]);
-        chrome.storage.local.set({list: this.storageList});
-
+        chrome.storage.local.set({list: this.storageList}, () => {
+          // 先存储，再切换
+          chrome.windows.update(group.windowId, { focused: true});
+        });
         return;
       }
 
       // 打开新窗口
-      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        chrome.windows.create({
-          url: urls,
-        }, window => {
-          // 可能会有问题
-          let index = this.getStorageIndex();
+      new Promise(resolve => {
+        // 获取当前标签信息
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+          // 关闭空白标签
+          if(tabs[0].url == "chrome://newtab/") {
+            blankTabId = tabs[0].id;
+          }
+          resolve();
+        })
+      }).then(() => {
+        // 新建新窗口（先不激活，否则无法存储数据）
+        return new Promise(resolve => {
+          chrome.windows.create({ url: urls, focused: false }, window => {
+            resolve(window)
+          })
+        })
+      }).then(window => {
+        // 存储数据
+        return new Promise(resolve => {
           this.storageList[index].windowId = window.id;
           this.storageList.unshift(this.storageList.splice(index , 1)[0]);
-          chrome.storage.local.set({list: this.storageList});
+          chrome.storage.local.set({list: this.storageList}, () => {
+            resolve(window);
+          });
         })
+      }).then(window => {
+        // 激活窗口
+        chrome.windows.update(window.id, { focused: true});
 
-        if(tabs[0].url == "chrome://newtab/") {
-          chrome.tabs.remove(tabs[0].id);
+        // 关闭空白标签
+        if(blankTabId != -1) {
+          chrome.tabs.remove(blankTabId);
         }
-      });
+      })
     },
     openGroup: function() {
       this.group = this.list[this.currentIndex];

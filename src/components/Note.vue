@@ -324,46 +324,45 @@ export default {
       this._openWindow();
     },
     _openWindow() {
-      // alert('ss')
       let tab = this.list[ this.currentIndex ];
+      let index = this.getStorageIndex();
 
       // 标签已打开，直接切换
       if(this.activeTabs[tab.tabId] == tab.windowId) {
-        chrome.tabs.update(tab.tabId, { active: true }, () => {
-          chrome.windows.update(tab.windowId, { focused: true});
+        // 存储新数据（排序发生变化）
+        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        chrome.storage.local.set({tabs: this.storageList}, () => {
+          chrome.tabs.update(tab.tabId, { active: true }, () => {
+            // 先存储，再切换
+            chrome.windows.update(tab.windowId, { focused: true});
+          });
         });
         return;
       }
 
-      // 在空白页打开
-      // if(this.currentTab.url == "chrome://newtab/") {
-      //   chrome.tabs.update(this.currentTab.id, { url: tab.url }, tab => {
-      //     let index = this.getStorageIndex();
-      //     this.storageList[index].tabId = tab.id;
-      //     this.storageList[index].windowId = tab.windowId;
-      //     this.storageList.unshift(this.storageList.splice(index , 1)[0]);
-      //     chrome.storage.local.set({tabs: this.storageList});
-      //   })
-      //   return;
-      // }
-
-      // 关闭空白页
-      if(this.currentTab.url == "chrome://newtab/") {
-        chrome.tabs.remove(this.currentTab.id);
-      }
-
-      // 先保存再打开，否则会因为当前窗口关闭而无法保存
-
-
       // 打开新标签
-      chrome.tabs.create({url: tab.url, active: false}, tab => {
-        let index = this.getStorageIndex();
-        this.storageList[index].tabId = tab.id;
-        this.storageList[index].windowId = tab.windowId;
-        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
-        chrome.storage.local.set({tabs: this.storageList}, () => {
-          chrome.tabs.update(tab.id, { active: true });
-        });
+      new Promise(resolve => {
+        // 新建标签
+        chrome.tabs.create({url: tab.url, active: false}, tab => {
+          resolve(tab);
+        })
+      }).then(tab => {
+        // 更新数据
+        return new Promise(resolve => {
+          this.storageList[index].tabId = tab.id;
+          this.storageList[index].windowId = tab.windowId;
+          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+          chrome.storage.local.set({tabs: this.storageList}, () => {
+            resolve(tab);
+          });
+        })
+      }).then((tab) => {
+        // 激活标签
+        chrome.tabs.update(tab.id, { active: true });
+        // 关闭空白标签
+        if(this.currentTab.url == "chrome://newtab/") {
+          chrome.tabs.remove(this.currentTab.id);
+        }
       })
     },
     deleteTab() {

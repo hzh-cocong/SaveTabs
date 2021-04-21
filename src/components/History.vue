@@ -282,9 +282,10 @@ export default {
       let url = history.url;
 
       // 打开新标签
-      chrome.tabs.create({
-        url: url,
-      })
+      this.$open(url);
+      // chrome.tabs.create({
+      //   url: url,
+      // })
     },
     deleteHistory(index) {
       let url = this.list[index].url;

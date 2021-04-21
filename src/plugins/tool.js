@@ -15,6 +15,8 @@ tabs = JSON.parse(tabs);
 let bookmarks = '[{"dateAdded":1616855697451,"id":"5","index":0,"parentId":"1","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/popup.html"},{"dateAdded":1618634420054,"id":"10","index":1,"parentId":"1","title":"聪聪-只为兴趣 - 知乎","url":"https://www.zhihu.com/people/hu-zhen-hua-23/posts"},{"dateAdded":1618919508129,"id":"12","index":2,"parentId":"1","title":"ll - Google 搜索","url":"https://www.google.com.hk/search?q=ll&oq=ll&aqs=chrome..69i57j0l9.384j0j7&sourceid=chrome&ie=UTF-8"},{"dateAdded":1618919870308,"id":"13","index":3,"parentId":"1","title":"SaveTabs","url":"http://localhost:8080/savetabs.html"},{"dateAdded":1618919876684,"id":"14","index":4,"parentId":"1","title":"扩展程序","url":"chrome://extensions/"},{"dateAdded":1618919880201,"id":"15","index":5,"parentId":"1","title":"OneTab","url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html"},{"dateAdded":1618919884079,"id":"16","index":6,"parentId":"1","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html"},{"dateAdded":1618919888217,"id":"17","index":7,"parentId":"1","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html"},{"dateAdded":1618919920753,"id":"18","index":8,"parentId":"1","title":"今日新鲜事_百度搜索","url":"https://www.baidu.com/s?wd=%E4%BB%8A%E6%97%A5%E6%96%B0%E9%B2%9C%E4%BA%8B&tn=SE_PclogoS_8whnvm25&sa=ire_dl_gh_logo&rsv_dl=igh_logo_pcs"},{"dateAdded":1618919925024,"id":"19","index":9,"parentId":"1","title":"百度一下，你就知道","url":"https://www.baidu.com/"},{"dateAdded":1618460442736,"dateGroupModified":1618460442736,"id":"7","index":0,"parentId":"2","title":"__SFOCUS_STORAGE__"},{"dateAdded":1618629688127,"id":"9","index":1,"parentId":"2","title":"gg - Google 搜索","url":"https://www.google.com.hk/search?q=gg&oq=gg&aqs=chrome..69i57j0l9.2263j0j7&sourceid=chrome&ie=UTF-8"}]';
 bookmarks = JSON.parse(bookmarks);
 
+let notes = '[{"id":"iLvDeyMBMXbU7jwFb2lMT","tabId":183,"title":"女子第五次起诉离婚案周五开庭_百度搜索","url":"https://www.baidu.com/s?cl=3&tn=baidutop10&fr=top1000&wd=%E5%A5%B3%E5%AD%90%E7%AC%AC%E4%BA%94%E6%AC%A1%E8%B5%B7%E8%AF%89%E7%A6%BB%E5%A9%9A%E6%A1%88%E5%91%A8%E4%BA%94%E5%BC%80%E5%BA%AD&rsv_idx=2&rsv_dl=fyb_n_homepage&hisfilter=1","windowId":177},{"id":"t8EzJx2UnMPamQQR752kz","tabId":182,"title":"19岁学生假冒公安骗走富婆2.5亿_百度搜索","url":"https://www.baidu.com/s?cl=3&tn=baidutop10&fr=top1000&wd=19%E5%B2%81%E5%AD%A6%E7%94%9F%E5%81%87%E5%86%92%E5%85%AC%E5%AE%89%E9%AA%97%E8%B5%B0%E5%AF%8C%E5%A9%862.5%E4%BA%BF&rsv_idx=2&rsv_dl=fyb_n_homepage&hisfilter=1","windowId":177},{"id":"8OZVc7YHBxnBdB6L3umv8","tabId":181,"title":"韩国学生在日本使馆前削发抗议_百度搜索","url":"https://www.baidu.com/s?cl=3&tn=baidutop10&fr=top1000&wd=%E9%9F%A9%E5%9B%BD%E5%AD%A6%E7%94%9F%E5%9C%A8%E6%97%A5%E6%9C%AC%E4%BD%BF%E9%A6%86%E5%89%8D%E5%89%8A%E5%8F%91%E6%8A%97%E8%AE%AE&rsv_idx=2&rsv_dl=fyb_n_homepage&hisfilter=1","windowId":177},{"id":"SNanqqd-gYWSiuOu21ZVV","tabId":180,"title":"乍得军方称总统在前线受重伤死亡_百度搜索","url":"https://www.baidu.com/s?cl=3&tn=baidutop10&fr=top1000&wd=%E4%B9%8D%E5%BE%97%E5%86%9B%E6%96%B9%E7%A7%B0%E6%80%BB%E7%BB%9F%E5%9C%A8%E5%89%8D%E7%BA%BF%E5%8F%97%E9%87%8D%E4%BC%A4%E6%AD%BB%E4%BA%A1&rsv_idx=2&rsv_dl=fyb_n_homepage&hisfilter=1","windowId":177},{"id":"65jvoE8nLmuGa_qNihG3F","tabId":179,"title":"郑州市监局回应特斯拉车主维权_百度搜索","url":"https://www.baidu.com/s?cl=3&tn=baidutop10&fr=top1000&wd=%E9%83%91%E5%B7%9E%E5%B8%82%E7%9B%91%E5%B1%80%E5%9B%9E%E5%BA%94%E7%89%B9%E6%96%AF%E6%8B%89%E8%BD%A6%E4%B8%BB%E7%BB%B4%E6%9D%83&rsv_idx=2&rsv_dl=fyb_n_homepage&hisfilter=1","windowId":177},{"id":"zjVeesYK60ni-HXlgs5ss","tabId":175,"title":"https://www.google.com/search?q=eeee&oq=eeee&aqs=chrome..69i57j0l9.2125j0j7&sourceid=chrome&ie=UTF-8","url":"https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3Deeee%26oq%3Deeee%26aqs%3Dchrome..69i57j0l9.2125j0j7%26sourceid%3Dchrome%26ie%3DUTF-8&q=EhAkA0oAQAEAEwEUBRRWmP__GN75-4MGIhkA8aeDSwtljT7jDznKO3cNTZO_GpLpMG8yMgFy","windowId":22},{"icon":"http://localhost:8000/favicon.ico","id":"7epDKXLowi7L3aBEhLsGH","tabId":173,"title":"[Beta] build - Project tasks - Vue CLI","url":"http://localhost:8000/tasks/%2FUsers%2Fhzh%2F%E6%96%87%E4%BB%B6%2F%E5%A4%A7%E6%96%87%E4%BB%B6%2FExperience%2FWWW%2Fhtml%2FChrome%2Fsave_tabs2:build","windowId":22},{"icon":"http://cocong.cn/favicon.ico","id":"Y57wFw0w-FpAZqDs3WvCO","tabId":171,"title":"聪聪，只为兴趣","url":"http://cocong.cn/","windowId":22},{"icon":"https://www.google.com/favicon.ico","id":"dHVsD-8qmaRV9rscsyfvp","tabId":25,"title":"co - Google 搜索","url":"https://www.google.com/search?q=co&oq=co&aqs=chrome.0.69i59l2j69i57j69i60j5l3j69i60.441j0j7&sourceid=chrome&ie=UTF-8","windowId":22},{"icon":"https://www.baidu.com/favicon.ico","id":"4v3OQQqvDuxgU9q3_qkHg","tabId":24,"title":"今日新鲜事_百度搜索","url":"https://www.baidu.com/s?wd=%E4%BB%8A%E6%97%A5%E6%96%B0%E9%B2%9C%E4%BA%8B&tn=SE_PclogoS_8whnvm25&sa=ire_dl_gh_logo&rsv_dl=igh_logo_pcs","windowId":22},{"icon":"https://www.baidu.com/favicon.ico","id":"sLy6skCuRplT7WV8bxAac","tabId":23,"title":"百度一下，你就知道","url":"https://www.baidu.com/","windowId":22},{"icon":"","id":"lIxR2gtLF-3V7qRRWH8ee","tabId":21,"title":"扩展程序","url":"chrome://extensions/","windowId":17},{"icon":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/images/extension-icon32.png","id":"nWrPRCspRoGToJ7WB9E82","tabId":107,"title":"OneTab","url":"chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html","windowId":17},{"icon":"","id":"igqhqJ14s2XG2fgf22aNW","tabId":142,"title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html","windowId":17}]';
+notes = JSON.parse(notes);
 
 history = JSON.parse(history);
 history[0].lastVisitTime = new Date().getTime()-1000*8;
@@ -33,8 +35,11 @@ list88 = list88.map((item) => {
 list88 = list88.filter((item) => {
   return true || item.name=='动漫' || item.name=='头条' || item.name=='OneTab';
 })
-console.log('list88', list88)
-console.log(test)
+
+let s = false;
+if(s) {
+  console.log(notes, bookmarks, tabs, history, test, list88);
+}
 
 const tool = {
   install(Vue) {
@@ -129,12 +134,16 @@ const tool = {
               console.log('chrome.storage.sync.get', arguments);
               console.log('options', options)
               console.log('list', list88)
-              callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+              if(options.list != undefined) {
+                callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+              } else if(options.tabs != undefined) {
+                callback != undefined && callback({tabs: notes});
+              }
             },
             set: function(options, callback) {
               console.log('chrome.storage.sync.set', arguments);
               console.log('options', options)
-              callback();
+              callback != undefined && callback();
             },
           }
         }
@@ -142,19 +151,28 @@ const tool = {
           getCurrent: function(options, callback) {
             console.log('chrome.windows.getCurrent', arguments);
             console.log('options', options)
-            callback({
-              id: 33,
+            callback != undefined && callback({
+              id: 330,
               tabs: [],
             });
           },
           getAll: function(options, callback) {
             console.log('chrome.windows.getAll', arguments);
             console.log('options', options)
-            callback([{
+            callback != undefined && callback([{
               id: 33
             },{
               id: 34
             }]);
+          },
+          update: function(id, options, callback) {
+            console.log('chrome.window.update', arguments);
+            console.log('id', id)
+            console.log('options', options)
+            callback != undefined && callback({
+              id: id,
+              tabs: [],
+            });
           },
         }
         chrome.tabs = {
@@ -165,22 +183,32 @@ const tool = {
               callback(tabs);
               // console.log(tabs);
             } else {
-              callback(JSON.parse(test));
+              callback != undefined && callback(JSON.parse(test));
             }
-          }
+          },
+          create: function(options, callback) {
+            console.log('chrome.tabs.create', arguments);
+            console.log('options', options)
+            callback != undefined && callback(tabs[0]);
+          },
+          update: function(id, options, callback) {
+            console.log('chrome.tabs.update', arguments);
+            console.log('options', options)
+            callback != undefined && callback(tabs[0]);
+          },
         }
         chrome.history = {
           deleteUrl: function(options, callback) {
             console.log('chrome.history.deleteUrl', arguments);
             console.log('options', options)
-            callback();
+            callback != undefined && callback();
           },
           search: function(options, callback) {
             console.log('chrome.history.search', arguments);
             console.log('options', options)
 
-            // callback(JSON.parse(history));
-            callback(history.slice(0, options.maxResults));
+            // callback != undefined && callback(JSON.parse(history));
+            callback != undefined && callback(history.slice(0, options.maxResults));
           },
         }
         chrome.bookmarks = {
@@ -188,13 +216,13 @@ const tool = {
             console.log('chrome.bookmarks.search', arguments);
             console.log('options', options)
 
-            callback(bookmarks);
+            callback != undefined && callback(bookmarks);
           },
           remove: function(options, callback) {
             console.log('chrome.bookmarks.create', arguments);
             console.log('options', options)
 
-            callback();
+            callback != undefined && callback();
           },
         }
       }//*/

@@ -81,7 +81,7 @@
           <div v-if="isActive">
             <i
               class="el-icon-close"
-              style="color:#FF0033;font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
+              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
               @click.stop="closeTab(index)"
               :style="{
                 color:config.list_focus_font_color,
@@ -228,6 +228,11 @@ export default {
       let id = this.list[index].id;
       chrome.tabs.remove(id, () => {
         this.list.splice(index, 1);
+        // 待测试
+        // if(this.list.length < this.config.list_page_count
+        // && this.scrollDisabled == false) {
+        //   this.load();
+        // }
       })
     }
   },

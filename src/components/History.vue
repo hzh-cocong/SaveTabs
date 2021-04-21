@@ -82,7 +82,7 @@
           <div v-if="isActive">
             <i
               class="el-icon-close"
-              style="color:#FF0033;font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
+              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
               @click.stop="deleteHistory(index)"
               :style="{
                 color:config.list_focus_font_color,
@@ -281,7 +281,7 @@ export default {
       let history = this.list[ this.currentIndex ];
       let url = history.url;
 
-      // 打开新同页面
+      // 打开新标签
       chrome.tabs.create({
         url: url,
       })
@@ -343,6 +343,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 5px;
 }
 .item .right {
   /* border: 1px solid black; */

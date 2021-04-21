@@ -67,11 +67,12 @@
         <el-button
           type="default"
           icon="el-icon-download"
-          @click="add"
+          @click="addWindow"
           ></el-button>
         <el-button
           type="default"
           icon="el-icon-collection-tag"
+          @click="addTab"
           ></el-button>
         <el-button
           type="default"
@@ -110,6 +111,7 @@ import Window from './components/Window.vue'
 import History from './components/History.vue'
 import Tab from './components/Tab.vue'
 import Bookmark from './components/Bookmark.vue'
+import Note from './components/Note.vue'
 import config from './config.json'
 // import { nanoid } from 'nanoid'
 
@@ -129,7 +131,7 @@ export default {
   data() {
     return {
       keyword: '',
-      activeWorkspace: 3,//0,
+      activeWorkspace: 0,//0,
       workspaces: [],
       isLoad: false,
       config: {},
@@ -142,7 +144,8 @@ export default {
     Window,
     History,
     Tab,
-    Bookmark
+    Bookmark,
+    Note
   },
   methods: {
     keydown(event) {
@@ -171,7 +174,13 @@ export default {
       this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
       document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
     },
-    add() {
+    addWindow() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
+    },
+    addTab() {
       this.$refs.workspaces[this.activeWorkspace].add(()=>{
         this.keyword = '';
         this.search();
@@ -253,10 +262,10 @@ export default {
     //   'type': 'temporary',
     //   'title': '临时',
     // });
-    // this.workspaces.push({
-    //   'type': 'note',
-    //   'title': '便签',
-    // });
+    this.workspaces.push({
+      'type': 'note',
+      'title': '便签',
+    });
     this.workspaces.push({
       'type': 'window',
       'title': '窗口',

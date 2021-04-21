@@ -163,6 +163,7 @@
                       }}</span>
           </div>
         </div>
+
       </div>
     </template>
   </list>
@@ -454,6 +455,7 @@ export default {
         chrome.windows.create({
           url: urls,
         }, window => {
+          // 可能会有问题
           let index = this.getStorageIndex();
           this.storageList[index].windowId = window.id;
           this.storageList.unshift(this.storageList.splice(index , 1)[0]);
@@ -517,6 +519,7 @@ export default {
       }).then(() => {
         let index = this.getStorageIndex();
         this.storageList.splice(index , 1);
+        // 可优化
         chrome.storage.local.set({list: this.storageList}, () => {
           if(group.windowId == this.currentWindowId) {
             this.isInCurrentWindow = false;

@@ -63,37 +63,96 @@
 
         <div
           class="main"
-          :style="{ height: (config.item_height ? config.item_height-5 : 0)+'px', margin: '2.5px 0 2.5px 0' }">
-          <el-tag
-            v-for="(tab, i) in item.tabs"
-            :key="index+'.'+i"
-            :title="tab.title+'\r\n'+tab.url"
-            style="margin:0px 2.5px 2.5px 0px;cursor: pointer;"
-            size="mini"
-            type='info'
-            :effect="isSelected ? 'light' : 'plain'"
-            :closable="isActive"
-            :disable-transitions="true"
-            @click.stop="openTab(i)"
-            @close.stop="deleteTab(i)">
-            <el-image
-              :src="isLoad ? getIcon(tab.icon, tab.url, 12) : ''"
-              fit="cover"
-              :lazy="index >= config.item_show_count">
-              <div slot="error" class="image-slot" v-if="isLoad">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-              <div slot="placeholder" class="image-slot" v-if="isLoad">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-            </el-image>
-            <span
-              class="tab-title"
+          :style="{
+            height: (config.item_height ? config.item_height-5 : 0)+'px',
+            margin: '2.5px 0 2.5px 0',
+            flexDirection: ! isSelected ? 'row' : 'column'}">
+          <template v-if="isSelected">
+            <el-tag
+              v-for="(tab, i) in item.tabs"
+              :key="index+'.'+i"
+              :title="tab.title+'\r\n'+tab.url"
+              style="margin:0px 2.5px 2.5px 0px;cursor: pointer;"
+              size="mini"
+              type='primary'
+              :effect="'plain'"
+              :closable="isActive"
+              :disable-transitions="true"
+              @click.stop="openTab(i)"
+              @close.stop="deleteTab(i)">
+              <el-image
+                :src="isLoad ? getIcon(tab.icon, tab.url, 12) : ''"
+                fit="cover"
+                :lazy="index >= config.item_show_count">
+                <div slot="error" class="image-slot" v-if="isLoad">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+                <div slot="placeholder" class="image-slot" v-if="isLoad">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+              </el-image>
+              <span
+                class="tab-title"
+                :style="{
+                    width: isSelected
+                        ? ( isActive ? '145px' : '55px')
+                        : '140px'}">{{ tab.title }}</span>
+            </el-tag>
+          </template>
+          <template v-else>
+            <div
+            class="title"
+            style="display:flex; overflow: hidden;"
+            :style="{ fontSize: config.list_font_size+'px' }">
+              <el-image
+                :src="isLoad ? getIcon(item.tabs[0].icon, item.tabs[0].url, 12) : ''"
+                fit="cover"
+                style="margin-top: 3px;"
+                :style="{ width: config.list_font_size+'px',
+                          height: config.list_font_size+'px' }"
+                :lazy="index >= config.item_show_count">
+                <div slot="error" class="image-slot" v-if="isLoad">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+                <div slot="placeholder" class="image-slot" v-if="isLoad">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+              </el-image>
+              <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
+            </div>
+            <div
+              class="sub-title"
               :style="{
-                  width: isSelected
-                      ? ( isActive ? '50px' : '140px')
-                      : '55px'}">{{ tab.title }}</span>
-          </el-tag>
+                fontSize: config.list_explain_font_size+'px',
+                color: isSelected
+                      ? config.list_explain_focus_font_color
+                      : config.list_explain_font_color }">
+                {{ item.tabs[0].url }}
+              <!-- <template v-if="item.tabs.length == 1">
+                {{ item.tabs[0].url }}
+              </template>
+              <template else>
+                <span
+                  v-for="(tab, i) in item.tabs" :key="index+'.'+i"
+                  style="display:inline-block; width: 100px; margin-right: 5px;overflow:hidden;">
+                  <el-image
+                    :src="isLoad ? getIcon(tab.icon, tab.url, 12) : ''"
+                    fit="cover"
+                    :style="{ width: config.list_explain_font_size+'px',
+                              height: config.list_explain_font_size+'px' }"
+                    :lazy="index >= config.item_show_count">
+                    <div slot="error" class="image-slot" v-if="isLoad">
+                      <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                    </div>
+                    <div slot="placeholder" class="image-slot" v-if="isLoad">
+                      <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                    </div>
+                  </el-image>
+                  <span style="margin-left: 5px;">{{ tab.title }}</span>
+                </span>
+              </template> -->
+            </div>
+          </template>
         </div>
 
         <div class="right">
@@ -397,6 +456,7 @@ export default {
 .item .left {
   padding: 5px;
   text-align: center;
+  cursor: default;
 }
 .item .image {
   /* background-color: #c0c4cb; */
@@ -430,8 +490,8 @@ export default {
   cursor: default;
 
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: left;
   justify-content: flex-start;
   flex-wrap: wrap;
 

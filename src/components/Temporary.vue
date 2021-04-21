@@ -64,10 +64,10 @@
         <div
           class="main"
           :style="{
-            height: (config.item_height ? config.item_height-5 : 0)+'px',
-            margin: '2.5px 0 2.5px 0',
+            height: config.item_height+'px',
             flexDirection: ! isSelected ? 'row' : 'column',
-            alignContent: ! isSelected ? 'center' : 'stretch' }">
+            alignContent: ! isSelected ? 'center' : 'stretch',
+            justifyContent: ! isSelected ? 'left' : 'space-evenly' }">
           <template v-if="isSelected">
             <el-tag
               v-for="(tab, i) in item.tabs"

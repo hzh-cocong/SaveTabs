@@ -1,9 +1,10 @@
 import Vue from 'vue'
-import App from './App.vue'
+import SaveTabs from './SaveTabs.vue'
 import './plugins/element.js'
+import './plugins/tool.js'
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  render: h => h(SaveTabs),
 }).$mount('#app')

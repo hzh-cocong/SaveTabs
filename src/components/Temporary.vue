@@ -72,7 +72,7 @@
               v-for="(tab, i) in item.tabs"
               :key="index+'.'+i"
               :title="tab.title+'\r\n'+tab.url"
-              style="margin:2.5px 2.5px 0px 0px;cursor: pointer;"
+              style="margin:3px 3px 0px 0px;cursor: pointer;"
               size="mini"
               :type="tabFocus[index+'|'+i] ? 'primary' : 'info'"
               :effect="'light'"
@@ -98,7 +98,7 @@
                 class="tab-title"
                 :style="{
                     width: isSelected
-                        ? ( isActive ? '145px' : '55px')
+                        ? ( isActive ? '145px' : '57px')
                         : '140px'}">{{ tab.title || tab.url }}</span>
             </el-tag>
           </template>

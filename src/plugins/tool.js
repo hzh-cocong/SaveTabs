@@ -124,15 +124,17 @@ const tool = {
         }
       },
       // 方便测试
-      //*
+      /*
       mounted: function() {
         // console.warn('start')
         // console.log(this);
 
         chrome.storage = {
           sync: {
-            get: function() {
+            get: function(options, callback) {
               console.log('chrome.storage.local.get', arguments);
+              console.log('options', options)
+              callback != undefined && callback({temporary: temporary});
             }
           },
           local: {

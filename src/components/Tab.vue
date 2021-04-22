@@ -240,6 +240,7 @@ export default {
     }
   },
   mounted() {
+    console.warn('tttttttttttttttttttttttttttttttttttttttttttt')
     // todo
     window.h = this;
 

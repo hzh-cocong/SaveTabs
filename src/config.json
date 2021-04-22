@@ -29,5 +29,14 @@
     "item_show_count": 7,
 
     "width": 500,
-    "background_color": "#ffffff"
+    "background_color": "#ffffff",
+
+    "options": [
+        "temporary",
+        "note",
+        "window",
+        "history",
+        "tab",
+        "bookmark"
+    ]
 }

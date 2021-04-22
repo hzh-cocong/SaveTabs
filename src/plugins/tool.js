@@ -124,7 +124,7 @@ const tool = {
         }
       },
       // 方便测试
-      /*
+      //*
       mounted: function() {
         // console.warn('start')
         // console.log(this);

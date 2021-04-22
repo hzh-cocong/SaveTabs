@@ -22,9 +22,9 @@
         @input="search">
         <template slot="prepend">
           <el-select
-            v-model="activeWorkspaceIndex"
+            v-model="activeWorkspace"
             placeholder="请选择"
-            @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
+            @change="changeWorkspace"
             @mouseenter.native="$refs['select'].$el.click()"
             ref="select"
             style="width:80px;">
@@ -37,7 +37,7 @@
             </el-option-group>
             <el-option-group>
               <el-option
-                :value="activeWorkspaceIndex"
+                :value="activeWorkspace"
                 :disabled="true"
                 style="cursor: default">
                 <el-link
@@ -48,7 +48,7 @@
                 </el-link>
               </el-option>
               <el-option
-                :value="activeWorkspaceIndex"
+                :value="activeWorkspace"
                 :disabled="true"
                 style="cursor: default">
                 <el-link
@@ -83,24 +83,34 @@
     </div>
 
     <el-carousel
-      v-if="activeWorkspaceIndex != -1"
+      v-if="activeWorkspace != -1"
       indicator-position="outside"
       arrow="never"
       :autoplay="false"
       :loop="true"
-      :initial-index="activeWorkspaceIndex"
+      :initial-index="activeWorkspace"
       :height="(config.item_height*config.item_show_count)+'px'"
       @change="workspaceChange"
       ref="carousel">
       <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
         <component
-          v-if="index==activeWorkspaceIndex || isOpened[index]"
+          v-if="index==activeWorkspace || isOpened[index]"
           :is="workspace.type"
           :config="config"
           :isLoad="isLoad"
           :keyword="keyword"
           :platform="platform"
           ref="workspaces"></component>
+        <!-- <keep-alive>
+        <component
+          v-if="index==activeWorkspace"
+          :is="workspace.type"
+          :config="config"
+          :isLoad="isLoad"
+          :keyword="keyword"
+          :platform="platform"
+          ref="workspaces"></component>
+        </keep-alive> -->
       </el-carousel-item>
     </el-carousel>
 
@@ -108,6 +118,7 @@
 </template>
 
 <script>
+// import Vue from 'vue'
 import List from './components/List.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
@@ -117,24 +128,55 @@ import Note from './components/Note.vue'
 import Temporary from './components/Temporary.vue'
 import config from './config.json'
 
+// const Window = Vue.component('Window', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Window.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Window.vue'], resolve)
+// });
+// const History = Vue.component('History', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/History.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/History.vue'], resolve)
+// });
+// const Tab = Vue.component('Tab', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Tab.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Tab.vue'], resolve)
+// });
+// const Bookmark = Vue.component('Bookmark', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Bookmark.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Bookmark.vue'], resolve)
+// });
+// const Note = Vue.component('Note', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Note.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Note.vue'], resolve)
+// });
+// const Temporary = Vue.component('Temporary', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Temporary.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Temporary.vue'], resolve)
+// });
+
 export default {
   name: 'app',
   data() {
     return {
       keyword: '',
-      activeWorkspaceIndex: -1,//0,
+      activeWorkspace: -1,//0,
       workspaces: [],
       isLoad: false,
       config: {},
       themeMode: 'white',
       platform: '',
-      isOpened: {}
-    }
-  },
-  computed: {
-    workspace() {
-      console.error('test..workspace', this.activeWorkspaceIndex, this.isOpened[ this.activeWorkspaceIndex ]-1);
-      return this.$refs.workspaces[ this.isOpened[ this.activeWorkspaceIndex ]-1 ];
+      isOpened: {},
     }
   },
   components: {
@@ -160,22 +202,45 @@ export default {
         event.stopPropagation();
         event.preventDefault();
 
-        this.workspace.openWindow(index);
+        this.$refs.workspaces[this.activeWorkspace].openWindow(index);
       } else if(this.platform == 'Win' && event.ctrlKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
-        this.workspace.openWindow(index);
+        this.$refs.workspaces[this.activeWorkspace].openWindow(index);
       }
+    },
+
+    changeThemeMode() {
+      this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
+      document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+    },
+    addWindow() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
+    },
+    addTab() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
+    },
+    addTemporary() {
+      this.$refs.workspaces[this.activeWorkspace].add(()=>{
+        this.keyword = '';
+        this.search();
+      });
     },
     selectDelay(type) {
       if(this.lock == false) return;
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       this.lock = setTimeout(() => {
         if(type == 'down') {
-          this.workspace.down();
+          this.$refs.workspaces[this.activeWorkspace].down();
         } else if(type == 'up') {
-          this.workspace.up();
+          this.$refs.workspaces[this.activeWorkspace].up();
         } else if(type == 'left') {
           this.$refs.carousel.prev();
         } else if(type == 'right') {
@@ -185,62 +250,41 @@ export default {
       }, 1);
       this.lock = false;
     },
+    changeWorkspace() {
+      this.$refs.carousel.setActiveItem(this.activeWorkspace);
+    },
+    workspaceChange(newIndex, oldIndex) {
+      this.activeWorkspace = newIndex;
+      console.log(oldIndex);
+      this.$set(this.isOpened, this.activeWorkspace, true);
+      console.log('aaaaaaaaaaaaaaaaaaaa', this.isOpened);
+    },
+
+    openWindow() {
+      this.$refs.workspaces[this.activeWorkspace].openWindow();
+    },
     search: function() {
       // if(this.timer != undefined) clearTimeout(this.timer);
       // this.timer = setTimeout(() => {
-      //   this.workspace.search(this.keyword);
+      //   this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
       // }, 100);
 
       // if(this.lock2 == false) return;
       // // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       // this.lock2 = setTimeout(() => {
-      //   this.workspace.search(this.keyword);
+      //   this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
       //   this.lock2 = true;
       // }, 30);
       // this.lock2 = false;
 
-      this.workspace.search(this.keyword);
-    },
-    workspaceChange(newIndex) {
-      this.activeWorkspaceIndex = newIndex;
-      if( ! this.isOpened[this.activeWorkspaceIndex]) {
-        this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
-      }
-      console.log('tttttttttttttttttt', this.workspace)
-      // this.workspace.search(this.keyword);
-    },
-
-    addWindow() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-    addTab() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-    addTemporary() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-
-    openWindow() {
-      this.workspace.openWindow();
-    },
-
-    changeThemeMode() {
-      this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
-      document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      this.$refs.workspaces[this.activeWorkspace].search(this.keyword);
     },
   },
   mounted() {
     // todo
     window.vue = this;
+
+    this.$set(this.isOpened, this.activeWorkspace, true);
 
     if(navigator.platform.indexOf("Win") == 0) {
       this.platform = 'Win';
@@ -254,11 +298,8 @@ export default {
     chrome.storage.sync.get({'config': {}}, items => {
       // alert('a')
       Object.assign(this.config, items.config);
-
-      this.activeWorkspaceIndex = 2;
-      this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
-      console.log('test..activeWorkspaceIndex', JSON.stringify(this.activeWorkspaceIndex))
-      console.log('test..isOpened', JSON.stringify(this.isOpened))
+      this.activeWorkspace = 2;
+      this.$set(this.isOpened, this.activeWorkspace, true);
     });
 
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢

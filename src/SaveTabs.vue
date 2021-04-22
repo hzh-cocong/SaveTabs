@@ -118,52 +118,52 @@
 </template>
 
 <script>
-import Vue from 'vue'
+// import Vue from 'vue'
 import List from './components/List.vue'
-// import Window from './components/Window.vue'
-// import History from './components/History.vue'
-// import Tab from './components/Tab.vue'
-// import Bookmark from './components/Bookmark.vue'
-// import Note from './components/Note.vue'
-// import Temporary from './components/Temporary.vue'
+import Window from './components/Window.vue'
+import History from './components/History.vue'
+import Tab from './components/Tab.vue'
+import Bookmark from './components/Bookmark.vue'
+import Note from './components/Note.vue'
+import Temporary from './components/Temporary.vue'
 import config from './config.json'
 
-const Window = Vue.component('Window', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/Window.vue'], resolve)
-    // }, 3000);
-    require(['./components/Window.vue'], resolve)
-});
-const History = Vue.component('History', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/History.vue'], resolve)
-    // }, 3000);
-    require(['./components/History.vue'], resolve)
-});
-const Tab = Vue.component('Tab', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/Tab.vue'], resolve)
-    // }, 3000);
-    require(['./components/Tab.vue'], resolve)
-});
-const Bookmark = Vue.component('Bookmark', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/Bookmark.vue'], resolve)
-    // }, 3000);
-    require(['./components/Bookmark.vue'], resolve)
-});
-const Note = Vue.component('Note', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/Note.vue'], resolve)
-    // }, 3000);
-    require(['./components/Note.vue'], resolve)
-});
-const Temporary = Vue.component('Temporary', function (resolve) {
-    // setTimeout(function () {
-    //     require(['./components/Temporary.vue'], resolve)
-    // }, 3000);
-    require(['./components/Temporary.vue'], resolve)
-});
+// const Window = Vue.component('Window', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Window.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Window.vue'], resolve)
+// });
+// const History = Vue.component('History', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/History.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/History.vue'], resolve)
+// });
+// const Tab = Vue.component('Tab', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Tab.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Tab.vue'], resolve)
+// });
+// const Bookmark = Vue.component('Bookmark', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Bookmark.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Bookmark.vue'], resolve)
+// });
+// const Note = Vue.component('Note', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Note.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Note.vue'], resolve)
+// });
+// const Temporary = Vue.component('Temporary', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Temporary.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Temporary.vue'], resolve)
+// });
 
 export default {
   name: 'app',

@@ -263,10 +263,6 @@ export default {
       this.isLoad = true;
     };
 
-    // this.workspaces.push({
-    //   'type': 'all',
-    //   'title': '全部',
-    // });
     this.workspaces.push({
       'type': 'temporary',
       'title': '临时',

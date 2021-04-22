@@ -66,19 +66,21 @@
           :style="{
             height: config.item_height+'px',
             flexDirection: ! isSelected ? 'row' : 'column',
-            alignContent: ! isSelected ? 'center' : 'stretch',
-            justifyContent: ! isSelected ? 'left' : 'space-evenly' }">
+            alignContent: ! isSelected ? 'center' : 'stretch', }">
           <template v-if="isSelected">
             <el-tag
               v-for="(tab, i) in item.tabs"
               :key="index+'.'+i"
               :title="tab.title+'\r\n'+tab.url"
-              style="margin:0px 2.5px 2.5px 0px;cursor: pointer;"
+              style="margin:2.5px 2.5px 0px 0px;cursor: pointer;"
               size="mini"
-              type='primary'
-              :effect="'plain'"
+              :type="tabFocus[index+'|'+i] ? 'primary' : 'info'"
+              :effect="'light'"
               :closable="isActive"
               :disable-transitions="true"
+              :hit="false"
+              @mouseover.native="$set(tabFocus, index+'|'+i, true)"
+              @mouseout.native="$set(tabFocus, index+'|'+i, false)"
               @click.stop="openTab(i)"
               @close.stop="deleteTab(i)">
               <el-image
@@ -237,6 +239,8 @@ export default {
       keyword: '',
 
       currentIndex: -1,
+
+      tabFocus: {},
     }
   },
   components: {

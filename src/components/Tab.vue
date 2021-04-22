@@ -48,6 +48,7 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
+            v-if = "isLoad"
             :src="isLoad ? getIcon(item.favIconUrl, item.url, config.item_height-20) : ''"
             style="width:100%; height: 100%;"
             fit="cover"
@@ -55,9 +56,12 @@
             <div slot="error" class="image-slot" v-if="isLoad">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <div slot="placeholder" class="image-slot" v-if="isLoad">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            <div slot="placeholder" class="image-slot">
+
             </div>
+            <!-- <div slot="placeholder" class="image-slot" v-if="isLoad && index >= config.item_show_count">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div> -->
           </el-image>
         </span>
 

@@ -142,11 +142,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('test.scrollDisabled.load', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -157,7 +152,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       // 查找
       let filterList = this.originList.filter(bookmark => {
@@ -182,8 +176,6 @@ export default {
       this.currentIndex = 0;
     },
     load() {
-      console.log('load', this.scrollDisabled);
-
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -204,7 +196,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -220,8 +211,6 @@ export default {
 
     // 查找
     chrome.bookmarks.search({}, (bookmarks)=>{
-      console.log('bookmarks.query', bookmarks);
-
       // 过滤掉文件夹
       bookmarks = bookmarks.filter(bookmark => {
         if(bookmark.url == undefined) {

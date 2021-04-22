@@ -133,7 +133,6 @@ export default {
   },
   computed: {
     workspace() {
-      console.error('test..workspace', this.activeWorkspaceIndex, this.isOpened[ this.activeWorkspaceIndex ]-1);
       return this.$refs.workspaces[ this.isOpened[ this.activeWorkspaceIndex ]-1 ];
     }
   },
@@ -148,9 +147,6 @@ export default {
   },
   methods: {
     keydown(event) {
-      console.log('key', arguments)
-      console.log('key', arguments[0].key)
-
       if(this.platform == '') return;
 
       let index = event.keyCode-49+1;
@@ -206,7 +202,6 @@ export default {
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       }
-      console.log('tttttttttttttttttt', this.workspace)
       // this.workspace.search(this.keyword);
     },
 
@@ -247,8 +242,6 @@ export default {
     } else if(navigator.platform.indexOf("Mac") == 0) {
       this.platform = 'Mac';
     }
-    console.log('platform', this.platform);
-    console.log('navigator', navigator);
 
     this.config = config;
     chrome.storage.sync.get({'config': {}}, items => {
@@ -257,14 +250,10 @@ export default {
 
       this.activeWorkspaceIndex = 2;
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
-      console.log('test..activeWorkspaceIndex', JSON.stringify(this.activeWorkspaceIndex))
-      console.log('test..isOpened', JSON.stringify(this.isOpened))
     });
 
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     document.body.onload=() => {
-      // alert('b')
-      console.info('onload')
       // setTimeout(() => {
         this.isLoad = true;
       // }, 1000)
@@ -295,9 +284,6 @@ export default {
       'type': 'bookmark',
       'title': '书签',
     });
-
-    console.log(this.workspaces);
-    console.log(this.storageList);
   }
 }
 </script>

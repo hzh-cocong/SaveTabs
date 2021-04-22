@@ -163,11 +163,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('test.scrollDisabled.load', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -178,7 +173,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       this.lastVisitTime = new Date().getTime();
       this.startTime = this.keyword == '' ?  new Date().getTime()-86400000 : 0;
@@ -190,13 +184,10 @@ export default {
           endTime: this.lastVisitTime,
           maxResults: this.config.list_page_count,
         }, (historys)=>{
+        // 谷歌提供的接口返回的结果过有时候会是错误的
         historys = historys.sort((a, b)=>{
           return b.lastVisitTime-a.lastVisitTime;
         });
-        // 谷歌提供的接口返回的结果过有时候会是错误的
-
-        console.log('load.search', JSON.parse(JSON.stringify(historys)));
-        console.log('load.search2', historys);
 
         if(historys.length == 0) {
           this.list = [];
@@ -211,20 +202,16 @@ export default {
 
         this.list = historys2;
         this.currentIndex = 0;
+        this.scrollDisabled = historys.length < this.config.list_page_count;
         if(this.list.length == 0) {
           this.lastVisitTime = this.lastVisitTime-1000*1;
         } else {
           this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
         }
-
-        console.log('test', historys.length, this.config.list_page_count, historys.length < this.config.list_page_count)
-
-        this.scrollDisabled = historys.length < this.config.list_page_count;
       })
     },
     load() {
       // 查找
-      console.log('load.start', this.lastVisitTime, this.timeShow(this.lastVisitTime));
       chrome.history.search({
           text: this.keyword,
           startTime: this.startTime,
@@ -235,15 +222,13 @@ export default {
           return b.lastVisitTime-a.lastVisitTime;
         });
 
-        console.log('load.load', historys);
-
         if(historys.length == 0) {
           this.scrollDisabled = true;
           return;
         }
 
         let historys2 = historys.filter((history) => {
-          if(history.lastVisitTime >= this.lastVisitTime) console.warn('aaaaaa');
+          // if(history.lastVisitTime >= this.lastVisitTime) console.warn('aaaaaa');
           return history.lastVisitTime < this.lastVisitTime;
         })
 
@@ -251,14 +236,12 @@ export default {
         // this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
         this.scrollDisabled = historys.length < this.config.list_page_count;
         let lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        console.warn('history.loading.result', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
+        // console.warn('history.loading.result', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
         if(this.lastVisitTime <= lastVisitTime) {
-          console.error('history.loading.result.wrong', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
+          // console.error('history.loading.result.wrong', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
           lastVisitTime = this.lastVisitTime-1000*1;
         }
         this.lastVisitTime = lastVisitTime;
-
-        console.log('load.end', this.lastVisitTime, this.timeShow(this.lastVisitTime));
       })
     },
     openWindow(index) {
@@ -271,7 +254,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -289,7 +271,6 @@ export default {
     },
     deleteHistory(index) {
       let url = this.list[index].url;
-      console.log('delete.history', url);
       chrome.history.deleteUrl({ url: url }, () => {
         this.list.splice(index, 1);
         if(this.list.length < this.config.list_page_count

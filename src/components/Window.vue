@@ -271,11 +271,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('window.scrollDisabled', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -286,7 +281,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       // 查找
       let filterList = this.storageList.filter(group => {
@@ -322,12 +316,8 @@ export default {
       } else {
         this.currentIndex = 0;
       }
-
-      console.log('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
     },
     load() {
-      console.log('load', this.scrollDisabled);
-
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -384,7 +374,6 @@ export default {
         chrome.tabs.query({
             currentWindow: true
         }, tabs => {
-          console.log('tabs', tabs);
           resolve(tabs)
         })
       }).then((tabs) => {
@@ -405,10 +394,8 @@ export default {
           windowId: currentWindowId,
           id: id,
         });
-        console.log('add', this.storageList);
         return currentWindowId;
       }).then((currentWindowId) => {
-        console.log('currentWindowId', currentWindowId)
         // 保存数据
         chrome.storage.local.set({list: this.storageList}, () => {
           this.currentWindowId = currentWindowId;
@@ -430,7 +417,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -614,7 +600,6 @@ export default {
       // 获取本地数据
       chrome.storage.local.get({'list': []}, items => {
         this.storageList = items.list;
-        console.log('window-list', items)
         resolve()
       });
     }).then(() => {
@@ -622,7 +607,6 @@ export default {
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
             this.currentWindowId = window.id;
-            console.log('window-window', window)
             resolve(window)
         })
       })
@@ -668,13 +652,10 @@ export default {
       return new Promise((resolve) => {
         // 判断窗口是否已打开
         chrome.windows.getAll({}, windows => {
-          console.log('window-windows', windows)
           resolve(windows);
         })
       })
     }).then((windows) => {
-      console.log('window-windows2', windows)
-
       // 保存活跃的窗口
       for(let window of windows) {
         this.activeWindows[ window.id ] = true;

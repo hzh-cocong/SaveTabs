@@ -157,11 +157,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('test.scrollDisabled.load', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -172,7 +167,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       // 查找
       let filterList = this.originList.filter(tab => {
@@ -195,8 +189,6 @@ export default {
       this.currentIndex = 0;
     },
     load() {
-      console.log('load', this.scrollDisabled);
-
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -217,7 +209,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -240,14 +231,11 @@ export default {
     }
   },
   mounted() {
-    console.warn('tttttttttttttttttttttttttttttttttttttttttttt')
     // todo
     window.h = this;
 
     // 查找
     chrome.tabs.query({}, (tabs)=>{
-      console.log('tabs.query', tabs);
-
       this.originList = tabs;
 
       // 更新列表

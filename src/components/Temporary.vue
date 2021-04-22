@@ -246,11 +246,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('test.scrollDisabled.load', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -261,7 +256,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       // 查找
       let keywords = this.keyword == undefined ? '' : this.keyword.toUpperCase().split(/\s+/);
@@ -294,8 +288,6 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     load() {
-      console.log('load', this.scrollDisabled);
-
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -314,7 +306,6 @@ export default {
         chrome.tabs.query({
           currentWindow: true
         }, tabs => {
-          console.log('tabs', tabs);
           resolve(tabs)
         })
       }).then((tabs) => {
@@ -334,7 +325,6 @@ export default {
           lastVisitTime: new Date().getTime(),
           tabs: ts,
         });
-        console.log('add', this.storageList);
       }).then(() => {
         // 保存数据
         new Promise((resolve) => {
@@ -357,7 +347,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -459,12 +448,10 @@ export default {
   mounted() {
     // todo
     window.t = this;
-    console.log(this);
 
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
-      console.log('tab-list', items)
       // 更新列表
       this.search();
     });

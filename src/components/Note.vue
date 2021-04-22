@@ -202,11 +202,6 @@ export default {
   components: {
     List,
   },
-  watch: {
-    scrollDisabled: function(newVal, oldVal) {
-      console.log('test.scrollDisabled.load', newVal, oldVal)
-    }
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -217,7 +212,6 @@ export default {
     search(keyword) {
       if(keyword != undefined && this.keyword == keyword.trim()) return;
       if(keyword != undefined) this.keyword = keyword.trim();
-      console.log('search', keyword+'|');
 
       // 查找
       let filterList = this.storageList.filter(tab => {
@@ -256,12 +250,8 @@ export default {
       } else {
         this.currentIndex = 0;
       }
-
-      console.log('search', this.cacheList, this.config.list_page_count, this.cacheList.length <= this.config.list_page_count);
     },
     load() {
-      console.log('load', this.scrollDisabled);
-
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -318,7 +308,6 @@ export default {
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-      console.log('openWindow', currentIndex);
 
       this.currentIndex = currentIndex;
       this._openWindow();
@@ -399,7 +388,6 @@ export default {
       // 获取本地数据
       chrome.storage.local.get({tabs: []}, items => {
         this.storageList = items.tabs;
-        console.log('tab-list', items)
         resolve()
       });
     }).then(() => {
@@ -407,8 +395,7 @@ export default {
       return new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           this.currentTab = tabs[0];
-          console.log('tab-tab', tabs[0])
-          resolve(tabs[0])
+          resolve()
         })
       })
     }).then(() => {
@@ -423,7 +410,6 @@ export default {
           break;
         }
       }
-      console.log('tab.index', index);
       if(index == -1) return;
 
       // 标记
@@ -437,8 +423,6 @@ export default {
         })
       })
     }).then((tabs) => {
-      console.log('tabs-tabs2', tabs)
-
       // 保存活跃的窗口
       for(let tab of tabs) {
         this.activeTabs[ tab.id ] = tab.windowId;

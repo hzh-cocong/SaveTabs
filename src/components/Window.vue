@@ -252,7 +252,7 @@ export default {
 
       page: 0,
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: undefined,
 
       currentIndex: -1,
       currentWindowId: -1,
@@ -279,13 +279,19 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('window.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('window.search2', this.storageKeyword, keyword)
+
+      let isFirstSearch = this.storageKeyword == undefined;
+
+      this.storageKeyword = keyword.trim();
 
       // 查找
       let filterList = this.storageList.filter(group => {
         let name = group.name.toUpperCase();
-        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
+        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
           if(name.indexOf(keyword) == -1) {
             return false;
           }
@@ -311,28 +317,26 @@ export default {
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       // this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
-      if(keyword == undefined && this.isInCurrentWindow && this.list.length > 1) {
+      if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) {
         this.currentIndex = 1;
       } else {
         this.currentIndex = 0;
       }
     },
     load() {
+      console.log('window.load')
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
         return;
       }
+      console.log('window.load2')
 
       this.list.push(...data);
       this.page++;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-
-      // if(data.length != this.config.list_page_count) {
-      //   this.scrollDisabled = true;
-      // }
     },
-    add(callback) {
+    add(callback, keyword) {
       // 当前窗口只能有一个
       if(this.isInCurrentWindow) {
         this.$message({
@@ -342,10 +346,13 @@ export default {
           duration: 2000,
           customClass: 'window-message-box',
         });
+        callback();
+
         return;
       }
       // 窗口名不允许为空
-      if(this.keyword == '') {
+      if(keyword == undefined
+      || keyword == '') {
         this.$message({
           type: 'warning',
           message: this.lang('emptyGroupName'),
@@ -353,11 +360,13 @@ export default {
           offset: 69,
           duration: 2000,
         });
+        callback();
+
         return;
       }
       // 窗口名不允许重复
       for(let group of this.storageList) {
-        if(group.name == this.keyword) {
+        if(group.name == keyword) {
           this.$message({
             type: 'warning',
             message: this.lang('groupNameRepeat'),
@@ -365,6 +374,8 @@ export default {
             offset: 69,
             duration: 2000,
           });
+          callback();
+
           return;
         }
       }
@@ -389,7 +400,7 @@ export default {
         let id = nanoid();
         let currentWindowId = tabs[0].windowId;
         this.storageList.unshift({
-          name: this.keyword,
+          name: keyword,
           tabs: ts,
           windowId: currentWindowId,
           id: id,
@@ -402,6 +413,10 @@ export default {
           this.activeWindows[this.currentWindowId] = true;
           this.isCurrentWindowChange = false;
           this.isInCurrentWindow = true;
+
+          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          this.storageKeyword = ' ';
+
           // this.search();
           callback();
         });
@@ -527,12 +542,15 @@ export default {
       }).then(() => {
         let index = this.getStorageIndex();
         this.storageList.splice(index , 1);
-        // 可优化
         chrome.storage.local.set({list: this.storageList}, () => {
           if(group.windowId == this.currentWindowId) {
             this.isInCurrentWindow = false;
           }
-          this.search();
+          this.list.splice(this.currentIndex, 1);
+          if(this.list.length < this.config.list_page_count
+          && this.scrollDisabled == false) {
+            this.load();
+          }
         });
       }).catch(() => {
       });
@@ -661,8 +679,12 @@ export default {
         this.activeWindows[ window.id ] = true;
       }
 
+      console.log('window.finish')
+      this.$emit('finish');
+      console.log('window.finish2')
+
       // 更新列表
-      this.search();
+      // this.search();
     })
   }
 }

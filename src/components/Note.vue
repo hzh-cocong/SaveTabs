@@ -190,7 +190,7 @@ export default {
 
       page: 0,
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: undefined,
 
       currentIndex: -1,
       currentTab: {},
@@ -210,14 +210,20 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('note.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('note.search2', this.storageKeyword, keyword)
+
+      let isFirstSearch = this.storageKeyword == undefined;
+
+      this.storageKeyword = keyword.trim();
 
       // 查找
       let filterList = this.storageList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
-        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
+        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
           if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
             return false;
           }
@@ -245,18 +251,20 @@ export default {
       this.page = 1;
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(keyword == undefined && this.isInCurrentTab && this.list.length > 1) {
+      if(isFirstSearch && this.isInCurrentTab && this.list.length > 1) {
         this.currentIndex = 1;
       } else {
         this.currentIndex = 0;
       }
     },
     load() {
+      console.log('note.load');
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
         return;
       }
+      console.log('note.load2');
 
       this.list.push(...data);
       this.page++;
@@ -272,6 +280,8 @@ export default {
           duration: 2000,
           customClass: 'window-message-box',
         });
+        callback();
+
         return;
       }
 
@@ -288,13 +298,13 @@ export default {
       // 保存数据
       chrome.storage.local.set({tabs: this.storageList}, () => {
 
-        this.activeTabs[this.currentTab.id] = true;
+        this.activeTabs[this.currentTab.id] = this.currentTab.windowId;
         this.isInCurrentTab = true;
 
-        // 这样列表才会刷新
-        this.keyword = undefined;
+        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        this.storageKeyword = ' ';
 
-        // this.search();
+        // this.search(this.storageKeyword);
         callback();
       })
     },
@@ -378,7 +388,7 @@ export default {
           return i;
         }
       }
-    },
+    }
   },
   mounted() {
     // todo
@@ -428,8 +438,12 @@ export default {
         this.activeTabs[ tab.id ] = tab.windowId;
       }
 
+      console.log('Note.finish')
+      this.$emit('finish');
+      console.log('Note.finish2')
+
       // 更新列表
-      this.search();
+      // this.search(this.storageKeyword);
     })
   }
 }

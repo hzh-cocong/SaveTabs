@@ -31,12 +31,14 @@
     "width": 500,
     "background_color": "#ffffff",
 
-    "options": [
-        "temporary",
+    "workspaces": [
+        "tab",
         "note",
         "window",
+        "temporary",
         "history",
-        "tab",
         "bookmark"
-    ]
+    ],
+    "activeWorkspace": "tab",
+    "button_follow_workspace": false
 }

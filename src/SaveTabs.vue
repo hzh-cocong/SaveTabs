@@ -44,6 +44,17 @@
                   type="info"
                   style="margin-left: 5px; font-size: 18px; cursor:pointer;"
                   @click="changeThemeMode">
+                  <font-awesome-icon icon="user-secret"></font-awesome-icon>
+                </el-link>
+              </el-option>
+              <el-option
+                :value="activeWorkspaceIndex"
+                :disabled="true"
+                style="cursor: default">
+                <el-link
+                  type="info"
+                  style="margin-left: 5px; font-size: 18px; cursor:pointer;"
+                  @click="changeThemeMode">
                   <i :class="themeMode == 'white' ? 'el-icon-sunny' : 'el-icon-moon'"></i>
                 </el-link>
               </el-option>
@@ -67,17 +78,17 @@
         <el-button
           type="default"
           icon="el-icon-download"
-          @click="addWindow"
+          @click="add('window')"
           ></el-button>
         <el-button
           type="default"
           icon="el-icon-collection-tag"
-          @click="addTab"
+          @click="add('note')"
           ></el-button>
         <el-button
           type="default"
           icon="el-icon-paperclip"
-          @click="addTemporary"
+          @click="add('temporary')"
           ></el-button>
       </el-button-group>
     </div>
@@ -94,12 +105,12 @@
       ref="carousel">
       <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
         <component
-          v-if="index==activeWorkspaceIndex || isOpened[index]"
+          v-if="isOpened[index]"
           :is="workspace.type"
           :config="config"
           :isLoad="isLoad"
-          :keyword="keyword"
           :platform="platform"
+          @finish="finish"
           ref="workspaces"></component>
       </el-carousel-item>
     </el-carousel>
@@ -128,12 +139,40 @@ export default {
       config: {},
       themeMode: 'white',
       platform: '',
-      isOpened: {}
+      isOpened: {},
+      things: {},
+      allWorkspaces: {
+        'tab': {
+          'type': 'tab',
+          'title': '标签',
+        },
+        'note': {
+          'type': 'note',
+          'title': '便签',
+        },
+        'window': {
+          'type': 'window',
+          'title': '窗口',
+        },
+        'temporary': {
+          'type': 'temporary',
+          'title': '临时',
+        },
+        'history': {
+          'type': 'history',
+          'title': '历史',
+        },
+        'bookmark': {
+          'type': 'bookmark',
+          'title': '书签',
+        },
+      }
     }
   },
   computed: {
-    workspace() {
-      return this.$refs.workspaces[ this.isOpened[ this.activeWorkspaceIndex ]-1 ];
+    activeWorkspaceRefIndex() {
+      console.log('activeWorkspaceRefIndex', this.isOpened[ this.activeWorkspaceIndex ]-1)
+      return this.isOpened[ this.activeWorkspaceIndex ]-1;
     }
   },
   components: {
@@ -146,6 +185,96 @@ export default {
     Temporary
   },
   methods: {
+    getTypeIndex(type) {
+      for(let index in this.workspaces) {
+        if(this.workspaces[index].type == type) {
+          return index;
+        }
+      }
+    },
+
+    finish() {
+      // 只有组件在一开始创建的时候才会调用到这里
+      let something = this.things[ this.activeWorkspaceRefIndex ];
+      console.log('finish', this.activeWorkspaceRefIndex, something, this.$refs.workspaces)
+      if(something) {
+        if(typeof(something) == 'string') {
+          this[something]();
+        } else {
+          this[something.method](...something.params);
+        }
+      }
+    },
+
+    search() {
+      console.log('start.search', this.activeWorkspaceRefIndex, this.$refs)
+      if(this.$refs.workspaces == undefined
+      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+        // 如果在这之前已经有其它事情待处理（如添加），则不作查询，会有人帮忙处理
+        if(this.things[ this.activeWorkspaceRefIndex ] == undefined) {
+          this.things[ this.activeWorkspaceRefIndex ] = 'search';
+        }
+        return;
+      }
+      console.log('searchffffffff', this.$refs.workspaces[ this.activeWorkspaceRefIndex ])
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
+    },
+    openWindow() {
+      if(this.$refs.workspaces == undefined
+      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+        this.things[ this.activeWorkspaceRefIndex ] = 'openWindow';
+        return;
+      }
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow();
+    },
+    down() {
+      if(this.$refs.workspaces == undefined
+      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+        this.things[ this.activeWorkspaceRefIndex ] = 'down';
+        return;
+      }
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
+    },
+    up() {
+      if(this.$refs.workspaces == undefined
+      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+        this.things[ this.activeWorkspaceRefIndex ] = 'up';
+        return;
+      }
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
+    },
+    add(type) {
+      let index = this.getTypeIndex(type);
+      this.$refs.carousel.setActiveItem(index);
+      console.log('add', index, this.isOpened[ index ])
+      if(this.isOpened[ index ] == undefined) {
+        let refIndex = Object.keys(this.isOpened).length;
+        this.things[ refIndex ] = {
+          'method': 'add',
+          'params': [type, this.keyword]
+        }
+        console.log(this.things)
+        return;
+      }
+      let refIndex =  this.isOpened[ index ]-1;
+      let workspace = this.$refs.workspaces[ refIndex ];
+      // if(workspace == undefined) {
+      //   this.things[ refIndex ] = 'add';
+      //   return;
+      // }
+      console.log('add2')
+      workspace.add(()=>{
+        console.log('add3', 'success', refIndex, this.activeWorkspaceRefIndex, this.$refs.workspaces[ refIndex ]);
+        this.keyword = '';
+        if(refIndex == this.activeWorkspaceRefIndex) {
+          // 添加完后当前窗口可能还没有完全切换过去，此时刷新的仍然是切换前的窗口，所以不需要刷新
+          // 至于切换完后的刷新问题，这个完全不用担心，有专门的事件负责
+          this.search();
+        }
+      }, this.keyword);
+    },
+
+
     keydown(event) {
       if(this.platform == '') return;
 
@@ -156,12 +285,12 @@ export default {
         event.stopPropagation();
         event.preventDefault();
 
-        this.workspace.openWindow(index);
+        this.openWindow();
       } else if(this.platform == 'Win' && event.ctrlKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
-        this.workspace.openWindow(index);
+        this.openWindow();
       }
     },
     selectDelay(type) {
@@ -169,9 +298,9 @@ export default {
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       this.lock = setTimeout(() => {
         if(type == 'down') {
-          this.workspace.down();
+          this.down();
         } else if(type == 'up') {
-          this.workspace.up();
+          this.up();
         } else if(type == 'left') {
           this.$refs.carousel.prev();
         } else if(type == 'right') {
@@ -181,51 +310,15 @@ export default {
       }, 1);
       this.lock = false;
     },
-    search: function() {
-      // if(this.timer != undefined) clearTimeout(this.timer);
-      // this.timer = setTimeout(() => {
-      //   this.workspace.search(this.keyword);
-      // }, 100);
-
-      // if(this.lock2 == false) return;
-      // // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
-      // this.lock2 = setTimeout(() => {
-      //   this.workspace.search(this.keyword);
-      //   this.lock2 = true;
-      // }, 30);
-      // this.lock2 = false;
-
-      this.workspace.search(this.keyword);
-    },
     workspaceChange(newIndex) {
+      console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
+        console.log('workspaceChange2', newIndex)
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       }
-      // this.workspace.search(this.keyword);
-    },
 
-    addWindow() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-    addTab() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-    addTemporary() {
-      this.workspace.add(()=>{
-        this.keyword = '';
-        this.search();
-      });
-    },
-
-    openWindow() {
-      this.workspace.openWindow();
+      this.search();
     },
 
     changeThemeMode() {
@@ -248,8 +341,18 @@ export default {
       // alert('a')
       Object.assign(this.config, items.config);
 
-      this.activeWorkspaceIndex = 2;
+      // for(let type of this.config.workspaces) {
+      //   this.workspaces.push(this.allWorkspaces[type]);
+      // }
+      this.workspaces = this.config.workspaces.map((workspace) => {
+        return this.allWorkspaces[workspace];
+      });
+      console.log('ffffffff', this.workspaces);
+
+      this.activeWorkspaceIndex = 0;
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
+      console.log(JSON.stringify(this.isOpened))
+      this.search();
     });
 
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
@@ -259,31 +362,6 @@ export default {
       // }, 1000)
 
     };
-
-    this.workspaces.push({
-      'type': 'temporary',
-      'title': '临时',
-    });
-    this.workspaces.push({
-      'type': 'note',
-      'title': '便签',
-    });
-    this.workspaces.push({
-      'type': 'window',
-      'title': '窗口',
-    });
-    this.workspaces.push({
-      'type': 'history',
-      'title': '历史',
-    });
-    this.workspaces.push({
-      'type': 'tab',
-      'title': '标签',
-    });
-    this.workspaces.push({
-      'type': 'bookmark',
-      'title': '书签',
-    });
   }
 }
 </script>

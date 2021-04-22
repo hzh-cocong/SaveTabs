@@ -236,7 +236,7 @@ export default {
 
       page: 0,
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: null,
 
       currentIndex: -1,
 
@@ -254,11 +254,15 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('temporary.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('temporary.search2', this.storageKeyword, keyword)
+
+      this.storageKeyword = keyword.trim();
 
       // 查找
-      let keywords = this.keyword == undefined ? '' : this.keyword.toUpperCase().split(/\s+/);
+      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       let filterList = this.storageList.filter(temporary => {
         for(let tab of temporary.tabs) {
           let isMath = true;
@@ -452,8 +456,13 @@ export default {
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
+
+      console.log('temporary.finish')
+      this.$emit('finish');
+      console.log('temporary.finish2')
+
       // 更新列表
-      this.search();
+      // this.search();
     });
   }
 }

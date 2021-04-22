@@ -148,7 +148,7 @@ export default {
       originList: [],
 
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: null,
 
       page: 0,
       currentIndex: -1,
@@ -165,14 +165,18 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('tab.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('tab.search2', this.storageKeyword, keyword)
+
+      this.storageKeyword = keyword.trim();
 
       // 查找
       let filterList = this.originList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
-        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
+        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
           if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
             return false;
           }
@@ -238,8 +242,12 @@ export default {
     chrome.tabs.query({}, (tabs)=>{
       this.originList = tabs;
 
+      console.log('tab.finish')
+      this.$emit('finish');
+      console.log('tab.finish2')
+
       // 更新列表
-      this.search();
+      // this.search();
     })
   }
 }

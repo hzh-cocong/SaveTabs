@@ -3,12 +3,50 @@
     <el-header>
       <h3>SaveTabs</h3>
     </el-header>
-    <el-main style="width: 560px;margin:auto;">
+    <el-main style="width: 700px;margin:auto;">
       <el-row type="flex" justify="center">
         <el-col :span="24">
           <el-tabs v-model="activeName" type="border-card" tab-position="top" align="left">
             <el-tab-pane :label="lang('basicSettings')" name="first">
               <el-form ref="form" :model="form" label-width="110px" :inline="true" size="mini">
+
+                <el-divider>字体大小</el-divider>
+
+                <el-form-item label="标题">
+                  <el-input-number v-model="form.list_font_size" :min="12" :max="50" label=""></el-input-number>
+                </el-form-item>
+                <el-form-item label="副标题">
+                  <el-input-number v-model="form.list_explain_font_size" :min="12" :max="50" label=""></el-input-number>
+                </el-form-item>
+                <el-form-item label="状态栏">
+                  <el-input-number v-model="form.list_state_size" :min="12" :max="50" label=""></el-input-number>
+                </el-form-item>
+                <el-form-item label="键盘栏">
+                  <el-input-number v-model="form.list_keymap_size" :min="12" :max="50" label=""></el-input-number>
+                </el-form-item>
+
+
+              <el-divider>{{ lang('keySettings') }}</el-divider>
+
+              <el-form-item label="高度">
+                <el-input-number v-model="form.item_height" :min="12" :max="50" label=""></el-input-number>
+              </el-form-item>
+              <el-form-item label="宽度">
+                <el-input-number v-model="form.width" :min="12" :max="50" label=""></el-input-number>
+              </el-form-item>
+              <el-form-item label="个数">
+                <el-input-number v-model="form.item_show_count" :min="12" :max="50" label=""></el-input-number>
+              </el-form-item>
+              <el-form-item label="页数">
+                <el-input-number v-model="form.list_page_count" :min="12" :max="50" label=""></el-input-number>
+              </el-form-item>
+                <el-form-item label="背景色">
+                  <el-color-picker v-model="form.background_color"></el-color-picker>
+                </el-form-item>
+
+
+
+
 
                 <el-divider>{{ lang('listItem') }}</el-divider>
 
@@ -20,9 +58,6 @@
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
                   <el-color-picker v-model="form.list_font_color"></el-color-picker>
-                </el-form-item>
-                <el-form-item :label="lang('fontSize')">
-                  <el-input-number v-model="form.list_font_size" :min="12" :max="50" label=""></el-input-number>
                 </el-form-item>
 
                 <el-divider>{{ lang('listItemSelected') }}</el-divider>
@@ -117,8 +152,39 @@
                 :content="lang('addKeysExplain')">
                 <el-button slot="reference" icon="el-icon-key" @click="openTab('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
               </el-popover>
+
+
             </el-tab-pane>
             <el-tab-pane :label="lang('praise')" name="third">
+              <el-row>
+                <el-col :span="24" style="text-align:center;margin-top: 20px;">
+                  {{ lang('thankYou') }}
+                </el-col>
+              </el-row>
+              <el-row class="praise" :gutter="20" style="margin-top: 50px">
+                <el-col :span="8">
+                  <el-card class="box-card">
+                    <img src="./assets/Alipay.png" style="width:100%;" />
+                  </el-card>
+                </el-col>
+                <el-col :span="8">
+                  <el-card class="box-card">
+                    <img src="./assets/WeChatPay.png" style="width:100%;" />
+                  </el-card>
+                </el-col>
+                <el-col :span="8">
+                  <el-card class="box-card">
+                    <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
+                  </el-card>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                <p class="describe">{{ lang('advice1')}} <a href="https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno" target="_blank">{{ lang('chromeWebStore') }}</a> {{ lang('advice2') }}</p>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane :label="lang('praise')" name="ss">
               <el-row>
                 <el-col :span="24" style="text-align:center;margin-top: 20px;">
                   {{ lang('thankYou') }}
@@ -166,9 +232,6 @@ export default {
     form: {}
   }),
   methods: {
-    lang: function(key) {
-      return chrome.i18n.getMessage(key);
-    },
     store: function() {
       chrome.storage.sync.set({'config': this.form}, () => {
         this.$message({
@@ -429,7 +492,7 @@ export default {
   margin: 10px 0 20px 0 !important;
 }
 .el-tabs__content {
-  height: 430px;
+  height: 800px;
 }
 .box-card {
   padding: 10 10 0 10px;

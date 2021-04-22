@@ -153,7 +153,7 @@ export default {
 
       lastVisitTime: new Date().getTime(),
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: null,
 
       currentIndex: -1,
 
@@ -171,15 +171,19 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('history.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('history.search2', this.storageKeyword, keyword)
+
+      this.storageKeyword = keyword.trim();
 
       this.lastVisitTime = new Date().getTime();
-      this.startTime = this.keyword == '' ?  new Date().getTime()-86400000 : 0;
+      this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
       // 查找
       chrome.history.search({
-          text: this.keyword,
+          text: this.storageKeyword,
           startTime: this.startTime,
           endTime: this.lastVisitTime,
           maxResults: this.config.list_page_count,
@@ -213,7 +217,7 @@ export default {
     load() {
       // 查找
       chrome.history.search({
-          text: this.keyword,
+          text: this.storageKeyword,
           startTime: this.startTime,
           endTime: this.lastVisitTime,
           maxResults: this.config.list_page_count,
@@ -284,8 +288,14 @@ export default {
     // todo
     window.h = this;
 
+    console.log('history.mounted')
+
+    console.log('history.finish')
+    this.$emit('finish');
+    console.log('history.finish2')
+
     // 更新列表
-    this.search();
+    // this.search();
   }
 }
 </script>

@@ -133,7 +133,7 @@ export default {
       originList: [],
 
       scrollDisabled: true,
-      keyword: '',
+      storageKeyword: null,
 
       page: 0,
       currentIndex: -1,
@@ -150,8 +150,12 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword != undefined && this.keyword == keyword.trim()) return;
-      if(keyword != undefined) this.keyword = keyword.trim();
+      console.log('bookmark.search', this.storageKeyword, keyword)
+      if(keyword == undefined) return;
+      if(this.storageKeyword == keyword.trim()) return;
+      console.log('bookmark.search2', this.storageKeyword, keyword)
+
+      this.storageKeyword = keyword.trim();
 
       // 查找
       let filterList = this.originList.filter(bookmark => {
@@ -159,7 +163,7 @@ export default {
 
         let title = bookmark.title.toUpperCase();
         let url = bookmark.url.toUpperCase();
-        for(let keyword of this.keyword.toUpperCase().split(/\s+/)) {
+        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
           if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
             return false;
           }
@@ -227,8 +231,12 @@ export default {
 
       this.originList = bookmarks;
 
+      console.log('bookmark.finish')
+      this.$emit('finish');
+      console.log('bookmark.finish2')
+
       // 更新列表
-      this.search();
+      // this.search();
     })
   }
 }

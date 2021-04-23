@@ -5,6 +5,7 @@
       width: config.width+'px',
       backgroundColor: config.background_color,
       }">
+sdfdf<embed src="./assets/svg/windows-brands.svg" type="image/svg+xml" />
     <div class="toolbar">
       <el-input
         class="search-input"
@@ -30,11 +31,49 @@
             @mouseenter.native="$refs['select'].$el.click()"
             ref="select">
             <template slot="prefix">
-              <svg-icon
-                :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
+              <template v-for="(workspace, index) in workspaces">
+                <span
+                  v-show="index == activeWorkspaceIndex"
+                  :key="index"
+                  :style="{
+                    color: config.pinned
+                        && currentWorkspace != undefined
+                        && config.activeWorkspaceType == currentWorkspace.type
+                        ? 'gray' : '#c0c4cc'}">
+                  <i
+                    :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
+                    class="fas fa-camera"
+                    style="margin: 10px 0 0 5px; cursor:pointer;"></i>
+                </span>
+                <!-- <i
+                v-show="index == activeWorkspaceIndex"
+                :key="index"
+                :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
                 :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
-                style="margin: 10px 0 0 5px; width: 18px; height: 20px"></svg-icon>
+                style="margin: 10px 0 0 5px; cursor:pointer;"
+                class="fas fa-camera"></i>
+                <span :key="index">{{ index+'|'+activeWorksapceIndex }}</span> -->
+              </template>
+              <!-- <i
+                v-for="(workspace, index) in workspaces"
+                v-show="index == activeWorkspaceIndex"
+                :key="index"
+                :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
+                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                      ? 'gray' : '#c0c4cc'}"
+                style="margin: 10px 0 0 5px; cursor:pointer;"
+                class="fas fa-camera"></i> -->
+                  <!-- <div>{{ currentWorkspace == undefined
+                      ? 'fas fa-frown-open fa-lg'
+                      : currentWorkspace.icon[0]+' fa-'+currentWorkspace.icon[1]+' fa-lg' }}</div> -->
+              <!-- <font-awesome-icon
+                :icon="currentWorkspace == undefined ? 'frown-open' : currentWorkspace.icon"
+                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                      ? 'gray' : '#c0c4cc'}"
+                style="margin: 10px 0 0 5px; cursor:pointer;"
+                size="lg"
+              ></font-awesome-icon> -->
             </template>
             <el-option-group>
               <el-option
@@ -42,15 +81,25 @@
                 :label="workspace.title"
                 :value="index"
                 :key="index">
-                <svg-icon
-                  :name="workspace.svg"
-                  :style="{
-                    color: config.pinned
-                  && config.activeWorkspaceType == workspace.type
-                  ? 'gray' : '#c0c4cc'}"
-                  style="width:16px;margin-right: 10px;vertical-align: -0.50em"
+                <span>
+                  <span
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == workspace.type
+                    ? 'gray' : '#c0c4cc'}">
+                    <i
+                      :class="workspace.icon[0]+' fa-'+workspace.icon[1]"
+                      style="width:20px;margin-right: 10px"
+                      @click="toPin"
+                    ></i>
+                  </span>{{ workspace.title }}
+                </span>
+                <!-- <font-awesome-icon
+                  :icon="workspace.icon"
+                  :style="{ color: config.pinned && config.activeWorkspaceType == workspace.type ? 'gray' : '#c0c4cc'}"
+                  style="width:20px;margin-right: 10px"
                   @click="toPin"
-                ></svg-icon><span>{{ workspace.title }}</span>
+                ></font-awesome-icon>{{ workspace.title }} -->
               </el-option>
             </el-option-group>
             <el-option-group>
@@ -58,36 +107,86 @@
                 :value="activeWorkspaceIndex"
                 :disabled="true"
                 style="cursor: default;text-align: center;display:flex;justify-content: space-between">
-                <span @click="$open('./options.html')">
-                  <svg-icon
-                    name="cog-solid"
-                    style="cursor:pointer;height: 20px;color: #c0c4cc"
-                  ></svg-icon>
-                </span>
                 <span
+                  style="cursor:pointer;"
                   :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  @click="$open('./options.html')">
+                  <i class="fas fa-cog fa-lg"></i>
+                </span>
+                <!-- <font-awesome-icon
+                  icon="cog"
+                  style="cursor:pointer;"
+                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  size="lg"
+                  @click="$open('./options.html')"
+                ></font-awesome-icon> -->
+                <span
+                  v-show="config.themeMode == 'white'"
+                  style="color: gray;cursor:pointer;"
                   @click="changeThemeMode">
-                  <svg-icon
-                    :name="config.themeMode == 'white' ? 'sun-solid' : 'moon-solid'"
-                    style="cursor:pointer;height: 20px;"></svg-icon>
+                  <i class="fas fa-sun fa-lg"></i>
                 </span>
                 <span
-                  :style="{
-                    color: config.pinned
-                  && currentWorkspace != undefined
-                  && config.activeWorkspaceType == currentWorkspace.type
-                  ? 'gray' : '#c0c4cc',}"
-                  @click="toPin">
-                  <svg-icon
-                    name="thumbtack-solid"
-                    :style="{transform: config.pinned
-                                      && currentWorkspace != undefined
-                                      && config.activeWorkspaceType == currentWorkspace.type
-                                      ? 'rotate(0)' : 'rotate(90deg)'}"
-                    style="cursor:pointer;height: 20px;"></svg-icon>
+                  v-show="config.themeMode == 'dark'"
+                  style="color: gray;cursor:pointer;"
+                  @click="changeThemeMode">
+                  <i class="fas fa-moon fa-lg"></i>
                 </span>
+                <!-- =
+                <font-awesome-icon
+                  :icon=" config.themeMode == 'white' ? 'sun' : 'moon'"
+                  style="cursor:pointer;"
+                  :style="{ color: config.themeMode == 'white' ? 'gray' : 'gray'}"
+                  size="lg"
+                  @click="changeThemeMode"
+                ></font-awesome-icon> -->
+                <span
+                  :style="{color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'gray' : '#c0c4cc',
+                          transform: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'rotate(0)' : 'rotate(90deg)'}"
+                  style="cursor:pointer;"
+                  @click="toPin">
+                  <i class="fas fa-thumbtack fa-lg"></i>
+                </span>
+                <!-- <font-awesome-icon
+                  icon="thumbtack"
+                  :style="{color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'gray' : '#c0c4cc',
+                          transform: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'rotate(0)' : 'rotate(90deg)'}"
+                  style="cursor:pointer;"
+                  size="lg"
+                  @click="toPin"
+                ></font-awesome-icon> -->
               </el-option>
+              <!-- <el-option
+                :value="activeWorkspaceIndex"
+                :disabled="true"
+                style="cursor: default;text-align: center;">
+                <font-awesome-icon
+                  :icon=" config.themeMode == 'white' ? 'sun' : 'moon'"
+                  style="cursor:pointer;"
+                  :style="{ color: config.themeMode == 'white' ? 'gray' : 'gray'}"
+                  size="lg"
+                  @click="changeThemeMode"
+                ></font-awesome-icon>
+              </el-option> -->
             </el-option-group>
+            <!-- <el-option-group>
+              <el-option
+                :value="activeWorkspaceIndex"
+                :disabled="true"
+                style="cursor: default; text-align: center;">
+                <font-awesome-icon
+                  icon="cog"
+                  style="cursor:pointer;"
+                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  size="lg"
+                  @click="$open('./options.html')"
+                ></font-awesome-icon>
+              </el-option>
+            </el-option-group> -->
           </el-select>
         </template>
       </el-input>
@@ -201,42 +300,36 @@ export default {
           'type': 'tab',
           'title': '标签',
           'icon': ['fas', 'window-maximize'],
-          'svg': 'window-maximize-solid',
           'placeholder': '请输入标题或地址',
         },
         'note': {
           'type': 'note',
           'title': '便签',
           'icon': ['fas', 'bookmark'],
-          'svg': 'bookmark-regular',
           'placeholder': '请输入标题或地址',
         },
         'window': {
           'type': 'window',
           'title': '窗口',
           'icon': ['fab', 'windows'],
-          'svg': 'windows-brands',
           'placeholder': '请输入窗口名',
         },
         'temporary': {
           'type': 'temporary',
           'title': 'temporary',
           'icon': ['fas', 'paperclip'],
-          'svg': 'paperclip-solid',
           'placeholder': '请输入标题或地址',
         },
         'history': {
           'type': 'history',
           'title': '历史',
           'icon': ['fas', 'history'],
-          'svg': 'history-solid',
           'placeholder': '请输入标题或地址',
         },
         'bookmark': {
           'type': 'bookmark',
           'title': '书签',
           'icon': ['fas', 'star'],
-          'svg': 'star-solid',
           'placeholder': '请输入标题或地址',
         },
       }

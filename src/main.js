@@ -8,6 +8,7 @@ import Vue from 'vue'
 // import '@fortawesome/fontawesome-free/js/brands.min.js'
 // import '@fortawesome/fontawesome-free/js/fontawesome.min.js'
 
+import './plugins/svg-sprite.js'
 import './plugins/element.js'
 import './plugins/tool.js'
 import SaveTabs from './SaveTabs.vue'

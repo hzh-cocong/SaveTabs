@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import SaveTabs from './SaveTabs.vue'
+import './plugins/fontawesome'
 import './plugins/element.js'
 import './plugins/tool.js'
+import SaveTabs from './SaveTabs.vue'
 
 Vue.config.productionTip = false
 

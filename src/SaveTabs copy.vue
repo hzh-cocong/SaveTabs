@@ -24,7 +24,7 @@
         <template slot="prepend">
 
           <el-select
-            v-if="this.workspaces.length >= 1"
+            v-if="workspaces.length >= 1"
             v-model="activeWorkspaceIndex"
             placeholder="请选择"
             @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
@@ -33,10 +33,9 @@
             <template slot="prefix">
               <font-awesome-icon
                 :icon="workspaces[activeWorkspaceIndex].icon"
-                :style="{ color: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
-                      ? 'gray' : '#c0c4cc'}"
+                :style="{ color: config.pinned && activeWorkspaceType == workspaces[activeWorkspaceIndex].type ? 'gray' : '#c0c4cc'}"
                 style="margin: 10px 0 0 5px; cursor:pointer;"
-                size="lg"
+                @click="pinned"
               ></font-awesome-icon>
             </template>
             <el-option-group>
@@ -47,10 +46,10 @@
                 :key="index">
                 <font-awesome-icon
                   :icon="workspace.icon"
-                  :style="{ color: config.pinned && config.activeWorkspaceType == workspace.type
+                  :style="{ color: config.pinned && activeWorkspaceType == workspace.type
                                   ? 'gray' : '#c0c4cc'}"
                   style="width:20px;margin-right: 10px"
-                  @click="toPin"
+                  @click="pinned"
                 ></font-awesome-icon>{{ workspace.title }}
               </el-option>
             </el-option-group>
@@ -61,13 +60,11 @@
                 style="cursor: default;">
                 <font-awesome-icon
                   icon="thumbtack"
-                  :style="{color: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
-                                  ? 'gray' : '#c0c4cc',
-                          transform: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
-                                  ? 'rotate(0)' : 'rotate(90deg)'}"
+                  :rotation="pin ? 0 : 90"
+                  :style="{ color: pin ? 'gray' : '#c0c4cc'}"
                   style="margin-left: 5px; cursor:pointer;"
                   size="lg"
-                  @click="toPin"
+                  @click="pinned"
                 ></font-awesome-icon>
               </el-option>
               <el-option
@@ -165,9 +162,11 @@ export default {
       isLoad: false,
       config: {},
       themeMode: 'white',
+      pin: false,
       platform: '',
       isOpened: {},
       things: {},
+      activeWorkspaceType: '',
       allWorkspaces: {
         'tab': {
           'type': 'tab',
@@ -202,18 +201,10 @@ export default {
       }
     }
   },
-  watch: {
-    activeWorkspaceIndex(newVal, oldVal) {
-      console.warn('activeWorksapceIndex', newVal, typeof(newVal), oldVal)
-    }
-  },
   computed: {
     activeWorkspaceRefIndex() {
       console.log('activeWorkspaceRefIndex', this.isOpened[ this.activeWorkspaceIndex ]-1)
       return this.isOpened[ this.activeWorkspaceIndex ]-1;
-    },
-    currentWorkspace() {
-      return this.workspaces[ this.activeWorkspaceIndex ];
     }
   },
   components: {
@@ -227,14 +218,11 @@ export default {
   },
   methods: {
     getTypeIndex(type) {
-      console.log('q', type);
       for(let index in this.workspaces) {
         if(this.workspaces[index].type == type) {
-          console.log('getTypeIndex2', index, typeof(index));
-          return parseInt(index);
+          return index;
         }
       }
-      console.log('getTypeIndex3');
     },
 
     finish() {
@@ -362,10 +350,6 @@ export default {
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       }
 
-      if( ! this.config.pinned) {
-        this.config.activeWorkspaceType = this.workspaces[this.activeWorkspaceIndex].type;
-      }
-
       this.search();
     },
 
@@ -373,13 +357,9 @@ export default {
       this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
       document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
     },
-    toPin() {
-      if(this.config.activeWorkspaceType == this.workspaces[this.activeWorkspaceIndex].type) {
-        this.config.pinned = ! this.config.pinned;
-      } else {
-        this.config.activeWorkspaceType = this.workspaces[this.activeWorkspaceIndex].type;
-        this.config.pinned = true;
-      }
+    pinned() {
+      this.activeWorkspaceType = this.workspaces[this.activeWorkspaceIndex].type;
+      this.pin = ! this.pin;
     }
   },
   mounted() {
@@ -402,11 +382,10 @@ export default {
       // }
       this.workspaces = this.config.workspaces.map((workspace) => {
         return this.allWorkspaces[workspace];
-      });//*/
+      });
       console.log('ffffffff', this.workspaces);
 
-      this.activeWorkspaceIndex = this.getTypeIndex(this.config.activeWorkspaceType);
-      console.log('8888888888888888888888888888888', this.activeWorkspaceIndex)
+      this.activeWorkspaceIndex = this.config.activeWorkspaceType;
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       console.log(JSON.stringify(this.isOpened))
       this.search();

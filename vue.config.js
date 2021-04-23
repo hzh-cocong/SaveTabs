@@ -14,6 +14,8 @@ module.exports = {
     index: {
       // 入口js的路径
       entry: 'src/main.js',
+      // 模板来源
+      template: 'public/savetabs.html',
       // 在 dist/index.html 的输出
       filename: 'savetabs.html',
       // 当使用 title 选项时，

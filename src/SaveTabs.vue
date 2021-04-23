@@ -31,13 +31,49 @@
             @mouseenter.native="$refs['select'].$el.click()"
             ref="select">
             <template slot="prefix">
-              <font-awesome-icon
+              <template v-for="(workspace, index) in workspaces">
+                <span
+                  v-show="index == activeWorkspaceIndex"
+                  :key="index"
+                  :style="{
+                    color: config.pinned
+                        && currentWorkspace != undefined
+                        && config.activeWorkspaceType == currentWorkspace.type
+                        ? 'gray' : '#c0c4cc'}">
+                  <i
+                    :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
+                    class="fas fa-camera"
+                    style="margin: 10px 0 0 5px; cursor:pointer;"></i>
+                </span>
+                <!-- <i
+                v-show="index == activeWorkspaceIndex"
+                :key="index"
+                :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
+                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                      ? 'gray' : '#c0c4cc'}"
+                style="margin: 10px 0 0 5px; cursor:pointer;"
+                class="fas fa-camera"></i>
+                <span :key="index">{{ index+'|'+activeWorksapceIndex }}</span> -->
+              </template>
+              <!-- <i
+                v-for="(workspace, index) in workspaces"
+                v-show="index == activeWorkspaceIndex"
+                :key="index"
+                :class="workspace.icon[0]+' fa-'+workspace.icon[1]+' fa-lg'"
+                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                      ? 'gray' : '#c0c4cc'}"
+                style="margin: 10px 0 0 5px; cursor:pointer;"
+                class="fas fa-camera"></i> -->
+                  <!-- <div>{{ currentWorkspace == undefined
+                      ? 'fas fa-frown-open fa-lg'
+                      : currentWorkspace.icon[0]+' fa-'+currentWorkspace.icon[1]+' fa-lg' }}</div> -->
+              <!-- <font-awesome-icon
                 :icon="currentWorkspace == undefined ? 'frown-open' : currentWorkspace.icon"
                 :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
                 style="margin: 10px 0 0 5px; cursor:pointer;"
                 size="lg"
-              ></font-awesome-icon>
+              ></font-awesome-icon> -->
             </template>
             <el-option-group>
               <el-option
@@ -45,12 +81,25 @@
                 :label="workspace.title"
                 :value="index"
                 :key="index">
-                <font-awesome-icon
+                <span>
+                  <span
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == workspace.type
+                    ? 'gray' : '#c0c4cc'}">
+                    <i
+                      :class="workspace.icon[0]+' fa-'+workspace.icon[1]"
+                      style="width:20px;margin-right: 10px"
+                      @click="toPin"
+                    ></i>
+                  </span>{{ workspace.title }}
+                </span>
+                <!-- <font-awesome-icon
                   :icon="workspace.icon"
                   :style="{ color: config.pinned && config.activeWorkspaceType == workspace.type ? 'gray' : '#c0c4cc'}"
                   style="width:20px;margin-right: 10px"
                   @click="toPin"
-                ></font-awesome-icon>{{ workspace.title }}
+                ></font-awesome-icon>{{ workspace.title }} -->
               </el-option>
             </el-option-group>
             <el-option-group>
@@ -58,21 +107,49 @@
                 :value="activeWorkspaceIndex"
                 :disabled="true"
                 style="cursor: default;text-align: center;display:flex;justify-content: space-between">
-                <font-awesome-icon
+                <span
+                  style="cursor:pointer;"
+                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  @click="$open('./options.html')">
+                  <i class="fas fa-cog fa-lg"></i>
+                </span>
+                <!-- <font-awesome-icon
                   icon="cog"
                   style="cursor:pointer;"
                   :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
                   size="lg"
                   @click="$open('./options.html')"
-                ></font-awesome-icon>
+                ></font-awesome-icon> -->
+                <span
+                  v-show="config.themeMode == 'white'"
+                  style="color: gray;cursor:pointer;"
+                  @click="changeThemeMode">
+                  <i class="fas fa-sun fa-lg"></i>
+                </span>
+                <span
+                  v-show="config.themeMode == 'dark'"
+                  style="color: gray;cursor:pointer;"
+                  @click="changeThemeMode">
+                  <i class="fas fa-moon fa-lg"></i>
+                </span>
+                <!-- =
                 <font-awesome-icon
                   :icon=" config.themeMode == 'white' ? 'sun' : 'moon'"
                   style="cursor:pointer;"
                   :style="{ color: config.themeMode == 'white' ? 'gray' : 'gray'}"
                   size="lg"
                   @click="changeThemeMode"
-                ></font-awesome-icon>
-                <font-awesome-icon
+                ></font-awesome-icon> -->
+                <span
+                  :style="{color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'gray' : '#c0c4cc',
+                          transform: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                                  ? 'rotate(0)' : 'rotate(90deg)'}"
+                  style="cursor:pointer;"
+                  @click="toPin">
+                  <i class="fas fa-thumbtack fa-lg"></i>
+                </span>
+                <!-- <font-awesome-icon
                   icon="thumbtack"
                   :style="{color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
                                   ? 'gray' : '#c0c4cc',
@@ -81,7 +158,7 @@
                   style="cursor:pointer;"
                   size="lg"
                   @click="toPin"
-                ></font-awesome-icon>
+                ></font-awesome-icon> -->
               </el-option>
               <!-- <el-option
                 :value="activeWorkspaceIndex"

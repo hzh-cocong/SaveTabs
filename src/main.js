@@ -1,6 +1,13 @@
 import Vue from 'vue'
+
+// vue插件方式导入（运行速度慢）
 // import './plugins/fontawesome'
-<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css"></link>
+
+// npm 导入
+import '@fortawesome/fontawesome-free/js/solid.min.js'
+import '@fortawesome/fontawesome-free/js/brands.min.js'
+import '@fortawesome/fontawesome-free/js/fontawesome.min.js'
+
 import './plugins/element.js'
 import './plugins/tool.js'
 import SaveTabs from './SaveTabs.vue'

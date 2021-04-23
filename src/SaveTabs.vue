@@ -29,11 +29,12 @@
             placeholder="请选择"
             @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
             @mouseenter.native="$refs['select'].$el.click()"
+            style="width: 100px;"
             ref="select">
             <template slot="prefix">
               <font-awesome-icon
-                :icon="workspaces[activeWorkspaceIndex].icon"
-                :style="{ color: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
+                :icon="currentWorkspace.icon"
+                :style="{ color: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
                 style="margin: 10px 0 0 5px; cursor:pointer;"
                 size="lg"
@@ -61,9 +62,9 @@
                 style="cursor: default;">
                 <font-awesome-icon
                   icon="thumbtack"
-                  :style="{color: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
+                  :style="{color: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                                   ? 'gray' : '#c0c4cc',
-                          transform: config.pinned && config.activeWorkspaceType == workspaces[activeWorkspaceIndex].type
+                          transform: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                                   ? 'rotate(0)' : 'rotate(90deg)'}"
                   style="margin-left: 5px; cursor:pointer;"
                   size="lg"
@@ -363,7 +364,7 @@ export default {
       }
 
       if( ! this.config.pinned) {
-        this.config.activeWorkspaceType = this.workspaces[this.activeWorkspaceIndex].type;
+        this.config.activeWorkspaceType = this.currentWorkspace.type;
       }
 
       this.search();
@@ -374,10 +375,10 @@ export default {
       document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
     },
     toPin() {
-      if(this.config.activeWorkspaceType == this.workspaces[this.activeWorkspaceIndex].type) {
+      if(this.config.activeWorkspaceType == this.currentWorkspace.type) {
         this.config.pinned = ! this.config.pinned;
       } else {
-        this.config.activeWorkspaceType = this.workspaces[this.activeWorkspaceIndex].type;
+        this.config.activeWorkspaceType = this.currentWorkspace.type;
         this.config.pinned = true;
       }
     }

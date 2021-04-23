@@ -5,7 +5,7 @@
       width: config.width+'px',
       backgroundColor: config.background_color,
       }">
-
+sdfdf<embed src="./assets/svg/windows-brands.svg" type="image/svg+xml" />
     <div class="toolbar">
       <el-input
         class="search-input"

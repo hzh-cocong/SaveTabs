@@ -41,5 +41,6 @@
     ],
     "activeWorkspaceType": "note",
     "pinned": true,
-    "button_follow_workspace": false
+    "button_follow_workspace": false,
+    "themeMode": "white"
 }

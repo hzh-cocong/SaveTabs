@@ -123,13 +123,16 @@ const tool = {
         }
       },
       // 方便测试
-      //*
+      /*
       mounted: function() {
         chrome.storage = {
           sync: {
             get: function(options, callback) {
               callback != undefined && callback({temporary: temporary});
-            }
+            },
+            set: function(options, callback) {
+              callback != undefined && callback();
+            },
           },
           local: {
             get: function(options, callback) {

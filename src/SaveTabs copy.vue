@@ -9,7 +9,7 @@
     <div class="toolbar">
       <el-input
         class="search-input"
-        :placeholder="currentWorkspace == undefined ? '' : currentWorkspace.placeholder"
+        :placeholder="lang('searchTip')"
         v-model="keyword"
         autofocus="autofocus"
         :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
@@ -24,7 +24,7 @@
         <template slot="prepend">
 
           <el-select
-            v-show="this.workspaces.length >= 1"
+            v-if="this.workspaces.length >= 1"
             v-model="activeWorkspaceIndex"
             placeholder="请选择"
             @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
@@ -32,8 +32,8 @@
             ref="select">
             <template slot="prefix">
               <font-awesome-icon
-                :icon="currentWorkspace == undefined ? 'frown-open' : currentWorkspace.icon"
-                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                :icon="currentWorkspace.icon"
+                :style="{ color: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
                 style="margin: 10px 0 0 5px; cursor:pointer;"
                 size="lg"
@@ -47,7 +47,8 @@
                 :key="index">
                 <font-awesome-icon
                   :icon="workspace.icon"
-                  :style="{ color: config.pinned && config.activeWorkspaceType == workspace.type ? 'gray' : '#c0c4cc'}"
+                  :style="{ color: config.pinned && config.activeWorkspaceType == workspace.type
+                                  ? 'gray' : '#c0c4cc'}"
                   style="width:20px;margin-right: 10px"
                   @click="toPin"
                 ></font-awesome-icon>{{ workspace.title }}
@@ -57,59 +58,45 @@
               <el-option
                 :value="activeWorkspaceIndex"
                 :disabled="true"
-                style="cursor: default;text-align: center;display:flex;justify-content: space-between">
-                <font-awesome-icon
-                  icon="cog"
-                  style="cursor:pointer;"
-                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
-                  size="lg"
-                  @click="$open('./options.html')"
-                ></font-awesome-icon>
-                <font-awesome-icon
-                  :icon=" config.themeMode == 'white' ? 'sun' : 'moon'"
-                  style="cursor:pointer;"
-                  :style="{ color: config.themeMode == 'white' ? 'gray' : 'gray'}"
-                  size="lg"
-                  @click="changeThemeMode"
-                ></font-awesome-icon>
+                style="cursor: default;">
                 <font-awesome-icon
                   icon="thumbtack"
-                  :style="{color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                  :style="{color: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                                   ? 'gray' : '#c0c4cc',
-                          transform: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                          transform: config.pinned && config.activeWorkspaceType == currentWorkspace.type
                                   ? 'rotate(0)' : 'rotate(90deg)'}"
-                  style="cursor:pointer;"
+                  style="margin-left: 5px; cursor:pointer;"
                   size="lg"
                   @click="toPin"
                 ></font-awesome-icon>
               </el-option>
-              <!-- <el-option
-                :value="activeWorkspaceIndex"
-                :disabled="true"
-                style="cursor: default;text-align: center;">
-                <font-awesome-icon
-                  :icon=" config.themeMode == 'white' ? 'sun' : 'moon'"
-                  style="cursor:pointer;"
-                  :style="{ color: config.themeMode == 'white' ? 'gray' : 'gray'}"
-                  size="lg"
-                  @click="changeThemeMode"
-                ></font-awesome-icon>
-              </el-option> -->
-            </el-option-group>
-            <!-- <el-option-group>
               <el-option
                 :value="activeWorkspaceIndex"
                 :disabled="true"
-                style="cursor: default; text-align: center;">
+                style="cursor: default">
+                <font-awesome-icon
+                  :icon=" themeMode == 'white' ? 'sun' : 'moon'"
+                  style="margin-left: 5px; cursor:pointer;"
+                  :style="{ color: themeMode == 'white' ? 'gray' : 'gray'}"
+                  size="lg"
+                  @click="changeThemeMode"
+                ></font-awesome-icon>
+              </el-option>
+            </el-option-group>
+            <el-option-group>
+              <el-option
+                :value="activeWorkspaceIndex"
+                :disabled="true"
+                style="cursor: default">
                 <font-awesome-icon
                   icon="cog"
-                  style="cursor:pointer;"
-                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  style="margin-left: 5px; cursor:pointer;"
+                  :style="{ color: themeMode == 'white' ? '#c0c4cc' : 'gray'}"
                   size="lg"
                   @click="$open('./options.html')"
                 ></font-awesome-icon>
               </el-option>
-            </el-option-group> -->
+            </el-option-group>
           </el-select>
         </template>
       </el-input>
@@ -177,6 +164,7 @@ export default {
       workspaces: [],
       isLoad: false,
       config: {},
+      themeMode: 'white',
       platform: '',
       isOpened: {},
       things: {},
@@ -185,37 +173,31 @@ export default {
           'type': 'tab',
           'title': '标签',
           'icon': ['fas', 'window-maximize'],
-          'placeholder': '请输入标题或地址',
         },
         'note': {
           'type': 'note',
           'title': '便签',
-          'icon': ['fas', 'bookmark'],
-          'placeholder': '请输入标题或地址',
+          'icon': ['fas', 'bookmark']
         },
         'window': {
           'type': 'window',
           'title': '窗口',
-          'icon': ['fab', 'windows'],
-          'placeholder': '请输入窗口名',
+          'icon': ['fab', 'windows']
         },
         'temporary': {
           'type': 'temporary',
           'title': 'temporary',
-          'icon': ['fas', 'paperclip'],
-          'placeholder': '请输入标题或地址',
+          'icon': ['fas', 'paperclip']
         },
         'history': {
           'type': 'history',
           'title': '历史',
-          'icon': ['fas', 'history'],
-          'placeholder': '请输入标题或地址',
+          'icon': ['fas', 'history']
         },
         'bookmark': {
           'type': 'bookmark',
           'title': '书签',
-          'icon': ['fas', 'star'],
-          'placeholder': '请输入标题或地址',
+          'icon': ['fas', 'star']
         },
       }
     }
@@ -381,28 +363,15 @@ export default {
       }
 
       if( ! this.config.pinned) {
-        console.log('ppppppppppppppppppppppp')
         this.config.activeWorkspaceType = this.currentWorkspace.type;
-        chrome.storage.sync.set({'config': this.config}, () => {
-          // this.$message({
-          //   type: 'success',
-          //   message: this.lang('saveSuccess')
-          // });
-        });
       }
 
       this.search();
     },
 
     changeThemeMode() {
-      this.config.themeMode = this.config.themeMode == 'white' ? 'dark' : 'white';
-      document.querySelector('html').style.filter = this.config.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      chrome.storage.sync.set({'config': this.config}, () => {
-        // this.$message({
-        //   type: 'success',
-        //   message: this.lang('saveSuccess')
-        // });
-      });
+      this.themeMode = this.themeMode == 'white' ? 'dark' : 'white';
+      document.querySelector('html').style.filter = this.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
     },
     toPin() {
       if(this.config.activeWorkspaceType == this.currentWorkspace.type) {
@@ -411,12 +380,6 @@ export default {
         this.config.activeWorkspaceType = this.currentWorkspace.type;
         this.config.pinned = true;
       }
-      chrome.storage.sync.set({'config': this.config}, () => {
-        // this.$message({
-        //   type: 'success',
-        //   message: this.lang('saveSuccess')
-        // });
-      });
     }
   },
   mounted() {
@@ -431,12 +394,8 @@ export default {
 
     this.config = config;
     chrome.storage.sync.get({'config': {}}, items => {
+      // alert('a')
       Object.assign(this.config, items.config);
-
-      if(this.config.themeMode == 'dark') {
-        console.error('fjsssssssssssssssssssssssjjj8u9898')
-        document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
-      }
 
       // for(let type of this.config.workspaces) {
       //   this.workspaces.push(this.allWorkspaces[type]);
@@ -491,14 +450,8 @@ export default {
   min-width: 130px;
   border-radius: 0;
 }
-.toolbar .search-input .el-input-group__prepend {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
-}
 .toolbar .search-input .el-input-group__prepend input {
   min-width: auto;
-  text-align: center;
   border: 0;
 }
 .toolbar .search-input .el-input-group__prepend input:focus {

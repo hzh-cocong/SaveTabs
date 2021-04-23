@@ -36,6 +36,7 @@
         :style="{
           backgroundColor: item.tabId == currentTab.id
                         && item.windowId == currentTab.windowId
+                        && item.url == currentTab.url
                           ? ( isSelected
                               ? config.list_current_focus_background_color
                               : config.list_current_background_color)
@@ -44,6 +45,7 @@
                               : config.list_background_color),
           color: item.tabId == currentTab.id
               && item.windowId == currentTab.windowId
+              && item.url == currentTab.url
               ? ( isSelected
                   ? config.list_current_focus_font_color
                   : config.list_current_font_color)
@@ -89,7 +91,9 @@
         </div>
 
         <div class="right">
-          <div v-if="isActive || activeTabs[item.tabId] == item.windowId">
+          <div v-if="isActive
+                  || (activeTabs[item.tabId]
+                  && activeTabs[item.tabId].windowId == item.windowId)">
             <div v-if="isActive">
               <i
               class="el-icon-close"
@@ -101,7 +105,8 @@
             </div>
             <div
               v-else-if="item.tabId == currentTab.id
-                      && item.windowId == currentTab.windowId"
+                      && item.windowId == currentTab.windowId
+                      && item.url == currentTab.url"
               :style="{
                 fontSize: config.list_state_size+'px',
                 color: isSelected
@@ -113,7 +118,9 @@
                 <span>{{ '当前便签' }}</span>
             </div>
             <div
-              v-else-if="activeTabs[item.tabId] == item.windowId"
+              v-else-if="activeTabs[item.tabId]
+                      && activeTabs[item.tabId].windowId == item.windowId
+                      && activeTabs[item.tabId].url == item.url"
               :style="{
                 fontSize: config.list_state_size+'px',
                 color: isSelected
@@ -125,7 +132,8 @@
           <div
             v-show=" ! isActive
                   && ! (item.tabId == currentTab.id
-                    && item.windowId == currentTab.windowId)">
+                    && item.windowId == currentTab.windowId
+                    && item.url == currentTab.url)">
             <span
               v-if="isSelected"
               :style="{
@@ -140,10 +148,14 @@
                       && index-$refs.list.scrollLines+1 <= config.item_show_count
                       && index-$refs.list.scrollLines+1 >= 1"
               :style="{
-                fontSize: activeTabs[item.tabId] == item.windowId
+                fontSize: activeTabs[item.tabId]
+                        && activeTabs[item.tabId].windowId == item.windowId
+                        && activeTabs[item.tabId].url == item.url
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
-                color: activeTabs[item.tabId] == item.windowId
+                color: activeTabs[item.tabId]
+                    && activeTabs[item.tabId].windowId == item.windowId
+                    && activeTabs[item.tabId].url == item.url
                     ? config.list_state_color
                     : config.list_keymap_color }">{{
                       platform == 'Win'
@@ -233,16 +245,21 @@ export default {
 
       // 重新排序
       let currentList = filterList.filter(tab => {
+        // 当前窗口需要三个条件同时满足
         return tab.tabId == this.currentTab.id
-            && tab.windowId == this.currentTab.windowId;
+            && tab.windowId == this.currentTab.windowId
+            && tab.url == this.currentTab.url;
       });
       let openedList = filterList.filter(tab => {
+        // 需已打开，并且地址未变化，而且不是当前窗口
         return this.activeTabs[tab.tabId]
+            && this.activeTabs[tab.tabId].url == tab.url
             && ! (tab.tabId == this.currentTab.id
                 && tab.windowId == this.currentTab.windowId);
       });
       let closeList = filterList.filter(tab => {
-        return ! this.activeTabs[tab.tabId];
+        return ! this.activeTabs[tab.tabId]
+              || this.activeTabs[tab.tabId].url != tab.url;
       });
 
       // 列表赋值
@@ -298,7 +315,11 @@ export default {
       // 保存数据
       chrome.storage.local.set({tabs: this.storageList}, () => {
 
-        this.activeTabs[this.currentTab.id] = this.currentTab.windowId;
+        this.activeTabs[this.currentTab.id] = {
+          id: this.currentTab.id,
+          url: this.currentTab.url,
+          windowId: this.currentTab.windowId,
+        }
         this.isInCurrentTab = true;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
@@ -327,7 +348,9 @@ export default {
       let index = this.getStorageIndex();
 
       // 标签已打开，直接切换
-      if(this.activeTabs[tab.tabId] == tab.windowId) {
+      if( this.activeTabs[tab.tabId]
+        && this.activeTabs[tab.tabId].windowId == tab.windowId
+        && this.activeTabs[tab.tabId].url == tab.url) {
         // 存储新数据（排序发生变化）
         this.storageList.unshift(this.storageList.splice(index , 1)[0]);
         chrome.storage.local.set({tabs: this.storageList}, () => {
@@ -362,6 +385,16 @@ export default {
         if(this.currentTab.url == "chrome://newtab/") {
           chrome.tabs.remove(this.currentTab.id);
         }
+
+        // 兼容非 popup 方式的操作（过于复杂，而且也不指定对，还是算了）
+        /*
+        this.activeTabs[this.currentTab.id] = {
+          id: tab.id,
+          url: tab.url,
+          windowId: tab.windowId,
+        }
+        this.storageKeyword = ' ';
+        this.search('');//*/
       })
     },
     deleteTab() {
@@ -415,7 +448,8 @@ export default {
       let index = -1;
       for(let i in this.storageList) {
         if(this.storageList[i].windowId == this.currentTab.windowId
-          && this.storageList[i].tabId == this.currentTab.id) {
+          && this.storageList[i].tabId == this.currentTab.id
+          && this.storageList[i].url == this.currentTab.url) {
           index = i;
           break;
         }
@@ -435,7 +469,7 @@ export default {
     }).then((tabs) => {
       // 保存活跃的窗口
       for(let tab of tabs) {
-        this.activeTabs[ tab.id ] = tab.windowId;
+        this.activeTabs[ tab.id ] = tab;// tab.windowId;
       }
 
       console.log('Note.finish')

@@ -39,7 +39,7 @@
         "history",
         "bookmark"
     ],
-    "activeWorkspaceType": "note",
+    "activeWorkspaceType": "window",
     "pinned": true,
     "button_follow_workspace": false,
     "themeMode": "white"

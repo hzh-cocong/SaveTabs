@@ -159,6 +159,7 @@
 </template>
 
 <script>
+// import Vue from 'vue'
 import List from './components/List.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
@@ -167,6 +168,43 @@ import Bookmark from './components/Bookmark.vue'
 import Note from './components/Note.vue'
 import Temporary from './components/Temporary.vue'
 import config from './config.json'
+
+// const Window = Vue.component('Window', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Window.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Window.vue'], resolve)
+// });
+// const History = Vue.component('History', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/History.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/History.vue'], resolve)
+// });
+// const Tab = Vue.component('Tab', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Tab.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Tab.vue'], resolve)
+// });
+// const Bookmark = Vue.component('Bookmark', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Bookmark.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Bookmark.vue'], resolve)
+// });
+// const Note = Vue.component('Note', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Note.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Note.vue'], resolve)
+// });
+// const Temporary = Vue.component('Temporary', function (resolve) {
+//     // setTimeout(function () {
+//     //     require(['./components/Temporary.vue'], resolve)
+//     // }, 3000);
+//     require(['./components/Temporary.vue'], resolve)
+// });
 
 export default {
   name: 'app',
@@ -256,6 +294,8 @@ export default {
     },
 
     finish() {
+      // setTimeout(() => {
+      console.warn('dddddddddddddddddddddddddddddddddddd');
       // 只有组件在一开始创建的时候才会调用到这里
       let something = this.things[ this.activeWorkspaceRefIndex ];
       console.log('finish', this.activeWorkspaceRefIndex, something, this.$refs.workspaces)
@@ -266,6 +306,7 @@ export default {
           this[something.method](...something.params);
         }
       }
+      // }, 3000)
     },
 
     search() {
@@ -430,6 +471,7 @@ export default {
     }
 
     this.config = config;
+    // setTimeout(() => {
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
 
@@ -437,6 +479,11 @@ export default {
         console.error('fjsssssssssssssssssssssssjjj8u9898')
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
       }
+
+      // 貌似没效果
+      // let body = document.querySelector('body');
+      // body.style.width="500px";
+      // body.style.height="418px";
 
       // for(let type of this.config.workspaces) {
       //   this.workspaces.push(this.allWorkspaces[type]);
@@ -453,13 +500,15 @@ export default {
       this.search();
     });
 
+    console.warn('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     document.body.onload=() => {
+      console.warn('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
       // setTimeout(() => {
-        this.isLoad = true;
+      this.isLoad = true;
       // }, 1000)
-
     };
+    // }, 3000)
   }
 }
 </script>

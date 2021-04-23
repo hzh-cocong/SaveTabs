@@ -5,7 +5,7 @@
     type="info"
     :closable="false"
     show-icon
-    v-if="list.length == 0"
+    v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
     :style="{ width: (config.width-20)+'px' }">
     <div
@@ -61,14 +61,15 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            :src="isLoad ? getIcon(item.icon, item.url, config.item_height-20) : ''"
+            v-if="isLoad"
+            :src="getIcon(item.icon, item.url, config.item_height-20)"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot" v-if="isLoad">
+            <div slot="error" class="image-slot">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <div slot="placeholder" class="image-slot" v-if="isLoad">
+            <div slot="placeholder" class="image-slot">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
           </el-image>
@@ -209,6 +210,8 @@ export default {
       activeTabs: {},
 
       isInCurrentTab: false,
+
+      isSearched: false,
     }
   },
   components: {
@@ -273,6 +276,9 @@ export default {
       } else {
         this.currentIndex = 0;
       }
+
+      // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+      this.isSearched = true;
     },
     load() {
       console.log('note.load');

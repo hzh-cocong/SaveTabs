@@ -19,7 +19,8 @@
         @keydown.right.native.prevent="selectDelay('right')"
         @keydown.enter.native="openWindow"
         @keydown.native="keydown"
-        @input="search">
+        @input="search"
+        ref="input">
         <template slot="prepend">
 
           <el-select
@@ -94,20 +95,11 @@
       <el-button-group
         style="">
         <el-button
+          v-for="(type, i) in operateOrder"
+          :key="i"
           type="default"
-          icon="el-icon-download"
-          @click="add('window')"
-          ></el-button>
-        <el-button
-          type="default"
-          icon="el-icon-collection-tag"
-          @click="add('note')"
-          ></el-button>
-        <el-button
-          type="default"
-          icon="el-icon-paperclip"
-          @click="add('temporary')"
-          ></el-button>
+          :icon="allWorkspaces[type].icon_simple"
+          @click="add(type)"></el-button>
       </el-button-group>
     </div>
 
@@ -196,11 +188,13 @@ export default {
       platform: '',
       isOpened: {},
       things: {},
+      operateOrder: [ 'window', 'note', 'temporary' ],
       allWorkspaces: {
         'tab': {
           'type': 'tab',
           'title': '标签',
           'icon': ['fas', 'window-maximize'],
+          'icon_simple': '',
           'svg': 'window-maximize-solid',
           'placeholder': '请输入标题或地址',
         },
@@ -208,6 +202,7 @@ export default {
           'type': 'note',
           'title': '便签',
           'icon': ['fas', 'bookmark'],
+          'icon_simple': 'el-icon-collection-tag',
           'svg': 'bookmark-regular',
           'placeholder': '请输入标题或地址',
         },
@@ -215,6 +210,7 @@ export default {
           'type': 'window',
           'title': '窗口',
           'icon': ['fab', 'windows'],
+          'icon_simple': 'el-icon-download',
           'svg': 'windows-brands',
           'placeholder': '请输入窗口名',
         },
@@ -222,6 +218,7 @@ export default {
           'type': 'temporary',
           'title': 'temporary',
           'icon': ['fas', 'paperclip'],
+          'icon_simple': 'el-icon-paperclip',
           'svg': 'paperclip-solid',
           'placeholder': '请输入标题或地址',
         },
@@ -229,6 +226,7 @@ export default {
           'type': 'history',
           'title': '历史',
           'icon': ['fas', 'history'],
+          'icon_simple': '',
           'svg': 'history-solid',
           'placeholder': '请输入标题或地址',
         },
@@ -236,6 +234,7 @@ export default {
           'type': 'bookmark',
           'title': '书签',
           'icon': ['fas', 'star'],
+          'icon_simple': '',
           'svg': 'star-solid',
           'placeholder': '请输入标题或地址',
         },
@@ -291,6 +290,9 @@ export default {
         }
       }
       // }, 3000)
+
+      // 输入框聚焦
+      this.$refs['input'].focus();
     },
 
     search() {
@@ -416,6 +418,9 @@ export default {
         });
       }
 
+      // 输入框聚焦
+      this.$refs['input'].focus();
+
       this.search();
     },
 
@@ -476,6 +481,20 @@ export default {
         return this.allWorkspaces[workspace];
       });//*/
       console.log('ffffffff', this.workspaces);
+
+      if(this.config.button_follow_workspace) {
+        let operateOrder = [];
+        for(let type of this.config.workspaces) {
+          if(this.operateOrder.indexOf(type) != -1) {
+            operateOrder.push(type);
+          }
+        }
+        this.operateOrder = operateOrder;
+      } else {
+        this.operateOrder = this.operateOrder.filter(type => {
+          return this.config.workspaces.indexOf(type) != -1;
+        })
+      }
 
       this.activeWorkspaceIndex = this.getTypeIndex(this.config.activeWorkspaceType);
       console.log('8888888888888888888888888888888', this.activeWorkspaceIndex)

@@ -5,7 +5,7 @@
     type="info"
     :closable="false"
     show-icon
-    v-if="list.length == 0"
+    v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
     :style="{ width: (config.width-20)+'px' }">
     <div
@@ -84,13 +84,14 @@
               @click.stop="openTab(i)"
               @close.stop="deleteTab(i)">
               <el-image
-                :src="isLoad ? getIcon(tab.icon, tab.url, 12) : ''"
+                v-if="isLoad"
+                :src="getIcon(tab.icon, tab.url, 12)"
                 fit="cover"
                 :lazy="index >= config.item_show_count">
-                <div slot="error" class="image-slot" v-if="isLoad">
+                <div slot="error" class="image-slot">
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
-                <div slot="placeholder" class="image-slot" v-if="isLoad">
+                <div slot="placeholder" class="image-slot">
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
               </el-image>
@@ -108,16 +109,17 @@
             style="display:flex; overflow: hidden;"
             :style="{ fontSize: config.list_font_size+'px' }">
               <el-image
-                :src="isLoad ? getIcon(item.tabs[0].icon, item.tabs[0].url, 12) : ''"
+                v-if="isLoad"
+                :src="getIcon(item.tabs[0].icon, item.tabs[0].url, 12)"
                 fit="cover"
                 style="margin-top: 3px;"
                 :style="{ width: config.list_font_size+'px',
                           height: config.list_font_size+'px' }"
                 :lazy="index >= config.item_show_count">
-                <div slot="error" class="image-slot" v-if="isLoad">
+                <div slot="error" class="image-slot">
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
-                <div slot="placeholder" class="image-slot" v-if="isLoad">
+                <div slot="placeholder" class="image-slot">
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
               </el-image>
@@ -241,6 +243,8 @@ export default {
       currentIndex: -1,
 
       tabFocus: {},
+
+      isSearched: false,
     }
   },
   components: {
@@ -290,6 +294,9 @@ export default {
       this.page = 1;
       this.currentIndex = 0;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
+
+      // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+      this.isSearched = true;
     },
     load() {
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);

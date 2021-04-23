@@ -5,7 +5,7 @@
     type="info"
     :closable="false"
     show-icon
-    v-if="list.length == 0"
+    v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
     :style="{ width: (config.width-20)+'px' }">
     <div
@@ -49,16 +49,19 @@
             height: (config.item_height-20)+'px' }">
           <el-image
             v-if = "isLoad"
-            :src="isLoad ? getIcon(item.favIconUrl, item.url, config.item_height-20) : ''"
+            :src="getIcon(item.favIconUrl, item.url, config.item_height-20)"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot" v-if="isLoad">
+            <div slot="error" class="image-slot">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
-
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
+            <!-- <div slot="placeholder" class="image-slot">
+
+            </div> -->
             <!-- <div slot="placeholder" class="image-slot" v-if="isLoad && index >= config.item_show_count">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div> -->
@@ -152,6 +155,8 @@ export default {
 
       page: 0,
       currentIndex: -1,
+
+      isSearched: false,
     }
   },
   components: {
@@ -191,6 +196,9 @@ export default {
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       this.currentIndex = 0;
+
+      // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+      this.isSearched = true;
     },
     load() {
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);

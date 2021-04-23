@@ -32,15 +32,15 @@
     "background_color": "#ffffff",
 
     "workspaces": [
-        "window",
         "tab",
         "note",
+        "window",
         "temporary",
         "history",
         "bookmark"
     ],
     "activeWorkspaceType": "window",
     "pinned": true,
-    "button_follow_workspace": false,
+    "button_follow_workspace": true,
     "themeMode": "white"
 }

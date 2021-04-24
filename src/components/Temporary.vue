@@ -106,13 +106,12 @@
           <template v-else>
             <div
             class="title"
-            style="display:flex; overflow: hidden;"
+            style="display:flex; overflow: hidden; align-items: center;"
             :style="{ fontSize: config.list_font_size+'px' }">
               <el-image
                 v-if="isLoad"
                 :src="getIcon(item.tabs[0].icon, item.tabs[0].url, 12)"
                 fit="cover"
-                style="margin-top: 3px;"
                 :style="{ width: config.list_font_size+'px',
                           height: config.list_font_size+'px' }"
                 :lazy="index >= config.item_show_count">

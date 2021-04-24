@@ -8,6 +8,7 @@
     <div class="toolbar">
       <el-input
         class="search-input"
+        :class="{ hide: ! config.show_workspace_name }"
         :placeholder="currentWorkspace == undefined ? '' : currentWorkspace.placeholder"
         v-model="keyword"
         autofocus="autofocus"
@@ -66,10 +67,10 @@
                   ></svg-icon>
                 </span>
                 <span
-                  :style="{ color: config.themeMode == 'white' ? '#c0c4cc' : 'gray'}"
+                  :style="{ color: config.themeMode == 'light' ? '#c0c4cc' : 'gray'}"
                   @click="changeThemeMode">
                   <svg-icon
-                    :name="config.themeMode == 'white' ? 'sun-solid' : 'moon-solid'"
+                    :name="config.themeMode == 'light' ? 'sun-solid' : 'moon-solid'"
                     style="cursor:pointer;height: 20px;"></svg-icon>
                 </span>
                 <span
@@ -137,7 +138,8 @@ import Tab from './components/Tab.vue'
 import Bookmark from './components/Bookmark.vue'
 import Note from './components/Note.vue'
 import Temporary from './components/Temporary.vue'
-import config from './config.json'
+import userConfig from './config/user_config.json'
+import projectConfig from './config/project_config.json'
 
 // const Window = Vue.component('Window', function (resolve) {
 //     // setTimeout(function () {
@@ -184,61 +186,13 @@ export default {
       activeWorkspaceIndex: -1,//0,
       workspaces: [],
       isLoad: false,
-      config: {},
       platform: '',
       isOpened: {},
       things: {},
       operateOrder: [ 'window', 'note', 'temporary' ],
-      allWorkspaces: {
-        'tab': {
-          'type': 'tab',
-          'title': '标签',
-          'icon': ['fas', 'window-maximize'],
-          'icon_simple': '',
-          'svg': 'window-maximize-solid',
-          'placeholder': '请输入标题或地址',
-        },
-        'note': {
-          'type': 'note',
-          'title': '便签',
-          'icon': ['fas', 'bookmark'],
-          'icon_simple': 'el-icon-collection-tag',
-          'svg': 'bookmark-regular',
-          'placeholder': '请输入标题或地址',
-        },
-        'window': {
-          'type': 'window',
-          'title': '窗口',
-          'icon': ['fab', 'windows'],
-          'icon_simple': 'el-icon-download',
-          'svg': 'windows-brands',
-          'placeholder': '请输入窗口名',
-        },
-        'temporary': {
-          'type': 'temporary',
-          'title': 'temporary',
-          'icon': ['fas', 'paperclip'],
-          'icon_simple': 'el-icon-paperclip',
-          'svg': 'paperclip-solid',
-          'placeholder': '请输入标题或地址',
-        },
-        'history': {
-          'type': 'history',
-          'title': '历史',
-          'icon': ['fas', 'history'],
-          'icon_simple': '',
-          'svg': 'history-solid',
-          'placeholder': '请输入标题或地址',
-        },
-        'bookmark': {
-          'type': 'bookmark',
-          'title': '书签',
-          'icon': ['fas', 'star'],
-          'icon_simple': '',
-          'svg': 'star-solid',
-          'placeholder': '请输入标题或地址',
-        },
-      }
+
+      config: userConfig,
+      allWorkspaces: projectConfig.allWorkspaces
     }
   },
   watch: {
@@ -270,10 +224,12 @@ export default {
       for(let index in this.workspaces) {
         if(this.workspaces[index].type == type) {
           console.log('getTypeIndex2', index, typeof(index));
-          return parseInt(index);
+          // return parseInt(index);
         }
       }
       console.log('getTypeIndex3');
+      // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
+      return 0;
     },
 
     finish() {
@@ -425,7 +381,7 @@ export default {
     },
 
     changeThemeMode() {
-      this.config.themeMode = this.config.themeMode == 'white' ? 'dark' : 'white';
+      this.config.themeMode = this.config.themeMode == 'light' ? 'dark' : 'light';
       document.querySelector('html').style.filter = this.config.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
       chrome.storage.sync.set({'config': this.config}, () => {
         // this.$message({
@@ -459,7 +415,11 @@ export default {
       this.platform = 'Mac';
     }
 
-    this.config = config;
+    // this.config = config;
+    // this.config = userConfig+projectConfig
+    // this.config = userConfig;
+    // this.allWorkspaces = projectConfig.allWorkspaces;
+
     // setTimeout(() => {
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
@@ -540,13 +500,17 @@ export default {
   border-color: #C0C4CC;
 }
 .toolbar .search-input input {
-  min-width: 130px;
+  /* min-width: 130px; */
   border-radius: 0;
 }
 .toolbar .search-input .el-input-group__prepend {
   width: 90px;
   min-width: 90px;
-  max-width: 90px;
+  /* max-width: 90px; */
+}
+.toolbar .search-input.hide .el-input-group__prepend{
+  width: 0;
+  min-width: 0;
 }
 .toolbar .search-input .el-input-group__prepend input {
   min-width: auto;

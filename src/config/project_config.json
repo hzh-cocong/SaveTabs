@@ -1,0 +1,58 @@
+{
+    "allWorkspaces": {
+        "tab": {
+            "type": "tab",
+            "title": "标签",
+            "icon": ["fas", "window-maximize"],
+            "icon_simple": "",
+            "svg": "window-maximize-solid",
+            "placeholder": "请输入标题或地址",
+            "isEnabled": true
+        },
+        "note": {
+            "type": "note",
+            "title": "便签",
+            "icon": ["fas", "bookmark"],
+            "icon_simple": "el-icon-collection-tag",
+            "svg": "bookmark-regular",
+            "placeholder": "请输入标题或地址",
+            "isEnabled": true
+        },
+        "window": {
+            "type": "window",
+            "title": "窗口",
+            "icon": ["fab", "windows"],
+            "icon_simple": "el-icon-download",
+            "svg": "windows-brands",
+            "placeholder": "请输入窗口名",
+            "isEnabled": true
+        },
+        "temporary": {
+            "type": "temporary",
+            "title": "temporary",
+            "icon": ["fas", "paperclip"],
+            "icon_simple": "el-icon-paperclip",
+            "svg": "paperclip-solid",
+            "placeholder": "请输入标题或地址",
+            "isEnabled": true
+        },
+        "history": {
+            "type": "history",
+            "title": "历史",
+            "icon": ["fas", "history"],
+            "icon_simple": "",
+            "svg": "history-solid",
+            "placeholder": "请输入标题或地址",
+            "isEnabled": true
+        },
+        "bookmark": {
+            "type": "bookmark",
+            "title": "书签",
+            "icon": ["fas", "star"],
+            "icon_simple": "",
+            "svg": "star-solid",
+            "placeholder": "请输入标题或地址",
+            "isEnabled": true
+        }
+    }
+}

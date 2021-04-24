@@ -1,52 +1,121 @@
 <template>
   <el-container id="app">
     <el-header>
-      <h3>SaveTabs</h3>
+      <h3
+        style="display: flex;justify-content: center;">
+        <img
+          src="./assets/icon_128.png"
+          style="wdith:25px;height: 25px;margin-right: 10px;" />
+        <span>SaveTabs</span>
+      </h3>
     </el-header>
     <el-main style="width: 700px;margin:auto;">
       <el-row type="flex" justify="center">
         <el-col :span="24">
           <el-tabs v-model="activeName" type="border-card" tab-position="top" align="left">
-            <el-tab-pane :label="lang('basicSettings')" name="first">
+            <el-tab-pane label="页面布局" name="first">
+
+              <el-divider>列表项</el-divider>
+
+              <div class="item">
+                <span>宽度</span>
+                <el-slider
+                    v-model="form.width"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="380"
+                    :max="780"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+              <div class="item">
+                <span>高度</span>
+                <el-slider
+                    v-model="form.item_height"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="39"
+                    :max="198"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+              <div class="item">
+                <span>个数</span>
+                <el-slider
+                    v-model="form.item_show_count"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="1"
+                    :max="13"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+              <div class="item">
+                <span>每页数量</span>
+                <el-slider
+                    v-model="form.list_page_count"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="2"
+                    :max="1000"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+
+              <el-divider>字体大小</el-divider>
+
+              <div class="item">
+                <span>标题</span>
+                <el-slider
+                    v-model="form.list_font_size"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="12"
+                    :max="128"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+
+              <div class="item">
+                <span>副标题</span>
+                <el-slider
+                    v-model="form.list_explain_font_size"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="12"
+                    :max="128"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+
+              <div class="item">
+                <span>状态栏</span>
+                <el-slider
+                    v-model="form.list_state_size"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="12"
+                    :max="100"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+
+              <div class="item">
+                <span>快捷键</span>
+                <el-slider
+                    v-model="form.list_keymap_size"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="12"
+                    :max="128"></el-slider>
+                <i class="el-icon-refresh-right"></i>
+              </div>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="颜色配置" name="ss">
               <el-form ref="form" :model="form" label-width="110px" :inline="true" size="mini">
-
-                <el-divider>字体大小</el-divider>
-
-                <el-form-item label="标题">
-                  <el-input-number v-model="form.list_font_size" :min="12" :max="50" label=""></el-input-number>
-                </el-form-item>
-                <el-form-item label="副标题">
-                  <el-input-number v-model="form.list_explain_font_size" :min="12" :max="50" label=""></el-input-number>
-                </el-form-item>
-                <el-form-item label="状态栏">
-                  <el-input-number v-model="form.list_state_size" :min="12" :max="50" label=""></el-input-number>
-                </el-form-item>
-                <el-form-item label="键盘栏">
-                  <el-input-number v-model="form.list_keymap_size" :min="12" :max="50" label=""></el-input-number>
-                </el-form-item>
-
-
-              <el-divider>{{ lang('keySettings') }}</el-divider>
-
-              <el-form-item label="高度">
-                <el-input-number v-model="form.item_height" :min="12" :max="50" label=""></el-input-number>
-              </el-form-item>
-              <el-form-item label="宽度">
-                <el-input-number v-model="form.width" :min="12" :max="50" label=""></el-input-number>
-              </el-form-item>
-              <el-form-item label="个数">
-                <el-input-number v-model="form.item_show_count" :min="12" :max="50" label=""></el-input-number>
-              </el-form-item>
-              <el-form-item label="页数">
-                <el-input-number v-model="form.list_page_count" :min="12" :max="50" label=""></el-input-number>
-              </el-form-item>
-                <el-form-item label="背景色">
-                  <el-color-picker v-model="form.background_color"></el-color-picker>
-                </el-form-item>
-
-
-
-
 
                 <el-divider>{{ lang('listItem') }}</el-divider>
 
@@ -58,6 +127,9 @@
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
                   <el-color-picker v-model="form.list_font_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item label="页面背景">
+                  <el-color-picker v-model="form.background_color"></el-color-picker>
                 </el-form-item>
 
                 <el-divider>{{ lang('listItemSelected') }}</el-divider>
@@ -107,7 +179,102 @@
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane :label="lang('otherFunctions')" name="second">
+            <el-tab-pane label="工作区" name="seconssd">
+
+              <el-divider>{{ '展示顺序' }}</el-divider>
+
+              <ul class="list">
+                <li
+                  class="list-item"
+                  v-for="type in sortedWrokspaces"
+                  :key="type"
+                  :class="{ disabled: ! allWorkspaces[type].isEnabled, enabled: allWorkspaces[type].isEnabled }">
+                  <el-checkbox
+                    v-model="allWorkspaces[type].isEnabled"
+                    style="margin-right: 10px;"
+                    @change="changeWorkspaceState(type)"></el-checkbox>
+                  <svg-icon
+                    :name="allWorkspaces[type].svg"
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == type
+                    && allWorkspaces[type].isEnabled
+                    ? 'gray' : '#c0c4cc'}"
+                    style="width:16px;margin-right: 10px;vertical-align: -0.50em"
+                  ></svg-icon>
+                  <span
+                    style="flex: 1; "
+                    :style="{ color: config.show_workspace_name
+                            ? '' : 'white'}">{{ allWorkspaces[type].title }}</span>
+                  <span
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == type
+                    && allWorkspaces[type].isEnabled
+                    ? 'gray' : '#c0c4cc',}"
+                    @click="toPin(type)">
+                    <svg-icon
+                      name="thumbtack-solid"
+                      :style="{transform: config.pinned
+                                        && config.activeWorkspaceType == type
+                                        && allWorkspaces[type].isEnabled
+                                        ? 'rotate(0)' : 'rotate(90deg)'}"
+                      style="cursor:pointer;height: 20px;vertical-align: -0.5em;"></svg-icon>
+                  </span>
+                </li>
+                <!-- <li
+                  v-for="type in config.workspaces"
+                  :key="type">
+                  <svg-icon
+                    :name="allWorkspaces[type].svg"
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == type
+                    && allWorkspaces[type].isEnabled
+                    ? 'gray' : '#c0c4cc'}"
+                    style="width:16px;margin-right: 10px;vertical-align: -0.50em"
+                  ></svg-icon>
+                  {{ allWorkspaces[type].title }}
+                  <el-checkbox v-model="allWorkspaces[type].isEnabled"></el-checkbox>
+                </li>
+                <li
+                  v-for="type in disabledWorkspaces"
+                  :key="type">
+                  <svg-icon
+                    :name="allWorkspaces[type].svg"
+                    :style="{
+                      color: config.pinned
+                    && config.activeWorkspaceType == type
+                    && allWorkspaces[type].isEnabled
+                    ? 'gray' : '#c0c4cc'}"
+                    style="width:16px;margin-right: 10px;vertical-align: -0.50em"
+                  ></svg-icon>
+                  {{ allWorkspaces[type].title }}
+                  <el-checkbox v-model="allWorkspaces[type].isEnabled"></el-checkbox>
+                </li> -->
+              </ul>
+
+              <el-divider>{{ '其它选项' }}</el-divider>
+
+              <el-checkbox
+                size="medium"
+                :border="true"
+                v-model="config.themeMode"
+                true-label="dark"
+                false-label="light"
+                @change="changeThemeMode">暗黑模式</el-checkbox>
+              <el-checkbox
+                size="medium"
+                :border="true"
+                v-model="config.show_workspace_name">显示工作区标题</el-checkbox>
+              <el-checkbox
+                size="medium"
+                :border="true"
+                v-model="config.button_follow_workspace">操作按钮跟随工作区顺序</el-checkbox>
+              <div style="margin-bottom: 30px;"></div>
+
+            </el-tab-pane>
+            <el-tab-pane :label="'数据备份'" name="second">
 
               <el-divider>{{ lang('groupData') }}</el-divider>
 
@@ -141,7 +308,8 @@
               </el-popover>
               <div style="margin-top: 30px;"></div>
 
-              <el-divider>{{ lang('keySettings') }}</el-divider>
+
+              <el-divider style="margin-top: 10px;">{{ lang('keySettings') }}</el-divider>
 
               <el-popover
                 placement="bottom-start"
@@ -157,16 +325,11 @@
             </el-tab-pane>
             <el-tab-pane :label="lang('praise')" name="third">
               <el-row>
-                <el-col :span="24" style="text-align:center;margin-top: 20px;">
+                <el-col :span="24" style="text-align:center;margin-top: 20px;color:gray;">
                   {{ lang('thankYou') }}
                 </el-col>
               </el-row>
               <el-row class="praise" :gutter="20" style="margin-top: 50px">
-                <el-col :span="8">
-                  <el-card class="box-card">
-                    <img src="./assets/Alipay.png" style="width:100%;" />
-                  </el-card>
-                </el-col>
                 <el-col :span="8">
                   <el-card class="box-card">
                     <img src="./assets/WeChatPay.png" style="width:100%;" />
@@ -177,33 +340,9 @@
                     <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
                   </el-card>
                 </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="24">
-                <p class="describe">{{ lang('advice1')}} <a href="https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno" target="_blank">{{ lang('chromeWebStore') }}</a> {{ lang('advice2') }}</p>
-                </el-col>
-              </el-row>
-            </el-tab-pane>
-            <el-tab-pane :label="lang('praise')" name="ss">
-              <el-row>
-                <el-col :span="24" style="text-align:center;margin-top: 20px;">
-                  {{ lang('thankYou') }}
-                </el-col>
-              </el-row>
-              <el-row class="praise" :gutter="20" style="margin-top: 50px">
                 <el-col :span="8">
                   <el-card class="box-card">
                     <img src="./assets/Alipay.png" style="width:100%;" />
-                  </el-card>
-                </el-col>
-                <el-col :span="8">
-                  <el-card class="box-card">
-                    <img src="./assets/WeChatPay.png" style="width:100%;" />
-                  </el-card>
-                </el-col>
-                <el-col :span="8">
-                  <el-card class="box-card">
-                    <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
                   </el-card>
                 </el-col>
               </el-row>
@@ -223,15 +362,99 @@
 <script>
 
 import { nanoid } from 'nanoid'
-import config from './config.json'
+import userConfig from './config/user_config.json'
+import projectConfig from './config/project_config.json'
+import Sortable from 'sortablejs';
 
 export default {
   name: 'app',
   data: () => ({
     activeName: 'first',
-    form: {}
+    form: {},
+
+    config: userConfig,
+    allWorkspaces: projectConfig.allWorkspaces,
+    // disabledWorkspaces: [],
   }),
+  computed: {
+    disabledWorkspaces() {
+      console.log('get.disabledWorkspaces');
+      return Object.keys( this.allWorkspaces).filter(type => {
+        if(this.config.workspaces.indexOf(type) == -1) {
+          this.allWorkspaces[type].isEnabled = false;
+
+          return true;
+        } else {
+          return false;
+        }
+      })
+      // return Object.keys( this.allWorkspaces).filter(type => {
+      //   return this.config.workspaces.indexOf(type) == -1;
+      // });
+    },
+    sortedWrokspaces() {
+      return this.config.workspaces.concat(this.disabledWorkspaces);
+    }
+  },
   methods: {
+    changeThemeMode() {
+      document.querySelector('.list').style.filter = this.config.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      chrome.storage.sync.set({'config': this.config}, () => {
+        this.$message({
+          type: 'success',
+          message: this.lang('saveSuccess')
+        });
+      });
+    },
+    changeWorkspaceState(type) {
+      let workspace = this.allWorkspaces[type];
+      if(workspace.isEnabled) {
+        // 可能已经存在了
+        if(this.config.workspaces.indexOf(type) >= 0) return;
+
+        this.config.workspaces.push(type);
+        return;
+      }
+
+      if(this.config.workspaces.length <= 1) {
+        this.$set(workspace, 'isEnabled', true); // 事件并未取消
+        this.$message({
+          type: 'warning',
+          message: '至少要有一个工作区',
+        });
+        return;
+      }
+
+      let index = this.config.workspaces.indexOf(type);
+      this.config.workspaces.splice(index, 1);
+      if(this.config.pinned && this.config.activeWorkspaceType == type) {
+        this.config.pinned = false;
+      }
+    },
+    toPin(type) {
+      let workspace = this.allWorkspaces[type];
+      if(workspace.isEnabled == false) {
+        this.$message({
+          type: 'warning',
+          message: '请先启用该工作区',
+        });
+        return;
+      }
+
+      if( ! this.config.pinned) {
+        this.config.activeWorkspaceType = type;
+        this.config.pinned = true;
+        return;
+      }
+
+      if(this.config.activeWorkspaceType == type) {
+        this.config.pinned = false;
+        return;
+      }
+
+      // this.config.pinned = true;
+      this.config.activeWorkspaceType = type;
+    },
     store: function() {
       chrome.storage.sync.set({'config': this.form}, () => {
         this.$message({
@@ -247,7 +470,7 @@ export default {
         type: 'warning',
         center: true
       }).then(() => {
-        this.form = JSON.parse(JSON.stringify(config));
+        this.form = JSON.parse(JSON.stringify(this.config));
         chrome.storage.sync.set({'config': this.form}, () => {
           this.$message({
             type: 'success',
@@ -311,9 +534,70 @@ export default {
     }
   },
   mounted: function(){
-    this.form = JSON.parse(JSON.stringify(config));
+    // todo
+    window.vue = this;
+
+    // Object.keys(this.allWorkspaces).filter(type => {
+    //   if(this.config.workspaces.indexOf(type) == -1) {
+    //     this.allWorkspaces[type].isEnabled = false;
+    //   }
+    // });
+
+    // this.disabledWorkspaces = Object.keys( projectConfig.allWorkspaces).filter(type => {
+    //   if(userConfig.workspaces.indexOf(type) == -1) {
+    //     this.allWorkspaces[type].isEnabled = false;
+
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    //   // return userConfig.workspaces.indexOf(type) == -1;
+    // });
+
+    //创建拖拽对象
+    // this.sortable =
+    Sortable.create(document.querySelector('.list'), {
+      // sort: this.isEditOrder, //是否可进行拖拽排序
+      animation: 150,
+      // 过滤器，不需要进行拖动的元素
+      // filter: ".disabled",
+      // ghostClass: 'ghost',
+      draggable: '.enabled',
+      chosenClass: 'chosen',
+      //拖拽完成，移除拖拽之前的位置上的元素，在拖拽之后的位置上添加拖拽元素
+      onEnd: ({ newIndex, oldIndex }) => {
+        if(newIndex == oldIndex) {
+          return;
+        }
+        console.log(newIndex, oldIndex);
+        if(newIndex >= this.config.workspaces.length) {
+          newIndex = this.config.workspaces.length-1;
+        }
+        this.config.workspaces.splice(newIndex, 0, this.config.workspaces.splice(oldIndex , 1)[0]);
+      },
+      // onMove: (a,b) => {
+      //   console.log(a, b, b.target.className)
+      //   // if(b.target.className.indexOf('disabled') >= 0) {
+      //   //   console.log('==================', b.target.className.indexOf('disabled') >= 0)
+      //   //   return false;
+      //   // }
+      //   // return 1;
+      //   // return false;
+      //   // return false;
+      //   // return 1;
+      // }
+    })
+
+
+    this.form = JSON.parse(JSON.stringify(this.config));
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.form, items.config);
+
+      if(this.config.themeMode == 'dark') {
+        console.error('fjsssssssssssssssssssssssjjj8u9898')
+        document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
+      }
+
     });
 
     let fileInput = document.getElementById('upload');
@@ -488,11 +772,27 @@ export default {
   margin-top: 0;
   text-align:center;
 }
+
+.item {
+  display: flex;
+  align-items: center;
+}
+.item span {
+  width: 100px;
+}
+.item .el-slider {
+  flex: 1;
+  margin: 0 20px;
+}
+.item i {
+  cursor: pointer;
+}
+
 .el-divider {
   margin: 10px 0 20px 0 !important;
 }
 .el-tabs__content {
-  height: 800px;
+  height: 430px;
 }
 .box-card {
   padding: 10 10 0 10px;
@@ -505,6 +805,34 @@ export default {
   border: 1px solid red;
 } */
 .describe {
-  margin-top: 130px;
+  margin-top: 60px;
+  color: #636363;
+}
+
+.list {
+  padding: 0;
+  margin: 0;
+  overflow: scroll;
+}
+.list-item {
+  padding: 9px;
+  background-color: white;
+  border: 1px solid gray;
+  margin: 9px;
+  display: flex;
+  align-items: center;
+  cursor: move;
+}
+.list-item.disabled {
+  color: #c0c4cc;
+  border-color: #ebeef5;
+  cursor: not-allowed;
+}
+/* .list-item.ghost {
+} */
+.list-item.chosen{
+  border-color: #66b1ff;
+  background-color:#ecf5ff;
+  opacity: 1;
 }
 </style>

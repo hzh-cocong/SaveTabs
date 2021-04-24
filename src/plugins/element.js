@@ -15,7 +15,7 @@ import {
     // Radio,
     // RadioGroup,
     // RadioButton,
-    // Checkbox,
+    Checkbox,
     // CheckboxButton,
     // CheckboxGroup,
     // Switch,
@@ -40,7 +40,7 @@ import {
     Tag,
     // Tree,
     Alert,
-    // Slider,
+    Slider,
     Icon,
     Row,
     Col,
@@ -97,7 +97,7 @@ import {
   // Vue.use(Radio);
   // Vue.use(RadioGroup);
   // Vue.use(RadioButton);
-  // Vue.use(Checkbox);
+  Vue.use(Checkbox);
   // Vue.use(CheckboxButton);
   // Vue.use(CheckboxGroup);
   // Vue.use(Switch);
@@ -122,7 +122,7 @@ import {
   Vue.use(Tag);
   // Vue.use(Tree);
   Vue.use(Alert);
-  // Vue.use(Slider);
+  Vue.use(Slider);
   Vue.use(Icon);
   Vue.use(Row);
   Vue.use(Col);

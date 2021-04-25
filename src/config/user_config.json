@@ -9,8 +9,8 @@
     "list_page_count": 8,
 
     "list_explain_font_size": 12,
-    "list_explain_focus_font_color": "#e4e7ed",
     "list_explain_font_color": "#909399",
+    "list_explain_focus_font_color": "#e4e7ed",
 
     "list_focus_background_color": "#7497de",
     "list_focus_font_color": "#ffffff",
@@ -30,6 +30,9 @@
 
     "width": 500,
     "background_color": "#ffffff",
+
+    "border_width": 8,
+    "border_color": "#ffffff",
 
     "workspaces": [
         "note",

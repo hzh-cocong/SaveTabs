@@ -123,7 +123,7 @@ const tool = {
         }
       },
       // 方便测试
-      //*
+      /*
       mounted: function() {
         chrome.storage = {
           sync: {
@@ -145,6 +145,9 @@ const tool = {
               }
             },
             set: function(options, callback) {
+              callback != undefined && callback();
+            },
+            remove: function(keys, callback) {
               callback != undefined && callback();
             },
           }

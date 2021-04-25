@@ -15,51 +15,70 @@
           <el-tabs v-model="activeName" type="border-card" tab-position="top" align="left">
             <el-tab-pane label="页面布局" name="first">
 
+              <el-divider>页面</el-divider>
+
+              <div class="item">
+                <span>边框</span>
+                <el-slider
+                    v-model="pageConfig.border_width"
+                    :show-input="true"
+                    input-size="mini"
+                    :step="1"
+                    :min="0"
+                    :max="188"
+                    @change="changeSize('border_width')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('border_width')"></i>
+              </div>
+
               <el-divider>列表项</el-divider>
 
               <div class="item">
                 <span>宽度</span>
                 <el-slider
-                    v-model="form.width"
+                    v-model="pageConfig.width"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="380"
-                    :max="780"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="780"
+                    @change="changeSize('width')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('width')"></i>
               </div>
               <div class="item">
                 <span>高度</span>
                 <el-slider
-                    v-model="form.item_height"
+                    v-model="pageConfig.item_height"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="39"
-                    :max="198"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="198"
+                    @change="changeSize('item_height')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('item_height')"></i>
               </div>
               <div class="item">
                 <span>个数</span>
                 <el-slider
-                    v-model="form.item_show_count"
+                    v-model="pageConfig.item_show_count"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="1"
-                    :max="13"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="13"
+                    @change="pageConfig.list_page_count=pageConfig.item_show_count+1;changeSize('item_show_count')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('item_show_count')"></i>
               </div>
               <div class="item">
                 <span>每页数量</span>
                 <el-slider
-                    v-model="form.list_page_count"
+                    v-model="pageConfig.list_page_count"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="2"
-                    :max="1000"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="1000"
+                    @change="changeSize('list_page_count')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('list_page_count')"></i>
               </div>
 
               <el-divider>字体大小</el-divider>
@@ -67,113 +86,132 @@
               <div class="item">
                 <span>标题</span>
                 <el-slider
-                    v-model="form.list_font_size"
+                    v-model="pageConfig.list_font_size"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="12"
-                    :max="128"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="128"
+                    @change="changeSize('list_font_size')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('list_font_size')"></i>
               </div>
 
               <div class="item">
                 <span>副标题</span>
                 <el-slider
-                    v-model="form.list_explain_font_size"
+                    v-model="pageConfig.list_explain_font_size"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="12"
-                    :max="128"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="128"
+                    @change="changeSize('list_explain_font_size')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('list_explain_font_size')"></i>
               </div>
 
               <div class="item">
                 <span>状态栏</span>
                 <el-slider
-                    v-model="form.list_state_size"
+                    v-model="pageConfig.list_state_size"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="12"
-                    :max="100"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="100"
+                    @change="changeSize('list_state_size')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('list_state_size')"></i>
               </div>
 
               <div class="item">
                 <span>快捷键</span>
                 <el-slider
-                    v-model="form.list_keymap_size"
+                    v-model="pageConfig.list_keymap_size"
                     :show-input="true"
                     input-size="mini"
                     :step="1"
                     :min="12"
-                    :max="128"></el-slider>
-                <i class="el-icon-refresh-right"></i>
+                    :max="128"
+                    @change="changeSize('list_keymap_size')"></el-slider>
+                <i class="el-icon-refresh-right" @click="resetSize('list_keymap_size')"></i>
               </div>
 
             </el-tab-pane>
 
             <el-tab-pane label="颜色配置" name="ss">
-              <el-form ref="form" :model="form" label-width="110px" :inline="true" size="mini">
+              <el-form ref="form" :model="colorConfig" label-width="110px" :inline="true" size="mini">
 
                 <el-divider>{{ lang('listItem') }}</el-divider>
 
-                <el-form-item :label="lang('backgroundColor')">
-                  <el-color-picker v-model="form.list_background_color"></el-color-picker>
+                <el-form-item label="页面背景">
+                  <el-color-picker v-model="colorConfig.background_color" show-alpha></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('stateColor')">
-                  <el-color-picker v-model="form.list_state_color"></el-color-picker>
+                <el-form-item label="页面边框">
+                  <el-color-picker v-model="colorConfig.border_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item :label="'快捷键状态'">
+                  <el-color-picker v-model="colorConfig.list_keymap_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item :label="'快捷键选中'">
+                  <el-color-picker v-model="colorConfig.list_focus_keymap_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item :label="lang('backgroundColor')">
+                  <el-color-picker v-model="colorConfig.list_background_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
-                  <el-color-picker v-model="form.list_font_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_font_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item label="页面背景">
-                  <el-color-picker v-model="form.background_color"></el-color-picker>
+                <el-form-item :label="lang('stateColor')">
+                  <el-color-picker v-model="colorConfig.list_state_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item :label="'副标题字体'">
+                  <el-color-picker v-model="colorConfig.list_explain_font_color"></el-color-picker>
                 </el-form-item>
 
                 <el-divider>{{ lang('listItemSelected') }}</el-divider>
 
                 <el-form-item :label="lang('backgroundColor')">
-                  <el-color-picker v-model="form.list_focus_background_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_focus_background_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
-                  <el-color-picker v-model="form.list_focus_font_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_focus_font_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('stateColor')">
-                  <el-color-picker v-model="form.list_focus_state_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_focus_state_color"></el-color-picker>
+                </el-form-item>
+                <el-form-item :label="'副标题字体 '">
+                  <el-color-picker v-model="colorConfig.list_explain_focus_font_color"></el-color-picker>
                 </el-form-item>
 
                 <el-divider>{{ lang('currentWindowItem') }}</el-divider>
 
                 <el-form-item :label="lang('backgroundColor')">
-                  <el-color-picker v-model="form.list_current_background_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_background_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
-                  <el-color-picker v-model="form.list_current_font_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_font_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('stateColor')">
-                  <el-color-picker v-model="form.list_current_state_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_state_color"></el-color-picker>
                 </el-form-item>
 
                 <el-divider>{{ lang('currentWindowItemSelected') }}</el-divider>
 
                 <el-form-item :label="lang('backgroundColor')">
-                  <el-color-picker v-model="form.list_current_focus_background_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_focus_background_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('fontColor')">
-                  <el-color-picker v-model="form.list_current_focus_font_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_focus_font_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('stateColor')">
-                  <el-color-picker v-model="form.list_current_focus_state_color"></el-color-picker>
+                  <el-color-picker v-model="colorConfig.list_current_focus_state_color"></el-color-picker>
                 </el-form-item>
 
                 <el-form-item style="float:right;">
                   <input type="file" id="upload" style="display:none">
                   <el-button :title="lang('loadExplain')" @click="load">{{ lang('load') }}</el-button>
                   <el-button :title="lang('shareExplain')" @click="share">{{ lang('share') }}</el-button>
-                  <el-button @click="reset">{{ lang('reset') }}</el-button>
-                  <el-popconfirm :title="lang('storeConfirm')" @confirm="store">
+                  <el-button @click="resetColor">{{ lang('reset') }}</el-button>
+                  <el-popconfirm :title="lang('storeConfirm')" @confirm="storeColor">
                   <el-button type="primary" slot="reference" style="margin-left:10px;">{{ lang('store') }}</el-button>
                   </el-popconfirm>
                 </el-form-item>
@@ -196,62 +234,32 @@
                   <svg-icon
                     :name="allWorkspaces[type].svg"
                     :style="{
-                      color: config.pinned
-                    && config.activeWorkspaceType == type
+                      color: workspacesConfig.pinned
+                    && workspacesConfig.activeWorkspaceType == type
                     && allWorkspaces[type].isEnabled
                     ? 'gray' : '#c0c4cc'}"
                     style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   ></svg-icon>
                   <span
                     style="flex: 1; "
-                    :style="{ color: config.show_workspace_name
+                    :style="{ color: workspacesConfig.show_workspace_name
                             ? '' : 'white'}">{{ allWorkspaces[type].title }}</span>
                   <span
                     :style="{
-                      color: config.pinned
-                    && config.activeWorkspaceType == type
+                      color: workspacesConfig.pinned
+                    && workspacesConfig.activeWorkspaceType == type
                     && allWorkspaces[type].isEnabled
                     ? 'gray' : '#c0c4cc',}"
                     @click="toPin(type)">
                     <svg-icon
                       name="thumbtack-solid"
-                      :style="{transform: config.pinned
-                                        && config.activeWorkspaceType == type
+                      :style="{transform: workspacesConfig.pinned
+                                        && workspacesConfig.activeWorkspaceType == type
                                         && allWorkspaces[type].isEnabled
                                         ? 'rotate(0)' : 'rotate(90deg)'}"
                       style="cursor:pointer;height: 20px;vertical-align: -0.5em;"></svg-icon>
                   </span>
                 </li>
-                <!-- <li
-                  v-for="type in config.workspaces"
-                  :key="type">
-                  <svg-icon
-                    :name="allWorkspaces[type].svg"
-                    :style="{
-                      color: config.pinned
-                    && config.activeWorkspaceType == type
-                    && allWorkspaces[type].isEnabled
-                    ? 'gray' : '#c0c4cc'}"
-                    style="width:16px;margin-right: 10px;vertical-align: -0.50em"
-                  ></svg-icon>
-                  {{ allWorkspaces[type].title }}
-                  <el-checkbox v-model="allWorkspaces[type].isEnabled"></el-checkbox>
-                </li>
-                <li
-                  v-for="type in disabledWorkspaces"
-                  :key="type">
-                  <svg-icon
-                    :name="allWorkspaces[type].svg"
-                    :style="{
-                      color: config.pinned
-                    && config.activeWorkspaceType == type
-                    && allWorkspaces[type].isEnabled
-                    ? 'gray' : '#c0c4cc'}"
-                    style="width:16px;margin-right: 10px;vertical-align: -0.50em"
-                  ></svg-icon>
-                  {{ allWorkspaces[type].title }}
-                  <el-checkbox v-model="allWorkspaces[type].isEnabled"></el-checkbox>
-                </li> -->
               </ul>
 
               <el-divider>{{ '其它选项' }}</el-divider>
@@ -259,22 +267,24 @@
               <el-checkbox
                 size="medium"
                 :border="true"
-                v-model="config.themeMode"
+                v-model="workspacesConfig.themeMode"
                 true-label="dark"
                 false-label="light"
                 @change="changeThemeMode">暗黑模式</el-checkbox>
               <el-checkbox
                 size="medium"
                 :border="true"
-                v-model="config.show_workspace_name">显示工作区标题</el-checkbox>
+                v-model="workspacesConfig.show_workspace_name"
+                @change="showWorkspaceName">显示工作区标题</el-checkbox>
               <el-checkbox
                 size="medium"
                 :border="true"
-                v-model="config.button_follow_workspace">操作按钮跟随工作区顺序</el-checkbox>
+                v-model="workspacesConfig.button_follow_workspace"
+                @change="followWorkspaceOrder">操作按钮跟随工作区顺序</el-checkbox>
               <div style="margin-bottom: 30px;"></div>
 
             </el-tab-pane>
-            <el-tab-pane :label="'数据备份'" name="second">
+            <el-tab-pane :label="'其它功能'" name="second">
 
               <el-divider>{{ lang('groupData') }}</el-divider>
 
@@ -285,7 +295,7 @@
                 trigger="hover"
                 style="margin-right:10px;"
                 :content="lang('clearDataExplain')">
-                <el-button slot="reference" icon="el-icon-delete" @click="clearData">{{ lang('clearData') }}</el-button>
+                <el-button slot="reference" icon="el-icon-delete" @click="clearData('window')">{{ lang('clearData') }}</el-button>
               </el-popover>
               <input type="file" id="upload2" style="display:none">
               <el-popover
@@ -295,7 +305,7 @@
                 trigger="hover"
                 style="margin-right:10px;"
                 :content=" lang('importExplain') ">
-                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn">{{ lang('import') }}</el-button>
+                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('window')">{{ lang('import') }}</el-button>
               </el-popover>
               <el-popover
                 placement="bottom-start"
@@ -304,7 +314,107 @@
                 trigger="hover"
                 style="margin-right:10px;"
                 :content="lang('exportExplain')">
-                <el-button slot="reference" icon="el-icon-download" @click="leadOut">{{ lang('export') }}</el-button>
+                <el-button slot="reference" icon="el-icon-download" @click="leadOut('window')">{{ lang('export') }}</el-button>
+              </el-popover>
+              <div style="margin-top: 30px;"></div>
+
+
+              <el-divider>{{ '便签数据' }}</el-divider>
+
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('clearDataExplain')">
+                <el-button slot="reference" icon="el-icon-delete" @click="clearData('note')">{{ lang('clearData') }}</el-button>
+              </el-popover>
+              <input type="file" id="upload2" style="display:none">
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content=" lang('importExplain') ">
+                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn(
+                'note')">{{ lang('import') }}</el-button>
+              </el-popover>
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('exportExplain')">
+                <el-button slot="reference" icon="el-icon-download" @click="leadOut('note')">{{ lang('export') }}</el-button>
+              </el-popover>
+              <div style="margin-top: 30px;"></div>
+
+
+              <el-divider>{{ '临时窗口' }}</el-divider>
+
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('clearDataExplain')">
+                <el-button slot="reference" icon="el-icon-delete" @click="clearData('temporary')">{{ lang('clearData') }}</el-button>
+              </el-popover>
+              <input type="file" id="upload2" style="display:none">
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content=" lang('importExplain') ">
+                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('temporary')">{{ lang('import') }}</el-button>
+              </el-popover>
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('exportExplain')">
+                <el-button slot="reference" icon="el-icon-download" @click="leadOut('temporary')">{{ lang('export') }}</el-button>
+              </el-popover>
+              <div style="margin-top: 30px;"></div>
+
+
+              <el-divider>{{ '全部数据' }}</el-divider>
+
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('clearDataExplain')">
+                <el-button slot="reference" icon="el-icon-delete" @click="clearData('all')">{{ lang('clearData') }}</el-button>
+              </el-popover>
+              <input type="file" id="upload2" style="display:none">
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content=" lang('importExplain') ">
+                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('all')">{{ lang('import') }}</el-button>
+              </el-popover>
+              <el-popover
+                placement="bottom-start"
+                :title="lang('explain')"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('exportExplain')">
+                <el-button slot="reference" icon="el-icon-download" @click="leadOut('all')">{{ lang('export') }}</el-button>
               </el-popover>
               <div style="margin-top: 30px;"></div>
 
@@ -318,7 +428,27 @@
                 trigger="hover"
                 style="margin-right:10px;"
                 :content="lang('addKeysExplain')">
-                <el-button slot="reference" icon="el-icon-key" @click="openTab('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
+                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
+              </el-popover>
+
+              <el-popover
+                placement="bottom-start"
+                :title="'书签管理'"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('addKeysExplain')">
+                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://bookmarks/')">{{ lang('addKeys') }}</el-button>
+              </el-popover>
+
+              <el-popover
+                placement="bottom-start"
+                :title="'历史记录'"
+                width="200"
+                trigger="hover"
+                style="margin-right:10px;"
+                :content="lang('addKeysExplain')">
+                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://history/')">{{ lang('addKeys') }}</el-button>
               </el-popover>
 
 
@@ -337,7 +467,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-card class="box-card">
-                    <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="openTab('https://www.paypal.com/paypalme/hzhcocong')" />
+                    <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="$open('https://www.paypal.com/paypalme/hzhcocong')" />
                   </el-card>
                 </el-col>
                 <el-col :span="8">
@@ -365,59 +495,172 @@ import { nanoid } from 'nanoid'
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
 import Sortable from 'sortablejs';
+var validate = require("validate.js");
 
 export default {
   name: 'app',
   data: () => ({
     activeName: 'first',
-    form: {},
 
-    config: userConfig,
     allWorkspaces: projectConfig.allWorkspaces,
-    // disabledWorkspaces: [],
+    colorAttributes: projectConfig.colorAttributes,
+    workspaceAttributes: projectConfig.workspaceAttributes,
+
+    storageConfig: JSON.parse(JSON.stringify(userConfig)),
+    pageConfig: JSON.parse(JSON.stringify(userConfig)),
+    colorConfig: JSON.parse(JSON.stringify(userConfig)),
+    workspacesConfig: JSON.parse(JSON.stringify(userConfig)),
   }),
   computed: {
     disabledWorkspaces() {
       console.log('get.disabledWorkspaces');
-      return Object.keys( this.allWorkspaces).filter(type => {
-        if(this.config.workspaces.indexOf(type) == -1) {
-          this.allWorkspaces[type].isEnabled = false;
 
-          return true;
-        } else {
-          return false;
+      let disabledWorkspaces = [];
+      for(let type in this.allWorkspaces) {
+        if(this.workspacesConfig.workspaces.indexOf(type) == -1) {
+          disabledWorkspaces.push(type);
         }
-      })
+      }
+      return disabledWorkspaces;
+
+
       // return Object.keys( this.allWorkspaces).filter(type => {
-      //   return this.config.workspaces.indexOf(type) == -1;
-      // });
+      //   if(this.workspacesConfig.workspaces.indexOf(type) == -1) {
+      //     // this.allWorkspaces[type].isEnabled = false;
+
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // })
     },
     sortedWrokspaces() {
-      return this.config.workspaces.concat(this.disabledWorkspaces);
+      return this.workspacesConfig.workspaces.concat(this.disabledWorkspaces);
     }
   },
   methods: {
-    changeThemeMode() {
-      document.querySelector('.list').style.filter = this.config.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      chrome.storage.sync.set({'config': this.config}, () => {
+    store: function() {
+      console.log('storageConfig', this.storageConfig);
+      console.log('storageConfig', JSON.stringify(this.storageConfig));
+      chrome.storage.sync.set({'config': this.storageConfig}, () => {
         this.$message({
           type: 'success',
-          message: this.lang('saveSuccess')
+          message: this.lang('saveSuccess'),
+          duration: 1000,
         });
       });
     },
+
+    changeSize(field) {
+      let config = {};
+      config[ field ] = this.pageConfig[ field ];
+      validate.extend(this.storageConfig, config);
+      this.store();
+    },
+    resetSize(field) {
+      let config = {};
+      config[ field ] = userConfig[ field ];
+      this.pageConfig[ field ] = userConfig[ field ];
+      validate.extend(this.storageConfig, config);
+      this.store();
+    },
+
+    storeColor() {
+      validate.extend(this.storageConfig, {
+        list_font_color: this.colorConfig.list_font_color,
+        list_background_color: this.colorConfig.list_background_color,
+        list_state_color: this.colorConfig.list_state_color,
+        list_keymap_color: this.colorConfig.list_keymap_color,
+        list_explain_focus_font_color: this.colorConfig.list_explain_focus_font_color,
+        list_explain_font_color: this.colorConfig.list_explain_font_color,
+        list_focus_background_color: this.colorConfig.list_focus_background_color,
+        list_focus_font_color: this.colorConfig.list_focus_font_color,
+        list_focus_state_color: this.colorConfig.list_focus_state_color,
+        list_focus_keymap_color: this.colorConfig.list_focus_keymap_color,
+        list_current_background_color: this.colorConfig.list_current_background_color,
+        list_current_font_color: this.colorConfig.list_current_font_color,
+        list_current_state_color: this.colorConfig.list_current_state_color,
+        list_current_focus_background_color: this.colorConfig.list_current_focus_background_color,
+        list_current_focus_font_color: this.colorConfig.list_current_focus_font_color,
+        list_current_focus_state_color: this.colorConfig.list_current_focus_state_color,
+        background_color: this.colorConfig.background_color,
+        border_color: this.colorConfig.border_color,
+      });
+      this.store();
+    },
+    resetColor() {
+      this.$confirm(this.lang('resetConfirm'), this.lang('tip'), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true
+      }).then(() => {
+        validate.extend(this.storageConfig, {
+          list_font_color: userConfig.list_font_color,
+          list_background_color: userConfig.list_background_color,
+          list_state_color: userConfig.list_state_color,
+          list_keymap_color: userConfig.list_keymap_color,
+          list_explain_focus_font_color: userConfig.list_explain_focus_font_color,
+          list_explain_font_color: userConfig.list_explain_font_color,
+          list_focus_background_color: userConfig.list_focus_background_color,
+          list_focus_font_color: userConfig.list_focus_font_color,
+          list_focus_state_color: userConfig.list_focus_state_color,
+          list_focus_keymap_color: userConfig.list_focus_keymap_color,
+          list_current_background_color: userConfig.list_current_background_color,
+          list_current_font_color: userConfig.list_current_font_color,
+          list_current_state_color: userConfig.list_current_state_color,
+          list_current_focus_background_color: userConfig.list_current_focus_background_color,
+          list_current_focus_font_color: userConfig.list_current_focus_font_color,
+          list_current_focus_state_color: userConfig.list_current_focus_state_color,
+          background_color: userConfig.background_color,
+          border_color: userConfig.border_color,
+        });
+        this.colorConfig = this.storageConfig;
+        this.store();
+      }).catch(() => {
+      });
+    },
+
+    updateWorkspace() {
+      validate.extend(this.storageConfig, {
+        workspaces: this.workspacesConfig.workspaces,
+        activeWorkspaceType: this.workspacesConfig.activeWorkspaceType,
+        pinned: this.workspacesConfig.pinned
+      });
+      this.store();
+    },
+
+    changeThemeMode() {
+      document.querySelector('html').style.filter = this.workspacesConfig.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      validate.extend(this.storageConfig, { themeMode: this.workspacesConfig.themeMode});
+      this.store();
+    },
+    showWorkspaceName() {
+      validate.extend(this.storageConfig, { show_workspace_name: this.workspacesConfig.show_workspace_name});
+      this.store();
+    },
+    followWorkspaceOrder() {
+      validate.extend(this.storageConfig, { button_follow_workspace: this.workspacesConfig.button_follow_workspace});
+      this.store();
+    },
     changeWorkspaceState(type) {
       let workspace = this.allWorkspaces[type];
+      console.log('changeWorkspaceState.start', workspace)
       if(workspace.isEnabled) {
         // 可能已经存在了
-        if(this.config.workspaces.indexOf(type) >= 0) return;
-
-        this.config.workspaces.push(type);
+        // if(this.workspacesConfig.workspaces.indexOf(type) >= 0) return;
+        console.log('changeWorkspaceState.push', type);
+        this.workspacesConfig.workspaces.push(type);
+        this.updateWorkspace();
         return;
       }
 
-      if(this.config.workspaces.length <= 1) {
-        this.$set(workspace, 'isEnabled', true); // 事件并未取消
+      if(this.workspacesConfig.workspaces.length <= 1) {
+        // 此时页面还刷新，要等一会儿，不然事件不同步
+        setTimeout(() => {
+          this.$set(this.allWorkspaces[type], 'isEnabled', true);
+          console.log(this.allWorkspaces[type])
+        }, 1);
         this.$message({
           type: 'warning',
           message: '至少要有一个工作区',
@@ -425,15 +668,16 @@ export default {
         return;
       }
 
-      let index = this.config.workspaces.indexOf(type);
-      this.config.workspaces.splice(index, 1);
-      if(this.config.pinned && this.config.activeWorkspaceType == type) {
-        this.config.pinned = false;
+      let index = this.workspacesConfig.workspaces.indexOf(type);
+      this.workspacesConfig.workspaces.splice(index, 1);
+      if(this.workspacesConfig.pinned && this.workspacesConfig.activeWorkspaceType == type) {
+        this.workspacesConfig.pinned = false;
       }
+
+      this.updateWorkspace();
     },
     toPin(type) {
-      let workspace = this.allWorkspaces[type];
-      if(workspace.isEnabled == false) {
+      if(this.allWorkspaces[type].isEnabled == false) {
         this.$message({
           type: 'warning',
           message: '请先启用该工作区',
@@ -441,78 +685,115 @@ export default {
         return;
       }
 
-      if( ! this.config.pinned) {
-        this.config.activeWorkspaceType = type;
-        this.config.pinned = true;
+      if( ! this.workspacesConfig.pinned) {
+        this.workspacesConfig.activeWorkspaceType = type;
+        this.workspacesConfig.pinned = true;
+        this.updateWorkspace();
         return;
       }
 
-      if(this.config.activeWorkspaceType == type) {
-        this.config.pinned = false;
+      if(this.workspacesConfig.activeWorkspaceType == type) {
+        this.workspacesConfig.pinned = false;
+        this.updateWorkspace();
         return;
       }
 
       // this.config.pinned = true;
-      this.config.activeWorkspaceType = type;
+      this.workspacesConfig.activeWorkspaceType = type;
+
+      this.updateWorkspace();
     },
-    store: function() {
-      chrome.storage.sync.set({'config': this.form}, () => {
-        this.$message({
-          type: 'success',
-          message: this.lang('saveSuccess')
-        });
-      });
+
+    share() {
+      let whitelist = {};
+      for(let type in this.colorAttributes) {
+        whitelist[ type ] = true;
+      }
+
+      console.log('share', validate.cleanAttributes(
+        this.storageConfig, whitelist
+      ));
+
+      this.download('SaveTabsConfig.json', JSON.stringify(validate.cleanAttributes(
+        this.storageConfig, whitelist
+      )));
     },
-    reset: function() {
-      this.$confirm(this.lang('resetConfirm'), this.lang('tip'), {
-        confirmButtonText: this.lang('sure'),
-        cancelButtonText: this.lang('cancel'),
-        type: 'warning',
-        center: true
-      }).then(() => {
-        this.form = JSON.parse(JSON.stringify(this.config));
-        chrome.storage.sync.set({'config': this.form}, () => {
-          this.$message({
-            type: 'success',
-            message: this.lang('restored')
-          });
-        });
-      }).catch(() => {
-      });
-    },
-    openTab: function(url) {
-      chrome.tabs.create({
-        url: url
-      });
-    },
-    share: function() {
-      this.download('SaveTabsConfig.json', JSON.stringify(this.form));
-    },
-    load: function() {
+    load() {
       document.getElementById('upload').click();
     },
-    leadOut: function() {
-      chrome.storage.local.get({'list': []}, items => {
-        let data = items.list.map((group) => {
-          delete group.isActive
-          delete group.id;
-          delete group.windowId;
-          return group;
-        });
+
+    leadOut(type) {
+      console.log('leadOut', type);
+      let allKeys = {};
+      for(let t in this.workspaceAttributes) {
+        allKeys[ this.workspaceAttributes[t].key ] = [];
+      }
+
+      let keys = {}
+      if(type == 'all') {
+        keys = allKeys;
+      } else {
+        keys[ this.workspaceAttributes[type].key ] = [];
+      }
+      console.log('leadOut.keys', keys);
+
+      chrome.storage.local.get(keys, items => {
+        console.log('leadOut.items', items);
+        let data = {};
+        if(type == 'all') {
+          Object.keys(this.workspaceAttributes).forEach(type => {
+            let key = this.workspaceAttributes[ type ].key;
+            let attributesArray = this.workspaceAttributes[ type ].attributes.array;
+            let attributes = {};
+            for(let t in attributesArray) {
+              attributes[ t ] = true;
+            }
+            data[ type ] = items[ key ].map(row => {
+              return validate.cleanAttributes(row, attributes);
+            })
+          })
+        } else {
+          let key = this.workspaceAttributes[ type ].key;
+          let attributesArray = this.workspaceAttributes[ type ].attributes.array;
+          let attributes = {};
+          for(let t in attributesArray) {
+            attributes[ t ] = true;
+          }
+          data[ type ] = items[ key ].map(row => {
+            return validate.cleanAttributes(row, attributes);
+          })
+        }
+        console.log('leadOut2', data);
         this.download('SaveTabsWindowData.json', JSON.stringify(data));
       })
     },
-    leadIn: function() {
-      document.getElementById('upload2').click();
+    leadIn(type) {
+      console.log(type)
+      let uploadNode = document.getElementById('upload2');
+      uploadNode.setAttribute('data-type', type);
+      uploadNode.click();
     },
-    clearData: function() {
-      this.$confirm(this.lang('clearDataConfirm'), this.lang('tip'), {
+    clearData: function(type) {
+      console.log('clearData', type);
+      let keys = [];
+      if(type == 'all') {
+        for(let t in this.workspaceAttributes) {
+          keys.push(this.workspaceAttributes[t].key);
+        }
+      } else {
+        keys.push(this.workspaceAttributes[type].key);
+      }
+
+      console.log('clearData.keys', keys);
+
+      let tip = { 'window': '窗口', 'note': '便签', 'temporary': '临时窗口', 'all': '全部' };
+      this.$confirm(this.lang('clearDataConfirm'), tip[type], {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
         center: true
       }).then(() => {
-        chrome.storage.local.remove("list", () => {
+        chrome.storage.local.remove(keys, () => {
           this.$message({
             type: 'success',
             message: this.lang('clearDataSuccess')
@@ -522,6 +803,7 @@ export default {
       });
     },
     download: function(filename, data) {
+      console.log('download', filename, data);
       var urlObject = window.URL || window.webkitURL || window;
       var blob = new Blob([data], {type: "application/json"});
       var url = urlObject.createObjectURL(blob);
@@ -536,23 +818,8 @@ export default {
   mounted: function(){
     // todo
     window.vue = this;
-
-    // Object.keys(this.allWorkspaces).filter(type => {
-    //   if(this.config.workspaces.indexOf(type) == -1) {
-    //     this.allWorkspaces[type].isEnabled = false;
-    //   }
-    // });
-
-    // this.disabledWorkspaces = Object.keys( projectConfig.allWorkspaces).filter(type => {
-    //   if(userConfig.workspaces.indexOf(type) == -1) {
-    //     this.allWorkspaces[type].isEnabled = false;
-
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    //   // return userConfig.workspaces.indexOf(type) == -1;
-    // });
+    window.userConfig = userConfig;
+    window.nanoid = nanoid;
 
     //创建拖拽对象
     // this.sortable =
@@ -570,35 +837,55 @@ export default {
           return;
         }
         console.log(newIndex, oldIndex);
-        if(newIndex >= this.config.workspaces.length) {
-          newIndex = this.config.workspaces.length-1;
+        if(newIndex >= this.workspacesConfig.workspaces.length) {
+          newIndex = this.workspacesConfig.workspaces.length-1;
         }
-        this.config.workspaces.splice(newIndex, 0, this.config.workspaces.splice(oldIndex , 1)[0]);
-      },
-      // onMove: (a,b) => {
-      //   console.log(a, b, b.target.className)
-      //   // if(b.target.className.indexOf('disabled') >= 0) {
-      //   //   console.log('==================', b.target.className.indexOf('disabled') >= 0)
-      //   //   return false;
-      //   // }
-      //   // return 1;
-      //   // return false;
-      //   // return false;
-      //   // return 1;
-      // }
+        this.workspacesConfig.workspaces.splice(newIndex, 0, this.workspacesConfig.workspaces.splice(oldIndex , 1)[0]);
+
+        this.updateWorkspace();
+      }
     })
 
 
-    this.form = JSON.parse(JSON.stringify(this.config));
     chrome.storage.sync.get({'config': {}}, items => {
-      Object.assign(this.form, items.config);
+      Object.assign(this.storageConfig, items.config);
+      Object.assign(this.pageConfig, items.config);
+      Object.assign(this.colorConfig, items.config);
+      Object.assign(this.workspacesConfig, items.config);
 
-      if(this.config.themeMode == 'dark') {
-        console.error('fjsssssssssssssssssssssssjjj8u9898')
+      if(this.workspacesConfig.themeMode == 'dark') {
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
       }
 
+      Object.keys( this.allWorkspaces).filter(type => {
+        if(this.workspacesConfig.workspaces.indexOf(type) == -1) {
+          this.allWorkspaces[type].isEnabled = false;
+        }
+      })
     });
+
+    // 颜色校验
+    validate.validators.color = function(value) {
+      if(value == null || value == undefined) {
+        return undefined;
+      }
+      if(/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(value)) {
+        return undefined;
+      }
+      return 'invalid color'
+    };
+    // 数组校验
+    validate.validators.array = (arrayItems, itemConstraints) => {
+      if( ! Array.isArray(arrayItems)) return { errors: 'not array' };
+      if(arrayItems.length <= 0) return { errors: 'can\'t not be empty' };
+      const arrayItemErrors = arrayItems.reduce((errors, item, index) => {
+        const error = validate(item, itemConstraints)
+        if (error) errors[index] = { error: error }
+        return errors
+      }, [])
+
+      return arrayItemErrors.length == 0 ? null : { errors: arrayItemErrors }
+    }
 
     let fileInput = document.getElementById('upload');
     fileInput.addEventListener('change', () => {
@@ -612,7 +899,9 @@ export default {
 
         let data = reader.result;
         try {
+          console.log('load.share.data', data)
           data = JSON.parse(data);
+          console.log('load.share.data2', data)
         } catch(e) {
           this.$message({
             type: 'warning',
@@ -620,24 +909,26 @@ export default {
           });
           return;
         }
-        if(Object.keys(data).length != Object.keys(this.form).length) {
+
+        console.log('import.color', validate(data, this.colorAttributes));
+        if(validate(data, this.colorAttributes) != undefined) {
           this.$message({
             type: 'warning',
             message: this.lang('invalidFileFormat')
           });
           return;
         }
-        for(let key in this.form) {
-          if(data[key] == undefined) {
-            this.$message({
-              type: 'warning',
-              message: this.lang('invalidFileFormat')
-            });
-            return;
-          }
+
+        let whitelist = {};
+        for(let type in this.colorAttributes) {
+          whitelist[ type ] = true;
         }
 
-        this.form = data;
+        data = validate.cleanAttributes(data, whitelist);
+
+        validate.extend(this.colorConfig, data);
+
+        console.error('load.share', this.colorConfig);
 
         this.$message({
           type: 'success',
@@ -648,10 +939,12 @@ export default {
     });
 
     let fileInput2 = document.getElementById('upload2');
-    fileInput2.addEventListener('change', () => {
+    fileInput2.addEventListener('change', (event) => {
       if (fileInput2.files.length === 0) {
         return;
       }
+
+      let type = event.target.getAttribute('data-type');
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -667,41 +960,35 @@ export default {
           });
           return;
         }
+        console.log('upload2', data)
 
-        let check = {
-          "name":"",
-          "tabs":[
-            {
-              "icon":"",
-              "title":"",
-              "url":""
+        let allKeys = {};
+        for(let t in this.workspaceAttributes) {
+          allKeys[ this.workspaceAttributes[t].key ] = [];
+        }
+
+        let keys = {}
+        if(type == 'all') {
+          keys = allKeys;
+        } else {
+          keys[ this.workspaceAttributes[type].key ] = [];
+        }
+        console.log('leadIn.keys', keys);
+
+        let data2 = {};
+        if(type == 'all') {
+          // 检查数据
+          let emptyCount = 0;
+          for(let t2 of Object.keys(this.workspaceAttributes)) {
+            if(data[t2] == undefined) {
+              delete keys[ this.workspaceAttributes[t2].key ];
+              emptyCount++;
+              continue;
             }
-          ],
-        }
-        if( ! (data instanceof Array)) {
-          this.$message({
-            type: 'warning',
-            message: this.lang('invalidFileFormat')
-          });
-          return;
-        }
-        for(let group of data) {
-          if(group.constructor !== Object) {
-            this.$message({
-              type: 'warning',
-              message: this.lang('invalidFileFormat')
-            });
-            return;
-          }
-          if(Object.keys(group).length != Object.keys(check).length) {
-            this.$message({
-              type: 'warning',
-              message: this.lang('invalidFileFormat')
-            });
-            return;
-          }
-          for(let key in check) {
-            if(group[key] == undefined) {
+
+            let attributes = {};
+            attributes[ t2 ] = this.workspaceAttributes[ t2 ].attributes
+            if(validate(data, attributes) != undefined){
               this.$message({
                 type: 'warning',
                 message: this.lang('invalidFileFormat')
@@ -710,56 +997,138 @@ export default {
             }
           }
 
-          if( ! (group['tabs'] instanceof Array)) {
+          console.log('ffffffffffffffff', emptyCount, Object.keys(this.workspaceAttributes).length)
+          if(emptyCount == Object.keys(this.workspaceAttributes).length) {
             this.$message({
-              type: 'warning',
-              message: this.lang('invalidFileFormat')
-            });
-            return;
+                type: 'success',
+                message: '无数据导入'
+              });
+              return;
           }
-          for(let tab of group['tabs']) {
-            if(tab.constructor !== Object) {
-              this.$message({
-                type: 'warning',
-                message: this.lang('invalidFileFormat')
-              });
-              return;
-            }
-            if(Object.keys(tab).length != Object.keys(check['tabs'][0]).length) {
-              this.$message({
-                type: 'warning',
-                message: this.lang('invalidFileFormat')
-              });
-              return;
-            }
-            for(let key in check['tabs'][0]) {
-              if(tab[key] == undefined) {
-                this.$message({
-                  type: 'warning',
-                  message: this.lang('invalidFileFormat')
-                });
-                return;
+
+          for(let type of Object.keys(this.workspaceAttributes)) {
+            console.warn('---------------', data, type)
+            if(data[type] == undefined) continue;
+            console.warn('===', )
+            console.warn('=============', this.workspaceAttributes[ type ].key, data[type])
+
+            // 过滤数据
+            data2[ this.workspaceAttributes[ type ].key ] = data[type].map((item) => {
+              console.log('tttttttttt', item)
+              let attributesArray = this.workspaceAttributes[ type ].attributes.array;
+              let attributes = {};
+              for(let t in attributesArray) {
+                attributes[ t ] = true;
               }
+              let item2 = validate.cleanAttributes(item, attributes);
+              console.log('tttttttttt2', item2)
+
+              if(attributesArray['tabs'] != undefined) {
+                let attributesArray2 = attributesArray['tabs'].array;
+                let attributes2 = {};
+                console.log('mmmmmmmmmmmmmmmmmmm', attributesArray2);
+                for(let t in attributesArray2) {
+                  attributes2[ t ] = true;
+                }
+                item2['tabs'] = item.tabs.map((tabs) => {
+                  return validate.cleanAttributes(tabs, attributes2);
+                })
+              }
+
+              item2['id'] = nanoid();
+
+              console.log('tttttttttttttttt3', item2);
+
+              return item2;
+            })
+          }
+
+          console.warn('88888888888888', data2)
+        } else {
+          // 兼容旧版数据
+          console.log('fffffffffff55555555555f', data, type, data[type], Array.isArray([data]) )
+          if(type == 'window') {
+            if(data[type] == undefined && Array.isArray(data)) {
+              let d = {};
+              d[ type ] = data;
+              console.log('版本兼容', data, d);
+              data = d;
             }
           }
+
+          // 检查数据
+          if(data[type] == undefined
+          || (Array.isArray(data[type])
+            && data[type].length == 0)) {
+              this.$message({
+                type: 'success',
+                message: '无数据导入'
+              });
+              return;
+            }
+
+          let attributes = {};
+          attributes[ type ] = this.workspaceAttributes[ type ].attributes
+          console.log('check', type, attributes);
+          console.log('aaaaaaaaaaaaaaaaaaaa')
+          if(validate(data, attributes) != undefined){
+            console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb')
+            this.$message({
+              type: 'warning',
+              message: this.lang('invalidFileFormat')
+            });
+            return;
+          }
+          console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+
+          // 过滤数据
+          data2[ this.workspaceAttributes[ type ].key ] = data[type].map((item) => {
+            console.log('tttttttttt', item)
+            let attributesArray = this.workspaceAttributes[ type ].attributes.array;
+            let attributes = {};
+            for(let t in attributesArray) {
+              attributes[ t ] = true;
+            }
+            let item2 = validate.cleanAttributes(item, attributes);
+            console.log('tttttttttt2', item2)
+
+            if(attributesArray['tabs'] != undefined) {
+              let attributesArray2 = attributesArray['tabs'].array;
+              let attributes2 = {};
+              console.log('mmmmmmmmmmmmmmmmmmm', attributesArray2);
+              for(let t in attributesArray2) {
+                attributes2[ t ] = true;
+              }
+              item2['tabs'] = item.tabs.map((tabs) => {
+                return validate.cleanAttributes(tabs, attributes2);
+              })
+            }
+
+            item2['id'] = nanoid();
+
+            console.log('tttttttttttttttt3', item2);
+
+            return item2;
+          })
         }
 
-        data = data.map((group) => {
-          group.isActive = false
-          group.id = nanoid();
-          group.windowId = 0;
-          return group;
-        });
+        console.log('loaddataffff', data2, keys);
 
-        chrome.storage.local.get({'list': []}, items => {
-          items.list.unshift(...data);
-          chrome.storage.local.set({list: items.list}, () => {
+        // 保存数据
+        chrome.storage.local.get(keys, items => {
+          console.log(items)
+          for(let type in items) {
+            console.log('push', type, items[type], data2[ type ])
+            items[type].unshift(...data2[ type ]);
+          }
+          chrome.storage.local.set(items, () => {
             this.$message({
               type: 'success',
               message: this.lang('groupImportedSuccess')
             });
           });
         });
+
       }
       reader.readAsText(fileInput2.files[0]);
     });
@@ -777,8 +1146,9 @@ export default {
   display: flex;
   align-items: center;
 }
-.item span {
-  width: 100px;
+.item>span {
+  width: 80px;
+  margin-left: 10px;
 }
 .item .el-slider {
   flex: 1;
@@ -834,5 +1204,17 @@ export default {
   border-color: #66b1ff;
   background-color:#ecf5ff;
   opacity: 1;
+  box-shadow: 2px 3px 3px #bfd9f7;
+}
+
+/* 颜色不允许清空 */
+.el-color-picker__panel button.el-button.el-color-dropdown__link-btn.el-button--text.el-button--mini {
+  display: none !important;
+}
+</style>
+
+<style>
+body {
+  background-color: white;
 }
 </style>

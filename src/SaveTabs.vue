@@ -1,10 +1,13 @@
 <template>
   <div
     id="app"
+    style="border-style:solid;"
     :style="{
       width: config.width+'px',
       backgroundColor: config.background_color,
-      }">
+      borderWidth: config.border_width+'px',
+      borderColor: config.border_color,
+    }">
     <div class="toolbar">
       <el-input
         class="search-input"
@@ -220,14 +223,14 @@ export default {
   },
   methods: {
     getTypeIndex(type) {
-      console.log('q', type);
+      console.error('getTypeIndex', type, JSON.stringify(this.workspaces));
       for(let index in this.workspaces) {
         if(this.workspaces[index].type == type) {
           console.log('getTypeIndex2', index, typeof(index));
-          // return parseInt(index);
+          return parseInt(index);
         }
       }
-      console.log('getTypeIndex3');
+      console.error('getTypeIndex3');
       // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
       return 0;
     },
@@ -529,11 +532,14 @@ export default {
   border-radius: 0;
 }
 
+body {
+  margin: 0;
+}
 .el-carousel__indicators {
   line-height: 0;
 }
 .el-carousel__indicator--horizontal {
-  padding-top: 6px !important;
+  padding-top: 8px !important;
   padding-bottom: 0px !important;
 }
 </style>

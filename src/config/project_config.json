@@ -54,5 +54,148 @@
             "placeholder": "请输入标题或地址",
             "isEnabled": true
         }
+    },
+    "colorAttributes": {
+        "list_font_color": {
+            "color": true
+        },
+        "list_background_color": {
+            "color": true
+        },
+        "list_state_color": {
+            "color": true
+        },
+        "list_keymap_color": {
+            "color": true
+        },
+        "list_explain_focus_font_color": {
+            "color": true
+        },
+        "list_explain_font_color": {
+            "color": true
+        },
+        "list_focus_background_color": {
+            "color": true
+        },
+        "list_focus_font_color": {
+            "color": true
+        },
+        "list_focus_state_color": {
+            "color": true
+        },
+        "list_focus_keymap_color": {
+            "color": true
+        },
+        "list_current_background_color": {
+            "color": true
+        },
+        "list_current_font_color": {
+            "color": true
+        },
+        "list_current_state_color": {
+            "color": true
+        },
+        "list_current_focus_background_color": {
+            "color": true
+        },
+        "list_current_focus_font_color": {
+            "color": true
+        },
+        "list_current_focus_state_color": {
+            "color": true
+        },
+        "background_color": {
+            "color": true
+        },
+        "border_color": {
+            "color": true
+        }
+    },
+    "workspaceAttributes": {
+        "window": {
+            "key": "list",
+            "attributes": {
+                "array": {
+                    "name": {
+                        "presence": true,
+                        "type": "string",
+                        "length": {
+                            "minimum": 1
+                        }
+                    },
+                    "tabs": {
+                        "array": {
+                            "icon": {
+                                "presence": false,
+                                "type": "string"
+                            },
+                            "title": {
+                                "presence": false,
+                                "type": "string"
+                            },
+                            "url": {
+                                "presence": true,
+                                "type": "string",
+                                "length": {
+                                    "minimum": 1
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "note": {
+            "key": "tabs",
+            "attributes": {
+                "array": {
+                    "icon": {
+                        "presence": false,
+                        "type": "string"
+                    },
+                    "title": {
+                        "presence": false,
+                        "type": "string"
+                    },
+                    "url": {
+                        "presence": true,
+                        "type": "string",
+                        "length": {
+                            "minimum": 1
+                        }
+                    }
+                }
+            }
+        },
+        "temporary": {
+            "key": "temporary",
+            "attributes": {
+                "array": {
+                    "lastVisitTime": {
+                        "presence": true,
+                        "type": "number"
+                    },
+                    "tabs": {
+                        "array": {
+                            "icon": {
+                                "presence": false,
+                                "type": "string"
+                            },
+                            "title": {
+                                "presence": false,
+                                "type": "string"
+                            },
+                            "url": {
+                                "presence": true,
+                                "type": "string",
+                                "length": {
+                                    "minimum": 1
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

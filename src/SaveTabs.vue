@@ -115,6 +115,7 @@
       :loop="true"
       :initial-index="activeWorkspaceIndex"
       :height="(config.item_height*config.item_show_count)+'px'"
+      trigger="click"
       @change="workspaceChange"
       ref="carousel">
       <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
@@ -506,7 +507,7 @@ export default {
 }
 .toolbar {
   display: flex;
-  margin: 0 10px 10px 10px;
+  margin: 0 11px 10px 11px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
@@ -560,6 +561,7 @@ body {
   line-height: 0;
 }
 .el-carousel__indicator--horizontal {
+   /* 注意，这里还和列表选择事件有关，列表隐藏部分会有几px的误差，不过套在了跑马灯上后倒是不会了，有问题就改成 6px */
   padding-top: 8px !important;
   padding-bottom: 0px !important;
 }

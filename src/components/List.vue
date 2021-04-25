@@ -97,12 +97,23 @@ export default {
     mouseSelect(index) {
       // 防溢出
       // 无限滚动会出现浮点数的情况
-      let scrollLines = parseInt(this.$el.scrollTop/this.itemHeight);
+      // 根据滚动方向判断是进位还是退位
+      // let scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
+      let scrollLines = 0;
+      console.log('mmmmmm', this.w.flag)
+      if(this.w.flag) { // 向上滚动
+        scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
+        console.log('up');
+      } else {
+        scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
+        console.log('down');
+      }
+      console.log('mouseSelect', index, scrollLines, this.$el.scrollTop/this.itemHeight)
       if(index < scrollLines)
         index = scrollLines;
       else if(index >= scrollLines+this.itemShowCount)
         index = scrollLines+this.itemShowCount-1;
-
+      console.log('mouseSelect2', index, scrollLines+this.itemShowCount)
       this.mouseIndex = index;
       if(this.mouseStart == true) {
         this.$emit('change', index);
@@ -157,6 +168,7 @@ export default {
       // 真实奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
       self.w.flag = self.w.t1 < e.target.scrollTop
       self.w.t1 = e.target.scrollTop;
+      console.log('self.w.flag', self.w.flag)
 
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
@@ -172,8 +184,15 @@ export default {
           } else {
             self.w.speed = 100;
             self.scrollLines = e.target.scrollTop/self.itemHeight;
+            console.log('end', self.currentIndex, self.scrollLines, self.scrollLines+self.itemShowCount-1)
 
+            console.log('sss', self.mouseIndex, self.mouseStart)
+
+            // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
+            // 就会让当前鼠标所指向的项目选中
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)) return;
+
+            console.log('what', self.mouseIndex, self.mouseStart)
 
             // 保持当前窗口有被选中
             if(self.currentIndex < self.scrollLines)

@@ -65,7 +65,7 @@
                     :step="1"
                     :min="1"
                     :max="13"
-                    @change="pageConfig.list_page_count=pageConfig.item_show_count+1;changeSize('item_show_count')"></el-slider>
+                    @change="changeSize('item_show_count')"></el-slider>
                 <i class="el-icon-refresh-right" @click="resetSize('item_show_count')"></i>
               </div>
               <div class="item">
@@ -553,7 +553,22 @@ export default {
 
     changeSize(field) {
       let config = {};
-      config[ field ] = this.pageConfig[ field ];
+
+      // 每页数量必须要大于个数
+      if(field == 'item_show_count' || field == 'list_page_count') {
+        if(this.pageConfig['item_show_count'] >= this.pageConfig['list_page_count']) {
+          if(field == 'item_show_count') {
+            this.pageConfig['list_page_count'] = this.pageConfig['item_show_count']+1;
+          } else {
+            this.pageConfig['item_show_count'] = this.pageConfig['list_page_count']-1;
+          }
+          config['list_page_count'] = this.pageConfig['list_page_count'];
+          config['item_show_count'] = this.pageConfig['item_show_count'];
+        }
+      } else {
+        config[ field ] = this.pageConfig[ field ];
+      }
+
       validate.extend(this.storageConfig, config);
       this.store();
     },

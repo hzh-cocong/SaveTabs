@@ -187,8 +187,9 @@
               }">↩</span>
             <span
               v-else-if="platform != ''
-                && index-$refs.list.scrollLines+1 <= config.item_show_count
-                && index-$refs.list.scrollLines+1 >= 1"
+                && (index-$refs.list.scrollLines+1) <= config.item_show_count
+                && (index-$refs.list.scrollLines+1) >= 1
+                && (index-$refs.list.scrollLines+1) <= 9"
               :style="{
                 fontSize: config.list_keymap_size+'px',
                 color: config.list_keymap_color,
@@ -213,6 +214,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -433,6 +435,8 @@ export default {
       this.storageList[index].tabs.splice(i , 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
       });
+
+      this.focus();
     },
     deleteTemporary() {
       let index = this.getStorageIndex();
@@ -444,6 +448,8 @@ export default {
           this.load();
         }
       });
+
+      this.focus();
     },
 
     getStorageIndex() {

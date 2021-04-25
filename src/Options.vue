@@ -235,7 +235,7 @@
                     :name="allWorkspaces[type].svg"
                     :style="{
                       color: workspacesConfig.pinned
-                    && workspacesConfig.activeWorkspaceType == type
+                    && workspacesConfig.active_workspace_type == type
                     && allWorkspaces[type].isEnabled
                     ? 'gray' : '#c0c4cc'}"
                     style="width:16px;margin-right: 10px;vertical-align: -0.50em"
@@ -247,14 +247,14 @@
                   <span
                     :style="{
                       color: workspacesConfig.pinned
-                    && workspacesConfig.activeWorkspaceType == type
+                    && workspacesConfig.active_workspace_type == type
                     && allWorkspaces[type].isEnabled
                     ? 'gray' : '#c0c4cc',}"
                     @click="toPin(type)">
                     <svg-icon
                       name="thumbtack-solid"
                       :style="{transform: workspacesConfig.pinned
-                                        && workspacesConfig.activeWorkspaceType == type
+                                        && workspacesConfig.active_workspace_type == type
                                         && allWorkspaces[type].isEnabled
                                         ? 'rotate(0)' : 'rotate(90deg)'}"
                       style="cursor:pointer;height: 20px;vertical-align: -0.5em;"></svg-icon>
@@ -267,7 +267,7 @@
               <el-checkbox
                 size="medium"
                 :border="true"
-                v-model="workspacesConfig.themeMode"
+                v-model="workspacesConfig.theme_mode"
                 true-label="dark"
                 false-label="light"
                 @change="changeThemeMode">暗黑模式</el-checkbox>
@@ -624,15 +624,15 @@ export default {
     updateWorkspace() {
       validate.extend(this.storageConfig, {
         workspaces: this.workspacesConfig.workspaces,
-        activeWorkspaceType: this.workspacesConfig.activeWorkspaceType,
+        active_workspace_type: this.workspacesConfig.active_workspace_type,
         pinned: this.workspacesConfig.pinned
       });
       this.store();
     },
 
     changeThemeMode() {
-      document.querySelector('html').style.filter = this.workspacesConfig.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      validate.extend(this.storageConfig, { themeMode: this.workspacesConfig.themeMode});
+      document.querySelector('html').style.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      validate.extend(this.storageConfig, { themeMode: this.workspacesConfig.theme_mode});
       this.store();
     },
     showWorkspaceName() {
@@ -670,7 +670,7 @@ export default {
 
       let index = this.workspacesConfig.workspaces.indexOf(type);
       this.workspacesConfig.workspaces.splice(index, 1);
-      if(this.workspacesConfig.pinned && this.workspacesConfig.activeWorkspaceType == type) {
+      if(this.workspacesConfig.pinned && this.workspacesConfig.active_workspace_type == type) {
         this.workspacesConfig.pinned = false;
       }
 
@@ -686,20 +686,20 @@ export default {
       }
 
       if( ! this.workspacesConfig.pinned) {
-        this.workspacesConfig.activeWorkspaceType = type;
+        this.workspacesConfig.active_workspace_type = type;
         this.workspacesConfig.pinned = true;
         this.updateWorkspace();
         return;
       }
 
-      if(this.workspacesConfig.activeWorkspaceType == type) {
+      if(this.workspacesConfig.active_workspace_type == type) {
         this.workspacesConfig.pinned = false;
         this.updateWorkspace();
         return;
       }
 
       // this.config.pinned = true;
-      this.workspacesConfig.activeWorkspaceType = type;
+      this.workspacesConfig.active_workspace_type = type;
 
       this.updateWorkspace();
     },
@@ -853,7 +853,7 @@ export default {
       Object.assign(this.colorConfig, items.config);
       Object.assign(this.workspacesConfig, items.config);
 
-      if(this.workspacesConfig.themeMode == 'dark') {
+      if(this.workspacesConfig.theme_mode == 'dark') {
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
       }
 

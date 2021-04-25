@@ -107,8 +107,9 @@
               }">↩</span>
             <span
               v-else-if="platform != ''
-                && index-$refs.list.scrollLines+1 <= config.item_show_count
-                && index-$refs.list.scrollLines+1 >= 1"
+                && (index-$refs.list.scrollLines+1) <= config.item_show_count
+                && (index-$refs.list.scrollLines+1) >= 1
+                && (index-$refs.list.scrollLines+1) <= 9"
               :style="{
                 fontSize: config.list_keymap_size+'px',
                 color: config.list_keymap_color,
@@ -132,6 +133,7 @@ import List from './List.vue'
 
 export default {
   name: 'History',
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -292,6 +294,8 @@ export default {
           this.load();
         }
       })
+
+      this.focus();
     }
   },
   mounted() {

@@ -17,10 +17,10 @@
         autofocus="autofocus"
         :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
         :clearable="true"
-        @keydown.down.native.prevent="selectDelay('down')"
-        @keydown.up.native.prevent="selectDelay('up')"
-        @keydown.left.native.prevent="selectDelay('left')"
-        @keydown.right.native.prevent="selectDelay('right')"
+        @keydown.down.native.prevent="selectDelay('down', $event)"
+        @keydown.up.native.prevent="selectDelay('up', $event)"
+        @keydown.left.native="selectDelay('left', $event)"
+        @keydown.right.native="selectDelay('right', $event)"
         @keydown.enter.native="openWindow"
         @keydown.native="keydown"
         @input="search"
@@ -37,7 +37,7 @@
             <template slot="prefix">
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
-                :style="{ color: config.pinned && currentWorkspace != undefined && config.activeWorkspaceType == currentWorkspace.type
+                :style="{ color: config.pinned && currentWorkspace != undefined && config.active_workspace_type == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
                 style="margin: 10px 0 0 5px; width: 18px; height: 20px"></svg-icon>
             </template>
@@ -51,7 +51,7 @@
                   :name="workspace.svg"
                   :style="{
                     color: config.pinned
-                  && config.activeWorkspaceType == workspace.type
+                  && config.active_workspace_type == workspace.type
                   ? 'gray' : '#c0c4cc'}"
                   style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   @click="toPin"
@@ -70,24 +70,24 @@
                   ></svg-icon>
                 </span>
                 <span
-                  :style="{ color: config.themeMode == 'light' ? '#c0c4cc' : 'gray'}"
+                  :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
                   @click="changeThemeMode">
                   <svg-icon
-                    :name="config.themeMode == 'light' ? 'sun-solid' : 'moon-solid'"
+                    :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
                     style="cursor:pointer;height: 20px;"></svg-icon>
                 </span>
                 <span
                   :style="{
                     color: config.pinned
                   && currentWorkspace != undefined
-                  && config.activeWorkspaceType == currentWorkspace.type
+                  && config.active_workspace_type == currentWorkspace.type
                   ? 'gray' : '#c0c4cc',}"
                   @click="toPin">
                   <svg-icon
                     name="thumbtack-solid"
                     :style="{transform: config.pinned
                                       && currentWorkspace != undefined
-                                      && config.activeWorkspaceType == currentWorkspace.type
+                                      && config.active_workspace_type == currentWorkspace.type
                                       ? 'rotate(0)' : 'rotate(90deg)'}"
                     style="cursor:pointer;height: 20px;"></svg-icon>
                 </span>
@@ -183,6 +183,11 @@ import projectConfig from './config/project_config.json'
 
 export default {
   name: 'app',
+  provide(){
+    return {
+      focus: this.focus
+    }
+  },
   data() {
     return {
       keyword: '',
@@ -222,6 +227,11 @@ export default {
     Temporary
   },
   methods: {
+    focus() {
+      // 输入框聚焦
+      this.$refs['input'].focus();
+    },
+
     getTypeIndex(type) {
       console.error('getTypeIndex', type, JSON.stringify(this.workspaces));
       for(let index in this.workspaces) {
@@ -251,7 +261,8 @@ export default {
       // }, 3000)
 
       // 输入框聚焦
-      this.$refs['input'].focus();
+      this.focus();
+      // this.$refs['input'].focus();
     },
 
     search() {
@@ -341,7 +352,12 @@ export default {
         this.openWindow();
       }
     },
-    selectDelay(type) {
+    selectDelay(type, event) {
+      // 只有一个工作区可用时，输入框回复左右选择能力
+      if(this.workspaces.length > 1) {
+        event.preventDefault();
+      }
+
       if(this.lock == false) return;
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       this.lock = setTimeout(() => {
@@ -368,7 +384,7 @@ export default {
 
       if( ! this.config.pinned) {
         console.log('ppppppppppppppppppppppp')
-        this.config.activeWorkspaceType = this.currentWorkspace.type;
+        this.config.active_workspace_type = this.currentWorkspace.type;
         chrome.storage.sync.set({'config': this.config}, () => {
           // this.$message({
           //   type: 'success',
@@ -378,14 +394,17 @@ export default {
       }
 
       // 输入框聚焦
-      this.$refs['input'].focus();
+      this.focus();
+      // this.$refs['input'].focus();
 
       this.search();
     },
 
     changeThemeMode() {
-      this.config.themeMode = this.config.themeMode == 'light' ? 'dark' : 'light';
-      document.querySelector('html').style.filter = this.config.themeMode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      this.focus();
+
+      this.config.theme_mode = this.config.theme_mode == 'light' ? 'dark' : 'light';
+      document.querySelector('html').style.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
       chrome.storage.sync.set({'config': this.config}, () => {
         // this.$message({
         //   type: 'success',
@@ -394,10 +413,12 @@ export default {
       });
     },
     toPin() {
-      if(this.config.activeWorkspaceType == this.currentWorkspace.type) {
+      this.focus();
+
+      if(this.config.active_workspace_type == this.currentWorkspace.type) {
         this.config.pinned = ! this.config.pinned;
       } else {
-        this.config.activeWorkspaceType = this.currentWorkspace.type;
+        this.config.active_workspace_type = this.currentWorkspace.type;
         this.config.pinned = true;
       }
       chrome.storage.sync.set({'config': this.config}, () => {
@@ -427,7 +448,7 @@ export default {
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
 
-      if(this.config.themeMode == 'dark') {
+      if(this.config.theme_mode == 'dark') {
         console.error('fjsssssssssssssssssssssssjjj8u9898')
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
       }
@@ -459,7 +480,7 @@ export default {
         })
       }
 
-      this.activeWorkspaceIndex = this.getTypeIndex(this.config.activeWorkspaceType);
+      this.activeWorkspaceIndex = this.getTypeIndex(this.config.active_workspace_type);
       console.log('8888888888888888888888888888888', this.activeWorkspaceIndex)
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       console.log(JSON.stringify(this.isOpened))

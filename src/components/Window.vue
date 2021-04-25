@@ -149,8 +149,9 @@
                     : config.list_focus_keymap_color }">↩</span>
             <span
               v-else-if="platform != ''
-                      && index-$refs.list.scrollLines+1 <= config.item_show_count
-                      && index-$refs.list.scrollLines+1 >= 1"
+                      && (index-$refs.list.scrollLines+1) <= config.item_show_count
+                      && (index-$refs.list.scrollLines+1) >= 1
+                      &&  (index-$refs.list.scrollLines+1) <= 9"
               :style="{
                 fontSize: activeWindows[item.windowId]
                     ? config.list_state_size+'px'
@@ -173,7 +174,8 @@
     :visible.sync="groupVisible"
     :append-to-body="true"
     width="80%"
-    class="group">
+    class="group"
+    @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
@@ -207,7 +209,8 @@
     :visible.sync="groupChangeVisible"
     :append-to-body="true"
     :center="false"
-    width="80%">
+    width="80%"
+    @close="focus">
     <el-input
       v-model="groupName"
       :placeholder="lang('groupNameInput')"></el-input>
@@ -229,6 +232,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -343,6 +347,8 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
+      this.focus();
+
       // 当前窗口只能有一个
       if(this.isInCurrentWindow) {
         this.$message({
@@ -558,7 +564,9 @@ export default {
             this.load();
           }
         });
+        this.focus();
       }).catch(() => {
+        this.focus();
       });
     },
     updateGroup: function() {

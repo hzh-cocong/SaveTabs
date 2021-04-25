@@ -146,8 +146,9 @@
                     : config.list_focus_keymap_color }">↩</span>
             <span
               v-else-if="platform != ''
-                      && index-$refs.list.scrollLines+1 <= config.item_show_count
-                      && index-$refs.list.scrollLines+1 >= 1"
+                      && (index-$refs.list.scrollLines+1) <= config.item_show_count
+                      && (index-$refs.list.scrollLines+1) >= 1
+                      && (index-$refs.list.scrollLines+1) <= 9"
               :style="{
                 fontSize: activeTabs[item.tabId]
                         && activeTabs[item.tabId].windowId == item.windowId
@@ -179,6 +180,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Note',
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -294,6 +296,8 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
+      this.focus();
+
       // 当前标签只能有一个
       if(this.isInCurrentTab) {
         this.$message({
@@ -418,6 +422,8 @@ export default {
           this.load();
         }
       });
+
+      this.focus();
     },
 
     getStorageIndex() {

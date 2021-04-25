@@ -9,7 +9,7 @@ import Vue from 'vue'
 // import '@fortawesome/fontawesome-free/js/fontawesome.min.js'
 
 import './plugins/svg-sprite.js'
-import './plugins/element.js'
+import './plugins/element2.js'
 import './plugins/tool.js'
 import SaveTabs from './SaveTabs.vue'
 

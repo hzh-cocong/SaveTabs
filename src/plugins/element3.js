@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import {
     // Pagination,
-    Dialog,
+    // Dialog,
     // Autocomplete,
     // Dropdown,
     // DropdownMenu,
@@ -10,64 +10,64 @@ import {
     // Submenu,
     // MenuItem,
     // MenuItemGroup,
-    Input,
+    // Input,
     // InputNumber,
     // Radio,
     // RadioGroup,
     // RadioButton,
-    // Checkbox,
+    Checkbox,
     // CheckboxButton,
     // CheckboxGroup,
     // Switch,
-    Select,
-    Option,
-    OptionGroup,
+    // Select,
+    // Option,
+    // OptionGroup,
     Button,
-    ButtonGroup,
+    // ButtonGroup,
     // Table,
     // TableColumn,
     // DatePicker,
     // TimeSelect,
     // TimePicker,
-    // Popover,
+    Popover,
     // Tooltip,
     // Breadcrumb,
     // BreadcrumbItem,
-    // Form,
-    // FormItem,
-    // Tabs,
-    // TabPane,
-    Tag,
+    Form,
+    FormItem,
+    Tabs,
+    TabPane,
+    // Tag,
     // Tree,
-    Alert,
-    // Slider,
+    // Alert,
+    Slider,
     Icon,
-    // Row,
-    // Col,
+    Row,
+    Col,
     // Upload,
     // Progress,
     // Spinner,
-    Badge,
-    // Card,
+    // Badge,
+    Card,
     // Rate,
     // Steps,
     // Step,
-    Carousel,
-    CarouselItem,
+    // Carousel,
+    // CarouselItem,
     // Collapse,
     // CollapseItem,
     // Cascader,
-    // ColorPicker,
+    ColorPicker,
     // Transfer,
-    // Container,
-    // Header,
+    Container,
+    Header,
     // Aside,
-    // Main,
+    Main,
     // Footer,
     // Timeline,
     // TimelineItem,
     // Link,
-    // Divider,
+    Divider,
     Image,
     // Calendar,
     // Backtop,
@@ -78,12 +78,12 @@ import {
     Message,
     // Notification,
     // Avatar,
-    InfiniteScroll,
-    // Popconfirm,
+    // InfiniteScroll,
+    Popconfirm,
   } from 'element-ui';
 
   // Vue.use(Pagination);
-  Vue.use(Dialog);
+  // Vue.use(Dialog);
   // Vue.use(Autocomplete);
   // Vue.use(Dropdown);
   // Vue.use(DropdownMenu);
@@ -92,72 +92,72 @@ import {
   // Vue.use(Submenu);
   // Vue.use(MenuItem);
   // Vue.use(MenuItemGroup);
-  Vue.use(Input);
+  // Vue.use(Input);
   // Vue.use(InputNumber);
   // Vue.use(Radio);
   // Vue.use(RadioGroup);
   // Vue.use(RadioButton);
-  // Vue.use(Checkbox);
+  Vue.use(Checkbox);
   // Vue.use(CheckboxButton);
   // Vue.use(CheckboxGroup);
   // Vue.use(Switch);
-  Vue.use(Select);
-  Vue.use(Option);
-  Vue.use(OptionGroup);
+  // Vue.use(Select);
+  // Vue.use(Option);
+  // Vue.use(OptionGroup);
   Vue.use(Button);
-  Vue.use(ButtonGroup);
+  // Vue.use(ButtonGroup);
   // Vue.use(Table);
   // Vue.use(TableColumn);
   // Vue.use(DatePicker);
   // Vue.use(TimeSelect);
   // Vue.use(TimePicker);
-  // Vue.use(Popover);
+  Vue.use(Popover);
   // Vue.use(Tooltip);
   // Vue.use(Breadcrumb);
   // Vue.use(BreadcrumbItem);
-  // Vue.use(Form);
-  // Vue.use(FormItem);
-  // Vue.use(Tabs);
-  // Vue.use(TabPane);
-  Vue.use(Tag);
+  Vue.use(Form);
+  Vue.use(FormItem);
+  Vue.use(Tabs);
+  Vue.use(TabPane);
+  // Vue.use(Tag);
   // Vue.use(Tree);
-  Vue.use(Alert);
-  // Vue.use(Slider);
+  // Vue.use(Alert);
+  Vue.use(Slider);
   Vue.use(Icon);
-  // Vue.use(Row);
-  // Vue.use(Col);
+  Vue.use(Row);
+  Vue.use(Col);
   // Vue.use(Upload);
   // Vue.use(Progress);
   // Vue.use(Spinner);
-  Vue.use(Badge);
-  // Vue.use(Card);
+  // Vue.use(Badge);
+  Vue.use(Card);
   // Vue.use(Rate);
   // Vue.use(Steps);
   // Vue.use(Step);
-  Vue.use(Carousel);
-  Vue.use(CarouselItem);
+  // Vue.use(Carousel);
+  // Vue.use(CarouselItem);
   // Vue.use(Collapse);
   // Vue.use(CollapseItem);
   // Vue.use(Cascader);
-  // Vue.use(ColorPicker);
+  Vue.use(ColorPicker);
   // Vue.use(Transfer);
-  // Vue.use(Container);
-  // Vue.use(Header);
+  Vue.use(Container);
+  Vue.use(Header);
   // Vue.use(Aside);
-  // Vue.use(Main);
+  Vue.use(Main);
   // Vue.use(Footer);
   // Vue.use(Timeline);
   // Vue.use(TimelineItem);
   // Vue.use(Link);
-  // Vue.use(Divider);
+  Vue.use(Divider);
   Vue.use(Image);
   // Vue.use(Calendar);
   // Vue.use(Backtop);
   // Vue.use(PageHeader);
   // Vue.use(CascaderPanel);
   // Vue.use(Avatar);
-  Vue.use(InfiniteScroll);
-  // Vue.use(Popconfirm);
+  // Vue.use(InfiniteScroll);
+  Vue.use(Popconfirm);
 
   // Vue.use(Loading.directive);
 
@@ -166,5 +166,5 @@ import {
   Vue.prototype.$alert = MessageBox.alert;
   Vue.prototype.$confirm = MessageBox.confirm;
   Vue.prototype.$prompt = MessageBox.prompt;
-  // Vue.prototype.$notify = Notification;
+  Vue.prototype.$notify = Notification;
   Vue.prototype.$message = Message;

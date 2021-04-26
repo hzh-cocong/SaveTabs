@@ -16,9 +16,9 @@
         <div>{{ storageList.length == 0 ? lang('noResult') : lang('noResult2') }}</div>
         <div v-if="storageList.length > 0">{{ '当前共存储 '+storageList.length+' 个窗口' }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html')"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
     </div>
   </el-alert>
 
@@ -177,7 +177,8 @@
     class="group"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link>
+      <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
+      <span style="color:gray;cursor:pointer" @click="download"><i class="el-icon-download"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
     </div>
     <ul

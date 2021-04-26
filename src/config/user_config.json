@@ -37,8 +37,6 @@
     "workspaces": [
         "note",
         "window",
-        "history",
-        "bookmark",
         "temporary",
         "tab"
     ],

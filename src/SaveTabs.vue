@@ -63,7 +63,7 @@
                 :value="activeWorkspaceIndex"
                 :disabled="true"
                 style="cursor: default;text-align: center;display:flex;justify-content: space-between">
-                <span @click="$open('./options.html')">
+                <span @click="$open('./options.html?type=workspace')">
                   <svg-icon
                     name="cog-solid"
                     style="cursor:pointer;height: 20px;color: #c0c4cc"

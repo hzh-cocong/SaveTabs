@@ -13,7 +13,7 @@
       <el-row type="flex" justify="center">
         <el-col :span="24">
           <el-tabs v-model="activeName" type="border-card" tab-position="top" align="left">
-            <el-tab-pane label="页面布局" name="first">
+            <el-tab-pane label="页面布局" name="page">
 
               <el-divider>页面</el-divider>
 
@@ -137,7 +137,7 @@
 
             </el-tab-pane>
 
-            <el-tab-pane label="颜色配置" name="ss">
+            <el-tab-pane label="颜色配置" name="color">
               <el-form ref="form" :model="colorConfig" label-width="110px" :inline="true" size="mini">
 
                 <el-divider>{{ lang('listItem') }}</el-divider>
@@ -217,7 +217,7 @@
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="工作区" name="seconssd">
+            <el-tab-pane label="工作区" name="workspace">
 
               <el-divider>{{ '展示顺序' }}</el-divider>
 
@@ -284,12 +284,14 @@
               <div style="margin-bottom: 30px;"></div>
 
             </el-tab-pane>
-            <el-tab-pane :label="'其它功能'" name="second">
+            <el-tab-pane :label="'其它功能'" name="other">
 
               <el-divider>{{ lang('groupData') }}</el-divider>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -299,7 +301,9 @@
               </el-popover>
               <input type="file" id="upload2" style="display:none">
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -308,12 +312,14 @@
                 <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('window')">{{ lang('import') }}</el-button>
               </el-popover>
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
                 style="margin-right:10px;"
-                :content="lang('exportExplain')">
+                :content="sdf">
                 <el-button slot="reference" icon="el-icon-download" @click="leadOut('window')">{{ lang('export') }}</el-button>
               </el-popover>
               <div style="margin-top: 30px;"></div>
@@ -322,7 +328,9 @@
               <el-divider>{{ '便签数据' }}</el-divider>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -332,7 +340,9 @@
               </el-popover>
               <input type="file" id="upload2" style="display:none">
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -342,7 +352,9 @@
                 'note')">{{ lang('import') }}</el-button>
               </el-popover>
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -356,7 +368,9 @@
               <el-divider>{{ '临时窗口' }}</el-divider>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -366,7 +380,9 @@
               </el-popover>
               <input type="file" id="upload2" style="display:none">
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -375,7 +391,9 @@
                 <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('temporary')">{{ lang('import') }}</el-button>
               </el-popover>
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -389,7 +407,9 @@
               <el-divider>{{ '全部数据' }}</el-divider>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -399,7 +419,9 @@
               </el-popover>
               <input type="file" id="upload2" style="display:none">
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -408,7 +430,9 @@
                 <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('all')">{{ lang('import') }}</el-button>
               </el-popover>
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -422,7 +446,9 @@
               <el-divider style="margin-top: 10px;">{{ lang('keySettings') }}</el-divider>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="lang('explain')"
                 width="200"
                 trigger="hover"
@@ -432,7 +458,9 @@
               </el-popover>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="'书签管理'"
                 width="200"
                 trigger="hover"
@@ -442,7 +470,9 @@
               </el-popover>
 
               <el-popover
-                placement="bottom-start"
+                placement="top-start"
+                open-delay="1000"
+                close-delay="0"
                 :title="'历史记录'"
                 width="200"
                 trigger="hover"
@@ -453,7 +483,7 @@
 
 
             </el-tab-pane>
-            <el-tab-pane :label="lang('praise')" name="third">
+            <el-tab-pane :label="lang('praise')" name="praise">
               <el-row>
                 <el-col :span="24" style="text-align:center;margin-top: 20px;color:gray;">
                   {{ lang('thankYou') }}
@@ -500,7 +530,7 @@ var validate = require("validate.js");
 export default {
   name: 'app',
   data: () => ({
-    activeName: 'first',
+    activeName: "page",
 
     allWorkspaces: projectConfig.allWorkspaces,
     colorAttributes: projectConfig.colorAttributes,
@@ -835,6 +865,11 @@ export default {
     window.vue = this;
     window.userConfig = userConfig;
     window.nanoid = nanoid;
+
+    let activeName = this.getUrlParam('type');
+    if(['page', 'color', 'workspace', 'other', 'praise'].indexOf(activeName) != -1) {
+      this.activeName = activeName;
+    }
 
     //创建拖拽对象
     // this.sortable =

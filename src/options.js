@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Options from './Options.vue'
-import './plugins/element.js'
+import './plugins/element3.js'
 import './plugins/tool.js'
 import './plugins/svg-sprite.js'
 

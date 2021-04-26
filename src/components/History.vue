@@ -176,10 +176,8 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('history.search', this.storageKeyword, keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-      console.log('history.search2', this.storageKeyword, keyword)
 
       this.storageKeyword = keyword.trim();
 
@@ -299,14 +297,7 @@ export default {
     }
   },
   mounted() {
-    // todo
-    window.h = this;
-
-    console.log('history.mounted')
-
-    console.log('history.finish')
     this.$emit('finish');
-    console.log('history.finish2')
 
     // 更新列表
     // this.search();

@@ -172,10 +172,8 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('tab.search', this.storageKeyword, keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-      console.log('tab.search2', this.storageKeyword, keyword)
 
       this.storageKeyword = keyword.trim();
 
@@ -247,16 +245,11 @@ export default {
     }
   },
   mounted() {
-    // todo
-    window.h = this;
-
     // 查找
     chrome.tabs.query({}, (tabs)=>{
       this.originList = tabs;
 
-      console.log('tab.finish')
       this.$emit('finish');
-      console.log('tab.finish2')
 
       // 更新列表
       // this.search();

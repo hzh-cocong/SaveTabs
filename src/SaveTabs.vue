@@ -14,7 +14,6 @@
         :class="{ hide: ! config.show_workspace_name }"
         :placeholder="currentWorkspace == undefined ? '' : currentWorkspace.placeholder"
         v-model="keyword"
-        autofocus="autofocus"
         :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
         :clearable="true"
         @keydown.down.native.prevent="selectDelay('down', $event)"
@@ -166,14 +165,8 @@ export default {
       allWorkspaces: projectConfig.allWorkspaces
     }
   },
-  watch: {
-    activeWorkspaceIndex(newVal, oldVal) {
-      console.warn('activeWorksapceIndex', newVal, typeof(newVal), oldVal)
-    }
-  },
   computed: {
     activeWorkspaceRefIndex() {
-      console.log('activeWorkspaceRefIndex', this.isOpened[ this.activeWorkspaceIndex ]-1)
       return this.isOpened[ this.activeWorkspaceIndex ]-1;
     },
     currentWorkspace() {
@@ -196,24 +189,18 @@ export default {
     },
 
     getTypeIndex(type) {
-      console.error('getTypeIndex', type, JSON.stringify(this.workspaces));
       for(let index in this.workspaces) {
         if(this.workspaces[index].type == type) {
-          console.log('getTypeIndex2', index, typeof(index));
           return parseInt(index);
         }
       }
-      console.error('getTypeIndex3');
       // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
       return 0;
     },
 
     finish() {
-      // setTimeout(() => {
-      console.warn('dddddddddddddddddddddddddddddddddddd');
       // 只有组件在一开始创建的时候才会调用到这里
       let something = this.things[ this.activeWorkspaceRefIndex ];
-      console.log('finish', this.activeWorkspaceRefIndex, something, this.$refs.workspaces)
       if(something) {
         if(typeof(something) == 'string') {
           this[something]();
@@ -221,7 +208,6 @@ export default {
           this[something.method](...something.params);
         }
       }
-      // }, 3000)
 
       // 输入框聚焦
       this.focus();
@@ -229,7 +215,6 @@ export default {
     },
 
     search() {
-      console.log('start.search', this.activeWorkspaceRefIndex, this.$refs)
       if(this.$refs.workspaces == undefined
       || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
         // 如果在这之前已经有其它事情待处理（如添加），则不作查询，会有人帮忙处理
@@ -238,7 +223,6 @@ export default {
         }
         return;
       }
-      console.log('searchffffffff', this.$refs.workspaces[ this.activeWorkspaceRefIndex ])
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow() {
@@ -268,14 +252,12 @@ export default {
     add(type) {
       let index = this.getTypeIndex(type);
       this.$refs.carousel.setActiveItem(index);
-      console.log('add', index, this.isOpened[ index ])
       if(this.isOpened[ index ] == undefined) {
         let refIndex = Object.keys(this.isOpened).length;
         this.things[ refIndex ] = {
           'method': 'add',
           'params': [type, this.keyword]
         }
-        console.log(this.things)
         return;
       }
       let refIndex =  this.isOpened[ index ]-1;
@@ -284,9 +266,7 @@ export default {
       //   this.things[ refIndex ] = 'add';
       //   return;
       // }
-      console.log('add2')
       workspace.add(()=>{
-        console.log('add3', 'success', refIndex, this.activeWorkspaceRefIndex, this.$refs.workspaces[ refIndex ]);
         this.keyword = '';
         if(refIndex == this.activeWorkspaceRefIndex) {
           // 添加完后当前窗口可能还没有完全切换过去，此时刷新的仍然是切换前的窗口，所以不需要刷新
@@ -338,15 +318,12 @@ export default {
       this.lock = false;
     },
     workspaceChange(newIndex) {
-      console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
-        console.log('workspaceChange2', newIndex)
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       }
 
       if( ! this.config.pinned) {
-        console.log('ppppppppppppppppppppppp')
         this.config.active_workspace_type = this.currentWorkspace.type;
         chrome.storage.sync.set({'config': this.config}, () => {
           // this.$message({
@@ -393,9 +370,6 @@ export default {
     }
   },
   mounted() {
-    // todo
-    window.vue = this;
-
     if(navigator.platform.indexOf("Win") == 0) {
       this.platform = 'Win';
     } else if(navigator.platform.indexOf("Mac") == 0) {
@@ -412,7 +386,6 @@ export default {
       Object.assign(this.config, items.config);
 
       if(this.config.theme_mode == 'dark') {
-        console.error('fjsssssssssssssssssssssssjjj8u9898')
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
       }
 
@@ -427,7 +400,6 @@ export default {
       this.workspaces = this.config.workspaces.map((workspace) => {
         return this.allWorkspaces[workspace];
       });//*/
-      console.log('ffffffff', this.workspaces);
 
       if(this.config.button_follow_workspace) {
         let operateOrder = [];
@@ -444,16 +416,12 @@ export default {
       }
 
       this.activeWorkspaceIndex = this.getTypeIndex(this.config.active_workspace_type);
-      console.log('8888888888888888888888888888888', this.activeWorkspaceIndex)
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
-      console.log(JSON.stringify(this.isOpened))
       this.search();
     });
 
-    console.warn('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     document.body.onload=() => {
-      console.warn('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
       // setTimeout(() => {
       this.isLoad = true;
       // }, 1000)

@@ -155,10 +155,8 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('bookmark.search', this.storageKeyword, keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-      console.log('bookmark.search2', this.storageKeyword, keyword)
 
       this.storageKeyword = keyword.trim();
 
@@ -218,9 +216,6 @@ export default {
     }
   },
   mounted() {
-    // todo
-    window.h = this;
-
     // 查找
     chrome.bookmarks.search({}, (bookmarks)=>{
       // 过滤掉文件夹
@@ -239,9 +234,7 @@ export default {
 
       this.originList = bookmarks;
 
-      console.log('bookmark.finish')
       this.$emit('finish');
-      console.log('bookmark.finish2')
 
       // 更新列表
       // this.search();

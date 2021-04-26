@@ -287,10 +287,8 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('window.search', this.storageKeyword, keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-      console.log('window.search2', this.storageKeyword, keyword)
 
       let isFirstSearch = this.storageKeyword == undefined;
 
@@ -335,13 +333,11 @@ export default {
       this.isSearched = true;
     },
     load() {
-      console.log('window.load')
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
         return;
       }
-      console.log('window.load2')
 
       this.list.push(...data);
       this.page++;
@@ -626,10 +622,6 @@ export default {
     },
   },
   mounted() {
-    // todo
-    window.w = this;
-    console.warn('ccccccccccccccccccccccccccccccccccccccccc');
-
     new Promise((resolve) => {
       // 获取本地数据
       chrome.storage.local.get({'list': []}, items => {
@@ -695,9 +687,7 @@ export default {
         this.activeWindows[ window.id ] = true;
       }
 
-      console.log('window.finish')
       this.$emit('finish');
-      console.log('window.finish2')
 
       // 更新列表
       // this.search();

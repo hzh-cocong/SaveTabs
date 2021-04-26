@@ -259,10 +259,8 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('temporary.search', this.storageKeyword, keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-      console.log('temporary.search2', this.storageKeyword, keyword)
 
       this.storageKeyword = keyword.trim();
 
@@ -462,16 +460,12 @@ export default {
     },
   },
   mounted() {
-    // todo
-    window.t = this;
 
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
 
-      console.log('temporary.finish')
       this.$emit('finish');
-      console.log('temporary.finish2')
 
       // 更新列表
       // this.search();

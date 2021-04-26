@@ -543,8 +543,6 @@ export default {
   }),
   computed: {
     disabledWorkspaces() {
-      console.log('get.disabledWorkspaces');
-
       let disabledWorkspaces = [];
       for(let type in this.allWorkspaces) {
         if(this.workspacesConfig.workspaces.indexOf(type) == -1) {
@@ -570,8 +568,6 @@ export default {
   },
   methods: {
     store: function() {
-      console.log('storageConfig', this.storageConfig);
-      console.log('storageConfig', JSON.stringify(this.storageConfig));
       chrome.storage.sync.set({'config': this.storageConfig}, () => {
         this.$message({
           type: 'success',
@@ -690,11 +686,9 @@ export default {
     },
     changeWorkspaceState(type) {
       let workspace = this.allWorkspaces[type];
-      console.log('changeWorkspaceState.start', workspace)
       if(workspace.isEnabled) {
         // 可能已经存在了
         // if(this.workspacesConfig.workspaces.indexOf(type) >= 0) return;
-        console.log('changeWorkspaceState.push', type);
         this.workspacesConfig.workspaces.push(type);
         this.updateWorkspace();
         return;
@@ -704,7 +698,6 @@ export default {
         // 此时页面还刷新，要等一会儿，不然事件不同步
         setTimeout(() => {
           this.$set(this.allWorkspaces[type], 'isEnabled', true);
-          console.log(this.allWorkspaces[type])
         }, 1);
         this.$message({
           type: 'warning',
@@ -755,10 +748,6 @@ export default {
         whitelist[ type ] = true;
       }
 
-      console.log('share', validate.cleanAttributes(
-        this.storageConfig, whitelist
-      ));
-
       this.download('SaveTabsConfig.json', JSON.stringify(validate.cleanAttributes(
         this.storageConfig, whitelist
       )));
@@ -768,7 +757,6 @@ export default {
     },
 
     leadOut(type) {
-      console.log('leadOut', type);
       let allKeys = {};
       for(let t in this.workspaceAttributes) {
         allKeys[ this.workspaceAttributes[t].key ] = [];
@@ -780,10 +768,8 @@ export default {
       } else {
         keys[ this.workspaceAttributes[type].key ] = [];
       }
-      console.log('leadOut.keys', keys);
 
       chrome.storage.local.get(keys, items => {
-        console.log('leadOut.items', items);
         let data = {};
         if(type == 'all') {
           Object.keys(this.workspaceAttributes).forEach(type => {
@@ -808,18 +794,16 @@ export default {
             return validate.cleanAttributes(row, attributes);
           })
         }
-        console.log('leadOut2', data);
+
         this.download('SaveTabsWindowData.json', JSON.stringify(data));
       })
     },
     leadIn(type) {
-      console.log(type)
       let uploadNode = document.getElementById('upload2');
       uploadNode.setAttribute('data-type', type);
       uploadNode.click();
     },
     clearData: function(type) {
-      console.log('clearData', type);
       let keys = [];
       if(type == 'all') {
         for(let t in this.workspaceAttributes) {
@@ -828,8 +812,6 @@ export default {
       } else {
         keys.push(this.workspaceAttributes[type].key);
       }
-
-      console.log('clearData.keys', keys);
 
       let tip = { 'window': '窗口', 'note': '便签', 'temporary': '临时窗口', 'all': '全部' };
       this.$confirm(this.lang('clearDataConfirm'), tip[type], {
@@ -848,7 +830,6 @@ export default {
       });
     },
     download: function(filename, data) {
-      console.log('download', filename, data);
       var urlObject = window.URL || window.webkitURL || window;
       var blob = new Blob([data], {type: "application/json"});
       var url = urlObject.createObjectURL(blob);
@@ -861,11 +842,6 @@ export default {
     }
   },
   mounted: function(){
-    // todo
-    window.vue = this;
-    window.userConfig = userConfig;
-    window.nanoid = nanoid;
-
     let activeName = this.getUrlParam('type');
     if(['page', 'color', 'workspace', 'other', 'praise'].indexOf(activeName) != -1) {
       this.activeName = activeName;
@@ -886,7 +862,6 @@ export default {
         if(newIndex == oldIndex) {
           return;
         }
-        console.log(newIndex, oldIndex);
         if(newIndex >= this.workspacesConfig.workspaces.length) {
           newIndex = this.workspacesConfig.workspaces.length-1;
         }
@@ -949,9 +924,7 @@ export default {
 
         let data = reader.result;
         try {
-          console.log('load.share.data', data)
           data = JSON.parse(data);
-          console.log('load.share.data2', data)
         } catch(e) {
           this.$message({
             type: 'warning',
@@ -960,7 +933,6 @@ export default {
           return;
         }
 
-        console.log('import.color', validate(data, this.colorAttributes));
         if(validate(data, this.colorAttributes) != undefined) {
           this.$message({
             type: 'warning',
@@ -977,8 +949,6 @@ export default {
         data = validate.cleanAttributes(data, whitelist);
 
         validate.extend(this.colorConfig, data);
-
-        console.error('load.share', this.colorConfig);
 
         this.$message({
           type: 'success',
@@ -1010,7 +980,6 @@ export default {
           });
           return;
         }
-        console.log('upload2', data)
 
         let allKeys = {};
         for(let t in this.workspaceAttributes) {
@@ -1023,7 +992,6 @@ export default {
         } else {
           keys[ this.workspaceAttributes[type].key ] = [];
         }
-        console.log('leadIn.keys', keys);
 
         let data2 = {};
         if(type == 'all') {
@@ -1047,7 +1015,6 @@ export default {
             }
           }
 
-          console.log('ffffffffffffffff', emptyCount, Object.keys(this.workspaceAttributes).length)
           if(emptyCount == Object.keys(this.workspaceAttributes).length) {
             this.$message({
                 type: 'success',
@@ -1057,26 +1024,20 @@ export default {
           }
 
           for(let type of Object.keys(this.workspaceAttributes)) {
-            console.warn('---------------', data, type)
             if(data[type] == undefined) continue;
-            console.warn('===', )
-            console.warn('=============', this.workspaceAttributes[ type ].key, data[type])
 
             // 过滤数据
             data2[ this.workspaceAttributes[ type ].key ] = data[type].map((item) => {
-              console.log('tttttttttt', item)
               let attributesArray = this.workspaceAttributes[ type ].attributes.array;
               let attributes = {};
               for(let t in attributesArray) {
                 attributes[ t ] = true;
               }
               let item2 = validate.cleanAttributes(item, attributes);
-              console.log('tttttttttt2', item2)
 
               if(attributesArray['tabs'] != undefined) {
                 let attributesArray2 = attributesArray['tabs'].array;
                 let attributes2 = {};
-                console.log('mmmmmmmmmmmmmmmmmmm', attributesArray2);
                 for(let t in attributesArray2) {
                   attributes2[ t ] = true;
                 }
@@ -1087,21 +1048,16 @@ export default {
 
               item2['id'] = nanoid();
 
-              console.log('tttttttttttttttt3', item2);
-
               return item2;
             })
           }
 
-          console.warn('88888888888888', data2)
         } else {
           // 兼容旧版数据
-          console.log('fffffffffff55555555555f', data, type, data[type], Array.isArray([data]) )
           if(type == 'window') {
             if(data[type] == undefined && Array.isArray(data)) {
               let d = {};
               d[ type ] = data;
-              console.log('版本兼容', data, d);
               data = d;
             }
           }
@@ -1118,34 +1074,27 @@ export default {
             }
 
           let attributes = {};
-          attributes[ type ] = this.workspaceAttributes[ type ].attributes
-          console.log('check', type, attributes);
-          console.log('aaaaaaaaaaaaaaaaaaaa')
+          attributes[ type ] = this.workspaceAttributes[ type ].attributes;
           if(validate(data, attributes) != undefined){
-            console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb')
             this.$message({
               type: 'warning',
               message: this.lang('invalidFileFormat')
             });
             return;
           }
-          console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
 
           // 过滤数据
           data2[ this.workspaceAttributes[ type ].key ] = data[type].map((item) => {
-            console.log('tttttttttt', item)
             let attributesArray = this.workspaceAttributes[ type ].attributes.array;
             let attributes = {};
             for(let t in attributesArray) {
               attributes[ t ] = true;
             }
             let item2 = validate.cleanAttributes(item, attributes);
-            console.log('tttttttttt2', item2)
 
             if(attributesArray['tabs'] != undefined) {
               let attributesArray2 = attributesArray['tabs'].array;
               let attributes2 = {};
-              console.log('mmmmmmmmmmmmmmmmmmm', attributesArray2);
               for(let t in attributesArray2) {
                 attributes2[ t ] = true;
               }
@@ -1156,19 +1105,13 @@ export default {
 
             item2['id'] = nanoid();
 
-            console.log('tttttttttttttttt3', item2);
-
             return item2;
           })
         }
 
-        console.log('loaddataffff', data2, keys);
-
         // 保存数据
         chrome.storage.local.get(keys, items => {
-          console.log(items)
           for(let type in items) {
-            console.log('push', type, items[type], data2[ type ])
             items[type].unshift(...data2[ type ]);
           }
           chrome.storage.local.set(items, () => {

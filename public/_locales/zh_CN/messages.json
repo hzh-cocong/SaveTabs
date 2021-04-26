@@ -1,10 +1,15 @@
 {
+    "extension_name": {"message": "SaveTabs - 窗口标签管理器"},
     "description": {"message": "可保存窗口标签并可一次全部打开，实现多个窗口的切换，节省高达99％的内存。"},
 
 
     "tip": {"message": "提示"},
     "cancel": {"message": "取 消"},
-    "sure": {"message": "确 定"},
+
+    "justNow": {"message": "刚刚"},
+    "secondAgo": {"message": "秒前"},
+    "minuteAgo": {"message": "分钟前"},
+    "hourAgo": {"message": "小时前"},
 
 
     "tab": {"message": "标签"},

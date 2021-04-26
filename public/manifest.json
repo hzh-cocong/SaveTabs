@@ -1,14 +1,14 @@
 {
-  "name": "SaveTabs",
+  "name": "__MSG_extension_name__",
   "manifest_version": 2,
   "version": "3.0.0",
   "description": "__MSG_description__",
   "default_locale": "en",
   "icons": {
-    "128": "icons/icon_128.png"
+    "128": "icons/icon-128.png"
   },
   "browser_action": {
-    "default_icon": "icons/icon_128.png",
+    "default_icon": "icons/icon-128.png",
     "default_popup": "savetabs.html"
   },
   "background": {

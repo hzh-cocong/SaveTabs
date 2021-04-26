@@ -61,13 +61,13 @@ const tool = {
             let date = new Date(timestamp);
             return date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate();
           } else if(time == 0) {
-            return '刚刚';
+            return this.lang('justNow');
           } else if(time < 60) {
-            return time+'秒前';
+            return time+this.lang('secondAgo');
           } else if(time < 3600) {
-            return Math.floor(time/60)+'分钟前';
+            return Math.floor(time/60)+this.lang('minuteAgo');
           } else if(time < 86400) {
-            return Math.floor(time/3600)+'小时前';
+            return Math.floor(time/3600)+this.lang('hourAgo');
           } else {
             let date = new Date(timestamp);
             return date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate();

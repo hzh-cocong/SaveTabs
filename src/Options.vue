@@ -2,9 +2,9 @@
   <el-container id="app">
     <el-header>
       <h3
-        style="display: flex;justify-content: center;">
+        style="display: flex;justify-content: center; align-items: center;">
         <img
-          src="./assets/icon_128.png"
+          src="./assets/icon-128.png"
           style="wdith:25px;height: 25px;margin-right: 10px;" />
         <span>SaveTabs</span>
       </h3>

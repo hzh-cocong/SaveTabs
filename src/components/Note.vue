@@ -13,8 +13,8 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ '查找不到，你可以使用空格分割多个关键词进行搜索' }}</div>
-        <div>{{ '当前共存储 '+storageList.length+' 个便签' }}</div>
+        <div>{{ lang('noteNoResult') }}</div>
+        <div>{{ lang('noteCountTip')+storageList.length+lang('noteCountTip2') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -70,7 +70,10 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img
+                v-if="index >= config.item_show_count"
+                src="../assets/fallback.png"
+                style="width:100%; height: 100%;" />
             </div>
           </el-image>
         </span>
@@ -116,7 +119,7 @@
                 borderColor: isSelected
                       ? config.list_current_focus_state_color
                       : config.list_current_state_color }">
-                <span>{{ '当前便签' }}</span>
+                <span>{{ lang('currentNote') }}</span>
             </div>
             <div
               v-else-if="activeTabs[item.tabId]
@@ -298,7 +301,7 @@ export default {
       if(this.isInCurrentTab) {
         this.$message({
           type: 'warning',
-          message: '已保存',
+          message: this.lang('noteSaved'),
           offset: 69,
           duration: 2000,
           customClass: 'window-message-box',

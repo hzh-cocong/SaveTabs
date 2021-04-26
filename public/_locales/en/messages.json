@@ -1,66 +1,157 @@
 {
     "description": {"message": "Window labels can be saved and opened all at once, switching between multiple windows can be realized, saving up to 99% of memory."},
 
-    "searchTip": {"message": "Please enter the window name"},
-    "noResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
-    "noResult2": {"message": "You can use spaces to separate multiple keywords to search"},
+
+    "tip": {"message": "Tip"},
+    "cancel": {"message": "Cancel"},
+    "sure": {"message": "OK"},
+
+
+    "tab": {"message": "tab"},
+    "note": {"message": "note"},
+    "window": {"message": "window"},
+    "temporary": {"message": "temporary"},
+    "history": {"message": "history"},
+    "bookmark": {"message": "bookmark"},
+    "all": {"message": "all"},
+
+    "tabPlaceholder": {"message": "Please enter title or address"},
+    "notePlaceholder": {"message": "Please enter title or address"},
+    "windowPlaceholder": {"message": "Please enter the window name"},
+    "temporaryPlaceholder": {"message": "Please enter title or address"},
+    "historyPlaceholder": {"message": "Please enter title or address"},
+    "bookmarkPlaceholder": {"message": "Please enter title or address"},
+
+
+    "updateGroupName": {"message": "Window name modification"},
+    "deleteConfirm": {"message": "Are you sure to delete the window"},
+    "groupNameRepeat": {"message": "The window name is not allowed to be repeated"},
+    "groupNameInput": {"message": "Please enter the window name"},
+    "changeConfirm": {"message": "Are you sure to update the window"},
+    "emptyGroupName": {"message": "The window name is not allowed to be empty"},
+
+    "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
+    "windowNoResult2": {"message": "You can use spaces to separate multiple keywords to search."},
+    "windowFirstAdd": {"message": "The window is saved successfully. Clicking on the list will switch to the corresponding window. You can create a new window and save it so that you can see the effect."},
     "currentWindow": {"message": "Current"},
     "opened": {"message": "Opened"},
     "saved": {"message": "It has been saved"},
-    "saved2": {"message": "The current window has been saved, you can click the last button of the first item in the list to update the window"},
-    "cancel": {"message": "Cancel"},
-    "sure": {"message": "OK"},
-    "tip": {"message": "Tip"},
-    "repeatTip": {"message": "Duplicate window name"},
-    "updateGroupName": {"message": "Window name update"},
-    "groupNameInput": {"message": "Please enter the window name"},
-    "emptyGroupName": {"message": "The window name cannot be empty"},
-    "invalidGroupName": {"message": "The window name is illegal, please modify it first"},
-    "groupNameRepeat": {"message": "Window name is not allowed to be repeated"},
-    "changeConfirm": {"message": "Are you sure to update the window"},
-    "deleteConfirm": {"message": "Are you sure to delete the window"},
+    "saved2": {"message": "The current window has been saved, you can click the last button of the first item in the list to update the window."},
+    "windowCountTip": {"message": "A total of "},
+    "windowCountTip2": {"message": " windows are stored."},
 
-    "basicSettings": {"message": "Preferences"},
+
+    "temporaryNoResult": {"message": "You can use spaces to separate multiple keywords to search."},
+    "temporaryCountTip": {"message": "A total of "},
+    "temporaryCountTip2": {"message": " temporary windows are stored."},
+    "temporaryTabTip": {"message": "tabs"},
+
+
+    "currentNote": {"message": "Current"},
+    "noteSaved": {"message": "The note has been saved."},
+    "noteNoResult": {"message": "You can use spaces to separate multiple keywords to search."},
+    "noteCountTip": {"message": "A total of "},
+    "noteCountTip2": {"message": " notes are stored."},
+
+
+    "tabNoResult": {"message": "The tab does not exist."},
+    "tabCountTip": {"message": "A total of "},
+    "tabCountTip2": {"message": " tabs are opened."},
+
+    "historyNoResult": {"message": "The history cannot be found."},
+    "historyCountTip": {"message": "Only display data within one day by default"},
+
+    "bookmarkNoResult": {"message": "The bookmark does not exist."},
+    "bookmarkCountTip": {"message": "A total of "},
+    "bookmarkCountTip2": {"message": " bookmarks are stored."},
+
+
+    "pageLayout": {"message": "Page Layout"},
+    "colorSetting": {"message": "Color Setting"},
+    "workspace": {"message": "Workspace"},
     "otherFunctions": {"message": "Other functions"},
-    "listItem": {"message": "List item"},
-    "listItemSelected": {"message": "List item - On focus"},
-    "currentWindowItem": {"message": "Current window item"},
-    "currentWindowItemSelected": {"message": "Current window item - On focus"},
+    "support": {"message": "Support"},
+
+    "page": {"message": "Page"},
+    "border": {"message": "Border"},
+
+    "listItem": {"message": "List Item"},
+    "width": {"message": "Width"},
+    "height": {"message": "Height"},
+    "count": {"message": "Count"},
+    "pageCount": {"message": "Page Count"},
+
+    "fontSize": {"message": "Font Size"},
+    "titleSize": {"message": "Title"},
+    "subtitleSize": {"message": "Subitle"},
+    "statusSize": {"message": "Status"},
+    "keymapSize": {"message": "Keymap"},
+
+    "listItemSelected": {"message": "List Item - On Focus"},
+    "currentWindowItem": {"message": "Current Window Item"},
+    "currentWindowItemSelected": {"message": "Current Window Item - On focus"},
+
     "backgroundColor": {"message": "Background"},
-    "stateColor": {"message": "Status bar"},
-    "fontColor": {"message": "Font color"},
-    "fontSize": {"message": "Font size"},
-    "groupData": {"message": "Window Data"},
-    "keySettings": {"message": "Key Settings"},
-    "explain": {"message": "Tip"},
-    "clearData": {"message": "Data cleaning"},
-    "clearDataExplain": {"message": "Only Window Data will be deleted, and the Preference Data will not be affected"},
-    "import": {"message": "Import"},
-    "importExplain": {"message": "Only supports files from \"Export\""},
-    "export": {"message": "Export"},
-    "exportExplain": {"message": "Except for the Preference Data of this plug-in, the rest of the data (ie Window Data) is only saved locally. If you log in on other devices, you can export the data first and then import on other devices."},
-    "addKeys": {"message": "Key Bindings"},
-    "addKeysExplain": {"message": "Quickly start the program, improve the efficiency of use"},
+    "statusColor": {"message": "Status Bar"},
+    "titleColor": {"message": "Title Color"},
+    "subtitleColor": {"message": "Subtitle Color"},
+
+    "pageBackgroundColor": {"message": "Page"},
+    "pageBorderColor": {"message": "Page Border"},
+    "keymapColor": {"message": "KeyMap"},
+    "keymapFocusColor": {"message": "KeyMap Focus"},
+
     "load": {"message": "Loading"},
     "loadExplain": {"message": "Load configuration shared by others"},
     "share": {"message": "Share"},
     "shareExplain": {"message": "Export configuration to share"},
     "reset": {"message": "Reset"},
     "store": {"message": "store"},
-    "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
+
     "restored": {"message": "Success"},
+    "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
     "saveSuccess": {"message": "Saved successfully"},
-    "clearDataConfirm": {"message": "Are you sure to delete Window Data?"},
-    "clearDataSuccess": {"message": "Window Data has been cleared"},
+
+
+    "clearDataConfirm": {"message": "Are you sure to delete "},
+    "clearDataConfirm2": {"message": " Data?"},
+    "noDataImport": {"message": "No data import."},
+    "clearDataSuccess": {"message": " Data has been cleared"},
     "storeConfirm": {"message": "Are you sure to save?"},
     "invalidFileFormat": {"message": "It is not a valid file format"},
     "groupImportedSuccess": {"message": "File imported successfully"},
     "settingImportMessage": {"message": "The file is loaded successfully, click the \"Store\" button to take effect"},
 
+    "displayOrder": {"message": "Display Order"},
+    "otherOptions": {"message": "Other Options"},
+    "darkMode": {"message": "Dark Mode"},
+    "showWorkspaceTitle": {"message": "Show Title"},
+    "buttonFollow": {"message": "Button Follow Workspace"},
+
+    "workspaceCountLimit": {"message": "At least one workspace"},
+    "workspaceEnable": {"message": "Please enable this workspace first"},
+
+
+    "windowData": {"message": "Window Data"},
+    "noteData": {"message": "Note Data"},
+    "temporaryData": {"message": "Temporary Data"},
+    "allData": {"message": "All Data"},
+    "keySettings": {"message": "Key Settings"},
+
+    "clearData": {"message": "Data cleaning"},
+    "import": {"message": "Import"},
+    "export": {"message": "Export"},
+
+    "addKeys": {"message": "Key Bindings"},
+    "bookmarkManagement": {"message": "Boormark Management"},
+    "historyManagement": {"message": "History Management"},
+
+
     "praise": {"message": "Support"},
-    "thankYou": {"message": "Thank you for your support😘. I will try my best to improve it!😋"},
+    "thankYou": {"message": "If you think this plugin is good, you can buy me a cup of coffee. ￣▽￣"},
 
     "advice1": {"message": "You can also log in"},
     "chromeWebStore": {"message": "Chrome Web Store"},
     "advice2": {"message": "to give praise or provide suggestions"}
+
 }

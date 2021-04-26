@@ -13,8 +13,8 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ '查找不到，你可以使用空格分割多个关键词进行搜索' }}</div>
-        <div>{{ '当前共存储 '+storageList.length+' 个临时窗口' }}</div>
+        <div>{{ lang('temporaryNoResult') }}</div>
+        <div>{{ lang('temporaryCountTip')+storageList.length+lang('temporaryCountTip2') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -57,7 +57,7 @@
               marginTop : config.item_height > 50
                         ? ((config.item_height-50)/5) + 'px'
                         : 0,
-            }">个标签</div>
+            }">{{ lang('temporaryTabTip') }}</div>
           </div>
         </span>
 
@@ -92,7 +92,10 @@
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
                 <div slot="placeholder" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                  <img
+                    v-if="index >= config.item_show_count"
+                    src="../assets/fallback.png"
+                    style="width:100%; height: 100%;" />
                 </div>
               </el-image>
               <span
@@ -119,7 +122,10 @@
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
                 <div slot="placeholder" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                  <img
+                    v-if="index >= config.item_show_count"
+                    src="../assets/fallback.png"
+                    style="width:100%; height: 100%;" />
                 </div>
               </el-image>
               <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
@@ -132,29 +138,6 @@
                       ? config.list_explain_focus_font_color
                       : config.list_explain_font_color }">
                 {{ item.tabs[0].url }}
-              <!-- <template v-if="item.tabs.length == 1">
-                {{ item.tabs[0].url }}
-              </template>
-              <template else>
-                <span
-                  v-for="(tab, i) in item.tabs" :key="index+'.'+i"
-                  style="display:inline-block; width: 100px; margin-right: 5px;overflow:hidden;">
-                  <el-image
-                    :src="isLoad ? getIcon(tab.icon, tab.url, 12) : ''"
-                    fit="cover"
-                    :style="{ width: config.list_explain_font_size+'px',
-                              height: config.list_explain_font_size+'px' }"
-                    :lazy="index >= config.item_show_count">
-                    <div slot="error" class="image-slot" v-if="isLoad">
-                      <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                    </div>
-                    <div slot="placeholder" class="image-slot" v-if="isLoad">
-                      <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                    </div>
-                  </el-image>
-                  <span style="margin-left: 5px;">{{ tab.title }}</span>
-                </span>
-              </template> -->
             </div>
           </template>
         </div>

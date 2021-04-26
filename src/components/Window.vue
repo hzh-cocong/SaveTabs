@@ -13,8 +13,8 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ storageList.length == 0 ? lang('noResult') : lang('noResult2') }}</div>
-        <div v-if="storageList.length > 0">{{ '当前共存储 '+storageList.length+' 个窗口' }}</div>
+        <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
+        <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -66,7 +66,10 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img
+                v-if="index >= config.item_show_count"
+                src="../assets/fallback.png"
+                style="width:100%; height: 100%;" />
             </div>
           </el-image>
         </span>
@@ -417,18 +420,34 @@ export default {
         return currentWindowId;
       }).then((currentWindowId) => {
         // 保存数据
-        chrome.storage.local.set({list: this.storageList}, () => {
-          this.currentWindowId = currentWindowId;
-          this.activeWindows[this.currentWindowId] = true;
-          this.isCurrentWindowChange = false;
-          this.isInCurrentWindow = true;
+        return new Promise((resolve) => {
+          chrome.storage.local.set({list: this.storageList}, () => {
+            resolve(currentWindowId)
+          });
+        })
+      }).then((currentWindowId) => {
+        // 更新结果
+        this.currentWindowId = currentWindowId;
+        this.activeWindows[this.currentWindowId] = true;
+        this.isCurrentWindowChange = false;
+        this.isInCurrentWindow = true;
 
-          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-          this.storageKeyword = ' ';
+        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        this.storageKeyword = ' ';
 
-          // this.search();
-          callback();
-        });
+        // this.search();
+        callback();
+
+        // 用户第一次使用可能会有困惑，这里加个提示
+        if(this.storageList.length == 1) {
+          this.$message({
+            type: 'success',
+            message: this.lang('windowFirstAdd'),
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 5000,
+          });
+        }
       })
     },
     openWindow(index) {

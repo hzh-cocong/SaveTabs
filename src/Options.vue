@@ -13,12 +13,12 @@
       <el-row type="flex" justify="center">
         <el-col :span="24">
           <el-tabs v-model="activeName" type="border-card" tab-position="top" align="left">
-            <el-tab-pane label="页面布局" name="page">
+            <el-tab-pane :label="lang('pageLayout')" name="page">
 
-              <el-divider>页面</el-divider>
+              <el-divider>{{lang('page') }}</el-divider>
 
               <div class="item">
-                <span>边框</span>
+                <span>{{lang('border') }}</span>
                 <el-slider
                     v-model="pageConfig.border_width"
                     :show-input="true"
@@ -30,10 +30,10 @@
                 <i class="el-icon-refresh-right" @click="resetSize('border_width')"></i>
               </div>
 
-              <el-divider>列表项</el-divider>
+              <el-divider>{{ lang('listItem') }}</el-divider>
 
               <div class="item">
-                <span>宽度</span>
+                <span>{{ lang('width') }}</span>
                 <el-slider
                     v-model="pageConfig.width"
                     :show-input="true"
@@ -45,7 +45,7 @@
                 <i class="el-icon-refresh-right" @click="resetSize('width')"></i>
               </div>
               <div class="item">
-                <span>高度</span>
+                <span>{{ lang('height') }}</span>
                 <el-slider
                     v-model="pageConfig.item_height"
                     :show-input="true"
@@ -57,7 +57,7 @@
                 <i class="el-icon-refresh-right" @click="resetSize('item_height')"></i>
               </div>
               <div class="item">
-                <span>个数</span>
+                <span>{{ lang('count') }}</span>
                 <el-slider
                     v-model="pageConfig.item_show_count"
                     :show-input="true"
@@ -69,7 +69,7 @@
                 <i class="el-icon-refresh-right" @click="resetSize('item_show_count')"></i>
               </div>
               <div class="item">
-                <span>每页数量</span>
+                <span>{{ lang('pageCount') }}</span>
                 <el-slider
                     v-model="pageConfig.list_page_count"
                     :show-input="true"
@@ -81,10 +81,10 @@
                 <i class="el-icon-refresh-right" @click="resetSize('list_page_count')"></i>
               </div>
 
-              <el-divider>字体大小</el-divider>
+              <el-divider>{{ lang('fontSize') }}</el-divider>
 
               <div class="item">
-                <span>标题</span>
+                <span>{{ lang('titleSize') }}</span>
                 <el-slider
                     v-model="pageConfig.list_font_size"
                     :show-input="true"
@@ -97,7 +97,7 @@
               </div>
 
               <div class="item">
-                <span>副标题</span>
+                <span>{{ lang('subtitleSize') }}</span>
                 <el-slider
                     v-model="pageConfig.list_explain_font_size"
                     :show-input="true"
@@ -110,7 +110,7 @@
               </div>
 
               <div class="item">
-                <span>状态栏</span>
+                <span>{{ lang('statusSize') }}</span>
                 <el-slider
                     v-model="pageConfig.list_state_size"
                     :show-input="true"
@@ -123,7 +123,7 @@
               </div>
 
               <div class="item">
-                <span>快捷键</span>
+                <span>{{ lang('keymapSize') }}</span>
                 <el-slider
                     v-model="pageConfig.list_keymap_size"
                     :show-input="true"
@@ -137,33 +137,33 @@
 
             </el-tab-pane>
 
-            <el-tab-pane label="颜色配置" name="color">
+            <el-tab-pane :label="lang('colorSetting')" name="color">
               <el-form ref="form" :model="colorConfig" label-width="110px" :inline="true" size="mini">
 
                 <el-divider>{{ lang('listItem') }}</el-divider>
 
-                <el-form-item label="页面背景">
+                <el-form-item :label="lang('pageBackgroundColor')">
                   <el-color-picker v-model="colorConfig.background_color" show-alpha></el-color-picker>
                 </el-form-item>
-                <el-form-item label="页面边框">
+                <el-form-item :label="lang('pageBorderColor')">
                   <el-color-picker v-model="colorConfig.border_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="'快捷键状态'">
+                <el-form-item :label="lang('keymapColor')">
                   <el-color-picker v-model="colorConfig.list_keymap_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="'快捷键选中'">
+                <el-form-item :label="lang('keymapFocusColor')">
                   <el-color-picker v-model="colorConfig.list_focus_keymap_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('backgroundColor')">
                   <el-color-picker v-model="colorConfig.list_background_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('fontColor')">
+                <el-form-item :label="lang('titleColor')">
                   <el-color-picker v-model="colorConfig.list_font_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('stateColor')">
+                <el-form-item :label="lang('statusColor')">
                   <el-color-picker v-model="colorConfig.list_state_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="'副标题字体'">
+                <el-form-item :label="lang('subtitleColor')">
                   <el-color-picker v-model="colorConfig.list_explain_font_color"></el-color-picker>
                 </el-form-item>
 
@@ -172,13 +172,13 @@
                 <el-form-item :label="lang('backgroundColor')">
                   <el-color-picker v-model="colorConfig.list_focus_background_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('fontColor')">
+                <el-form-item :label="lang('titleColor')">
                   <el-color-picker v-model="colorConfig.list_focus_font_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('stateColor')">
+                <el-form-item :label="lang('statusColor')">
                   <el-color-picker v-model="colorConfig.list_focus_state_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="'副标题字体 '">
+                <el-form-item :label="lang('subtitleColor')">
                   <el-color-picker v-model="colorConfig.list_explain_focus_font_color"></el-color-picker>
                 </el-form-item>
 
@@ -187,10 +187,10 @@
                 <el-form-item :label="lang('backgroundColor')">
                   <el-color-picker v-model="colorConfig.list_current_background_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('fontColor')">
+                <el-form-item :label="lang('titleColor')">
                   <el-color-picker v-model="colorConfig.list_current_font_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('stateColor')">
+                <el-form-item :label="lang('statusColor')">
                   <el-color-picker v-model="colorConfig.list_current_state_color"></el-color-picker>
                 </el-form-item>
 
@@ -199,10 +199,10 @@
                 <el-form-item :label="lang('backgroundColor')">
                   <el-color-picker v-model="colorConfig.list_current_focus_background_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('fontColor')">
+                <el-form-item :label="lang('titleColor')">
                   <el-color-picker v-model="colorConfig.list_current_focus_font_color"></el-color-picker>
                 </el-form-item>
-                <el-form-item :label="lang('stateColor')">
+                <el-form-item :label="lang('statusColor')">
                   <el-color-picker v-model="colorConfig.list_current_focus_state_color"></el-color-picker>
                 </el-form-item>
 
@@ -217,9 +217,9 @@
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="工作区" name="workspace">
+            <el-tab-pane :label="lang('workspace')" name="workspace">
 
-              <el-divider>{{ '展示顺序' }}</el-divider>
+              <el-divider>{{ lang('displayOrder') }}</el-divider>
 
               <ul class="list">
                 <li
@@ -243,7 +243,7 @@
                   <span
                     style="flex: 1; "
                     :style="{ color: workspacesConfig.show_workspace_name
-                            ? '' : 'white'}">{{ allWorkspaces[type].title }}</span>
+                            ? '' : 'white'}">{{ lang(allWorkspaces[type].title) }}</span>
                   <span
                     :style="{
                       color: workspacesConfig.pinned
@@ -262,7 +262,7 @@
                 </li>
               </ul>
 
-              <el-divider>{{ '其它选项' }}</el-divider>
+              <el-divider>{{ lang('otherOptions') }}</el-divider>
 
               <el-checkbox
                 size="medium"
@@ -270,220 +270,67 @@
                 v-model="workspacesConfig.theme_mode"
                 true-label="dark"
                 false-label="light"
-                @change="changeThemeMode">暗黑模式</el-checkbox>
+                @change="changeThemeMode">{{ lang('darkMode') }}</el-checkbox>
               <el-checkbox
                 size="medium"
                 :border="true"
                 v-model="workspacesConfig.show_workspace_name"
-                @change="showWorkspaceName">显示工作区标题</el-checkbox>
+                @change="showWorkspaceName">{{ lang('showWorkspaceTitle') }}</el-checkbox>
               <el-checkbox
                 size="medium"
                 :border="true"
                 v-model="workspacesConfig.button_follow_workspace"
-                @change="followWorkspaceOrder">操作按钮跟随工作区顺序</el-checkbox>
+                @change="followWorkspaceOrder">{{ lang('buttonFollow') }}</el-checkbox>
               <div style="margin-bottom: 30px;"></div>
 
             </el-tab-pane>
-            <el-tab-pane :label="'其它功能'" name="other">
+            <el-tab-pane :label="lang('otherFunctions')" name="other">
 
-              <el-divider>{{ lang('groupData') }}</el-divider>
+              <el-divider>{{ lang('windowData') }}</el-divider>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('clearDataExplain')">
-                <el-button slot="reference" icon="el-icon-delete" @click="clearData('window')">{{ lang('clearData') }}</el-button>
-              </el-popover>
               <input type="file" id="upload2" style="display:none">
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content=" lang('importExplain') ">
-                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('window')">{{ lang('import') }}</el-button>
-              </el-popover>
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="sdf">
-                <el-button slot="reference" icon="el-icon-download" @click="leadOut('window')">{{ lang('export') }}</el-button>
-              </el-popover>
+
+              <el-button icon="el-icon-delete" @click="clearData('window')">{{ lang('clearData') }}</el-button>
+              <el-button icon="el-icon-upload2" @click="leadIn('window')">{{ lang('import') }}</el-button>
+              <el-button icon="el-icon-download" @click="leadOut('window')">{{ lang('export') }}</el-button>
+
               <div style="margin-top: 30px;"></div>
 
+              <el-divider>{{ lang('noteData') }}</el-divider>
 
-              <el-divider>{{ '便签数据' }}</el-divider>
-
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('clearDataExplain')">
-                <el-button slot="reference" icon="el-icon-delete" @click="clearData('note')">{{ lang('clearData') }}</el-button>
-              </el-popover>
-              <input type="file" id="upload2" style="display:none">
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content=" lang('importExplain') ">
-                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn(
+              <el-button icon="el-icon-delete" @click="clearData('note')">{{ lang('clearData') }}</el-button>
+              <el-button icon="el-icon-upload2" @click="leadIn(
                 'note')">{{ lang('import') }}</el-button>
-              </el-popover>
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('exportExplain')">
-                <el-button slot="reference" icon="el-icon-download" @click="leadOut('note')">{{ lang('export') }}</el-button>
-              </el-popover>
+              <el-button icon="el-icon-download" @click="leadOut('note')">{{ lang('export') }}</el-button>
+
               <div style="margin-top: 30px;"></div>
 
+              <el-divider>{{ lang('temporaryData') }}</el-divider>
 
-              <el-divider>{{ '临时窗口' }}</el-divider>
+              <el-button icon="el-icon-delete" @click="clearData('temporary')">{{ lang('clearData') }}</el-button>
+              <el-button icon="el-icon-upload2" @click="leadIn('temporary')">{{ lang('import') }}</el-button>
+              <el-button icon="el-icon-download" @click="leadOut('temporary')">{{ lang('export') }}</el-button>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('clearDataExplain')">
-                <el-button slot="reference" icon="el-icon-delete" @click="clearData('temporary')">{{ lang('clearData') }}</el-button>
-              </el-popover>
-              <input type="file" id="upload2" style="display:none">
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content=" lang('importExplain') ">
-                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('temporary')">{{ lang('import') }}</el-button>
-              </el-popover>
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('exportExplain')">
-                <el-button slot="reference" icon="el-icon-download" @click="leadOut('temporary')">{{ lang('export') }}</el-button>
-              </el-popover>
               <div style="margin-top: 30px;"></div>
 
+              <el-divider>{{ lang('allData') }}</el-divider>
 
-              <el-divider>{{ '全部数据' }}</el-divider>
+              <el-button icon="el-icon-delete" @click="clearData('all')">{{ lang('clearData') }}</el-button>
+              <el-button icon="el-icon-upload2" @click="leadIn('all')">{{ lang('import') }}</el-button>
+              <el-button icon="el-icon-download" @click="leadOut('all')">{{ lang('export') }}</el-button>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('clearDataExplain')">
-                <el-button slot="reference" icon="el-icon-delete" @click="clearData('all')">{{ lang('clearData') }}</el-button>
-              </el-popover>
-              <input type="file" id="upload2" style="display:none">
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content=" lang('importExplain') ">
-                <el-button slot="reference" icon="el-icon-upload2" @click="leadIn('all')">{{ lang('import') }}</el-button>
-              </el-popover>
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('exportExplain')">
-                <el-button slot="reference" icon="el-icon-download" @click="leadOut('all')">{{ lang('export') }}</el-button>
-              </el-popover>
               <div style="margin-top: 30px;"></div>
-
 
               <el-divider style="margin-top: 10px;">{{ lang('keySettings') }}</el-divider>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="lang('explain')"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('addKeysExplain')">
-                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
-              </el-popover>
+              <el-button icon="el-icon-key" @click="$open('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="'书签管理'"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('addKeysExplain')">
-                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://bookmarks/')">{{ lang('addKeys') }}</el-button>
-              </el-popover>
+              <el-button icon="el-icon-key" @click="$open('chrome://bookmarks/')">{{ lang('bookmarkManagement') }}</el-button>
 
-              <el-popover
-                placement="top-start"
-                open-delay="1000"
-                close-delay="0"
-                :title="'历史记录'"
-                width="200"
-                trigger="hover"
-                style="margin-right:10px;"
-                :content="lang('addKeysExplain')">
-                <el-button slot="reference" icon="el-icon-key" @click="$open('chrome://history/')">{{ lang('addKeys') }}</el-button>
-              </el-popover>
-
+              <el-button icon="el-icon-key" @click="$open('chrome://history/')">{{ lang('historyManagement') }}</el-button>
 
             </el-tab-pane>
-            <el-tab-pane :label="lang('praise')" name="praise">
+            <el-tab-pane :label="lang('support')" name="praise">
               <el-row>
                 <el-col :span="24" style="text-align:center;margin-top: 20px;color:gray;">
                   {{ lang('thankYou') }}
@@ -701,7 +548,7 @@ export default {
         }, 1);
         this.$message({
           type: 'warning',
-          message: '至少要有一个工作区',
+          message: this.lang('workspaceCountLimit'),
         });
         return;
       }
@@ -718,7 +565,7 @@ export default {
       if(this.allWorkspaces[type].isEnabled == false) {
         this.$message({
           type: 'warning',
-          message: '请先启用该工作区',
+          message: this.lang('workspaceEnable'),
         });
         return;
       }
@@ -795,7 +642,7 @@ export default {
           })
         }
 
-        this.download('SaveTabsWindowData.json', JSON.stringify(data));
+        this.download('SaveTabs'+validate.capitalize(type)+'Data.json', JSON.stringify(data));
       })
     },
     leadIn(type) {
@@ -813,8 +660,7 @@ export default {
         keys.push(this.workspaceAttributes[type].key);
       }
 
-      let tip = { 'window': '窗口', 'note': '便签', 'temporary': '临时窗口', 'all': '全部' };
-      this.$confirm(this.lang('clearDataConfirm'), tip[type], {
+      this.$confirm(this.lang('clearDataConfirm')+validate.capitalize(this.lang(type))+this.lang('clearDataConfirm2'), this.lang(type), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -823,7 +669,7 @@ export default {
         chrome.storage.local.remove(keys, () => {
           this.$message({
             type: 'success',
-            message: this.lang('clearDataSuccess')
+            message: this.lang(type)+this.lang('clearDataSuccess')
           });
         });
       }).catch(() => {
@@ -1017,8 +863,8 @@ export default {
 
           if(emptyCount == Object.keys(this.workspaceAttributes).length) {
             this.$message({
-                type: 'success',
-                message: '无数据导入'
+                type: 'info',
+                message: this.lang('noDataImport')
               });
               return;
           }
@@ -1067,8 +913,8 @@ export default {
           || (Array.isArray(data[type])
             && data[type].length == 0)) {
               this.$message({
-                type: 'success',
-                message: '无数据导入'
+                type: 'info',
+                message: this.lang('noDataImport')
               });
               return;
             }
@@ -1140,7 +986,7 @@ export default {
   align-items: center;
 }
 .item>span {
-  width: 80px;
+  width: 90px;
   margin-left: 10px;
 }
 .item .el-slider {

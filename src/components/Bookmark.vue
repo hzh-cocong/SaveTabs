@@ -13,8 +13,8 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ '不存在该标签' }}</div>
-        <div>{{ '当前共存储 '+originList.length+' 个标签' }}</div>
+        <div>{{ lang('bookmarkNoResult') }}</div>
+        <div>{{ lang('bookmarkCountTip')+originList.length+lang('bookmarkCountTip2') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -58,7 +58,10 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img
+                v-if="index >= config.item_show_count"
+                src="../assets/fallback.png"
+                style="width:100%; height: 100%;" />
             </div>
           </el-image>
         </span>

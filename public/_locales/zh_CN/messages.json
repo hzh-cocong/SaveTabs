@@ -1,64 +1,156 @@
 {
     "description": {"message": "可保存窗口标签并可一次全部打开，实现多个窗口的切换，节省高达99％的内存。"},
 
-    "searchTip": {"message": "请输入窗口名"},
-    "noResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口"},
-    "noResult2": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索"},
+
+    "tip": {"message": "提示"},
+    "cancel": {"message": "取 消"},
+    "sure": {"message": "确 定"},
+
+
+    "tab": {"message": "标签"},
+    "note": {"message": "便签"},
+    "window": {"message": "窗口"},
+    "temporary": {"message": "临时"},
+    "history": {"message": "历史"},
+    "bookmark": {"message": "书签"},
+    "all": {"message": "全部"},
+
+    "tabPlaceholder": {"message": "请输入标题或地址"},
+    "notePlaceholder": {"message": "请输入标题或地址"},
+    "windowPlaceholder": {"message": "请输入窗口名"},
+    "temporaryPlaceholder": {"message": "请输入标题或地址"},
+    "historyPlaceholder": {"message": "请输入标题或地址"},
+    "bookmarkPlaceholder": {"message": "请输入标题或地址"},
+
+
+    "updateGroupName": {"message": "窗口名修改"},
+    "deleteConfirm": {"message": "确定删除窗口"},
+    "groupNameRepeat": {"message": "窗口名不允许重复"},
+    "groupNameInput": {"message": "请输入窗口名"},
+    "changeConfirm": {"message": "确定更新窗口"},
+    "emptyGroupName": {"message": "窗口名不允许为空"},
+
+    "windowNoResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口。"},
+    "windowNoResult2": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
+    "windowFirstAdd": {"message": "窗口保存成功，点击列表将切换到对应窗口。你可以再新建新的窗口并保存，这样就可以看到效果。"},
     "currentWindow": {"message": "当前窗口"},
     "opened": {"message": "已打开"},
     "saved": {"message": "当前窗口已保存"},
     "saved2": {"message": "当前窗口已保存，你可以点击列表第一项的最后一个按钮更新窗口"},
-    "cancel": {"message": "取 消"},
-    "sure": {"message": "确 定"},
-    "tip": {"message": "提示"},
-    "repeatTip": {"message": "窗口名重复"},
-    "updateGroupName": {"message": "窗口名修改"},
-    "groupNameInput": {"message": "请输入窗口名"},
-    "emptyGroupName": {"message": "窗口名不允许为空"},
-    "invalidGroupName": {"message": "窗口名不合法，请先修改"},
-    "groupNameRepeat": {"message": "窗口名不允许重复"},
-    "changeConfirm": {"message": "确定更新窗口"},
-    "deleteConfirm": {"message": "确定删除窗口"},
+    "windowCountTip": {"message": "当前共存储 "},
+    "windowCountTip2": {"message": " 个窗口。"},
 
-    "basicSettings": {"message": "基本设置"},
+
+    "temporaryNoResult": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
+    "temporaryCountTip": {"message": "当前共存储 "},
+    "temporaryCountTip2": {"message": " 个临时窗口。"},
+    "temporaryTabTip": {"message": "个标签"},
+
+
+    "currentNote": {"message": "当前便签"},
+    "noteSaved": {"message": "该便签已保存"},
+    "noteNoResult": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
+    "noteCountTip": {"message": "当前共存储 "},
+    "noteCountTip2": {"message": " 个便签。"},
+
+
+    "tabNoResult": {"message": "不存在该标签。"},
+    "tabCountTip": {"message": "当前共打开 "},
+    "tabCountTip2": {"message": " 个标签。"},
+
+
+    "historyNoResult": {"message": "查无历史记录。"},
+    "historyCountTip": {"message": "默认只展示一天内的数据"},
+
+
+    "bookmarkNoResult": {"message": "不存在该书签。"},
+    "bookmarkCountTip": {"message": "当前共存储 "},
+    "bookmarkCountTip2": {"message": " 个书签。"},
+
+
+    "pageLayout": {"message": "页面布局"},
+    "colorSetting": {"message": "颜色配置"},
+    "workspace": {"message": "工作区"},
     "otherFunctions": {"message": "其它功能"},
+    "support": {"message": "支持一下"},
+
+    "page": {"message": "页面"},
+    "border": {"message": "边框"},
+
     "listItem": {"message": "列表项"},
+    "width": {"message": "宽度"},
+    "height": {"message": "高度"},
+    "count": {"message": "个数"},
+    "pageCount": {"message": "每页数量"},
+
+    "fontSize": {"message": "字体大小"},
+    "titleSize": {"message": "标题"},
+    "subtitleSize": {"message": "副标题"},
+    "statusSize": {"message": "状态栏"},
+    "keymapSize": {"message": "快捷键"},
+
     "listItemSelected": {"message": "列表项（选中时）"},
     "currentWindowItem": {"message": "当前窗口项"},
     "currentWindowItemSelected": {"message": "当前窗口项（选中时）"},
+
     "backgroundColor": {"message": "背景色"},
-    "stateColor": {"message": "状态栏颜色"},
-    "fontColor": {"message": "字体颜色"},
-    "fontSize": {"message": "字体大小"},
-    "groupData": {"message": "窗口数据"},
-    "keySettings": {"message": "快捷键设置"},
-    "explain": {"message": "说明"},
-    "clearData": {"message": "数据清理"},
-    "clearDataExplain": {"message": "只会删除“窗口数据”，基本设置不会受影响"},
-    "import": {"message": "导入"},
-    "importExplain": {"message": "暂时只支持来自“导出”的文件"},
-    "export": {"message": "导出"},
-    "exportExplain": {"message": "本插件除了“基本设置”，其余数据（即 窗口数据）都只是保存在本地。如果你在其它设备登录，则可以先“导出”数据再在其它设备上“导入”。"},
-    "addKeys": {"message": "添加快捷键"},
-    "addKeysExplain": {"message": "快速启动程序，提高使用效率"},
+    "statusColor": {"message": "状态栏颜色"},
+    "titleColor": {"message": "标题颜色"},
+    "subtitleColor": {"message": "副标题字体"},
+
+    "pageBackgroundColor": {"message": "页面背景"},
+    "pageBorderColor": {"message": "页面边框"},
+    "keymapColor": {"message": "快捷键状态"},
+    "keymapFocusColor": {"message": "快捷键选中"},
+
     "load": {"message": "载入"},
     "loadExplain": {"message": "载入别人分享的配置"},
     "share": {"message": "分享"},
     "shareExplain": {"message": "导出配置以分享"},
     "reset": {"message": "重置"},
     "store": {"message": "保存"},
-    "resetConfirm": {"message": "确定还原默认配置？"},
+
     "restored": {"message": "已还原"},
+    "resetConfirm": {"message": "确定还原默认配置？"},
     "saveSuccess": {"message": "保存成功"},
-    "clearDataConfirm": {"message": "确定删除窗口数据？"},
-    "clearDataSuccess": {"message": "窗口数据已清除"},
+
+
+    "clearDataConfirm": {"message": "确定删除"},
+    "clearDataConfirm2": {"message": "数据？"},
+    "noDataImport": {"message": "无数据导入。"},
+    "clearDataSuccess": {"message": "数据已清除"},
     "storeConfirm": {"message": "确定保存？"},
     "invalidFileFormat": {"message": "不是有效的文件格式"},
     "groupImportedSuccess": {"message": "文件导入成功"},
     "settingImportMessage": {"message": "文件载入成功，点击“保存”按钮即可生效"},
 
+    "displayOrder": {"message": "展示顺序"},
+    "otherOptions": {"message": "其它选项"},
+    "darkMode": {"message": "暗黑模式"},
+    "showWorkspaceTitle": {"message": "显示工作区标题"},
+    "buttonFollow": {"message": "操作按钮跟随工作区顺序"},
+
+    "workspaceCountLimit": {"message": "至少要有一个工作区"},
+    "workspaceEnable": {"message": "请先启用该工作区"},
+
+
+    "windowData": {"message": "窗口数据"},
+    "noteData": {"message": "便签数据"},
+    "temporaryData": {"message": "临时窗口"},
+    "allData": {"message": "全部数据"},
+    "keySettings": {"message": "快捷键设置"},
+
+    "clearData": {"message": "数据清理"},
+    "import": {"message": "导入"},
+    "export": {"message": "导出"},
+
+    "addKeys": {"message": "添加快捷键"},
+    "bookmarkManagement": {"message": "书签管理"},
+    "historyManagement": {"message": "历史记录"},
+
+
     "praise": {"message": "支持一下"},
-    "thankYou": {"message": "如果你觉得这款插件还不错，可以请我喝杯咖啡 ￣▽￣"},
+    "thankYou": {"message": "如果你觉得这款插件还不错，可以请我喝杯咖啡。 ￣▽￣"},
 
     "advice1": {"message": "你也可以登陆"},
     "chromeWebStore": {"message": "Chrome 网上应用店"},

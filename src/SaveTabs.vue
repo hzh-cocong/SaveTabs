@@ -12,7 +12,9 @@
       <el-input
         class="search-input"
         :class="{ hide: ! config.show_workspace_name }"
-        :placeholder="currentWorkspace == undefined ? '' : currentWorkspace.placeholder"
+        :placeholder="currentWorkspace == undefined
+                    ? ''
+                    : lang(currentWorkspace.placeholder)"
         v-model="keyword"
         :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
         :clearable="true"
@@ -29,7 +31,6 @@
           <el-select
             v-show="this.workspaces.length >= 1"
             v-model="activeWorkspaceIndex"
-            placeholder="请选择"
             @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
             @mouseenter.native="$refs['select'].$el.click()"
             ref="select">
@@ -43,7 +44,7 @@
             <el-option-group>
               <el-option
                 v-for="(workspace, index) in workspaces"
-                :label="workspace.title"
+                :label="lang(workspace.title)"
                 :value="index"
                 :key="index">
                 <svg-icon
@@ -54,7 +55,7 @@
                   ? 'gray' : '#c0c4cc'}"
                   style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   @click="toPin"
-                ></svg-icon><span>{{ workspace.title }}</span>
+                ></svg-icon><span>{{ lang(workspace.title) }}</span>
               </el-option>
             </el-option-group>
             <el-option-group>
@@ -212,6 +213,9 @@ export default {
       // 输入框聚焦
       this.focus();
       // this.$refs['input'].focus();
+
+      // 在这里开始显示图片，体验更好
+      if( ! this.isLoad) this.isLoad = true;
     },
 
     search() {
@@ -381,7 +385,6 @@ export default {
     // this.config = userConfig;
     // this.allWorkspaces = projectConfig.allWorkspaces;
 
-    // setTimeout(() => {
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
 
@@ -420,13 +423,10 @@ export default {
       this.search();
     });
 
-    // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
-    document.body.onload=() => {
-      // setTimeout(() => {
-      this.isLoad = true;
-      // }, 1000)
-    };
-    // }, 3000)
+    // // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
+    // document.body.onload=() => {
+    //   // this.isLoad = true;
+    // };
   }
 }
 </script>

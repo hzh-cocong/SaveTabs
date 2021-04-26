@@ -10,7 +10,11 @@ import Vue from 'vue'
 
 import './plugins/svg-sprite.js'
 import './plugins/element2.js'
+//*
+import './plugins/tool-test.js'
+/*/
 import './plugins/tool.js'
+//*/
 import SaveTabs from './SaveTabs.vue'
 
 Vue.config.productionTip = false

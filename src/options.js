@@ -8,7 +8,7 @@ import './plugins/tool.js'
 //*/
 import './plugins/svg-sprite.js'
 
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 new Vue({
   render: h => h(Options),

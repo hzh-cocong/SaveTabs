@@ -41,7 +41,7 @@
         "tab"
     ],
     "active_workspace_type": "tab",
-    "pinned": true,
+    "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
     "show_workspace_name": true

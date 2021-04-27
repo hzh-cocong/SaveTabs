@@ -5,6 +5,7 @@
 
     "tip": {"message": "提示"},
     "cancel": {"message": "取 消"},
+    "sure": {"message": "确 定"},
 
     "justNow": {"message": "刚刚"},
     "secondAgo": {"message": "秒前"},

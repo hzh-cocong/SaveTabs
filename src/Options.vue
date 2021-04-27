@@ -671,7 +671,7 @@ export default {
         chrome.storage.local.remove(keys, () => {
           this.$message({
             type: 'success',
-            message: this.lang(type)+this.lang('clearDataSuccess')
+            message: validate.capitalize(this.lang(type))+this.lang('clearDataSuccess')
           });
         });
       }).catch(() => {
@@ -1022,7 +1022,7 @@ export default {
   border: 1px solid red;
 } */
 .describe {
-  margin-top: 60px;
+  margin-top: 90px;
   color: #636363;
 }
 

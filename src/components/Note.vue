@@ -13,7 +13,7 @@
       style="display:flex;align-items: center;"
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
-        <div>{{ lang('noteNoResult') }}</div>
+        <div v-if="storageList.length > 0">{{ lang('noteNoResult') }}</div>
         <div>{{ lang('noteCountTip')+storageList.length+lang('noteCountTip2') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>

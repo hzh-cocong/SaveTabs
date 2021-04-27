@@ -75,7 +75,7 @@
     "pageLayout": {"message": "Page Layout"},
     "colorSetting": {"message": "Color Setting"},
     "workspace": {"message": "Workspace"},
-    "otherFunctions": {"message": "Other functions"},
+    "otherFunctions": {"message": "Other Functions"},
     "support": {"message": "Support"},
 
     "page": {"message": "Page"},
@@ -95,7 +95,7 @@
 
     "listItemSelected": {"message": "List Item - On Focus"},
     "currentWindowItem": {"message": "Current Window Item"},
-    "currentWindowItemSelected": {"message": "Current Window Item - On focus"},
+    "currentWindowItemSelected": {"message": "Current Window Item - On Focus"},
 
     "backgroundColor": {"message": "Background"},
     "statusColor": {"message": "Status Bar"},
@@ -124,6 +124,7 @@
     "noDataImport": {"message": "No data import"},
     "clearDataSuccess": {"message": " Data has been cleared"},
     "storeConfirm": {"message": "Are you sure to save?"},
+    "invalidFileFormat": {"message": "File format error"},
     "settingImportMessage": {"message": "The file is loaded successfully, click the \"Store\" button to take effect"},
     "groupImportedSuccess": {"message": "Successfully imported "},
     "groupImportedSuccess2": {"message": " pieces of data"},

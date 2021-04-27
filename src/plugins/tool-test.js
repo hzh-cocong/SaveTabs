@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-//*
+/*
 import Lang from '../../public/_locales/en/messages.json'/*/
 import Lang from '../../public/_locales/zh_CN/messages.json'
 //*/
@@ -142,7 +142,7 @@ const tool = {
         chrome.storage = {
           sync: {
             get: function(options, callback) {
-              callback != undefined && callback({temporary: temporary});
+              callback != undefined && callback({temporary: temporary, config: {}});
             },
             set: function(options, callback) {
               callback != undefined && callback();

@@ -152,6 +152,7 @@ export default {
 
     // 滚动处理
     let self=this;
+    self.w.index = 0;
     self.w.timer = null
     self.w.t2 = self.w.t1 = 0;
     self.w.flag = true;

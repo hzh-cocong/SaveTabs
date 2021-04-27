@@ -1,6 +1,6 @@
 {
     "extension_name": {"message": "SaveTabs - Window & Tab Manager"},
-    "description": {"message": "What should I do if the webpage window is too large? SaveTabs will bring you a new way of thinking and learning."},
+    "description": {"message": "What should I do if there are too many webpage windows? SaveTabs will bring you a new way of thinking and learning."},
 
 
     "tip": {"message": "Tip"},
@@ -65,7 +65,7 @@
     "tabCountTip2": {"message": " tabs are opened."},
 
     "historyNoResult": {"message": "The history cannot be found."},
-    "historyCountTip": {"message": "Only display data within one day by default"},
+    "historyCountTip": {"message": "Only display data within one day by default."},
 
     "bookmarkNoResult": {"message": "The bookmark does not exist."},
     "bookmarkCountTip": {"message": "A total of "},
@@ -121,12 +121,12 @@
 
     "clearDataConfirm": {"message": "Are you sure to delete "},
     "clearDataConfirm2": {"message": " Data?"},
-    "noDataImport": {"message": "No data import."},
+    "noDataImport": {"message": "No data import"},
     "clearDataSuccess": {"message": " Data has been cleared"},
     "storeConfirm": {"message": "Are you sure to save?"},
-    "invalidFileFormat": {"message": "It is not a valid file format"},
-    "groupImportedSuccess": {"message": "File imported successfully"},
     "settingImportMessage": {"message": "The file is loaded successfully, click the \"Store\" button to take effect"},
+    "groupImportedSuccess": {"message": "Successfully imported "},
+    "groupImportedSuccess2": {"message": " pieces of data"},
 
     "displayOrder": {"message": "Display Order"},
     "otherOptions": {"message": "Other Options"},

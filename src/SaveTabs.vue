@@ -215,7 +215,10 @@ export default {
       // this.$refs['input'].focus();
 
       // 在这里开始显示图片，体验更好
-      if( ! this.isLoad) this.isLoad = true;
+      // 这个其实是不对的，有可能组件加载完了，但页面还没 onload，就会卡
+      // setTimeout(() => {
+      //   if( ! this.isLoad) this.isLoad = true;
+      // }, 100);
     },
 
     search() {
@@ -230,13 +233,16 @@ export default {
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow() {
-      if(this.$refs.workspaces == undefined
-      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-        this.things[ this.activeWorkspaceRefIndex ] = 'openWindow';
-        return;
-      }
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow();
     },
+    // openWindow(index) {
+    //   if(this.$refs.workspaces == undefined
+    //   || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+    //     this.things[ this.activeWorkspaceRefIndex ] = 'openWindow';
+    //     return;
+    //   }
+    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
+    // },
     down() {
       if(this.$refs.workspaces == undefined
       || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
@@ -291,12 +297,14 @@ export default {
         event.stopPropagation();
         event.preventDefault();
 
-        this.openWindow();
+        // this.openWindow(index);
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
       } else if(this.platform == 'Win' && event.ctrlKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
-        this.openWindow();
+        // this.openWindow(index);
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
       }
     },
     selectDelay(type, event) {
@@ -418,15 +426,22 @@ export default {
         })
       }
 
+      // 兼容老用户升级，依然打开 window （默认是 tab）
+      if(items.config.active_workspace_type == undefined
+      && Object.keys(items.config).length > 0) {
+        this.config.active_workspace_type = 'window';
+      }
+
       this.activeWorkspaceIndex = this.getTypeIndex(this.config.active_workspace_type);
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       this.search();
     });
 
-    // // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
-    // document.body.onload=() => {
-    //   // this.isLoad = true;
-    // };
+    // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
+    // 这个才是最对的
+    document.body.onload=() => {
+      this.isLoad = true;
+    };
   }
 }
 </script>
@@ -461,11 +476,14 @@ export default {
 .toolbar .search-input .el-input-group__prepend {
   width: 90px;
   min-width: 90px;
-  /* max-width: 90px; */
+  max-width: 90px;
 }
 .toolbar .search-input.hide .el-input-group__prepend{
-  width: 0;
-  min-width: 0;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  /* min-width: 0 !important;
+  max-width: 10px !important; */
 }
 .toolbar .search-input .el-input-group__prepend input {
   min-width: auto;

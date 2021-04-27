@@ -92,11 +92,14 @@
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
                 <div slot="placeholder" class="image-slot">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+                <!-- <div slot="placeholder" class="image-slot">
                   <img
                     v-if="index >= config.item_show_count"
                     src="../assets/fallback.png"
                     style="width:100%; height: 100%;" />
-                </div>
+                </div> -->
               </el-image>
               <span
                 class="tab-title"
@@ -122,11 +125,14 @@
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
                 <div slot="placeholder" class="image-slot">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+                <!-- <div slot="placeholder" class="image-slot">
                   <img
                     v-if="index >= config.item_show_count"
                     src="../assets/fallback.png"
                     style="width:100%; height: 100%;" />
-                </div>
+                </div> -->
               </el-image>
               <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
             </div>

@@ -66,11 +66,14 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <!-- <div slot="placeholder" class="image-slot">
               <img
                 v-if="index >= config.item_show_count"
                 src="../assets/fallback.png"
                 style="width:100%; height: 100%;" />
-            </div>
+            </div> -->
           </el-image>
         </span>
 
@@ -631,7 +634,7 @@ export default {
 
       let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
       if( ! patt.test(filename)) {
-        filename = 'InvalidGroupName.tabs.html';
+        filename = 'InvalidWindowName.tabs.html';
       }
 
       chrome.runtime.sendMessage({

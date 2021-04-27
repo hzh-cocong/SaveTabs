@@ -70,11 +70,14 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <!-- <div slot="placeholder" class="image-slot">
               <img
                 v-if="index >= config.item_show_count"
                 src="../assets/fallback.png"
                 style="width:100%; height: 100%;" />
-            </div>
+            </div> -->
           </el-image>
         </span>
 
@@ -412,13 +415,21 @@ export default {
       this.storageList.splice(index , 1);
       chrome.storage.local.set({tabs: this.storageList}, () => {
         if(tab.tabId == this.currentTab.id
-          && tab.windowId == this.currentTab.windowId) {
+        && tab.windowId == this.currentTab.windowId
+        && tab.url == this.currentTab.url) {
           this.isInCurrentTab = false;
         }
+
         this.list.splice(this.currentIndex, 1);
         if(this.list.length < this.config.list_page_count
         && this.scrollDisabled == false) {
           this.load();
+        }
+
+        if(this.activeTabs[tab.tabId]
+        && this.activeTabs[tab.tabId].url == tab.url) {
+          // 如果删除的是已经打开的便签，则顺带把对应的标签页给关闭了
+          chrome.tabs.remove(tab.tabId);
         }
       });
 

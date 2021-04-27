@@ -1,6 +1,6 @@
 {
     "extension_name": {"message": "SaveTabs - 窗口标签管理器"},
-    "description": {"message": "网页窗口太怎么办？SaveTabs 将给你带来新的思考和学习方式。"},
+    "description": {"message": "网页窗口太多怎么办？SaveTabs 将给你带来新的思考和学习方式。"},
 
 
     "tip": {"message": "提示"},
@@ -65,7 +65,7 @@
 
 
     "historyNoResult": {"message": "查无历史记录。"},
-    "historyCountTip": {"message": "默认只展示一天内的数据"},
+    "historyCountTip": {"message": "默认只展示一天内的数据。"},
 
 
     "bookmarkNoResult": {"message": "不存在该书签。"},
@@ -122,12 +122,13 @@
 
     "clearDataConfirm": {"message": "确定删除"},
     "clearDataConfirm2": {"message": "数据？"},
-    "noDataImport": {"message": "无数据导入。"},
+    "noDataImport": {"message": "无数据导入"},
     "clearDataSuccess": {"message": "数据已清除"},
     "storeConfirm": {"message": "确定保存？"},
     "invalidFileFormat": {"message": "不是有效的文件格式"},
-    "groupImportedSuccess": {"message": "文件导入成功"},
     "settingImportMessage": {"message": "文件载入成功，点击“保存”按钮即可生效"},
+    "groupImportedSuccess": {"message": "成功导入 "},
+    "groupImportedSuccess2": {"message": " 条数据"},
 
     "displayOrder": {"message": "展示顺序"},
     "otherOptions": {"message": "其它选项"},

@@ -143,7 +143,7 @@
                 <el-divider>{{ lang('listItem') }}</el-divider>
 
                 <el-form-item :label="lang('pageBackgroundColor')">
-                  <el-color-picker v-model="colorConfig.background_color" show-alpha></el-color-picker>
+                  <el-color-picker v-model="colorConfig.background_color"></el-color-picker>
                 </el-form-item>
                 <el-form-item :label="lang('pageBorderColor')">
                   <el-color-picker v-model="colorConfig.border_color"></el-color-picker>
@@ -325,9 +325,9 @@
 
               <el-button icon="el-icon-key" @click="$open('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
 
-              <el-button icon="el-icon-key" @click="$open('chrome://bookmarks/')">{{ lang('bookmarkManagement') }}</el-button>
+              <el-button icon="el-icon-star-on" @click="$open('chrome://bookmarks/')">{{ lang('bookmarkManagement') }}</el-button>
 
-              <el-button icon="el-icon-key" @click="$open('chrome://history/')">{{ lang('historyManagement') }}</el-button>
+              <el-button icon="el-icon-timer" @click="$open('chrome://history/')">{{ lang('historyManagement') }}</el-button>
 
             </el-tab-pane>
             <el-tab-pane :label="lang('support')" name="praise">
@@ -437,6 +437,8 @@ export default {
           }
           config['list_page_count'] = this.pageConfig['list_page_count'];
           config['item_show_count'] = this.pageConfig['item_show_count'];
+        } else {
+          config[ field ] = this.pageConfig[ field ];
         }
       } else {
         config[ field ] = this.pageConfig[ field ];
@@ -520,7 +522,7 @@ export default {
 
     changeThemeMode() {
       document.querySelector('html').style.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      validate.extend(this.storageConfig, { themeMode: this.workspacesConfig.theme_mode});
+      validate.extend(this.storageConfig, { theme_mode: this.workspacesConfig.theme_mode});
       this.store();
     },
     showWorkspaceName() {
@@ -844,7 +846,9 @@ export default {
           // 检查数据
           let emptyCount = 0;
           for(let t2 of Object.keys(this.workspaceAttributes)) {
-            if(data[t2] == undefined) {
+            if(data[t2] == undefined
+            || (Array.isArray(data[t2])
+              && data[t2].length == 0)) {
               delete keys[ this.workspaceAttributes[t2].key ];
               emptyCount++;
               continue;
@@ -956,14 +960,18 @@ export default {
         }
 
         // 保存数据
+        let total = 0;
         chrome.storage.local.get(keys, items => {
           for(let type in items) {
+            total += data2[ type ].length;
             items[type].unshift(...data2[ type ]);
           }
           chrome.storage.local.set(items, () => {
             this.$message({
               type: 'success',
               message: this.lang('groupImportedSuccess')
+                      +total
+                      +this.lang('groupImportedSuccess2')
             });
           });
         });

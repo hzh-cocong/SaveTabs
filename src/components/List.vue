@@ -81,7 +81,9 @@ export default {
         }
       } else {
         if(newVal < 0) {
-          this.scrollLines = this.list.length-this.itemShowCount;
+          this.scrollLines = this.list.length-this.itemShowCount < 0
+                            ? 0
+                            : this.list.length-this.itemShowCount;
           this.$el.scrollTop = this.scrollLines*this.itemHeight;
           this.$emit('change', this.list.length-1);
         } else if(newVal < this.scrollLines) {
@@ -146,7 +148,6 @@ export default {
   },
   mounted() {
     // document.body.style.cursor = "none";
-    this.w.index = 0;
     this.mouseRealMoveRegister();
 
     // 滚动处理

@@ -134,11 +134,8 @@
                                 "type": "string"
                             },
                             "url": {
-                                "presence": true,
-                                "type": "string",
-                                "length": {
-                                    "minimum": 1
-                                }
+                                "presence": false,
+                                "type": "string"
                             }
                         }
                     }
@@ -158,11 +155,8 @@
                         "type": "string"
                     },
                     "url": {
-                        "presence": true,
-                        "type": "string",
-                        "length": {
-                            "minimum": 1
-                        }
+                        "presence": false,
+                        "type": "string"
                     }
                 }
             }
@@ -186,11 +180,8 @@
                                 "type": "string"
                             },
                             "url": {
-                                "presence": true,
-                                "type": "string",
-                                "length": {
-                                    "minimum": 1
-                                }
+                                "presence": false,
+                                "type": "string"
                             }
                         }
                     }

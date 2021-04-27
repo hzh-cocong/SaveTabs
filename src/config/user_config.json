@@ -40,7 +40,7 @@
         "temporary",
         "tab"
     ],
-    "active_workspace_type": "window",
+    "active_workspace_type": "tab",
     "pinned": true,
     "button_follow_workspace": false,
     "theme_mode": "light",

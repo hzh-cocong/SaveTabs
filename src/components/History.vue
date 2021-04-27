@@ -14,7 +14,7 @@
       :style="{ width: (config.width-70)+'px' }">
       <div style="flex:1;">
         <div>{{ lang('historyNoResult') }}</div>
-        <div>{{ lang('historyCountTip') }}</div>>
+        <div>{{ lang('historyCountTip') }}</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
@@ -58,11 +58,14 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <!-- <div slot="placeholder" class="image-slot">
               <img
                 v-if="index >= config.item_show_count"
                 src="../assets/fallback.png"
                 style="width:100%; height: 100%;" />
-            </div>
+            </div> -->
           </el-image>
         </span>
 
@@ -184,14 +187,14 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      this.lastVisitTime = new Date().getTime();
+      let lastVisitTime = new Date().getTime();
       this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
       // 查找
       chrome.history.search({
           text: this.storageKeyword,
           startTime: this.startTime,
-          endTime: this.lastVisitTime,
+          endTime: lastVisitTime,
           maxResults: this.config.list_page_count,
         }, (historys)=>{
         // 谷歌提供的接口返回的结果过有时候会是错误的
@@ -201,7 +204,7 @@ export default {
 
         if(historys.length == 0) {
           this.list = [];
-          this.currentIndex = -1;
+          this.currentIndex = 0; //-1;（-1比较危险，不过bug修复后应该没问题，下个版本再思考-1的问题吧）
           this.scrollDisabled == true;
 
           // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
@@ -211,14 +214,14 @@ export default {
         }
 
         let historys2 = historys.filter((history) => {
-          return history.lastVisitTime < this.lastVisitTime;
+          return history.lastVisitTime < lastVisitTime;
         })
 
         this.list = historys2;
         this.currentIndex = 0;
         this.scrollDisabled = historys.length < this.config.list_page_count;
         if(this.list.length == 0) {
-          this.lastVisitTime = this.lastVisitTime-1000*1;
+          this.lastVisitTime = lastVisitTime-1000*1;
         } else {
           this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
         }

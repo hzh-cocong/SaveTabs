@@ -49,7 +49,7 @@
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
           <el-image
-            v-if = "isLoad"
+            v-if="isLoad"
             :src="getIcon(item.favIconUrl, item.url, config.item_height-20)"
             style="width:100%; height: 100%;"
             fit="cover"
@@ -58,11 +58,15 @@
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <!-- 首屏还是会有很大概率出现图片加载很慢的情况 -->
+            <!-- <div slot="placeholder" class="image-slot">
               <img
                 v-if="index >= config.item_show_count"
                 src="../assets/fallback.png"
                 style="width:100%; height: 100%;" />
-            </div>
+            </div> -->
           </el-image>
         </span>
 

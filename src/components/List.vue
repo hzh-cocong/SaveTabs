@@ -208,17 +208,14 @@ self.w.ss=setTimeout(() => {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .list {
-  padding: 0;
+  padding: 0 10px;
   margin: 0;
-  overflow: hidden;
+  overflow: auto;
   scroll-snap-type: y mandatory;
-}
-.list:hover, .list.scroll {
-  overflow: overlay;
 }
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
 .list::-webkit-scrollbar {
-  width: 10px;
+  width: 0px;
   background: transparent;
 }
 /*定义滑块内阴影+圆角*/
@@ -240,6 +237,13 @@ self.w.ss=setTimeout(() => {
   border-radius: 20px;
   background: transparent;
 } */
+.list:hover, .list.scroll {
+  padding: 0 0 0 10px;
+}
+.list:hover::-webkit-scrollbar, .list.scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
 .list-item {
   overflow: hidden;
   scroll-snap-align: center;

@@ -29,7 +29,6 @@
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     ref="list"
-    style="padding: 0 10px;"
     @load="load">
     <template #default="{ index, item, isActive, isSelected }">
       <div
@@ -204,7 +203,6 @@ export default {
       this.isSearched = true;
     },
     load() {
-      console.log('fffffffffffff')
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;

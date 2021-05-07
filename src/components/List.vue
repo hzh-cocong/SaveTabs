@@ -3,7 +3,9 @@
     class="list"
     :style="{ height: (itemHeight*itemShowCount)+'px' }"
     :infinite-scroll-disabled="scrollDisabled"
-    v-infinite-scroll="load">
+    v-infinite-scroll="load"
+    @mouseenter="test"
+    @mouseleave="test2">
     <li
       class="list-item"
       v-for="(item, index) in list"
@@ -96,7 +98,19 @@ export default {
     },
   },
   methods: {
+    test() {
+      clearTimeout(this.w.ss)
+      this.$el.className = "list scroll";
+    },
+    test2() {
+      this.w.ss=setTimeout(() => {
+        console.log('ss')
+        this.$el.className = "list";
+      }, 600);
+      // this.$el.className = "list";
+    },
     mouseSelect(index) {
+      console.log('moouseSelect:'+index)
       // 防溢出
       // 无限滚动会出现浮点数的情况
       // 根据滚动方向判断是进位还是退位
@@ -168,18 +182,17 @@ e.target.className = "list scroll";
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
         self.w.t2 = e.target.scrollTop;
-        if(self.w.t2 == self.w.t1
-        && e.target.scrollTop%self.itemHeight == 0){
+        if(self.w.t2 == self.w.t1){
           console.log('f')
-          // if(e.target.scrollTop%self.itemHeight != 0) {
-          //   self.w.speed = 1;
-          //   if(self.w.flag) { // 向上滚动
-          //     e.target.scrollTop += 1;
-          //   } else {
-          //     e.target.scrollTop -= 1;
-          //   }
-          // } else {
-            // self.w.speed = 100;
+          if(e.target.scrollTop%self.itemHeight != 0) {
+            self.w.speed = 1;
+            if(self.w.flag) { // 向上滚动
+              e.target.scrollTop += 1;
+            } else {
+              e.target.scrollTop -= 1;
+            }
+          } else {
+            self.w.speed = 100;
             self.scrollLines = e.target.scrollTop/self.itemHeight;
 
 // e.target.style.overflow = "hidden";
@@ -197,7 +210,7 @@ self.w.ss=setTimeout(() => {
               self.$emit('change', self.scrollLines);
             else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
               self.$emit('change', self.scrollLines+self.itemShowCount-1);
-          // }
+          }
         }
       }, self.w.speed);
     })
@@ -211,11 +224,11 @@ self.w.ss=setTimeout(() => {
   padding: 0 10px;
   margin: 0;
   overflow: auto;
-  scroll-snap-type: y mandatory;
+  /* scroll-snap-type: block mandatory; */
 }
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
 .list::-webkit-scrollbar {
-  width: 0px;
+  width: 0;
   background: transparent;
 }
 /*定义滑块内阴影+圆角*/
@@ -237,15 +250,15 @@ self.w.ss=setTimeout(() => {
   border-radius: 20px;
   background: transparent;
 } */
-.list:hover, .list.scroll {
+.list.scroll {
   padding: 0 0 0 10px;
 }
-.list:hover::-webkit-scrollbar, .list.scroll::-webkit-scrollbar {
+.list.scroll::-webkit-scrollbar {
   width: 10px;
 }
 
 .list-item {
   overflow: hidden;
-  scroll-snap-align: center;
+  /* scroll-snap-align: end; */
 }
 </style>

@@ -293,7 +293,7 @@ export default {
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
 
-      if(this.platform == 'Mac' && event.altKey == true) {
+      if(this.platform == 'Mac' && event.metaKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
@@ -452,7 +452,7 @@ export default {
 }
 .toolbar {
   display: flex;
-  margin: 0 11px 10px 11px;
+  margin: 0 10px 10px 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }

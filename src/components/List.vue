@@ -162,23 +162,31 @@ export default {
       // 真实奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
       self.w.flag = self.w.t1 < e.target.scrollTop
       self.w.t1 = e.target.scrollTop;
-
+// e.target.style.overflow = "overlay";
+clearTimeout(self.w.ss)
+e.target.className = "list scroll";
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function() {
         self.w.t2 = e.target.scrollTop;
-        if(self.w.t2 == self.w.t1){
-          if(e.target.scrollTop%self.itemHeight != 0) {
-            self.w.speed = 1;
-            if(self.w.flag) { // 向上滚动
-              e.target.scrollTop += 1;
-            } else {
-              e.target.scrollTop -= 1;
-            }
-          } else {
-            self.w.speed = 100;
+        if(self.w.t2 == self.w.t1
+        && e.target.scrollTop%self.itemHeight == 0){
+          console.log('f')
+          // if(e.target.scrollTop%self.itemHeight != 0) {
+          //   self.w.speed = 1;
+          //   if(self.w.flag) { // 向上滚动
+          //     e.target.scrollTop += 1;
+          //   } else {
+          //     e.target.scrollTop -= 1;
+          //   }
+          // } else {
+            // self.w.speed = 100;
             self.scrollLines = e.target.scrollTop/self.itemHeight;
 
-
+// e.target.style.overflow = "hidden";
+self.w.ss=setTimeout(() => {
+  console.log('ss')
+  e.target.className = "list";
+}, 600);
             // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
             // 就会让当前鼠标所指向的项目选中
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)) return;
@@ -189,7 +197,7 @@ export default {
               self.$emit('change', self.scrollLines);
             else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
               self.$emit('change', self.scrollLines+self.itemShowCount-1);
-          }
+          // }
         }
       }, self.w.speed);
     })
@@ -202,9 +210,38 @@ export default {
 .list {
   padding: 0;
   margin: 0;
-  overflow: scroll;
+  overflow: hidden;
+  scroll-snap-type: y mandatory;
 }
+.list:hover, .list.scroll {
+  overflow: overlay;
+}
+/*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
+.list::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+/*定义滑块内阴影+圆角*/
+.list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  /* border-left: 1px solid yellow;
+  border-right: 1px solid yellow; */
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3); */
+  /* background-color: #555; */
+
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  box-shadow: inset 0 0 0 5px #737373;
+  background-color: transparent;
+}
+/*定义滚动条轨道内阴影+圆角*/
+/* .list::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  background: transparent;
+} */
 .list-item {
   overflow: hidden;
+  scroll-snap-align: center;
 }
 </style>

@@ -29,6 +29,7 @@
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     ref="list"
+    style="padding: 0 10px;"
     @load="load">
     <template #default="{ index, item, isActive, isSelected }">
       <div
@@ -314,7 +315,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .item {
-  margin: 0 11px;
+  /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
   height:100%;

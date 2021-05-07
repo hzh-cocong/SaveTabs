@@ -6,7 +6,7 @@
     "list_font_size": 20,
     "list_state_size": 12,
     "list_keymap_size": 16,
-    "list_page_count": 8,
+    "list_page_count": 4,
 
     "list_explain_font_size": 12,
     "list_explain_font_color": "#909399",
@@ -26,7 +26,7 @@
     "list_current_focus_state_color": "#ffffff",
 
     "item_height": 50,
-    "item_show_count": 7,
+    "item_show_count": 3,
 
     "width": 500,
     "background_color": "#ffffff",

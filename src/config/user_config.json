@@ -6,7 +6,7 @@
     "list_font_size": 20,
     "list_state_size": 12,
     "list_keymap_size": 16,
-    "list_page_count": 4,
+    "list_page_count": 7,
 
     "list_explain_font_size": 12,
     "list_explain_font_color": "#909399",
@@ -26,7 +26,7 @@
     "list_current_focus_state_color": "#ffffff",
 
     "item_height": 50,
-    "item_show_count": 3,
+    "item_show_count": 6,
 
     "width": 500,
     "background_color": "#ffffff",
@@ -38,9 +38,11 @@
         "note",
         "window",
         "temporary",
-        "tab"
+        "tab",
+        "bookmark",
+        "history"
     ],
-    "active_workspace_type": "tab",
+    "active_workspace_type": "temporary",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

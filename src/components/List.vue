@@ -5,13 +5,18 @@
     :infinite-scroll-disabled="scrollDisabled"
     v-infinite-scroll="load"
     @mouseenter="test"
-    @mouseleave="test2">
+    @mouseleave="test2"
+    @mousedown="test3"
+    @mouseup="test4"
+    @dblclick="test5"
+    @click="test6"
+    @contextmenu="test7">
     <li
       class="list-item"
       v-for="(item, index) in list"
       :key="index"
       @mouseenter="mouseSelect(index)"
-      @mouseleave="mouseIndex=-1"
+      @mouseleave="tt"
       :style="{ height: itemHeight+'px' }">
       <slot
         :index="index"
@@ -64,10 +69,12 @@ export default {
   },
   watch: {
     currentIndex: function (newVal, oldVal) {
+      console.log('currentIndex', newVal, oldVal);
       // 鼠标移动事件
       if(this.mouseIndex != -1
         && this.mouseIndex != this.list.length
         && this.mouseIndex == newVal) return;
+      console.log('currentIndex2', newVal, oldVal);
 
       // 键盘触发的事件
 
@@ -99,18 +106,49 @@ export default {
   },
   methods: {
     test() {
-      clearTimeout(this.w.ss)
-      this.$el.className = "list scroll";
+      console.log('ul enter', this.mouseStart);
+      if(this.mouseStart == true) {
+        clearTimeout(this.w.ss)
+        this.$el.className = "list scroll";
+      }
+      this.w.ulEnter = true;
     },
     test2() {
+      this.w.ulEnter = false;
+      this.mouseRealMoveRegister(); // 这样切换工作区就不会触发鼠标事件
+      console.log('ul leave');
+      clearTimeout(this.w.ss);
       this.w.ss=setTimeout(() => {
-        console.log('ss')
+        console.log('ss test2')
         this.$el.className = "list";
-      }, 600);
+      }, 700);
       // this.$el.className = "list";
     },
+    test3() {
+      this.w.on = true;
+      console.log('mousedown')
+    },
+    test4() {
+      this.w.on = false;
+      console.log('mouseup')
+    },
+    test5() {
+      console.log('dblclick')
+    },
+    test6() {
+      console.log('click')
+    },
+    test7() {
+      this.w.on = false;
+      console.log('contextmenu')
+    },
+    tt() {
+      console.log('mouseleave')
+      this.mouseIndex=-1;
+    },
     mouseSelect(index) {
-      console.log('moouseSelect:'+index)
+      console.log('mouseSelect:'+index)
+
       // 防溢出
       // 无限滚动会出现浮点数的情况
       // 根据滚动方向判断是进位还是退位
@@ -126,6 +164,14 @@ export default {
       else if(index >= scrollLines+this.itemShowCount)
         index = scrollLines+this.itemShowCount-1;
       this.mouseIndex = index;
+
+      if(this.w.isScrolling) {
+        // this.w.ss3 = index;
+        return;
+      }
+      console.log('mouseSelect2')
+
+
       if(this.mouseStart == true) {
         this.$emit('change', index);
       }
@@ -135,28 +181,63 @@ export default {
       this.$emit('load');
     },
     mouseRealMoveRegister() {
+      console.log('mouseRealMoveRegister', this.mouseStart)
       if( ! this.mouseStart) return;
 
       // 关闭鼠标事件
       this.mouseStart = false;
 
+
       let self = this;
+
+      // 未触发滚动的隐藏由 mousemove 来解决
+      if(self.mouseIndex != -1) {
+        clearTimeout(self.w.ss);
+        self.w.ss=setTimeout(() => {
+          console.log('ss mousemove=========', self.mouseStart, self.mouseIndex)
+          self.$el.className = "list";
+        }, 700);
+      }
+
       this.$el.addEventListener('mousemove', function mousemovewatch() {
+        console.log('mousemove', self.mouseIndex, self.mouseStart)
+
         // mouseSelect 可能会先触发
         if(self.w.index == 2) {
           self.w.index = 1;
           return;
         }
-        if(self.w.index == 0) self.w.index = 1;
+        // 我先触发
+        if(self.w.index == 0) {
+          self.w.index = 1;
+          return;
+        }
+// if(self.w.ss3 != -1) { console.log('mm'); self.mouseIndex = self.w.ss3; self.w.ss3 = -1 }
+
+
+        clearTimeout(self.w.ss)
+        self.$el.className = "list scroll";
+        console.log('mousemove list scroll')
 
         if(self.mouseIndex == -1) return;
         if(self.mouseIndex >= self.list.length) return;
+
+        // 只有鼠标就在当前位置才需要 mousemove 触发，其它情况 mouseSelect 会被触发
+        // 注释掉是因为虽然 mouseSelect 虽然会被触发，但是由于 mouseStart 为false，并没有实际作用
+        // 还是要靠这里
+        // if(self.mouseIndex != self.currentIndex) {
+        //   // console.log('pppppppppp', self.mouseIndex, self.currentIndex)
+        //   return;
+        // }
 
         // 激活鼠标事件
         self.mouseStart = true;
         this.removeEventListener('mousemove', mousemovewatch);
         self.$emit('change', self.mouseIndex);
         // document.body.style.cursor = "default";
+
+
+        console.log('mousemove2')
       })
     },
   },
@@ -176,13 +257,16 @@ export default {
       // 真实奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
       self.w.flag = self.w.t1 < e.target.scrollTop
       self.w.t1 = e.target.scrollTop;
+
 // e.target.style.overflow = "overlay";
-clearTimeout(self.w.ss)
+// clearTimeout(self.w.ss)
+self.w.isScrolling = true;
 e.target.className = "list scroll";
+
       clearTimeout(self.w.timer);
-      self.w.timer = setTimeout(function() {
+      self.w.timer = setTimeout(function ee() {
         self.w.t2 = e.target.scrollTop;
-        if(self.w.t2 == self.w.t1){
+        if(self.w.t2 == self.w.t1 && self.w.on != true){
           console.log('f')
           if(e.target.scrollTop%self.itemHeight != 0) {
             self.w.speed = 1;
@@ -196,13 +280,37 @@ e.target.className = "list scroll";
             self.scrollLines = e.target.scrollTop/self.itemHeight;
 
 // e.target.style.overflow = "hidden";
-self.w.ss=setTimeout(() => {
-  console.log('ss')
-  e.target.className = "list";
-}, 600);
+self.w.isScrolling = false;
+  console.log('ggggggggggggg1', self.w.ulEnter, self.mouseStart, self.mouseIndex)
+  // self.w.ulEnter === false;
+  // self.mouseStart == false && self.mouseIndex != -1
+// if(self.mouseStart == false && self.w.ulEnter == true) { //  && self.mouseIndex != -1
+if(self.w.ulEnter != true
+  || (self.mouseStart == false && self.mouseIndex != -1)) {
+  console.log('ggg|||||||||||||2', self.w.ulEnter, self.mouseStart, self.mouseIndex)
+  clearTimeout(self.w.ss);
+  self.w.ss=setTimeout(() => {
+    console.log('ss scroll', self.mouseStart, self.mouseIndex)
+    e.target.className = "list";
+  }, 700);
+}
+
             // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
             // 就会让当前鼠标所指向的项目选中
-            if( ! (self.mouseIndex == -1 || self.mouseStart == false)) return;
+            if( ! (self.mouseIndex == -1 || self.mouseStart == false)){
+
+              console.log('endddddddddddddddd',self.mouseIndex, self.mouseStart, self.currentIndex)
+              self.mouseSelect(self.mouseIndex);
+              return;
+            }
+            // else if(self.mouseStart == true && self.w.isScrolling >= 0) {
+              // alert('ss')
+              // console.log('eeeeeeeee')
+              // self.mouseSelect(self.mouseIndex);
+              // console.log('end2', self.mouseIndex, self.mouseStart, self.currentIndex)
+              // return
+            // }
+            console.log('end3', self.mouseIndex, self.mouseStart, self.currentIndex)
 
 
             // 保持当前窗口有被选中
@@ -211,6 +319,9 @@ self.w.ss=setTimeout(() => {
             else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
               self.$emit('change', self.scrollLines+self.itemShowCount-1);
           }
+        } else if(self.w.t2 == self.w.t1 && self.w.on == true) {
+          console.log('k')
+          self.w.timer = setTimeout(ee, self.w.speed);
         }
       }, self.w.speed);
     })

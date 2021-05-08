@@ -113,8 +113,8 @@
                 color: config.list_keymap_color,
               }">{{
                   platform == 'Win'
-                ?  '⌃'+(index-$refs.list.scrollLines+1)
-                : '⌥'+(index-$refs.list.scrollLines+1)
+                ?  'Alt+'+(index-$refs.list.scrollLines+1)
+                : '⌘'+(index-$refs.list.scrollLines+1)
                 }}</span>
           </div>
         </div>
@@ -203,7 +203,6 @@ export default {
       this.isSearched = true;
     },
     load() {
-      console.log('fffffffffffff')
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
@@ -313,56 +312,4 @@ export default {
 }
 
 
-</style>
-
-<style>
-.el-badge__content {
-    background-color: inherit !important;
-    border-color: inherit !important;
-}
-
-.group .el-dialog__header {
-  padding: 10px 53px 0 16px !important;
-  text-align: left;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.group .el-dialog__body{
-  padding: 10px 10px 10px 10px !important;
-}
-.group .group-list {
-  padding: 0;
-  margin: 0;
-  overflow: auto;
-  font-size: 15px;
-}
-.group .group-list-item {
-  padding: 5px;
-  align-items: center;
-  color: black;
-  list-style: none;
-  display: flex;
-}
-.group .group-list-item span:hover {
-  /* color: #409eff; */
-  text-decoration: underline;
-  color: #1288ff;
-}
-.group .tab-name{
-  font-size:14px;
-  margin-left: 10px;
-  cursor: pointer;
-  flex: 1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  color: #4682BE;
-}
-
-.window-message-box {
-  width: 80%;
-  min-width: auto !important;
-  max-width: 80% !important;
-}
 </style>

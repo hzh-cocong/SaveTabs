@@ -118,7 +118,9 @@
       trigger="click"
       @change="workspaceChange"
       ref="carousel">
-      <el-carousel-item v-for="(workspace, index) in workspaces"  :key="index">
+      <el-carousel-item
+        v-for="(workspace, index) in workspaces"
+        :key="index">
         <component
           v-if="isOpened[index]"
           :is="workspace.type"
@@ -288,6 +290,7 @@ export default {
 
 
     keydown(event) {
+      console.log('keydown', event)
       if(this.platform == '') return;
 
       let index = event.keyCode-49+1;
@@ -299,7 +302,7 @@ export default {
 
         // this.openWindow(index);
         this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
-      } else if(this.platform == 'Win' && event.ctrlKey == true) {
+      } else if(this.platform == 'Win' && event.altKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
@@ -350,6 +353,12 @@ export default {
       // this.$refs['input'].focus();
 
       this.search();
+
+      // 屏蔽鼠标事件
+      // if(this.$refs.workspaces != undefined
+      // && this.$refs.workspaces[ this.activeWorkspaceRefIndex ] != undefined) {
+      //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].mouseRealMoveRegister();
+      // }
     },
 
     changeThemeMode() {
@@ -512,5 +521,56 @@ body {
    /* 注意，这里还和列表选择事件有关，列表隐藏部分会有几px的误差，不过套在了跑马灯上后倒是不会了，有问题就改成 6px */
   padding-top: 8px !important;
   padding-bottom: 0px !important;
+}
+
+/* 组件共享样式 */
+.el-badge__content {
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+
+.group .el-dialog__header {
+  padding: 10px 53px 0 16px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.group .el-dialog__body{
+  padding: 10px 10px 10px 10px !important;
+}
+.group .group-list {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  font-size: 15px;
+}
+.group .group-list-item {
+  padding: 5px;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
+}
+.group .group-list-item span:hover {
+  /* color: #409eff; */
+  text-decoration: underline;
+  color: #1288ff;
+}
+.group .tab-name{
+  font-size:14px;
+  margin-left: 10px;
+  cursor: pointer;
+  flex: 1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color: #4682BE;
+}
+
+.window-message-box {
+  width: 80%;
+  min-width: auto !important;
+  max-width: 80% !important;
 }
 </style>

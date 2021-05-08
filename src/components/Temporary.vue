@@ -29,7 +29,8 @@
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     ref="list"
-    @load="load">
+    @load="load"
+    @click.native="focus">
     <template #default="{ index, item, isActive, isSelected }">
       <div
         class="item"
@@ -41,7 +42,7 @@
                 ? config.list_focus_font_color
                 : config.list_font_color
         }"
-        @click="currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
 
         <span
           class="left"
@@ -63,6 +64,7 @@
 
         <div
           class="main"
+          :class="{ scroll: isActive }"
           :style="{
             height: config.item_height+'px',
             flexDirection: ! isSelected ? 'row' : 'column',
@@ -472,6 +474,13 @@ export default {
   height:100%;
   display:flex;
   align-items: center;
+
+  /* 禁止选择 */
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
 }
 .item .left {
   padding: 5px;
@@ -506,7 +515,9 @@ export default {
 .item .main {
   flex: 1;
   text-align: left;
-  overflow: scroll;
+  /* overflow: auto; */
+  overflow-x: overlay;
+  overflow-y: hidden;
   cursor: default;
 
   display: flex;
@@ -519,6 +530,31 @@ export default {
   flex-direction: column;
   justify-content: center; */
 }
+
+/*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
+.item .main::-webkit-scrollbar {
+  /* width: 10px; */
+  height: 10px;
+  background: transparent;
+  display: none;
+}
+/* .item .main::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+} */
+/*定义滑块圆角*/
+.item .main::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgb(115 115 115 / 50%);
+}
+.item .main.scroll::-webkit-scrollbar {
+  display: block;
+}
+/* 和 flex 一起会有问题，直接隐藏滚动条（这种不行，鼠标无法操作） */
+/* .item .main::-webkit-scrollbar {
+  display: none;
+} */
+
 .item .title {
   width: 100%;
   overflow: hidden;

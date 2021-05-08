@@ -145,7 +145,7 @@
     "noteData": {"message": "便签数据"},
     "temporaryData": {"message": "临时窗口"},
     "allData": {"message": "全部数据"},
-    "keySettings": {"message": "快捷键设置"},
+    "otherSetting": {"message": "其它"},
 
     "clearData": {"message": "数据清理"},
     "import": {"message": "导入"},

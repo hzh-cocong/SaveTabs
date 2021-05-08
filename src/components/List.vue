@@ -103,25 +103,36 @@ export default {
 
       this.mouseRealMoveRegister();
     },
+    list: function (newVal, oldVal) {
+      if(newVal.length <= this.itemShowCount
+      && oldVal.length > this.itemShowCount) {
+          this.$el.className = "list";
+          console.log('listwatch list scroll')
+        }
+    }
   },
   methods: {
     test() {
       console.log('ul enter', this.mouseStart);
-      if(this.mouseStart == true) {
-        clearTimeout(this.w.ss)
-        this.$el.className = "list scroll";
-      }
+      console.log('88888888888888888888888', this.mouseStart, this.list.length, this.itemShowCount)
+      // if(this.mouseStart == true && this.list.length > this.itemShowCount) {
+      //   console.log('8888888')
+      //   clearTimeout(this.w.ss)
+      //   this.$el.className = "list scroll";
+      // }
       this.w.ulEnter = true;
     },
     test2() {
       this.w.ulEnter = false;
-      this.mouseRealMoveRegister(); // 这样切换工作区就不会触发鼠标事件
       console.log('ul leave');
-      clearTimeout(this.w.ss);
-      this.w.ss=setTimeout(() => {
-        console.log('ss test2')
-        this.$el.className = "list";
-      }, 700);
+      this.mouseRealMoveRegister(); // 这样切换工作区就不会触发鼠标事件
+      if(this.list.length > this.itemShowCount) {
+        clearTimeout(this.w.ss);
+        this.w.ss=setTimeout(() => {
+          console.log('ss test2')
+          this.$el.className = "list";
+        }, 700);
+      }
       // this.$el.className = "list";
     },
     test3() {
@@ -214,10 +225,11 @@ export default {
         }
 // if(self.w.ss3 != -1) { console.log('mm'); self.mouseIndex = self.w.ss3; self.w.ss3 = -1 }
 
-
-        clearTimeout(self.w.ss)
-        self.$el.className = "list scroll";
-        console.log('mousemove list scroll')
+        if(self.list.length > self.itemShowCount) {
+          clearTimeout(self.w.ss)
+          self.$el.className = "list scroll";
+          console.log('mousemove list scroll')
+        }
 
         if(self.mouseIndex == -1) return;
         if(self.mouseIndex >= self.list.length) return;
@@ -261,7 +273,9 @@ export default {
 // e.target.style.overflow = "overlay";
 // clearTimeout(self.w.ss)
 self.w.isScrolling = true;
-e.target.className = "list scroll";
+if(self.list.length > self.itemShowCount) {
+  self.$el.className = "list scroll";
+}
 
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function ee() {

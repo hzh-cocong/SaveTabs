@@ -29,7 +29,8 @@
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     ref="list"
-    @load="load">
+    @load="load"
+    @click.native="focus">
     <template #default="{ index, item, isActive, isSelected }">
       <div
         class="item"
@@ -41,7 +42,7 @@
                 ? config.list_focus_font_color
                 : config.list_font_color
         }"
-        @click="currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
 
         <span
           class="left"
@@ -258,6 +259,13 @@ export default {
   height:100%;
   display:flex;
   align-items: center;
+
+  /* 禁止选择 */
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
 }
 .item .left {
   padding: 10px;

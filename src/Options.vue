@@ -321,7 +321,7 @@
 
               <div style="margin-top: 30px;"></div>
 
-              <el-divider style="margin-top: 10px;">{{ lang('keySettings') }}</el-divider>
+              <el-divider style="margin-top: 10px;">{{ lang('otherSetting') }}</el-divider>
 
               <el-button icon="el-icon-key" @click="$open('chrome://extensions/configureCommands')">{{ lang('addKeys') }}</el-button>
 
@@ -449,8 +449,23 @@ export default {
     },
     resetSize(field) {
       let config = {};
+
       config[ field ] = userConfig[ field ];
       this.pageConfig[ field ] = userConfig[ field ];
+
+      // 每页数量必须要大于个数
+      if(field == 'item_show_count' || field == 'list_page_count') {
+        if(this.pageConfig['item_show_count'] >= this.pageConfig['list_page_count']) {
+          if(field == 'item_show_count') {
+            this.pageConfig['list_page_count'] = this.pageConfig['item_show_count']+1;
+          } else {
+            this.pageConfig['item_show_count'] = this.pageConfig['list_page_count']-1;
+          }
+          config['list_page_count'] = this.pageConfig['list_page_count'];
+          config['item_show_count'] = this.pageConfig['item_show_count'];
+        }
+      }
+
       validate.extend(this.storageConfig, config);
       this.store();
     },
@@ -1022,14 +1037,14 @@ export default {
   border: 1px solid red;
 } */
 .describe {
-  margin-top: 90px;
+  margin-top: 80px;
   color: #636363;
 }
 
 .list {
   padding: 0;
   margin: 0;
-  overflow: scroll;
+  overflow: auto;
 }
 .list-item {
   padding: 9px;

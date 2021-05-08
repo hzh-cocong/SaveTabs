@@ -29,7 +29,8 @@
     :scrollDisabled="scrollDisabled"
     v-model="currentIndex"
     ref="list"
-    @load="load">
+    @load="load"
+    @click.native="focus">
     <template #default="{ index, item, isActive, isSelected }">
       <div
         class="item"
@@ -49,7 +50,7 @@
                               ? config.list_focus_font_color
                               : config.list_font_color)
         }"
-        @click="currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
 
         <span
           class="left"
@@ -184,7 +185,7 @@
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
-      <span style="color:gray;cursor:pointer" @click="download"><i class="el-icon-download"></i></span>
+      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-download"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
     </div>
     <ul
@@ -727,6 +728,13 @@ export default {
   height:100%;
   display:flex;
   align-items: center;
+
+  /* 禁止选择 */
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
 }
 .item .left {
   padding: 10px;

@@ -339,17 +339,17 @@
               <el-row class="praise" :gutter="20" style="margin-top: 50px">
                 <el-col :span="8">
                   <el-card class="box-card">
-                    <img src="./assets/WeChatPay.png" style="width:100%;" />
+                    <img src="./assets/WeChatPay.gif" style="width:100%;" />
                   </el-card>
                 </el-col>
                 <el-col :span="8">
                   <el-card class="box-card">
-                    <img src="./assets/PayPal.png" style="width:100%;cursor: pointer;" @click="$open('https://www.paypal.com/paypalme/hzhcocong')" />
+                    <img src="./assets/PayPal.gif" style="width:100%;cursor: pointer;" @click="$open('https://www.paypal.com/paypalme/hzhcocong')" />
                   </el-card>
                 </el-col>
                 <el-col :span="8">
                   <el-card class="box-card">
-                    <img src="./assets/Alipay.png" style="width:100%;" />
+                    <img src="./assets/Alipay.gif" style="width:100%;" />
                   </el-card>
                 </el-col>
               </el-row>

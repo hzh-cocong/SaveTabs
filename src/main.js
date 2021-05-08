@@ -18,7 +18,7 @@ import './plugins/tool.js'
 import SaveTabs from './SaveTabs.vue'
 
 // todo
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 new Vue({
   render: h => h(SaveTabs),

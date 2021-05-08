@@ -38,11 +38,9 @@
         "note",
         "window",
         "temporary",
-        "tab",
-        "bookmark",
-        "history"
+        "tab"
     ],
-    "active_workspace_type": "window",
+    "active_workspace_type": "tab",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

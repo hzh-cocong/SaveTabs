@@ -290,7 +290,7 @@ export default {
 
 
     keydown(event) {
-      console.log('keydown', event)
+      // console.log('keydown', event)
       if(this.platform == '') return;
 
       let index = event.keyCode-49+1;

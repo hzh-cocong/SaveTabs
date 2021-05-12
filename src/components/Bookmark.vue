@@ -116,6 +116,7 @@
 
 <script>
 import List from './List.vue'
+import Sortable from 'sortablejs';
 
 export default {
   name: 'Bookmark',
@@ -245,6 +246,34 @@ export default {
 
       // 更新列表
       // this.search();
+
+
+      //创建拖拽对象
+      // this.sortable =
+      Sortable.create(document.querySelector('.list'), {
+        // sort: this.isEditOrder, //是否可进行拖拽排序
+        animation: 150,
+        // 过滤器，不需要进行拖动的元素
+        // filter: ".disabled",
+        // ghostClass: 'ghost',
+        // draggable: '.enabled',
+        chosenClass: 'chosen',
+        //拖拽完成，移除拖拽之前的位置上的元素，在拖拽之后的位置上添加拖拽元素
+        onEnd: ({ newIndex, oldIndex }) => {
+          console.log(newIndex, oldIndex)
+          // if(newIndex == oldIndex) {
+          //   return;
+          // }
+          // if(newIndex >= this.workspacesConfig.workspaces.length) {
+          //   newIndex = this.workspacesConfig.workspaces.length-1;
+          // }
+          // this.workspacesConfig.workspaces.splice(newIndex, 0, this.workspacesConfig.workspaces.splice(oldIndex , 1)[0]);
+
+          // this.updateWorkspace();
+        }
+      })
+
+
     })
   }
 }

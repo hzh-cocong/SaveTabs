@@ -769,6 +769,4 @@ export default {
 .el-badge.refresh {
     margin-left: 10px;
 }
-
-
 </style>

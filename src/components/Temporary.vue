@@ -64,6 +64,8 @@
 
         <div
           class="main"
+          @mouseenter="test"
+          @mouseleave="test2"
           :class="{ scroll: isActive }"
           :style="{
             height: config.item_height+'px',
@@ -151,7 +153,7 @@
         </div>
 
         <div class="right">
-          <div v-if="isActive">
+          <div v-if="isActive && isShowOperationButton">
             <i
               class="el-icon-close"
               style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
@@ -237,12 +239,28 @@ export default {
       tabFocus: {},
 
       isSearched: false,
+
+      isShowOperationButton: true,
     }
   },
   components: {
     List,
   },
   methods: {
+    test3() {
+      console.log('move')
+      this.isShowOperationButton = false;
+    },
+    test(event) {
+      console.log('a')
+      event.target.addEventListener('scroll', this.test3);
+    },
+    test2(event) {
+      console.log('b')
+      event.target.removeEventListener('scroll', this.test3);
+      this.isShowOperationButton = true;
+      // event.target.addEventListener('scroll', this.test3);
+    },
     up() {
       this.currentIndex--;
     },

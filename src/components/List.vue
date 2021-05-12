@@ -298,7 +298,8 @@ export default {
 
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  box-shadow: inset 0 0 0 5px #737373;
+  /* box-shadow: inset 0 0 0 5px #737373; */
+  box-shadow: inset 0 0 0 5px rgba(127, 127, 127, .9);
   background-color: transparent;
 }
 /*定义滚动条轨道内阴影+圆角*/

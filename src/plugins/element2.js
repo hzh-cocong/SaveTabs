@@ -3,9 +3,9 @@ import {
     // Pagination,
     Dialog,
     // Autocomplete,
-    // Dropdown,
-    // DropdownMenu,
-    // DropdownItem,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
     // Menu,
     // Submenu,
     // MenuItem,
@@ -29,7 +29,7 @@ import {
     // DatePicker,
     // TimeSelect,
     // TimePicker,
-    // Popover,
+    Popover,
     // Tooltip,
     // Breadcrumb,
     // BreadcrumbItem,
@@ -85,9 +85,9 @@ import {
   // Vue.use(Pagination);
   Vue.use(Dialog);
   // Vue.use(Autocomplete);
-  // Vue.use(Dropdown);
-  // Vue.use(DropdownMenu);
-  // Vue.use(DropdownItem);
+  Vue.use(Dropdown);
+  Vue.use(DropdownMenu);
+  Vue.use(DropdownItem);
   // Vue.use(Menu);
   // Vue.use(Submenu);
   // Vue.use(MenuItem);
@@ -111,7 +111,7 @@ import {
   // Vue.use(DatePicker);
   // Vue.use(TimeSelect);
   // Vue.use(TimePicker);
-  // Vue.use(Popover);
+  Vue.use(Popover);
   // Vue.use(Tooltip);
   // Vue.use(Breadcrumb);
   // Vue.use(BreadcrumbItem);

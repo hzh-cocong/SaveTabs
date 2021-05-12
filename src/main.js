@@ -10,7 +10,7 @@ import Vue from 'vue'
 
 import './plugins/svg-sprite.js'
 import './plugins/element2.js'
-/*
+//*
 import './plugins/tool-test.js'
 /*/
 import './plugins/tool.js'
@@ -18,7 +18,7 @@ import './plugins/tool.js'
 import SaveTabs from './SaveTabs.vue'
 
 // todo
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 new Vue({
   render: h => h(SaveTabs),

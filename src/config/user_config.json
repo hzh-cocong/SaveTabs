@@ -38,11 +38,14 @@
         "note",
         "window",
         "temporary",
-        "tab"
+        "tab",
+        "bookmark",
+        "history"
     ],
-    "active_workspace_type": "tab",
+    "active_workspace_type": "window",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
-    "show_workspace_name": true
+    "show_workspace_name": true,
+    "theme_id": "11"
 }

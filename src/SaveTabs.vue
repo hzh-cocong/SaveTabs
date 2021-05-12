@@ -8,16 +8,79 @@
       borderWidth: config.border_width+'px',
       borderColor: config.border_color,
     }">
+
+    <el-dialog
+      :visible.sync="themeDialogVisible"
+      :modal="false"
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      :destroy-on-close="false"
+      width="200px"
+      class="theme"
+      @click.native="focus">
+      <div slot="title" style="font-size: 16px;">
+        <i
+          class="el-icon-s-tools"
+          style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
+          @click="$open('./options.html?type=themes')"></i>选择主题
+      </div>
+      <SelectX
+        v-if="themeDialogVisible"
+        :list="themes"
+        :itemHeight="65"
+        :itemShowCount="3"
+        style="width:200px"
+        v-model="currentThemeIndex">
+        <template #default="{ index, item, isSelected }">
+          <div
+          class="theme-item"
+            :class="{ selected: isSelected }"
+            @click="changeTheme(item, index)">
+            <span
+              style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
+              :style="{ borderColor: item.config.border_color,
+                        backgroundColor: item.config.background_color }"><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_background_color,
+                  color: item.config.list_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_font_color,
+                  color: item.config.list_font_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_background_color,
+                  color: item.config.list_focus_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_font_color,
+                  color: item.config.list_focus_font_color,
+                }">.</span></span>
+            <span
+              class="title"
+              :style="{ color: item.id == config.theme_id ? config.list_focus_background_color : 'black' }">{{ item.name }}</span>
+            <i
+              v-show="isSelected"
+              class="el-icon-check"
+              style="font-weight: 700"
+              :style="{ color:  item.id == config.theme_id ? config.list_focus_background_color : 'black' }"></i>
+          </div>
+        </template>
+      </SelectX>
+    </el-dialog>
+
     <div class="toolbar">
       <el-input
         class="search-input"
-        :class="{ hide: ! config.show_workspace_name }"
         :placeholder="currentWorkspace == undefined
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         v-model="keyword"
-        :suffix-icon="this.keyword == '' ? 'el-icon-search' : ''"
-        :clearable="true"
+        :clearable="this.keyword == '' ? false : true"
         @keydown.down.native.prevent="selectDelay('down', $event)"
         @keydown.up.native.prevent="selectDelay('up', $event)"
         @keydown.left.native="selectDelay('left', $event)"
@@ -27,25 +90,36 @@
         @input="search"
         ref="input">
         <template slot="prepend">
-
-          <el-select
-            v-show="this.workspaces.length >= 1"
-            v-model="activeWorkspaceIndex"
-            @change="$refs.carousel.setActiveItem(activeWorkspaceIndex);"
-            @mouseenter.native="$refs['select'].$el.click()"
-            ref="select">
-            <template slot="prefix">
+          <el-dropdown
+            :hide-on-click="false"
+            trigger="hover"
+            placement="bottom"
+            @visible-change="menuVisible = arguments[0]"
+            @command="arguments[0] != -1
+                    && (activeWorkspaceIndex=arguments[0],
+                        $refs.carousel.setActiveItem(activeWorkspaceIndex),
+                        focus())">
+            <span class="el-dropdown-link" @click="focus">
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 :style="{ color: config.pinned && currentWorkspace != undefined && config.active_workspace_type == currentWorkspace.type
                       ? 'gray' : '#c0c4cc'}"
-                style="margin: 10px 0 0 5px; width: 18px; height: 20px"></svg-icon>
-            </template>
-            <el-option-group>
-              <el-option
+                style="width: 20px; height: 20px; position: relative; top: 2px;margin-right: 3px;"></svg-icon>
+              <span style="position: relative; top: -3px;">
+                <span
+                  v-if="config.show_workspace_name"
+                  style="display:inline-block;width: 70px;text-align:center">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
+                <i style="transition: transform .3s;"
+                  class="el-icon-arrow-down el-icon--right"
+                  :class="{ 'is-reverse': menuVisible}"></i>
+              </span>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="toolbar-menu">
+              <el-dropdown-item
                 v-for="(workspace, index) in workspaces"
                 :label="lang(workspace.title)"
-                :value="index"
+                :command="index"
+                :class="{ selected: index == activeWorkspaceIndex }"
                 :key="index">
                 <svg-icon
                   :name="workspace.svg"
@@ -56,25 +130,33 @@
                   style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   @click="toPin"
                 ></svg-icon><span>{{ lang(workspace.title) }}</span>
-              </el-option>
-            </el-option-group>
-            <el-option-group>
-              <el-option
+              </el-dropdown-item>
+              <el-dropdown-item
+                divided
+                icon="el-icon-check"
+                :command="-1"
+                class="other"
+                style="display:inline-block; width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
+                @click.native="themeDialogVisible=true;focus();">{{ currentTheme.name }}</el-dropdown-item>
+              <el-dropdown-item
+                divided
                 :value="activeWorkspaceIndex"
-                :disabled="true"
-                style="cursor: default;text-align: center;display:flex;justify-content: space-between">
+                :command="-1"
+                style="cursor: default"
+                class="other">
                 <span @click="$open('./options.html?type=workspace')">
                   <svg-icon
                     name="cog-solid"
-                    style="cursor:pointer;height: 20px;color: #c0c4cc"
+                    style="cursor:pointer;height: 20px;color: #c0c4cc; position: relative; top: 6px;"
                   ></svg-icon>
                 </span>
                 <span
                   :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
+                  style="margin: 0 10px;"
                   @click="changeThemeMode">
                   <svg-icon
                     :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
-                    style="cursor:pointer;height: 20px;"></svg-icon>
+                    style="cursor:pointer;height: 20px; position: relative; top: 6px;"></svg-icon>
                 </span>
                 <span
                   :style="{
@@ -89,11 +171,32 @@
                                       && currentWorkspace != undefined
                                       && config.active_workspace_type == currentWorkspace.type
                                       ? 'rotate(0)' : 'rotate(90deg)'}"
-                    style="cursor:pointer;height: 20px;"></svg-icon>
+                    style="cursor:pointer;height: 20px; position: relative; top: 6px;"></svg-icon>
                 </span>
-              </el-option>
-            </el-option-group>
-          </el-select>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+        <template slot="prefix">
+          <template v-if="currentWorkspace == undefined
+                        ||currentWorkspace.type == 'window'">
+            <i
+              class="el-icon-search"
+              style="line-height: 40px;padding-left: 4px;"></i>
+          </template>
+          <template v-else>
+            <el-popover
+              placement="top-start"
+              title="标题"
+              width="200"
+              trigger="hover"
+              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+              <i
+                class="el-icon-date"
+                slot="reference"
+                style="line-height: 40px;padding-left: 4px;"></i>
+            </el-popover>
+          </template>
         </template>
       </el-input>
       <el-button-group
@@ -137,6 +240,7 @@
 
 <script>
 import List from './components/List.vue'
+import SelectX from './components/SelectX.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
 import Tab from './components/Tab.vue'
@@ -145,6 +249,7 @@ import Note from './components/Note.vue'
 import Temporary from './components/Temporary.vue'
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
+import userTheme from './config/user_theme.json'
 
 export default {
   name: 'app',
@@ -163,9 +268,16 @@ export default {
       isOpened: {},
       things: {},
       operateOrder: [ 'window', 'note', 'temporary' ],
+      lock: false,
 
       config: userConfig,
-      allWorkspaces: projectConfig.allWorkspaces
+      themes: userTheme,
+      allWorkspaces: projectConfig.allWorkspaces,
+
+      menuVisible: false,
+      themeDialogVisible: false,
+      themeScrollPosition: 0,
+      // currentThemeIndex: -1,
     }
   },
   computed: {
@@ -174,10 +286,24 @@ export default {
     },
     currentWorkspace() {
       return this.workspaces[ this.activeWorkspaceIndex ];
+    },
+    currentTheme() {
+      return this.themes[ this.currentThemeIndex ];
+    },
+    currentThemeIndex() {
+      let index = -1;
+      for(let theme of this.themes) {
+        index++;
+        if(theme.id == this.config.theme_id) {
+          return index;
+        }
+      }
+      return -1;
     }
   },
   components: {
     List,
+    SelectX,
     Window,
     History,
     Tab,
@@ -288,7 +414,6 @@ export default {
       }, this.keyword);
     },
 
-
     keydown(event) {
       // console.log('keydown', event)
       if(this.platform == '') return;
@@ -316,21 +441,21 @@ export default {
         event.preventDefault();
       }
 
-      if(this.lock == false) return;
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
-      this.lock = setTimeout(() => {
-        if(type == 'down') {
-          this.down();
-        } else if(type == 'up') {
-          this.up();
-        } else if(type == 'left') {
-          this.$refs.carousel.prev();
-        } else if(type == 'right') {
-          this.$refs.carousel.next();
-        }
-        this.lock = true;
-      }, 1);
-      this.lock = false;
+      if(this.lock == true) return;
+      this.lock = true;
+
+      if(type == 'down') {
+        this.down();
+      } else if(type == 'up') {
+        this.up();
+      } else if(type == 'left') {
+        this.$refs.carousel.prev();
+      } else if(type == 'right') {
+        this.$refs.carousel.next();
+      }
+
+      setTimeout(() => { this.lock = false; }, 1);
     },
     workspaceChange(newIndex) {
       this.activeWorkspaceIndex = newIndex;
@@ -388,7 +513,22 @@ export default {
         //   message: this.lang('saveSuccess')
         // });
       });
-    }
+    },
+    changeTheme(theme, index) {
+      if(this.currentThemeIndex == index) return;
+
+      // this.currentThemeIndex = index;
+      this.config.theme_id = theme.id;
+      Object.assign(this.config, theme.config);
+      console.log(this.config, theme.config)
+
+      chrome.storage.sync.set({'config': this.config}, () => {
+        // this.$message({
+        //   type: 'success',
+        //   message: this.lang('saveSuccess')
+        // });
+      });
+    },
   },
   mounted() {
     if(navigator.platform.indexOf("Win") == 0) {
@@ -455,10 +595,66 @@ export default {
 }
 </script>
 
-<style>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
 #app {
   padding: 10px 0 0px 0;
 }
+</style>
+
+<!-- 全局样式 -->
+<style>
+body {
+  margin: 0;
+}
+
+.el-input__prefix {
+  transition: none;
+}
+
+.theme .el-dialog__header {
+  padding: 10px 53px 0 11px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.theme .el-dialog__header .el-dialog__headerbtn {
+  top: 12px !important;
+}
+.theme .el-dialog__body{
+  padding: 0 !important;
+}
+
+.theme-item {
+  margin: 9px 0;
+  padding: 0px 9px 0px 0px;
+
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+   /* 禁止选择 */
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
+}
+.theme-item.selected {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  font-weight: 700;
+}
+.theme-item .title {
+  flex: 1;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .toolbar {
   display: flex;
   margin: 0 10px 10px 10px;
@@ -479,30 +675,31 @@ export default {
   border-color: #C0C4CC;
 }
 .toolbar .search-input input {
-  /* min-width: 130px; */
   border-radius: 0;
 }
 .toolbar .search-input .el-input-group__prepend {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
+  padding: 0 10px;
 }
-.toolbar .search-input.hide .el-input-group__prepend{
-  width: 20px !important;
-  min-width: 20px !important;
-  max-width: 20px !important;
-  /* min-width: 0 !important;
-  max-width: 10px !important; */
+
+.toolbar .el-icon-arrow-down.is-reverse {
+  transform: rotate(-180deg);
 }
-.toolbar .search-input .el-input-group__prepend input {
-  min-width: auto;
-  text-align: center;
-  border: 0;
+.toolbar .el-dropdown-link {
+  cursor: pointer;
 }
-.toolbar .search-input .el-input-group__prepend input:focus {
-  border-color: none;
-  border: 0;
+.toolbar-menu .el-dropdown-menu__item.selected {
+  color: #409eff;
+  font-weight: 700;
 }
+.toolbar-menu .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled, .selected, .other):hover {
+    /* background-color: #ecf5ff; */
+    color: #606266;
+}
+.toolbar-menu .el-dropdown-menu__item.other:hover {
+    background-color: #FFF;
+    color: #606266;
+}
+
 .toolbar .el-button-group .el-button:first-child {
   border-left-width: 0;
   border-radius: 0;
@@ -511,9 +708,6 @@ export default {
   border-radius: 0;
 }
 
-body {
-  margin: 0;
-}
 .el-carousel__indicators {
   line-height: 0;
 }
@@ -530,7 +724,7 @@ body {
 }
 
 .group .el-dialog__header {
-  padding: 10px 53px 0 16px !important;
+  padding: 16px 53px 0 16px !important;
   text-align: left;
   overflow:hidden;
   text-overflow:ellipsis;

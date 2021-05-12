@@ -1,0 +1,486 @@
+[
+    {
+        "id": "11",
+        "name": "默认主题是否是神盾覅神盾是神盾神盾发",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "#ffffff",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "12",
+        "name": "美丽主题33",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "yellow",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 25,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 60,
+            "item_show_count": 5,
+
+            "width": 400,
+            "background_color": "blue",
+
+            "border_width": 0,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": true,
+            "show_workspace_name": false
+        }
+    },
+    {
+        "id": "13",
+        "name": "美丽主题ss",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#892402",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 26,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#faead1",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 70,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "purple",
+
+            "border_width": 10,
+            "border_color": "gray",
+
+            "button_follow_workspace": true,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "14",
+        "name": "美丽主题哈哈哈哈",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "green",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "15",
+        "name": "美丽主题gg",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 1,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "16",
+        "name": "美丽主题",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "17",
+        "name": "美丽主题防守打法是是神盾是是是",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "18",
+        "name": "美丽主题",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "19",
+        "name": "美丽主题",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "20",
+        "name": "美丽主题fff",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    },
+    {
+        "id": "21",
+        "name": "美丽主题33g",
+        "isSelect": true,
+        "config": {
+            "list_font_color": "#000000",
+            "list_background_color": "#ffffff",
+            "list_state_color": "#339966",
+            "list_keymap_color": "#0066CC",
+            "list_font_size": 20,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+            "list_page_count": 8,
+
+            "list_explain_font_size": 12,
+            "list_explain_font_color": "#909399",
+            "list_explain_focus_font_color": "#e4e7ed",
+
+            "list_focus_background_color": "#7497de",
+            "list_focus_font_color": "#ffffff",
+            "list_focus_state_color": "#33FF66",
+            "list_focus_keymap_color": "#33FF66",
+
+            "list_current_background_color": "#c0c4cc",
+            "list_current_font_color": "#ffffff",
+            "list_current_state_color": "#ffffff",
+
+            "list_current_focus_background_color": "#909399",
+            "list_current_focus_font_color": "#ffffff",
+            "list_current_focus_state_color": "#ffffff",
+
+            "item_height": 50,
+            "item_show_count": 7,
+
+            "width": 500,
+            "background_color": "red",
+
+            "border_width": 8,
+            "border_color": "#ffffff",
+
+            "button_follow_workspace": false,
+            "show_workspace_name": true
+        }
+    }
+]

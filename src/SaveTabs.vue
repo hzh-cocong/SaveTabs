@@ -255,7 +255,9 @@ export default {
   name: 'app',
   provide(){
     return {
-      focus: this.focus
+      focus: this.focus,
+      prev: this.prev,
+      next: this.next,
     }
   },
   data() {
@@ -315,6 +317,12 @@ export default {
     focus() {
       // 输入框聚焦
       this.$refs['input'].focus();
+    },
+    prev() {
+      this.$refs.carousel.prev();
+    },
+    next() {
+      this.$refs.carousel.next();
     },
 
     getTypeIndex(type) {
@@ -591,6 +599,12 @@ export default {
     document.body.onload=() => {
       this.isLoad = true;
     };
+
+    // window.oncontextmenu = function(e){
+    //   // 取消默认的浏览器自带右键
+    //   // 输入框也被屏蔽了
+    //   e.preventDefault();
+    // }
   }
 }
 </script>

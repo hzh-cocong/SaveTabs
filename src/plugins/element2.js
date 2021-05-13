@@ -19,9 +19,9 @@ import {
     // CheckboxButton,
     // CheckboxGroup,
     // Switch,
-    Select,
-    Option,
-    OptionGroup,
+    // Select,
+    // Option,
+    // OptionGroup,
     Button,
     ButtonGroup,
     // Table,
@@ -101,9 +101,9 @@ import {
   // Vue.use(CheckboxButton);
   // Vue.use(CheckboxGroup);
   // Vue.use(Switch);
-  Vue.use(Select);
-  Vue.use(Option);
-  Vue.use(OptionGroup);
+  // Vue.use(Select);
+  // Vue.use(Option);
+  // Vue.use(OptionGroup);
   Vue.use(Button);
   Vue.use(ButtonGroup);
   // Vue.use(Table);

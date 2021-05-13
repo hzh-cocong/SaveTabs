@@ -140,7 +140,7 @@ import List from './List.vue'
 
 export default {
   name: 'History',
-  inject: ['focus'],
+  inject: ['focus', 'prev', 'next'],
   props: {
     config: {
       type: Object,
@@ -170,6 +170,8 @@ export default {
       startTime: 0,
 
       isSearched: false,
+
+      lock: false,
     }
   },
   components: {
@@ -308,6 +310,21 @@ export default {
 
     // 更新列表
     // this.search();
+
+    this.$el.addEventListener("mousewheel", (event) => {
+      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+      const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
+      if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+        return;
+
+      // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
+      if(this.lock == true) return;
+      this.lock = true;
+
+      eventDeltaX > 0 ? this.next() : this.prev();
+
+      setTimeout(() => { this.lock = false; }, 1000);
+    })
   }
 }
 </script>

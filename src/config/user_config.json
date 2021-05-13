@@ -35,14 +35,14 @@
     "border_color": "#ffffff",
 
     "workspaces": [
-        "note",
         "window",
         "temporary",
+        "note",
         "tab",
         "bookmark",
         "history"
     ],
-    "active_workspace_type": "window",
+    "active_workspace_type": "temporary",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

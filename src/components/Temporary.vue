@@ -64,8 +64,8 @@
 
         <div
           class="main"
-          @mouseenter="test"
-          @mouseleave="test2"
+          @mouseenter="mainEnter"
+          @mouseleave="mainLeave"
           :class="{ scroll: isActive }"
           :style="{
             height: config.item_height+'px',
@@ -207,7 +207,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
-  inject: ['focus'],
+  inject: ['focus', 'prev', 'next'],
   props: {
     config: {
       type: Object,
@@ -241,26 +241,30 @@ export default {
       isSearched: false,
 
       isShowOperationButton: true,
+
+      lock: 0,
     }
   },
   components: {
     List,
   },
   methods: {
-    test3() {
-      console.log('move')
+    hideOperationButton() {
+      console.log('mousemove', this.lock)
+
+      // 告诉 wheel，我再监听，当 this.lock = 3 时，说明 wheel 在睡眠，不要去打扰它
+      if(this.lock != 3) this.lock = 2;
+
       this.isShowOperationButton = false;
     },
-    test(event) {
-      console.log('a')
-      event.target.addEventListener('scroll', this.test3);
+    mainEnter(event) {
+      event.target.addEventListener('scroll', this.hideOperationButton);
     },
-    test2(event) {
-      console.log('b')
-      event.target.removeEventListener('scroll', this.test3);
+    mainLeave(event) {
+      event.target.removeEventListener('scroll', this.hideOperationButton);
       this.isShowOperationButton = true;
-      // event.target.addEventListener('scroll', this.test3);
     },
+
     up() {
       this.currentIndex--;
     },
@@ -469,6 +473,54 @@ export default {
     },
   },
   mounted() {
+    this.$el.addEventListener("mousewheel", (event) => {
+      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+      const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
+      console.log('mousewheel:comein', this.lock, eventDeltaX, eventDeltaY);
+      // if(this.lock == 0 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+      //   || (this.lock != 0 && Math.abs(eventDeltaX) <= 0)) {
+      //   return;
+      // }
+      // if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+      //   return;
+      // if((this.lock == 0 && Math.abs(eventDeltaX) <= 0)
+      //   || (this.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
+      //   return;
+      // if((this.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+      //   || (this.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
+      //   return;
+      // lock = 0 说明刚开始出发，此时一定是要鼠标左右滑动，且没有上下滚动才有效
+      // lock == 1 说明内部没有左右滚动，此时虽然鼠标左右滑动，但上下就算没动也会有不为0的情况，所以就不判断上下是否滚动了
+      // lock == 2 说明内部有左右滚动，就不用判断鼠标状态了，我们要做的是让它睡眠
+      if((this.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+        || (this.lock == 1 && Math.abs(eventDeltaX) <= 0))
+        return;
+
+      console.log('mousewheel:start', this.lock);
+
+      // 第一次滚动，会比 mousemove 先，为了直到有没有 mousemove，我们跳过这一步
+      if(this.lock == 0) { this.lock = 1; return;}
+
+      // 说明有 mousemove，暂停一段时间再监听
+      if(this.lock == 2) {
+        this.lock = 3;
+        setTimeout(() => { this.lock = 0; }, 1000);
+        return;
+      }
+
+      // 睡眠中
+      if(this.lock == 3) return;
+
+      console.log('mousewheel:goto', this.lock);
+
+      // 可以滚动了，改为 3 是为了避免多次滚动
+      // this.lock == 1
+      this.lock = 3
+
+      eventDeltaX > 0 ? this.next() : this.prev();
+
+      setTimeout(() => { this.lock = 0; }, 1000);
+    })
 
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {

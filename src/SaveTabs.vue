@@ -7,6 +7,7 @@
       backgroundColor: config.background_color,
       borderWidth: config.border_width+'px',
       borderColor: config.border_color,
+      '--filter': filter,
     }">
 
     <el-dialog
@@ -280,6 +281,8 @@ export default {
       themeDialogVisible: false,
       themeScrollPosition: 0,
       // currentThemeIndex: -1,
+
+      filter: '',
     }
   },
   computed: {
@@ -514,6 +517,8 @@ export default {
 
       this.config.theme_mode = this.config.theme_mode == 'light' ? 'dark' : 'light';
       document.querySelector('html').style.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      this.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+
       chrome.storage.sync.set({'config': this.config}, () => {
         // this.$message({
         //   type: 'success',
@@ -570,6 +575,7 @@ export default {
 
       if(this.config.theme_mode == 'dark') {
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
+        this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
       // 貌似没效果
@@ -635,6 +641,10 @@ export default {
 <style>
 body {
   margin: 0;
+}
+
+img {
+  filter: var(--filter);
 }
 
 .el-input__prefix {

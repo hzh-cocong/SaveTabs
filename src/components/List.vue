@@ -62,11 +62,28 @@ export default {
       scrollLines: 0,
       mouseIndex: -1,
       mouseStart: true,
-      w: {},
+
+      w: {
+        index: 0,
+        timer: null,
+        t2: 0,
+        t1: 0,
+        flag: true,
+        speed: 100,
+
+        // 无需提前定义
+        // ulEnter: false,
+        // scrollTimer: null,
+        // ulOn: false,
+
+        isScrolling: false,
+      },
     }
   },
   watch: {
     currentIndex: function (newVal, oldVal) {
+      console.log('currentIndex');
+
       // 鼠标移动事件
       if(this.mouseIndex != -1
         && this.mouseIndex != this.list.length
@@ -126,7 +143,7 @@ export default {
       // 使得鼠标离开时自动隐藏滚动条
       if(this.list.length > this.itemShowCount) {
         clearTimeout(this.w.scrollTimer);
-        this.w.scrollTimer=setTimeout(() => {
+        this.w.scrollTimer = setTimeout(() => {
           this.$el.className = "list";
         }, 700);
       }
@@ -168,13 +185,12 @@ export default {
       // 关闭鼠标事件
       this.mouseStart = false;
 
-
       let self = this;
 
       // 未触发滚动的隐藏由 mousemove 来解决
       if(self.mouseIndex != -1) {
         clearTimeout(self.w.scrollTimer);
-        self.w.scrollTimer=setTimeout(() => {
+        self.w.scrollTimer = setTimeout(() => {
           self.$el.className = "list";
         }, 700);
       }
@@ -206,19 +222,8 @@ export default {
         self.$emit('change', self.mouseIndex);
       })
     },
-  },
-  mounted() {
-    // document.body.style.cursor = "none";
-    this.mouseRealMoveRegister();
-
-    // 滚动处理
-    let self=this;
-    self.w.index = 0;
-    self.w.timer = null
-    self.w.t2 = self.w.t1 = 0;
-    self.w.flag = true;
-    self.w.speed = 100;
-    this.$el.addEventListener("scroll", function (e) {
+    scrollDeal(e) {
+      let self = this;
 
       // 真是奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
       self.w.flag = self.w.t1 < e.target.scrollTop
@@ -270,7 +275,14 @@ export default {
           self.w.timer = setTimeout(scrollWatch, self.w.speed);
         }
       }, self.w.speed);
-    })
+    }
+  },
+  mounted() {
+    // document.body.style.cursor = "none";
+    this.mouseRealMoveRegister();
+
+    // 滚动处理
+    this.$el.addEventListener("scroll", this.scrollDeal);
   }
 }
 </script>

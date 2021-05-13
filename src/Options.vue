@@ -1,5 +1,7 @@
 <template>
-  <el-container id="app">
+  <el-container
+    id="app"
+    :style="{ '--filter': filter }">
     <el-header>
       <h3
         style="display: flex;justify-content: center; align-items: center;">
@@ -537,6 +539,7 @@ export default {
 
     changeThemeMode() {
       document.querySelector('html').style.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      this.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
       validate.extend(this.storageConfig, { theme_mode: this.workspacesConfig.theme_mode});
       this.store();
     },
@@ -734,7 +737,6 @@ export default {
       }
     })
 
-
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.storageConfig, items.config);
       Object.assign(this.pageConfig, items.config);
@@ -743,6 +745,7 @@ export default {
 
       if(this.workspacesConfig.theme_mode == 'dark') {
         document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
+        this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
       Object.keys( this.allWorkspaces).filter(type => {
@@ -1002,6 +1005,10 @@ export default {
 #app {
   margin-top: 0;
   text-align:center;
+}
+
+img {
+  filter: var(--filter);
 }
 
 .item {

@@ -258,6 +258,7 @@ export default {
       this.isShowOperationButton = false;
     },
     mainEnter(event) {
+      // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
       event.target.addEventListener('scroll', this.hideOperationButton);
     },
     mainLeave(event) {
@@ -585,9 +586,7 @@ export default {
 .item .main {
   flex: 1;
   text-align: left;
-  /* overflow: auto; */
-  overflow-x: overlay;
-  overflow-y: hidden;
+  overflow: hidden;
   cursor: default;
 
   display: flex;
@@ -595,35 +594,21 @@ export default {
   align-items: left;
   justify-content: flex-start;
   flex-wrap: wrap;
-
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
 }
 
+.item .main.scroll{
+  overflow-x: overlay;
+}
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
-.item .main::-webkit-scrollbar {
-  /* width: 10px; */
+.item .main.scroll::-webkit-scrollbar {
   height: 10px;
   background: transparent;
-  display: none;
 }
-/* .item .main::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: transparent;
-} */
 /*定义滑块圆角*/
-.item .main::-webkit-scrollbar-thumb {
+.item .main.scroll::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: rgb(115 115 115 / 50%);
 }
-.item .main.scroll::-webkit-scrollbar {
-  display: block;
-}
-/* 和 flex 一起会有问题，直接隐藏滚动条（这种不行，鼠标无法操作） */
-/* .item .main::-webkit-scrollbar {
-  display: none;
-} */
 
 .item .title {
   width: 100%;

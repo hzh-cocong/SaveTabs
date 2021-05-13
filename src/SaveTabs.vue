@@ -319,9 +319,21 @@ export default {
       this.$refs['input'].focus();
     },
     prev() {
+      // if(this.lock == true) return;
+      // this.lock = true;
+
+      // this.$refs.carousel.prev();
+
+      // setTimeout(() => { this.lock = false; }, 500);
       this.$refs.carousel.prev();
     },
     next() {
+      // if(this.lock == true) return;
+      // this.lock = true;
+
+      // this.$refs.carousel.next();
+
+      // setTimeout(() => { this.lock = false; }, 500);
       this.$refs.carousel.next();
     },
 
@@ -366,6 +378,7 @@ export default {
         }
         return;
       }
+
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow() {
@@ -455,15 +468,17 @@ export default {
 
       if(type == 'down') {
         this.down();
+        setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'up') {
         this.up();
+        setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'left') {
         this.$refs.carousel.prev();
+        setTimeout(() => { this.lock = false; }, 150);
       } else if(type == 'right') {
         this.$refs.carousel.next();
+        setTimeout(() => { this.lock = false; }, 150);
       }
-
-      setTimeout(() => { this.lock = false; }, 1);
     },
     workspaceChange(newIndex) {
       this.activeWorkspaceIndex = newIndex;

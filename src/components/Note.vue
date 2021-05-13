@@ -507,6 +507,8 @@ export default {
       if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
         return;
 
+      // 注意不要使用 preventDefault，因为鼠标停止滚动后事件依然在发生
+
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       if(this.lock == true) return;
       this.lock = true;

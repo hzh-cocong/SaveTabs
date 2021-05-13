@@ -7,7 +7,6 @@
       backgroundColor: config.background_color,
       borderWidth: config.border_width+'px',
       borderColor: config.border_color,
-      '--filter': filter,
     }">
 
     <el-dialog
@@ -281,8 +280,6 @@ export default {
       themeDialogVisible: false,
       themeScrollPosition: 0,
       // currentThemeIndex: -1,
-
-      filter: '',
     }
   },
   computed: {
@@ -516,8 +513,11 @@ export default {
       this.focus();
 
       this.config.theme_mode = this.config.theme_mode == 'light' ? 'dark' : 'light';
-      document.querySelector('html').style.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      this.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+
+      let htmlNode = document.querySelector('html');
+      htmlNode.style.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      htmlNode.style.setProperty("--filter", this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '');
+      // this.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
 
       chrome.storage.sync.set({'config': this.config}, () => {
         // this.$message({
@@ -574,8 +574,10 @@ export default {
       Object.assign(this.config, items.config);
 
       if(this.config.theme_mode == 'dark') {
-        document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
-        this.filter = 'invert(1) hue-rotate(180deg)';
+        let htmlNode = document.querySelector('html');
+        htmlNode.style.filter = 'invert(1) hue-rotate(180deg)';
+        htmlNode.style.setProperty("--filter", 'invert(1) hue-rotate(180deg)');
+        // this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
       // 貌似没效果

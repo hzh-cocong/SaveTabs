@@ -1,7 +1,5 @@
 <template>
-  <el-container
-    id="app"
-    :style="{ '--filter': filter }">
+  <el-container id="app">
     <el-header>
       <h3
         style="display: flex;justify-content: center; align-items: center;">
@@ -538,8 +536,10 @@ export default {
     },
 
     changeThemeMode() {
-      document.querySelector('html').style.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      this.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      let htmlNode = document.querySelector('html');
+      htmlNode.style.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      htmlNode.style.setProperty("--filter", this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '');
+      // this.filter = this.workspacesConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
       validate.extend(this.storageConfig, { theme_mode: this.workspacesConfig.theme_mode});
       this.store();
     },
@@ -744,8 +744,10 @@ export default {
       Object.assign(this.workspacesConfig, items.config);
 
       if(this.workspacesConfig.theme_mode == 'dark') {
-        document.querySelector('html').style.filter = 'invert(1) hue-rotate(180deg)';
-        this.filter = 'invert(1) hue-rotate(180deg)';
+        let htmlNode = document.querySelector('html');
+        htmlNode.style.filter = 'invert(1) hue-rotate(180deg)';
+        htmlNode.style.setProperty("--filter", 'invert(1) hue-rotate(180deg)');
+        // this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
       Object.keys( this.allWorkspaces).filter(type => {

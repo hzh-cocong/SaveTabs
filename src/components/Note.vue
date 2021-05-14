@@ -301,8 +301,6 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
-      this.focus();
-
       // 当前标签只能有一个
       if(this.isInCurrentTab) {
         this.$message({
@@ -312,7 +310,8 @@ export default {
           duration: 2000,
           customClass: 'window-message-box',
         });
-        callback();
+        // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
+        callback(true);
 
         return;
       }
@@ -341,7 +340,7 @@ export default {
         this.storageKeyword = ' ';
 
         // this.search(this.storageKeyword);
-        callback();
+        callback(true);
       })
     },
     openWindow(index) {

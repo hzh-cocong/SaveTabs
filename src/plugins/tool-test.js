@@ -32,7 +32,10 @@ history[0].lastVisitTime = new Date().getTime()-1000*8;
 history[0].lastVisitTime = new Date().getTime()-1000*86400*2;
 
 // let i = 0;
-list88 = list88.map((item) => {
+let id = 110;
+list88 = list88.map((item, index) => {
+  item.id = ++id;
+  item.lastVisitTime = index <= 5 ? new Date().getTime()+Math.ceil(Math.random()*1620963248) : undefined;
   if(item.name=='OneTab') {
     item.windowId=33;
   }else if(item.name=='头条' || item.name=="视频号" || item.name=="扩展程序（Extensions）") {

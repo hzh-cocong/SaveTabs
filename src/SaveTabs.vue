@@ -108,7 +108,7 @@
               <span style="position: relative; top: -3px;">
                 <span
                   v-if="config.show_workspace_name"
-                  style="display:inline-block;width: 70px;text-align:center">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
+                  style="display:inline-block;width: 70px;text-align:center; color: #909399;">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
                 <i style="transition: transform .3s;"
                   class="el-icon-arrow-down el-icon--right"
                   :class="{ 'is-reverse': menuVisible}"></i>
@@ -409,9 +409,11 @@ export default {
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
     },
     add(type) {
+      // 先切换到对应的工作区
       let index = this.getTypeIndex(type);
       this.$refs.carousel.setActiveItem(index);
       if(this.isOpened[ index ] == undefined) {
+        // 若工作区还未创建，则由 finish 来处理 add
         let refIndex = Object.keys(this.isOpened).length;
         this.things[ refIndex ] = {
           'method': 'add',
@@ -419,19 +421,27 @@ export default {
         }
         return;
       }
+
       let refIndex =  this.isOpened[ index ]-1;
       let workspace = this.$refs.workspaces[ refIndex ];
       // if(workspace == undefined) {
       //   this.things[ refIndex ] = 'add';
       //   return;
       // }
-      workspace.add(()=>{
-        this.keyword = '';
-        if(refIndex == this.activeWorkspaceRefIndex) {
-          // 添加完后当前窗口可能还没有完全切换过去，此时刷新的仍然是切换前的窗口，所以不需要刷新
-          // 至于切换完后的刷新问题，这个完全不用担心，有专门的事件负责
+      workspace.add((isSuccess)=>{
+        if(isSuccess) {
+          this.keyword = '';
           this.search();
         }
+
+        this.focus();
+
+        // console.log('add', refIndex, this.activeWorkspaceRefIndex)
+        // if(refIndex == this.activeWorkspaceRefIndex) {
+        //   // 添加完后当前窗口可能还没有完全切换过去，此时刷新的仍然是切换前的窗口，所以不需要刷新
+        //   // 至于切换完后的刷新问题，这个完全不用担心，有专门的事件负责
+        //   this.search();
+        // }
       }, this.keyword);
     },
 
@@ -762,12 +772,7 @@ img {
   padding-bottom: 0px !important;
 }
 
-/* 组件共享样式 */
-.el-badge__content {
-    background-color: inherit !important;
-    border-color: inherit !important;
-}
-
+/* 组件共享样式，注意会影响所有组件，之所以放这里是因为这个是弹出框，是 body 的直接子元素 */
 .group .el-dialog__header {
   padding: 16px 53px 0 16px !important;
   text-align: left;

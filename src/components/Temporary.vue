@@ -322,7 +322,7 @@ export default {
       this.page++;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
-    add() {
+    add(callback) {
       let currentWindowId = -1;
 
       new Promise((resolve) => {
@@ -359,6 +359,9 @@ export default {
       }).then(() => {
         // 关闭当前窗口
         chrome.windows.remove(currentWindowId);
+
+        // 虽然没什么用
+        callback(true)
       })
     },
     openWindow(index) {

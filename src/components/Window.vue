@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="window">
 
   <el-alert
     type="info"
@@ -83,7 +83,7 @@
           :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span>
 
         <div class="right">
-          <div v-if="isActive || item.windowId == currentWindowId || activeWindows[item.windowId]">
+          <div v-if="isActive || item.windowId == currentWindowId || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
             <div v-if="isActive">
               <el-button
                 type="success"
@@ -94,7 +94,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 circle
-                @click.stop="showGroupNameDialog"></el-button>
+                @click.stop="changeGroupName"></el-button>
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -124,7 +124,6 @@
                       : config.list_current_state_color }">
               <template v-if="isCurrentWindowChange">
                 <el-badge
-                  :value="12"
                   is-dot>
                   <span style="margin-right: 5px;">{{ lang('currentWindow') }}</span>
                 </el-badge>
@@ -142,25 +141,30 @@
                     : config.list_state_color }">
               {{ lang('opened') }}
             </div>
+            <div
+              v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+              :style="{
+                fontSize: config.list_state_size+'px',
+                color: isSelected
+                    ? config.list_focus_state_color
+                    : config.list_keymap_color }">
+              {{ timeShow(item.lastVisitTime) }}
+            </div>
           </div>
           <div
             v-show=" ! isActive && item.windowId != currentWindowId">
             <span
               v-if="isSelected"
               :style="{
-                fontSize: isSelected
-                    ? config.list_state_size
-                    : config.list_keymap_size+'px',
-                color: isSelected
-                    ? config.list_focus_keymap_color
-                    : config.list_focus_keymap_color }">↩</span>
+                fontSize: config.list_keymap_size+'px',
+                color: config.list_focus_keymap_color }">↩</span>
             <span
               v-else-if="platform != ''
                       && (index-$refs.list.scrollLines+1) <= config.item_show_count
                       && (index-$refs.list.scrollLines+1) >= 1
                       &&  (index-$refs.list.scrollLines+1) <= 9"
               :style="{
-                fontSize: activeWindows[item.windowId]
+                fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
                 color: activeWindows[item.windowId]
@@ -186,12 +190,20 @@
     <div slot="title" style="width: 100%;display:flex;">
       <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
       <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-download"></i></span>
-      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{group.name}}</span>
+      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        <span>{{group.name}}</span>
+        <span
+          style="color:hsl(0, 0%, 66%);margin-left: 20px;"
+          v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+      </span>
     </div>
     <ul
       class="group-list"
       :style="{ height: (30*config.item_show_count)+'px' }">
-      <li class="group-list-item" v-for="(tab, index) in group.tabs" :key="index">
+      <li
+        class="group-list-item"
+        v-for="(tab, index) in group.tabs"
+        :key="index">
 
         <el-image
           :src="getIcon(tab.icon, tab.url, 20)"
@@ -206,29 +218,14 @@
           </div>
         </el-image>
 
-        <span class="tab-name" type="default" @click="$open(tab.url)">{{ tab.title }}</span>
+        <span
+          class="tab-name"
+          type="default"
+          :title="tab.url"
+          @click="$open(tab.url)">{{ tab.title }}</span>
 
       </li>
     </ul>
-  </el-dialog>
-
-  <el-dialog
-    :title="lang('updateGroupName')"
-    :visible.sync="groupChangeVisible"
-    :append-to-body="true"
-    :center="false"
-    width="80%"
-    @close="focus">
-    <el-input
-      v-model="groupName"
-      :placeholder="lang('groupNameInput')"></el-input>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="groupChangeVisible = false">{{ lang('cancel' )}}</el-button>
-      <el-button
-        type="primary"
-        @click="changeGroupName"
-        :disabled="groupName==''">{{ lang('sure' )}}</el-button>
-    </span>
   </el-dialog>
 
   </div>
@@ -276,9 +273,6 @@ export default {
 
       groupVisible: false,
       group: {},
-
-      groupChangeVisible: false,
-      groupName: '',
 
       isSearched: false,
 
@@ -353,8 +347,6 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
-      this.focus();
-
       // 当前窗口只能有一个
       if(this.isInCurrentWindow) {
         this.$message({
@@ -364,97 +356,99 @@ export default {
           duration: 2000,
           customClass: 'window-message-box',
         });
-        callback();
+        // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
+        callback(true);
 
         return;
       }
-      // 窗口名不允许为空
-      if(keyword == undefined
-      || keyword == '') {
-        this.$message({
-          type: 'warning',
-          message: this.lang('emptyGroupName'),
-          customClass: 'window-message-box',
-          offset: 69,
-          duration: 2000,
-        });
-        callback();
 
-        return;
-      }
-      // 窗口名不允许重复
-      for(let group of this.storageList) {
-        if(group.name == keyword) {
-          this.$message({
-            type: 'warning',
-            message: this.lang('groupNameRepeat'),
-            customClass: 'window-message-box',
-            offset: 69,
-            duration: 2000,
-          });
-          callback();
+      this.$prompt('', '添加', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPlaceholder: '请输入窗口名',
+        inputValue: keyword.trim() == '' ? null : keyword.trim(),
+        inputValidator: ( value ) => {
+          value = value == null ? '' : value.trim();
 
-          return;
+          // 窗口名不允许为空
+          if(value == '') {
+            return this.lang('emptyGroupName');
+          }
+
+          // 窗口名不允许重复
+          for(let group of this.storageList) {
+            if(group.name == value) {
+              return this.lang('groupNameRepeat');
+            }
+          }
+
+          return true;
         }
-      }
+      }).then(({ value }) => {
+        value = value.trim();
 
-      new Promise((resolve) => {
-        // 获取当前窗口的所有标签
-        chrome.tabs.query({
-            currentWindow: true
-        }, tabs => {
-          resolve(tabs)
-        })
-      }).then((tabs) => {
-        // 处理数据
-        let ts = [];
-        tabs.forEach(tab => {
-          ts.push({
-            icon: tab.favIconUrl,
-            url: tab.url,
-            title: tab.title,
+        new Promise((resolve) => {
+          // 获取当前窗口的所有标签
+          chrome.tabs.query({
+              currentWindow: true
+          }, tabs => {
+            resolve(tabs)
+          })
+        }).then((tabs) => {
+          // 处理数据
+          let ts = [];
+          tabs.forEach(tab => {
+            ts.push({
+              icon: tab.favIconUrl,
+              url: tab.url,
+              title: tab.title,
+            });
+          })
+          let id = nanoid();
+          let currentWindowId = tabs[0].windowId;
+          this.storageList.unshift({
+            name: value,
+            tabs: ts,
+            windowId: currentWindowId,
+            lastVisitTime: new Date().getTime(),
+            id: id,
           });
+          return currentWindowId;
+        }).then((currentWindowId) => {
+          // 保存数据
+          return new Promise((resolve) => {
+            chrome.storage.local.set({list: this.storageList}, () => {
+              resolve(currentWindowId)
+            });
+          })
+        }).then((currentWindowId) => {
+          // 更新结果
+          this.currentWindowId = currentWindowId;
+          this.activeWindows[this.currentWindowId] = true;
+          this.isCurrentWindowChange = false;
+          this.isInCurrentWindow = true;
+
+          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          this.storageKeyword = ' ';
+
+          // 调用方会自动调用 search，不用我们处理
+          // this.search();
+          callback(true);
+
+          // 虽然有了默认数据，但是用户有可能把数据全清了，这个依然有用
+          if(this.storageList.length == 1) {
+            this.$message({
+              type: 'success',
+              message: this.lang('windowFirstAdd'),
+              customClass: 'window-message-box',
+              offset: 69,
+              duration: 5000,
+            });
+          }
         })
-        let id = nanoid();
-        let currentWindowId = tabs[0].windowId;
-        this.storageList.unshift({
-          name: keyword,
-          tabs: ts,
-          windowId: currentWindowId,
-          id: id,
-        });
-        return currentWindowId;
-      }).then((currentWindowId) => {
-        // 保存数据
-        return new Promise((resolve) => {
-          chrome.storage.local.set({list: this.storageList}, () => {
-            resolve(currentWindowId)
-          });
-        })
-      }).then((currentWindowId) => {
-        // 更新结果
-        this.currentWindowId = currentWindowId;
-        this.activeWindows[this.currentWindowId] = true;
-        this.isCurrentWindowChange = false;
-        this.isInCurrentWindow = true;
-
-        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        this.storageKeyword = ' ';
-
-        // this.search();
-        callback();
-
-        // 用户第一次使用可能会有困惑，这里加个提示
-        if(this.storageList.length == 1) {
-          this.$message({
-            type: 'success',
-            message: this.lang('windowFirstAdd'),
-            customClass: 'window-message-box',
-            offset: 69,
-            duration: 5000,
-          });
-        }
-      })
+      }).catch(() => {
+        callback(false);
+      });
     },
     openWindow(index) {
       if(index == undefined) {
@@ -476,6 +470,9 @@ export default {
       let urls = group.tabs.map(tab => tab['url']);
       let index = this.getStorageIndex();
       let blankTabId = -1;
+
+      // 更新时间
+      this.storageList[index].lastVisitTime = new Date().getTime();
 
       // 窗口已打开，直接切换
       if(this.activeWindows[group.windowId]) {
@@ -528,41 +525,48 @@ export default {
       this.group = this.list[this.currentIndex];
       this.groupVisible = true;
     },
-    showGroupNameDialog: function() {
-      this.group = this.list[this.currentIndex];
-      this.groupChangeVisible = true;
-      this.groupName = this.group.name;
-    },
-    changeGroupName: function() {
-      this.groupName = this.groupName.trim();
-      // if(this.groupName == '') {
-      //   this.$message({
-      //     type: 'warning',
-      //     message: this.lang('emptyGroupName'),
-      //     offset: 12,
-      //     duration: 2000,
-      //     customClass: 'window-message-box',
-      //   });
-      //   return;
-      // }
-
+    changeGroupName() {
       let index = this.getStorageIndex();
-      for(let i in this.storageList) {
-        if(i != index && this.storageList[i].name == this.groupName) {
-          this.$message({
-            type: 'warning',
-            message: this.lang('groupNameRepeat'),
-            offset: 12,
-            duration: 2000,
-            customClass: 'window-message-box',
-          });
+      this.group = this.list[this.currentIndex];
+      this.$prompt('', this.lang('updateGroupName'), {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPlaceholder: this.lang('groupNameInput'),
+        inputValue: this.group.name,
+        inputValidator: ( value ) => {
+          value = value == null ? '' : value.trim();
+
+          // 窗口名不允许为空
+          if(value == '') {
+            return this.lang('emptyGroupName');
+          }
+
+          // 窗口名不允许重复，自己的不算
+          for(let i in this.storageList) {
+            if(i != index && this.storageList[i].name == value) {
+              return this.lang('groupNameRepeat');
+            }
+          }
+
+          return true;
+        }
+      }).then(({ value }) => {
+        value = value.trim();
+
+        this.focus();
+
+        // 未修改则不更新
+        if(this.storageList[index].name == value) {
           return;
         }
-      }
 
-      this.storageList[index].name = this.groupName;
-      chrome.storage.local.set({list: this.storageList}, () => {
-        this.groupChangeVisible = false;
+        // 存储数据
+        this.storageList[index].name = value;
+        chrome.storage.local.set({list: this.storageList}, () => {
+
+        });
+      }).catch(() => {
+        this.focus();
       });
     },
     deleteGroup() {
@@ -785,5 +789,12 @@ export default {
 }
 .el-badge.refresh {
     margin-left: 10px;
+}
+</style>
+
+<style>
+.window .el-badge__content {
+    background-color: inherit !important;
+    border-color: inherit !important;
 }
 </style>

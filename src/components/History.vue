@@ -76,14 +76,14 @@
             :style="{ fontSize: config.list_font_size+'px' }">{{
                 item.title || item.deleteUrl
             }}</div>
-          <div
+          <!-- <div
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
+              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
         </div>
 
         <div class="right">

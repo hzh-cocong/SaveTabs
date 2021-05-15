@@ -36,11 +36,13 @@
     "padding_width": 0,
     "border_color": "#ffffff",
     "background_color": "#ffffff",
-    "toolbar_icon_color": "#C1C4CB",
 
     "toolbar_height": 40,
     "toolbar_background_color": "#ffffff",
     "toolbar_border_color": "#dcdfe6",
+
+    "toolbar_icon_color": "#C1C4CB",
+    "toolbar_icon_focus_color": "#919398",
 
     "toolbar_menu_icon_color": "#C1C4CB",
     "toolbar_menu_icon_fixed_color": "gray",
@@ -49,6 +51,7 @@
     "toolbar_input_font_size": 14,
     "toolbar_input_font_color": "#606266",
     "toolbar_input_focus_color": "#c0c4cc",
+    "toolbar_show_input_tip": true,
 
     "toolbar_button_font_color": "#606266",
     "toolbar_button_hover_font_color": "#409eff",
@@ -57,8 +60,6 @@
     "toolbar_button_active_border_color": "#3a8ee6",
     "toolbar_button_hover_background_color": "#ecf5ff",
     "toolbar_button_active_background_color": "#ecf5ff",
-
-    "toolbar_show_input_tip": true,
 
     "workspaces": [
         "temporary",

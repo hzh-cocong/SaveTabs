@@ -83,7 +83,9 @@
   '--toolbar_height': config.toolbar_height+'px',
   '--toolbar-background-color': config.toolbar_background_color,
   '--toolbar-border-color': config.toolbar_border_color,
+
   '--toolbar-icon-color': config.toolbar_icon_color,
+  '--toolbar-icon-focus-color': config.toolbar_icon_focus_color,
 
   '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
   '--toolbar-input-font-color': config.toolbar_input_font_color,
@@ -116,7 +118,7 @@
         <template slot="prepend">
           <el-dropdown
             :hide-on-click="false"
-            trigger="click"
+            trigger="hover"
             placement="bottom"
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
@@ -784,6 +786,10 @@ img {
 }
 .toolbar .el-input__suffix .el-icon-circle-close {
   line-height: var(--toolbar_height);
+  color: var(--toolbar-icon-color);
+}
+.toolbar .el-input__suffix .el-icon-circle-close:hover {
+  color: var(--toolbar-icon-focus-color);
 }
 .toolbar .el-button-group .el-button {
   height: 100%;

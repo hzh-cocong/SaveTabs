@@ -27,6 +27,8 @@
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="config.scrollbar_color"
+    :scrollbarFocusColor="config.scrollbar_focus_color"
     v-model="currentIndex"
     ref="list"
     @load="load"
@@ -63,18 +65,12 @@
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot">
+            <div slot="error">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <div slot="placeholder" class="image-slot">
+            <div slot="placeholder">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <!-- <div slot="placeholder" class="image-slot">
-              <img
-                v-if="index >= config.item_show_count"
-                src="../assets/fallback.png"
-                style="width:100%; height: 100%;" />
-            </div> -->
           </el-image>
         </span>
 
@@ -83,8 +79,25 @@
           :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span>
 
         <div class="right">
-          <div v-if="isActive || item.windowId == currentWindowId || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
+          <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
             <div v-if="isActive">
+              <el-badge
+                v-if="isCurrentWindowChange && item.windowId == currentWindowId"
+                is-dot
+                class="refresh"
+                :style="{ borderColor: config.list_current_focus_state_color } " >
+                <el-button
+                  type="warning"
+                  icon="el-icon-refresh"
+                  circle
+                  @click.stop="updateGroup"></el-button>
+              </el-badge>
+              <el-button
+                v-if="! isInCurrentWindow && ! activeWindows[item.windowId]"
+                type="warning"
+                icon="el-icon-refresh"
+                circle
+                @click.stop="updateGroup"></el-button>
               <el-button
                 type="success"
                 icon="el-icon-folder-opened"
@@ -100,17 +113,6 @@
                 icon="el-icon-delete"
                 circle
                 @click.stop="deleteGroup"></el-button>
-              <el-badge
-                is-dot
-                class="refresh"
-                v-if="isCurrentWindowChange && item.windowId == currentWindowId"
-                :style="{ borderColor: config.list_current_focus_state_color } " >
-                <el-button
-                  type="warning"
-                  icon="el-icon-refresh"
-                  circle
-                  @click.stop="updateGroup"></el-button>
-              </el-badge>
             </div>
             <div
               v-else-if="item.windowId == currentWindowId"
@@ -185,7 +187,7 @@
     :visible.sync="groupVisible"
     :append-to-body="true"
     width="80%"
-    class="group"
+    class="window-group"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
@@ -210,10 +212,10 @@
           style="width:20px; height:20px;"
           fit="cover"
           lazy>
-          <div slot="error" class="image-slot">
+          <div slot="error">
             <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
-          <div slot="placeholder" class="image-slot">
+          <div slot="placeholder">
             <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
         </el-image>
@@ -226,6 +228,101 @@
 
       </li>
     </ul>
+  </el-dialog>
+
+  <el-dialog
+    :visible.sync="differenceVisible"
+    :append-to-body="true"
+    width="80%"
+    class="window-difference"
+    @close="focus">
+    <div slot="title" style="width: 100%;display:flex;">
+      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
+      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        <span>{{group.name}}</span>
+      </span>
+    </div>
+    <div class="compare">
+      <div class="left">
+        <div style="text-align: center;padding: 5px 0;">
+          <span>旧</span>
+          <span
+            style="margin-left: 20px;"
+            v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+        </div>
+        <ul
+          class="group-list"
+          :style="{ height: (30*config.item_show_count+10)+'px' }">
+          <li
+            class="group-list-item"
+            v-for="(tab, index) in group.tabs"
+            :key="index">
+
+            <el-image
+              :src="getIcon(tab.icon, tab.url, 20)"
+              style="width:20px; height:20px;"
+              fit="cover"
+              lazy>
+              <div slot="error">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+              <div slot="placeholder">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+            </el-image>
+
+            <span
+              class="tab-name"
+              type="default"
+              :title="tab.url"
+              @click="$open(tab.url)">{{ tab.title }}</span>
+
+          </li>
+        </ul>
+      </div>
+      <div class="right">
+        <div style="text-align: center;padding: 5px 0;">
+          <span>新</span>
+          <span
+            style="margin-left: 20px;"
+            v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+        </div>
+        <ul
+          class="group-list"
+          :style="{ height: (30*config.item_show_count+10)+'px' }">
+          <li
+            class="group-list-item"
+            v-for="(tab, index) in group.tabs"
+            :key="index">
+
+            <el-image
+              :src="getIcon(tab.icon, tab.url, 20)"
+              style="width:20px; height:20px;"
+              fit="cover"
+              lazy>
+              <div slot="error">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+              <div slot="placeholder">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+            </el-image>
+
+            <span
+              class="tab-name"
+              type="default"
+              :title="tab.url"
+              @click="$open(tab.url)">{{ tab.title }}</span>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+    <span slot="footer">
+      <el-button size="small" style="float: left;" @click="dialogVisible = false">还 原</el-button>
+      <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" size="small" @click="dialogVisible = false">确 定</el-button>
+    </span>
   </el-dialog>
 
   </div>
@@ -277,6 +374,8 @@ export default {
       isSearched: false,
 
       lock: false,
+
+      differenceVisible: false,
     }
   },
   components: {
@@ -347,21 +446,6 @@ export default {
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
-      // 当前窗口只能有一个
-      if(this.isInCurrentWindow) {
-        this.$message({
-          type: 'warning',
-          message: this.isCurrentWindowChange ? this.lang('saved2') : this.lang('saved'),
-          offset: 69,
-          duration: 2000,
-          customClass: 'window-message-box',
-        });
-        // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
-        callback(true);
-
-        return;
-      }
-
       this.$prompt('', '添加', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -395,7 +479,13 @@ export default {
             resolve(tabs)
           })
         }).then((tabs) => {
-          // 处理数据
+          // 如果是已保存过并已打开（即当前窗口），则先解除当前窗口
+          if(this.isInCurrentWindow) {
+            // 当前窗口肯定排在第一
+            this.storageList[0].windowId = -1;
+          }
+
+          // 添加数据并绑定窗口id
           let ts = [];
           tabs.forEach(tab => {
             ts.push({
@@ -596,6 +686,12 @@ export default {
       });
     },
     updateGroup: function() {
+
+      this.group = this.list[this.currentIndex];
+      this.differenceVisible = true;
+
+let s = true;if(s) return;
+
       let group = this.list[this.currentIndex];
       this.$confirm(this.lang('changeConfirm')+' ('+group.name+') ?', this.lang('tip'), {
         confirmButtonText: this.lang('sure'),
@@ -615,11 +711,27 @@ export default {
             });
           })
 
+          // 更新数据
           let index = this.getStorageIndex();
           this.storageList[index].tabs = ts;
+          this.storageList[index].windowId = this.currentWindowId;
+          this.storageList[index].lastVisitTime = new Date().getTime();
+
+          // 排到最前面
+          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+
+          // 存储数据
           chrome.storage.local.set({list: this.storageList}, () => {
             this.isCurrentWindowChange = false;
-            // this.search();
+
+            // 更新结果（强制绑定需要这个，current update 可以不用）
+            this.activeWindows[this.currentWindowId] = true;
+            this.isInCurrentWindow = true;
+
+            // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+            let origin = this.storageKeyword;
+            this.storageKeyword = ' ';
+            this.search(origin);
           });
         })
       }).catch(() => {
@@ -793,8 +905,136 @@ export default {
 </style>
 
 <style>
+.window .el-badge {
+  margin-right: 10px;
+  vertical-align: inherit;
+}
 .window .el-badge__content {
     background-color: inherit !important;
     border-color: inherit !important;
+}
+
+.window-group .el-dialog__header {
+  padding: 16px 53px 0 16px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.window-group .el-dialog__body{
+  padding: 10px 10px 10px 10px !important;
+}
+.window-group .group-list {
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  font-size: 15px;
+}
+.window-group .group-list-item {
+  padding: 5px;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
+}
+.window-group .tab-name{
+  font-size:14px;
+  margin-left: 10px;
+  cursor: pointer;
+  flex: 1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color: #4682BE;
+}
+.window-group .tab-name:hover {
+  /* color: #409eff; */
+  text-decoration: underline;
+  color: #1288ff;
+}
+
+.window-difference .el-dialog__header {
+  padding: 16px 53px 0 16px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.window-difference .el-dialog__body{
+  padding: 10px 10px 10px 10px !important;
+}
+.window-difference .el-dialog__footer{
+  padding: 0px 10px 10px 10px !important;
+}
+.window-difference .compare .left,
+.window-difference .compare .right {
+  display: inline-block;
+  width: 50%;
+  box-sizing: border-box;
+  border: 1px solid #EBEEF5;
+}
+.window-difference .compare .left {
+  color: hsl(0, 0%, 66%);
+  border-radius: 2px 0 0 2px;
+}
+.window-difference .compare .right {
+  /* color: black; */
+  border-radius: 0px 2px 2px 0;
+  border-left: 0;
+}
+.compare .right {
+  border-left: 0;
+}
+.window-difference .group-list {
+  padding: 0 10px 0 0;
+  margin: 0;
+  overflow: auto;
+  font-size: 15px;
+}
+.window-difference .group-list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+.window-difference .group-list::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .6);
+}
+.window-difference .group-list::-webkit-scrollbar-thumb:hover {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .9);;
+}
+.window-difference .group-list-item {
+  padding: 5px;
+  align-items: center;
+  color: black;
+  list-style: none;
+  display: flex;
+}
+.window-difference .el-image{
+  flex: none;
+}
+.window-difference .tab-name{
+  font-size:14px;
+  margin-left: 10px;
+  cursor: pointer;
+  flex: 1;
+  color: #606266;
+
+  white-space:nowrap;
+
+  /* overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap; */
+}
+.window-difference .tab-name:hover {
+  text-decoration: underline;
+  color: black;
+}
+.window-difference .compare .left .tab-name{
+  color: hsl(0, 0%, 66%);
+}
+.window-difference .compare .left .tab-name:hover {
+  color: #606266;
 }
 </style>

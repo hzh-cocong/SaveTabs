@@ -73,10 +73,34 @@
       </SelectX>
     </el-dialog>
 
-    <div class="toolbar">
+    <div
+      class="toolbar"
+      :style="{ margin: config.padding_width+'px '
+                      +(config.padding_width+10)+'px '
+                      +'10px '
+                      +(config.padding_width+10)+'px',
+                height: config.toolbar_height+'px',
+  '--toolbar_height': config.toolbar_height+'px',
+  '--toolbar-background-color': config.toolbar_background_color,
+  '--toolbar-border-color': config.toolbar_border_color,
+  '--toolbar-icon-color': config.toolbar_icon_color,
+
+  '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
+  '--toolbar-input-font-color': config.toolbar_input_font_color,
+  '--toolbar-input-focus-color': config.toolbar_input_focus_color,
+
+  '--toolbar-button-font-color': config.toolbar_button_font_color,
+  '--toolbar-button-hover-font-color': config.toolbar_button_hover_font_color,
+  '--toolbar-button-active-font-color': config.toolbar_button_active_font_color,
+  '--toolbar-button-hover-border-color': config.toolbar_button_hover_border_color,
+  '--toolbar-button-active-border-color': config.toolbar_button_active_border_color,
+  '--toolbar-button-hover-background-color': config.toolbar_button_hover_background_color,
+  '--toolbar-button-active-background-color': config.toolbar_button_active_background_color,
+
+                }">
       <el-input
         class="search-input"
-        :placeholder="currentWorkspace == undefined
+        :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         v-model="keyword"
@@ -92,7 +116,7 @@
         <template slot="prepend">
           <el-dropdown
             :hide-on-click="false"
-            trigger="hover"
+            trigger="click"
             placement="bottom"
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
@@ -102,16 +126,18 @@
             <span class="el-dropdown-link" @click="focus">
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
+                style="width: 20px; height: 20px; position: relative; top: 2px;margin-right: 3px;"
                 :style="{ color: config.pinned && currentWorkspace != undefined && config.active_workspace_type == currentWorkspace.type
-                      ? 'gray' : '#c0c4cc'}"
-                style="width: 20px; height: 20px; position: relative; top: 2px;margin-right: 3px;"></svg-icon>
+                      ? config.toolbar_menu_icon_fixed_color : config.toolbar_menu_icon_color}"></svg-icon>
               <span style="position: relative; top: -3px;">
                 <span
                   v-if="config.show_workspace_name"
-                  style="display:inline-block;width: 70px;text-align:center; color: #909399;">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
+                  style="display:inline-block;width: 70px;text-align:center;"
+                  :style="{ color: config.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
                 <i style="transition: transform .3s;"
                   class="el-icon-arrow-down el-icon--right"
-                  :class="{ 'is-reverse': menuVisible}"></i>
+                  :class="{ 'is-reverse': menuVisible}"
+                  :style="{ color: config.toolbar_icon_color }"></i>
               </span>
             </span>
             <el-dropdown-menu slot="dropdown" class="toolbar-menu">
@@ -123,21 +149,22 @@
                 :key="index">
                 <svg-icon
                   :name="workspace.svg"
+                  style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   :style="{
                     color: config.pinned
                   && config.active_workspace_type == workspace.type
                   ? 'gray' : '#c0c4cc'}"
-                  style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   @click="toPin"
                 ></svg-icon><span>{{ lang(workspace.title) }}</span>
               </el-dropdown-item>
               <el-dropdown-item
                 divided
-                icon="el-icon-check"
                 :command="-1"
                 class="other"
-                style="display:inline-block; width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
-                @click.native="themeDialogVisible=true;focus();">{{ currentTheme.name }}</el-dropdown-item>
+                style="width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
+                @click.native="themeDialogVisible=true;focus();">
+                <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
+              </el-dropdown-item>
               <el-dropdown-item
                 divided
                 :value="activeWorkspaceIndex"
@@ -167,22 +194,32 @@
                   @click="toPin">
                   <svg-icon
                     name="thumbtack-solid"
-                    :style="{transform: config.pinned
+                    :style="{ transform: config.pinned
                                       && currentWorkspace != undefined
                                       && config.active_workspace_type == currentWorkspace.type
-                                      ? 'rotate(0)' : 'rotate(90deg)'}"
+                                      ? 'rotate(0)' : 'rotate(90deg)' }"
                     style="cursor:pointer;height: 20px; position: relative; top: 6px;"></svg-icon>
                 </span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
+        <!-- <template slot="suffix">
+          <i
+            v-if="keyword != ''"
+            class="el-icon-circle-close"
+            style="padding-right: 4px; cursor: pointer;"
+            :style="{ 'line-height': config.toolbar_height+'px' }"
+            ></i>
+        </template> -->
         <template slot="prefix">
           <template v-if="currentWorkspace == undefined
                         ||currentWorkspace.type == 'window'">
             <i
               class="el-icon-search"
-              style="line-height: 40px;padding-left: 4px;"></i>
+              style="padding-left: 4px;"
+              :style="{ 'line-height': config.toolbar_height+'px',
+                        color: config.toolbar_icon_color }"></i>
           </template>
           <template v-else>
             <el-popover
@@ -194,13 +231,16 @@
               <i
                 class="el-icon-date"
                 slot="reference"
-                style="line-height: 40px;padding-left: 4px;"></i>
+                style="padding-left: 4px;"
+                :style="{ 'line-height': config.toolbar_height+'px',
+                          color: config.toolbar_icon_color }"></i>
             </el-popover>
           </template>
         </template>
       </el-input>
       <el-button-group
-        style="">
+        style="display: flex"
+        :style="{ width: (config.toolbar_height*3+45)+'px' }">
         <el-button
           v-for="(type, i) in operateOrder"
           :key="i"
@@ -218,6 +258,10 @@
       :loop="true"
       :initial-index="activeWorkspaceIndex"
       :height="(config.item_height*config.item_show_count)+'px'"
+      :style="{ padding: '0 '
+                        +config.padding_width+'px '
+                        +config.padding_width+'px '
+                        +config.padding_width+'px' }"
       trigger="click"
       @change="workspaceChange"
       ref="carousel">
@@ -659,10 +703,6 @@ img {
   filter: var(--filter);
 }
 
-.el-input__prefix {
-  transition: none;
-}
-
 .theme .el-dialog__header {
   padding: 10px 53px 0 11px !important;
   text-align: left;
@@ -712,28 +752,57 @@ img {
 
 .toolbar {
   display: flex;
-  margin: 0 10px 10px 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
+.toolbar .el-input__prefix {
+  transition: none;
+}
 .toolbar .search-input {
+  height: 100%;
   flex:1;
 }
 .toolbar .search-input .el-input-group__prepend {
-  background-color: #fff;
+  background-color: var(--toolbar-background-color);
   border-radius: 0;
+  padding: 0 10px;
+  border-color: var(--toolbar-border-color)
 }
 .toolbar .search-input input {
+  height: 100%;
   border-radius: 0;
+  border-color: var(--toolbar-border-color);
+  font-size: var(--toolbar-input-font-size);
+  color: var(--toolbar-input-font-color);
+  background-color: var(--toolbar-background-color);
 }
 .toolbar .search-input input:focus {
-  border-color: #C0C4CC;
+  border-color: var(--toolbar-input-focus-color);
 }
-.toolbar .search-input input {
-  border-radius: 0;
+.toolbar .search-input input::placeholder {
+  color: var(--toolbar-icon-color);
 }
-.toolbar .search-input .el-input-group__prepend {
-  padding: 0 10px;
+.toolbar .el-input__suffix .el-icon-circle-close {
+  line-height: var(--toolbar_height);
+}
+.toolbar .el-button-group .el-button {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  border-color: var(--toolbar-border-color);
+  background-color: var(--toolbar-background-color);
+  color: var(--toolbar-button-font-color);
+}
+.toolbar .el-button-group .el-button:hover,
+.toolbar .el-button-group .el-button:focus {
+  color: var(--toolbar-button-hover-font-color);
+  border-color: var(--toolbar-button-hover-border-color);
+  background-color: var(--toolbar-button-hover-background-color);
+}
+.toolbar .el-button-group .el-button:active {
+  color: var(--toolbar-button-active-font-color);
+  border-color: var(--toolbar-button-active-border-color);
+  background-color: var(--toolbar-button-active-background-color);
 }
 
 .toolbar .el-icon-arrow-down.is-reverse {
@@ -746,7 +815,7 @@ img {
   color: #409eff;
   font-weight: 700;
 }
-.toolbar-menu .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled, .selected, .other):hover {
+.el-dropdown-menu__item:not(.is-disabled, .selected, .other):hover {
     /* background-color: #ecf5ff; */
     color: #606266;
 }
@@ -758,6 +827,9 @@ img {
 .toolbar .el-button-group .el-button:first-child {
   border-left-width: 0;
   border-radius: 0;
+}
+.toolbar .el-button-group .el-button:first-child:active {
+  border-left-width: 1px;
 }
 .toolbar .el-button-group .el-button:last-child {
   border-radius: 0;
@@ -772,45 +844,8 @@ img {
   padding-bottom: 0px !important;
 }
 
-/* 组件共享样式，注意会影响所有组件，之所以放这里是因为这个是弹出框，是 body 的直接子元素 */
-.group .el-dialog__header {
-  padding: 16px 53px 0 16px !important;
-  text-align: left;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.group .el-dialog__body{
-  padding: 10px 10px 10px 10px !important;
-}
-.group .group-list {
-  padding: 0;
-  margin: 0;
-  overflow: auto;
-  font-size: 15px;
-}
-.group .group-list-item {
-  padding: 5px;
-  align-items: center;
-  color: black;
-  list-style: none;
-  display: flex;
-}
-.group .group-list-item span:hover {
-  /* color: #409eff; */
-  text-decoration: underline;
-  color: #1288ff;
-}
-.group .tab-name{
-  font-size:14px;
-  margin-left: 10px;
-  cursor: pointer;
-  flex: 1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  color: #4682BE;
-}
+
+/* 组件共享样式 */
 
 .window-message-box {
   width: 80%;

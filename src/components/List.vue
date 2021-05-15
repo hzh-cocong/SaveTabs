@@ -1,7 +1,9 @@
 <template>
   <ul
     class="list"
-    :style="{ height: (itemHeight*itemShowCount)+'px' }"
+    :style="{ height: (itemHeight*itemShowCount)+'px',
+              '--scrollbar_color': scrollbarColor,
+              '--scrollbar_focus_color': scrollbarFocusColor }"
     :infinite-scroll-disabled="scrollDisabled"
     v-infinite-scroll="load"
     @mouseenter="ulEnter"
@@ -55,7 +57,17 @@ export default {
       type: Boolean,
       require: false,
       default: true,
-    }
+    },
+    scrollbarColor: {
+      type: String,
+      require: false,
+      default: 'rgba(127, 127, 127, .6)',
+    },
+    scrollbarFocusColor: {
+      type: String,
+      require: false,
+      default: 'rgba(127, 127, 127, .9)',
+    },
   },
   data() {
     return {
@@ -142,10 +154,7 @@ export default {
 
       // 使得鼠标离开时自动隐藏滚动条
       if(this.list.length > this.itemShowCount) {
-        clearTimeout(this.w.scrollTimer);
-        this.w.scrollTimer = setTimeout(() => {
-          this.$el.className = "list";
-        }, 700);
+        this.$el.className = "list";
       }
     },
 
@@ -189,10 +198,7 @@ export default {
 
       // 未触发滚动的隐藏由 mousemove 来解决
       if(self.mouseIndex != -1) {
-        clearTimeout(self.w.scrollTimer);
-        self.w.scrollTimer = setTimeout(() => {
-          self.$el.className = "list";
-        }, 700);
+        self.$el.className = "list";
       }
 
       this.$el.addEventListener('mousemove', function mousemoveWatch() {
@@ -252,10 +258,7 @@ export default {
             self.w.isScrolling = false;
             if(self.w.ulEnter != true
               || (self.mouseStart == false && self.mouseIndex != -1)) {
-              clearTimeout(self.w.scrollTimer);
-              self.w.scrollTimer = setTimeout(() => {
-                self.$el.className = "list";
-              }, 700);
+              self.$el.className = "list";
             }
 
             // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
@@ -292,39 +295,38 @@ export default {
 .list {
   padding: 0 10px;
   margin: 0;
-  overflow: auto;
+  overflow: overlay;
   /* scroll-snap-type: block mandatory; */
+
+  /* 设置滚动条动画 */
+  color: transparent;
+  transition-property: color;
+  transition-duration: .4s;
+  transition-timing-function: ease;
+  transition-delay: .5s;
+}
+/* 显示滚动条 */
+.list.scroll {
+  transition-duration: 0s;
+  transition-delay: 0s;
+  color: var(--scrollbar_color);
 }
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
 .list::-webkit-scrollbar {
-  width: 0;
+  width: 10px;
   background: transparent;
 }
 /*定义滑块内阴影+圆角*/
 .list::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  /* border-left: 1px solid yellow;
-  border-right: 1px solid yellow; */
-  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3); */
-  /* background-color: #555; */
-
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  /* box-shadow: inset 0 0 0 5px #737373; */
-  box-shadow: inset 0 0 0 5px rgba(127, 127, 127, .9);
+  box-shadow: inset 0 0 0 5px;
   background-color: transparent;
 }
-/*定义滚动条轨道内阴影+圆角*/
-/* .list::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  background: transparent;
-} */
-.list.scroll {
-  padding: 0 0 0 10px;
-}
-.list.scroll::-webkit-scrollbar {
-  width: 10px;
+/* 点击滚动条时颜色加深 */
+.list::-webkit-scrollbar-thumb:hover {
+  box-shadow: inset 0 0 0 5px var(--scrollbar_focus_color);
 }
 
 .list-item {

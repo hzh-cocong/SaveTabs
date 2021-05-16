@@ -121,7 +121,7 @@
             "toolbar_icon_focus_color": "pink",
 
             "toolbar_menu_icon_color": "#C1C4CB",
-            "toolbar_menu_icon_fixed_color": "black",
+            "toolbar_menu_icon_fixed_color": "yellow",
             "toolbar_menu_font_color": "gray",
 
             "toolbar_input_font_size": 20,

@@ -2,10 +2,11 @@
   <div class="box">
     <ul
       class="list"
-      :style="{ height: (itemHeight*itemShowCount+9)+'px' }">
+      :style="{ height: itemHeight*itemShowCount+'px' }">
       <li
         v-for="(item, index) in list"
         class="list-item"
+        :style="{ height: itemHeight+'px' }"
         :key="index">
         <slot
           :index="index"
@@ -49,10 +50,15 @@ export default {
     }
   },
   watch: {
-    list: function(newVal, oldVal) {
-      alert('ss')
-      console.log('list', newVal, oldVal)
-    }
+    currentIndex: function(newVal) {
+      let center = Math.ceil(this.itemShowCount/2);
+      this.ulNode.scrollTop = (newVal+1-center)*this.itemHeight;
+      this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
+    },
+    // list: function(newVal, oldVal) {
+    //   alert('ss')
+    //   console.log('list', newVal, oldVal)
+    // }
   },
   methods: {
     createScroll(h1, h2) {
@@ -94,7 +100,7 @@ export default {
 
           let tt = top / (h1 / h2 * h1) * h1;
 
-          self.ulNode.scrollTop = Math.ceil(tt/65)*65;
+          self.ulNode.scrollTop = Math.ceil(tt/self.itemHeight)*self.itemHeight;
         }
         function mouseupWatch(){
           console.log('gg')
@@ -116,7 +122,7 @@ export default {
       if(this.lock == true) return;
       this.lock = true;
 
-      this.ulNode.scrollTop += eventDeltaY > 0 ?  65 : -65;
+      this.ulNode.scrollTop += eventDeltaY > 0 ?  this.itemHeight : -this.itemHeight;
 
       this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
 
@@ -135,7 +141,7 @@ export default {
     this.ulNode.addEventListener('mousewheel', this.mouseSelect);
 
     // 初始化位置（选中的选项居中）
-    this.ulNode.scrollTop += (this.currentIndex-1)*65;
+    this.ulNode.scrollTop += (this.currentIndex-1)*this.itemHeight;
     this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
   }
 }
@@ -151,14 +157,14 @@ export default {
   position: relative;
 }
 .box .list {
-  padding: 0 13px;
+  padding: 0 8px;
   margin: 0;
   overflow: hidden;
 
   list-style:none;
 }
 .box .list-item {
-
+  overflow: hidden;
 }
 </style>
 

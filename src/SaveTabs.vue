@@ -28,7 +28,7 @@
         v-if="themeDialogVisible"
         :list="themes"
         :itemHeight="65"
-        :itemShowCount="3"
+        :itemShowCount="5"
         style="width:200px"
         v-model="currentThemeIndex">
         <template #default="{ index, item, isSelected }">
@@ -716,11 +716,11 @@ img {
   top: 12px !important;
 }
 .theme .el-dialog__body{
-  padding: 0 !important;
+  padding: 8px 0 0 0 !important;
 }
 
 .theme-item {
-  margin: 9px 0;
+  margin: 4px 4px 6px 4px;
   padding: 0px 9px 0px 0px;
 
   background-color: #fff;

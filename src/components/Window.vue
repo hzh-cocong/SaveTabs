@@ -242,6 +242,9 @@
       <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{oldGroup.name}}</span>
+        <span
+          style="color:hsl(0, 0%, 66%);margin-left: 20px;"
+          v-if=" ! haveDifference">{{ '无差别' }}</span>
       </span>
     </div>
     <div class="compare">
@@ -381,6 +384,7 @@ export default {
       differenceVisible: false,
       oldGroup: {},
       currentWindow: {},
+      haveDifference: true,
     }
   },
   components: {
@@ -704,13 +708,15 @@ export default {
       });
     },
     showDifference() {
+      this.oldGroup = this.list[this.currentIndex];
+
       // 获取当前窗口
       chrome.windows.getCurrent({populate: true}, window => {
         console.log(window)
         this.currentWindow = window;
+        this.haveDifference = this.isDifference(this.oldGroup, window);
       })
 
-      this.oldGroup = this.list[this.currentIndex];
       this.differenceVisible = true;
     },
     updateGroup() {
@@ -844,14 +850,6 @@ export default {
       });
     },
 
-    getStorageIndex() {
-      let group = this.list[ this.currentIndex ];
-      for(let i in this.storageList) {
-        if(this.storageList[i].id == group.id) {
-          return i;
-        }
-      }
-    },
     isDifference(currentGroup, window) {
       // 判断当前分组是否需要更新
       if(currentGroup.tabs.length != window.tabs.length) {
@@ -869,6 +867,14 @@ export default {
         }
       }
       return false;
+    },
+    getStorageIndex() {
+      let group = this.list[ this.currentIndex ];
+      for(let i in this.storageList) {
+        if(this.storageList[i].id == group.id) {
+          return i;
+        }
+      }
     },
     download() {
       let group = this.list[this.currentIndex];
@@ -897,6 +903,7 @@ export default {
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
           this.currentWindowId = window.id;
+          // this.currentWindow = window;
           resolve(window)
         })
       })
@@ -919,22 +926,6 @@ export default {
 
       // 判断当前分组是否需要更新
       this.isCurrentWindowChange = this.isDifference(this.storageList[index], window);
-      // if(currentGroup.tabs.length != window.tabs.length) {
-      //   this.isCurrentWindowChange = true;
-      //   return;
-      // }
-      // for(let i in currentGroup.tabs) {
-      //   let tabs = currentGroup.tabs[i];
-      //   if(window.tabs[i].status == 'complete'
-      //     && ( tabs.url != window.tabs[i].url
-      //       || tabs.title != window.tabs[i].title
-      //       || (window.tabs[i].favIconUrl != undefined
-      //         && window.tabs[i].favIconUrl != ''
-      //         && tabs.icon != window.tabs[i].favIconUrl))) {
-      //     this.isCurrentWindowChange = true;
-      //     break;
-      //   }
-      // }
 
       return;
     }).then(() => {

@@ -774,25 +774,15 @@ export default {
       })
     },
     restore() {
-      // let tabIds = this.currentWindow.tabs.map(tab => {
-      //   return tab.id;
-      // })
-      // 关闭当前所有标签页
-      // 会影响撤销功能
-      // chrome.tabs.remove(tabIds)
-
       let index = this.getStorageIndex();
 
+      // 获取当前标签所在位置
       let currentTabIndex;
       for(let tab of this.currentWindow.tabs) {
         if(tab.active == true) {
           currentTabIndex = tab.index;
         }
       }
-
-
-
-
 
       // 获取当前所有标签页
       let currentTabIds = this.currentWindow.tabs.map(tab => {
@@ -802,7 +792,12 @@ export default {
       let oldTabUrls = this.oldGroup.tabs.map(tab => {
         return tab.url;
       })
+
+      // 过滤掉当前标签
+      currentTabIds.splice(currentTabIndex, 1);
+      oldTabUrls.splice(currentTabIndex, 1);
       console.log('ffff', this.currentWindow, this.oldGroup, currentTabIds, oldTabUrls)
+
       // 数据处理
       let coverTabs = currentTabIds.slice(0, oldTabUrls.length).map((tabId, index) => {
         return {
@@ -822,17 +817,22 @@ export default {
       createTabUrls.forEach((url) => {
         chrome.tabs.create({url: url, active: false});
       })
-      // // 关闭多余的标签页
-      // chrome.tabs.remove(removeTabIds)
-      // 更新时间
+      // 闭多余的标签
+      chrome.tabs.remove(removeTabIds)
 
       // 更新时间
       this.storageList[index].lastVisitTime = new Date().getTime();
       // 存储新数据（更新顺序）
       this.storageList.unshift(this.storageList.splice(index , 1)[0]);
       chrome.storage.local.set({list: this.storageList}, () => {
-        // 先存储，再关闭多余的标签
-        chrome.tabs.remove(removeTabIds)
+        // 处理当前标签
+        if(this.oldGroup.tabs[currentTabIndex] == undefined) {
+          // 移除当前标签
+          chrome.tabs.remove(this.currentWindow.tabs[currentTabIndex].id)
+        } else {
+          // 覆盖当前标签
+          chrome.tabs.update(this.currentWindow.tabs[currentTabIndex].id, {url :this.oldGroup.tabs[currentTabIndex].url});
+        }
 
         // 覆盖当前标签
         chrome.tabs.remove(removeTabIds)

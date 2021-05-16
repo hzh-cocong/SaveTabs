@@ -233,8 +233,10 @@
   <el-dialog
     :visible.sync="differenceVisible"
     :append-to-body="true"
+    :destroy-on-close="true"
     width="80%"
     class="window-difference"
+    @opened="addCompareEvent"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
@@ -319,9 +321,9 @@
       </div>
     </div>
     <span slot="footer">
-      <el-button size="small" style="float: left;" @click="dialogVisible = false">还 原</el-button>
-      <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" size="small" @click="dialogVisible = false">确 定</el-button>
+      <el-button size="small" style="float: left;" @click="differenceVisible = false">还 原</el-button>
+      <el-button size="small" @click="differenceVisible = false">取 消</el-button>
+      <el-button type="primary" size="small" @click="differenceVisible = false">确 定</el-button>
     </span>
   </el-dialog>
 
@@ -685,6 +687,20 @@ export default {
         this.focus();
       });
     },
+    addCompareEvent() {
+      let leftNode = document.querySelector('.compare .left .group-list');
+      let rightNode = document.querySelector('.compare .right .group-list');
+
+      leftNode.addEventListener('scroll',() => {
+        console.log('a')
+        rightNode.scrollTop = leftNode.scrollTop;
+        rightNode.scrollLeft = leftNode.scrollLeft;
+      });
+      rightNode.addEventListener('scroll',() => {
+        leftNode.scrollTop = rightNode.scrollTop;
+        leftNode.scrollLeft = rightNode.scrollLeft;
+      });
+    },
     updateGroup: function() {
 
       this.group = this.list[this.currentIndex];
@@ -969,6 +985,7 @@ let s = true;if(s) return;
 .window-difference .compare .left,
 .window-difference .compare .right {
   display: inline-block;
+  /* padding: 0 5px; */
   width: 50%;
   box-sizing: border-box;
   border: 1px solid #EBEEF5;
@@ -986,9 +1003,9 @@ let s = true;if(s) return;
   border-left: 0;
 }
 .window-difference .group-list {
-  padding: 0 10px 0 0;
+  padding: 0 0 10px 0;
   margin: 0;
-  overflow: auto;
+  overflow: overlay;
   font-size: 15px;
 }
 .window-difference .group-list::-webkit-scrollbar {
@@ -1017,6 +1034,7 @@ let s = true;if(s) return;
 .window-difference .tab-name{
   font-size:14px;
   margin-left: 10px;
+  padding-right: 10px;
   cursor: pointer;
   flex: 1;
   color: #606266;

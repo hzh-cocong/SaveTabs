@@ -243,13 +243,27 @@ export default {
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function scrollWatch() {
         self.w.t2 = e.target.scrollTop;
+        console.log('ff')
         if(self.w.t2 == self.w.t1 && self.w.ulOn != true){
           if(e.target.scrollTop%self.itemHeight != 0) {
-            self.w.speed = 1;
+            // 注意，由于 scrollTop 改变，会再次触发 scoll 事件，所以 speed = 0 是为了其立即执行，不过由于js的事件循环，其依然是在最后运行的
+
+            self.w.speed = 0;
+            // self.w.moveStep = 2;
+            self.w.moveStep = self.itemHeight*2/50 < 1 ? 1 : self.itemHeight*2/50;
+            // console.log('8888888888')
             if(self.w.flag) { // 向上滚动
-              e.target.scrollTop += 1;
+            //*
+              e.target.scrollTop += self.itemHeight-e.target.scrollTop%self.itemHeight < self.w.moveStep
+                                  ? self.itemHeight-e.target.scrollTop%self.itemHeight
+                                  : self.w.moveStep;/*/
+              e.target.scrollTop += 1;//*/
             } else {
-              e.target.scrollTop -= 1;
+              //*
+              e.target.scrollTop -= e.target.scrollTop%self.itemHeight < self.w.moveStep
+                                  ? e.target.scrollTop%self.itemHeight
+                                  : self.w.moveStep;/*/
+              e.target.scrollTop -= 1;//*/
             }
           } else {
             self.w.speed = 100;
@@ -293,9 +307,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .list {
-  padding: 0 10px;
+  /* padding: 0 10px; */ /* overlay */
+  padding: 0 0 0 10px; /* 非 overlay 会占用空间 */
   margin: 0;
-  overflow: overlay;
+  /* overflow: overlay; */ /* element-ui 无限滚动不支持 overlay，且官方不再升级 */
+  overflow: auto;
   /* scroll-snap-type: block mandatory; */
 
   /* 设置滚动条动画 */

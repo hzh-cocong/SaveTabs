@@ -90,14 +90,14 @@
                   type="warning"
                   icon="el-icon-refresh"
                   circle
-                  @click.stop="updateGroup"></el-button>
+                  @click.stop="showDifference"></el-button>
               </el-badge>
               <el-button
                 v-if="! isInCurrentWindow && ! activeWindows[item.windowId]"
                 type="warning"
                 icon="el-icon-refresh"
                 circle
-                @click.stop="updateGroup"></el-button>
+                @click.stop="showDifference"></el-button>
               <el-button
                 type="success"
                 icon="el-icon-folder-opened"
@@ -241,7 +241,7 @@
     <div slot="title" style="width: 100%;display:flex;">
       <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-        <span>{{group.name}}</span>
+        <span>{{oldGroup.name}}</span>
       </span>
     </div>
     <div class="compare">
@@ -250,14 +250,14 @@
           <span>旧</span>
           <span
             style="margin-left: 20px;"
-            v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+            v-if="oldGroup.tabs">{{ oldGroup.tabs.length+' '+(oldGroup.tabs.length>1?'tabs':'tab') }}</span>
         </div>
         <ul
           class="group-list"
-          :style="{ height: (30*config.item_show_count+10)+'px' }">
+          :style="{ height: (30*(config.item_show_count <= 2 ? 1 : config.item_show_count-2)+10)+'px' }">
           <li
             class="group-list-item"
-            v-for="(tab, index) in group.tabs"
+            v-for="(tab, index) in oldGroup.tabs"
             :key="index">
 
             <el-image
@@ -287,18 +287,18 @@
           <span>新</span>
           <span
             style="margin-left: 20px;"
-            v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+            v-if="currentWindow.tabs">{{ currentWindow.tabs.length+' '+(currentWindow.tabs.length>1?'tabs':'tab') }}</span>
         </div>
         <ul
           class="group-list"
-          :style="{ height: (30*config.item_show_count+10)+'px' }">
+          :style="{ height: (30*(config.item_show_count <= 2 ? 1 : config.item_show_count-2)+10)+'px' }">
           <li
             class="group-list-item"
-            v-for="(tab, index) in group.tabs"
+            v-for="(tab, index) in currentWindow.tabs"
             :key="index">
 
             <el-image
-              :src="getIcon(tab.icon, tab.url, 20)"
+              :src="getIcon(tab.favIconUrl, tab.url, 20)"
               style="width:20px; height:20px;"
               fit="cover"
               lazy>
@@ -314,16 +314,17 @@
               class="tab-name"
               type="default"
               :title="tab.url"
-              @click="$open(tab.url)">{{ tab.title }}</span>
+              @click="$active(tab.id)">{{ tab.title }}</span>
 
           </li>
         </ul>
       </div>
     </div>
     <span slot="footer">
-      <el-button size="small" style="float: left;" @click="differenceVisible = false">还 原</el-button>
+      <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">还 原</el-button>
+      <el-button size="small" v-else style="float: left;" @click="bind">绑 定</el-button>
       <el-button size="small" @click="differenceVisible = false">取 消</el-button>
-      <el-button type="primary" size="small" @click="differenceVisible = false">确 定</el-button>
+      <el-button type="primary" size="small" @click="updateGroup">确 定</el-button>
     </span>
   </el-dialog>
 
@@ -378,6 +379,8 @@ export default {
       lock: false,
 
       differenceVisible: false,
+      oldGroup: {},
+      currentWindow: {},
     }
   },
   components: {
@@ -613,7 +616,7 @@ export default {
         }
       })
     },
-    openGroup: function() {
+    openGroup() {
       this.group = this.list[this.currentIndex];
       this.groupVisible = true;
     },
@@ -692,7 +695,6 @@ export default {
       let rightNode = document.querySelector('.compare .right .group-list');
 
       leftNode.addEventListener('scroll',() => {
-        console.log('a')
         rightNode.scrollTop = leftNode.scrollTop;
         rightNode.scrollLeft = leftNode.scrollLeft;
       });
@@ -701,57 +703,144 @@ export default {
         leftNode.scrollLeft = rightNode.scrollLeft;
       });
     },
-    updateGroup: function() {
+    showDifference() {
+      // 获取当前窗口
+      chrome.windows.getCurrent({populate: true}, window => {
+        console.log(window)
+        this.currentWindow = window;
+      })
 
-      this.group = this.list[this.currentIndex];
+      this.oldGroup = this.list[this.currentIndex];
       this.differenceVisible = true;
+    },
+    updateGroup() {
+      // 更新数据
+      let index = this.getStorageIndex();
+      this.storageList[index].windowId = this.currentWindowId;
+      this.storageList[index].lastVisitTime = new Date().getTime();
+      this.storageList[index].tabs = this.currentWindow.tabs.map(tab => {
+        return {
+          url: tab.url,
+          title: tab.title,
+          icon: tab.favIconUrl,
+        };
+      })
 
-let s = true;if(s) return;
+      // 排到最前面
+      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
 
-      let group = this.list[this.currentIndex];
-      this.$confirm(this.lang('changeConfirm')+' ('+group.name+') ?', this.lang('tip'), {
-        confirmButtonText: this.lang('sure'),
-        cancelButtonText: this.lang('cancel'),
-        type: 'warning',
-        center: true
-      }).then(() => {
-        chrome.tabs.query({
-          currentWindow: true
-        }, tabs => {
-          let ts = [];
-          tabs.forEach(tab => {
-            ts.push({
-              url: tab.url,
-              title: tab.title,
-              icon: tab.favIconUrl,
-            });
-          })
+      // 存储数据
+      chrome.storage.local.set({list: this.storageList}, () => {
+        this.isCurrentWindowChange = false;
 
-          // 更新数据
-          let index = this.getStorageIndex();
-          this.storageList[index].tabs = ts;
-          this.storageList[index].windowId = this.currentWindowId;
-          this.storageList[index].lastVisitTime = new Date().getTime();
+        // 更新结果（强制绑定需要这个，current update 可以不用）
+        this.activeWindows[this.currentWindowId] = true;
+        this.isInCurrentWindow = true;
 
-          // 排到最前面
-          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        let origin = this.storageKeyword;
+        this.storageKeyword = ' ';
+        this.search(origin);
 
-          // 存储数据
-          chrome.storage.local.set({list: this.storageList}, () => {
-            this.isCurrentWindowChange = false;
+        // 关闭 dialog
+        this.differenceVisible = false;
+      })
+    },
+    bind() {
+      // 更新数据
+      let index = this.getStorageIndex();
+      this.storageList[index].windowId = this.currentWindowId;
+      this.storageList[index].lastVisitTime = new Date().getTime();
 
-            // 更新结果（强制绑定需要这个，current update 可以不用）
-            this.activeWindows[this.currentWindowId] = true;
-            this.isInCurrentWindow = true;
+      // 排到最前面
+      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
 
-            // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-            let origin = this.storageKeyword;
-            this.storageKeyword = ' ';
-            this.search(origin);
-          });
-        })
-      }).catch(() => {
+      // 存储数据
+      chrome.storage.local.set({list: this.storageList}, () => {
+        // 判断当前分组是否需要更新
+        this.isCurrentWindowChange = this.isDifference(this.storageList[0], this.currentWindow);
 
+        // 更新结果（强制绑定需要这个，current update 可以不用）
+        this.activeWindows[this.currentWindowId] = true;
+        this.isInCurrentWindow = true;
+
+        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        let origin = this.storageKeyword;
+        this.storageKeyword = ' ';
+        this.search(origin);
+
+        // 关闭 dialog
+        this.differenceVisible = false;
+      })
+    },
+    restore() {
+      // let tabIds = this.currentWindow.tabs.map(tab => {
+      //   return tab.id;
+      // })
+      // 关闭当前所有标签页
+      // 会影响撤销功能
+      // chrome.tabs.remove(tabIds)
+
+      let index = this.getStorageIndex();
+
+      let currentTabIndex;
+      for(let tab of this.currentWindow.tabs) {
+        if(tab.active == true) {
+          currentTabIndex = tab.index;
+        }
+      }
+
+
+
+
+
+      // 获取当前所有标签页
+      let currentTabIds = this.currentWindow.tabs.map(tab => {
+        return tab.id;
+      })
+      // 获取旧的标签页地址
+      let oldTabUrls = this.oldGroup.tabs.map(tab => {
+        return tab.url;
+      })
+      console.log('ffff', this.currentWindow, this.oldGroup, currentTabIds, oldTabUrls)
+      // 数据处理
+      let coverTabs = currentTabIds.slice(0, oldTabUrls.length).map((tabId, index) => {
+        return {
+          tabId: tabId,
+          url: oldTabUrls[index],
+        }
+      });
+      let createTabUrls = oldTabUrls.slice(currentTabIds.length);
+      let removeTabIds = currentTabIds.slice(oldTabUrls.length);
+      console.log('eeeggg', coverTabs, createTabUrls, removeTabIds)
+
+      // 覆盖当前标签页
+      coverTabs.forEach(({tabId, url}) => {
+        chrome.tabs.update(tabId, {url :url});
+      })
+      // 新建新的标签页
+      createTabUrls.forEach((url) => {
+        chrome.tabs.create({url: url, active: false});
+      })
+      // // 关闭多余的标签页
+      // chrome.tabs.remove(removeTabIds)
+      // 更新时间
+
+      // 更新时间
+      this.storageList[index].lastVisitTime = new Date().getTime();
+      // 存储新数据（更新顺序）
+      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+      chrome.storage.local.set({list: this.storageList}, () => {
+        // 先存储，再关闭多余的标签
+        chrome.tabs.remove(removeTabIds)
+
+        // 覆盖当前标签
+        chrome.tabs.remove(removeTabIds)
+
+        // 更新数据
+        this.isCurrentWindowChange = false;
+        // 关闭 dialog
+        this.differenceVisible = false;
       });
     },
 
@@ -763,7 +852,25 @@ let s = true;if(s) return;
         }
       }
     },
-    download: function() {
+    isDifference(currentGroup, window) {
+      // 判断当前分组是否需要更新
+      if(currentGroup.tabs.length != window.tabs.length) {
+        return true;
+      }
+      for(let i in currentGroup.tabs) {
+        let tabs = currentGroup.tabs[i];
+        if(window.tabs[i].status == 'complete'
+          && ( tabs.url != window.tabs[i].url
+            || tabs.title != window.tabs[i].title
+            || (window.tabs[i].favIconUrl != undefined
+              && window.tabs[i].favIconUrl != ''
+              && tabs.icon != window.tabs[i].favIconUrl))) {
+          return true;
+        }
+      }
+      return false;
+    },
+    download() {
       let group = this.list[this.currentIndex];
       let filename = group.name + '.tabs.html';
 
@@ -789,8 +896,8 @@ let s = true;if(s) return;
       // 获取当前窗口
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
-            this.currentWindowId = window.id;
-            resolve(window)
+          this.currentWindowId = window.id;
+          resolve(window)
         })
       })
     }).then((window) => {
@@ -811,23 +918,23 @@ let s = true;if(s) return;
       this.isInCurrentWindow = true;
 
       // 判断当前分组是否需要更新
-      let currentGroup = this.storageList[index];
-      if(currentGroup.tabs.length != window.tabs.length) {
-        this.isCurrentWindowChange = true;
-        return;
-      }
-      for(let i in currentGroup.tabs) {
-        let tabs = currentGroup.tabs[i];
-        if(window.tabs[i].status == 'complete'
-          && ( tabs.url != window.tabs[i].url
-            || tabs.title != window.tabs[i].title
-            || (window.tabs[i].favIconUrl != undefined
-              && window.tabs[i].favIconUrl != ''
-              && tabs.icon != window.tabs[i].favIconUrl))) {
-          this.isCurrentWindowChange = true;
-          break;
-        }
-      }
+      this.isCurrentWindowChange = this.isDifference(this.storageList[index], window);
+      // if(currentGroup.tabs.length != window.tabs.length) {
+      //   this.isCurrentWindowChange = true;
+      //   return;
+      // }
+      // for(let i in currentGroup.tabs) {
+      //   let tabs = currentGroup.tabs[i];
+      //   if(window.tabs[i].status == 'complete'
+      //     && ( tabs.url != window.tabs[i].url
+      //       || tabs.title != window.tabs[i].title
+      //       || (window.tabs[i].favIconUrl != undefined
+      //         && window.tabs[i].favIconUrl != ''
+      //         && tabs.icon != window.tabs[i].favIconUrl))) {
+      //     this.isCurrentWindowChange = true;
+      //     break;
+      //   }
+      // }
 
       return;
     }).then(() => {
@@ -985,7 +1092,7 @@ let s = true;if(s) return;
 .window-difference .compare .left,
 .window-difference .compare .right {
   display: inline-block;
-  /* padding: 0 5px; */
+  padding: 0 5px;
   width: 50%;
   box-sizing: border-box;
   border: 1px solid #EBEEF5;

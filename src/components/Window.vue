@@ -363,7 +363,6 @@ export default {
       storageKeyword: undefined,
 
       currentIndex: -1,
-      currentWindowId: -1,
       activeWindows: {},
 
       isCurrentWindowChange: false,
@@ -384,6 +383,12 @@ export default {
   },
   components: {
     List,
+  },
+  computed: {
+    currentWindowId() {
+      console.log('get_current_window_id', this.currentWindow.id)
+      return this.currentWindow.id;
+    }
   },
   methods: {
     up() {
@@ -477,12 +482,11 @@ export default {
 
         new Promise((resolve) => {
           // 获取当前窗口的所有标签
-          chrome.tabs.query({
-              currentWindow: true
-          }, tabs => {
-            resolve(tabs)
+          chrome.windows.getCurrent({populate: true}, window => {
+            // 重新获取，因为有些网页可能还未加载完
+            resolve(window);
           })
-        }).then((tabs) => {
+        }).then((window) => {
           // 如果是已保存过并已打开（即当前窗口），则先解除当前窗口
           if(this.isInCurrentWindow) {
             // 当前窗口肯定排在第一
@@ -490,34 +494,30 @@ export default {
           }
 
           // 添加数据并绑定窗口id
-          let ts = [];
-          tabs.forEach(tab => {
-            ts.push({
-              icon: tab.favIconUrl,
-              url: tab.url,
-              title: tab.title,
-            });
-          })
-          let id = nanoid();
-          let currentWindowId = tabs[0].windowId;
           this.storageList.unshift({
+            id: nanoid(),
             name: value,
-            tabs: ts,
-            windowId: currentWindowId,
+            windowId: window.id,
             lastVisitTime: new Date().getTime(),
-            id: id,
+            tabs: window.tabs.map((tab) => {
+              return {
+                icon: tab.favIconUrl,
+                url: tab.url,
+                title: tab.title,
+              };
+            }),
           });
-          return currentWindowId;
-        }).then((currentWindowId) => {
+          return window;
+        }).then((window) => {
           // 保存数据
           return new Promise((resolve) => {
             chrome.storage.local.set({list: this.storageList}, () => {
-              resolve(currentWindowId)
+              resolve(window)
             });
           })
-        }).then((currentWindowId) => {
+        }).then((window) => {
           // 更新结果
-          this.currentWindowId = currentWindowId;
+          this.currentWindow = window;
           this.activeWindows[this.currentWindowId] = true;
           this.isCurrentWindowChange = false;
           this.isInCurrentWindow = true;
@@ -718,9 +718,9 @@ export default {
       this.oldGroup = this.list[this.currentIndex];
 
       // 获取当前窗口
-      // todo 需要再获取一遍吗？
       chrome.windows.getCurrent({populate: true}, window => {
         console.log(window)
+        // 重新获取，因为有些网页可能还未加载完
         this.currentWindow = window;
         this.haveDifference = this.isDifference(this.oldGroup, window);
       })
@@ -831,7 +831,7 @@ export default {
       createTabUrls.forEach((url) => {
         chrome.tabs.create({url: url, active: false});
       })
-      // 闭多余的标签
+      // 关闭闭多余的标签
       chrome.tabs.remove(removeTabIds)
 
       // 更新时间
@@ -902,6 +902,7 @@ export default {
     },
   },
   mounted() {
+    window.w = this;
     new Promise((resolve) => {
       // 获取本地数据
       chrome.storage.local.get({'list': []}, items => {
@@ -912,7 +913,6 @@ export default {
       // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
-          this.currentWindowId = window.id;
           this.currentWindow = window;
           resolve(window)
         })

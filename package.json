@@ -52,7 +52,8 @@
     },
     "rules": {
       "no-unsafe-negation": "off",
-      "no-useless-escape": "off"
+      "no-useless-escape": "off",
+      "no-global-assign": ["error", {"exceptions": ["chrome"]}]
     }
   },
   "browserslist": [

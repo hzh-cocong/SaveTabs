@@ -52,7 +52,7 @@
                               ? config.list_focus_font_color
                               : config.list_font_color)
         }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
         <span
           class="left"
@@ -161,7 +161,7 @@
                 fontSize: config.list_keymap_size+'px',
                 color: config.list_focus_keymap_color }">↩</span>
             <span
-              v-else-if="platform != ''
+              v-else-if="_device.platform != ''
                       && (index-$refs.list.scrollLines+1) <= config.item_show_count
                       && (index-$refs.list.scrollLines+1) >= 1
                       &&  (index-$refs.list.scrollLines+1) <= 9"
@@ -172,9 +172,9 @@
                 color: activeWindows[item.windowId]
                     ? config.list_state_color
                     : config.list_keymap_color }">{{
-                      platform == 'Win'
-                      ?  'Alt+'+(index-$refs.list.scrollLines+1)
-                      : '⌘'+(index-$refs.list.scrollLines+1)
+                      _device.platform == 'Mac'
+                      ?  '⌘'+(index-$refs.list.scrollLines+1)
+                      : 'Alt+'+(index-$refs.list.scrollLines+1)
                       }}</span>
           </div>
         </div>
@@ -279,7 +279,7 @@
             <span
               class="tab-name"
               type="default"
-              :title="tab.url"
+              :title="'【icon】'+(tab.icon || '')+'\r\n'+'【url】'+tab.url"
               @click="$open(tab.url)">{{ tab.title }}</span>
 
           </li>
@@ -316,7 +316,7 @@
             <span
               class="tab-name"
               type="default"
-              :title="tab.url"
+              :title="'【icon】'+(tab.favIconUrl || '')+'\r\n'+'【url】'+tab.url"
               @click="$active(tab.id)">{{ tab.title }}</span>
 
           </li>
@@ -327,7 +327,7 @@
       <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">还 原</el-button>
       <el-button size="small" v-else style="float: left;" @click="bind">绑 定</el-button>
       <el-button size="small" @click="differenceVisible = false">取 消</el-button>
-      <el-button type="primary" size="small" @click="updateGroup">确 定</el-button>
+      <el-button type="primary" size="small" @click="updateGroup">更 新</el-button>
     </span>
   </el-dialog>
 
@@ -350,11 +350,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    platform: {
-      type: String,
-      required: false,
-      default: '',
     }
   },
   data() {
@@ -549,9 +544,9 @@ export default {
         callback(false);
       });
     },
-    openWindow(index) {
+    openWindow(index, event) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
 
@@ -561,62 +556,74 @@ export default {
       }
 
       this.currentIndex = currentIndex;
-      this._openWindow();
+      this._openWindow(event);
     },
-    _openWindow() {
-      // alert('ss')
+    _openWindow(event) {
+      console.log('openWindow', event)
+
       let group = this.list[ this.currentIndex ];
       let urls = group.tabs.map(tab => tab['url']);
       let index = this.getStorageIndex();
-      let blankTabId = -1;
-
-      // 更新时间
-      this.storageList[index].lastVisitTime = new Date().getTime();
 
       // 窗口已打开，直接切换
       if(this.activeWindows[group.windowId]) {
-        // 存储新数据（排序发生变化）
+        // 更新时间
+        this.storageList[index].lastVisitTime = new Date().getTime();
+        // 排序到最前面
         this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        // 先存储
         chrome.storage.local.set({list: this.storageList}, () => {
-          // 先存储，再切换
+          // 再切换
           chrome.windows.update(group.windowId, { focused: true});
         });
         return;
       }
 
-      // 打开新窗口
+      // 当前窗口打开，且不关闭，也不进行存储更新（高亮会自动也没办法，不过感觉还不错）
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+      || (this._device.platform != '' && event.altKey == true)) {
+        urls.forEach(url => {
+          chrome.tabs.create({url: url, active: false});
+          chrome.tabs.highlight({tabs: Array.from({
+              length: urls.length
+            }, (item, index)=> index+this.currentWindow.tabs.length
+          )})
+        })
+        return;
+      }
+
+      // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
+      // let type = this._device.isPC && event.shiftKey ? 'panel' : 'normal';
+      let type = 'normal';
       new Promise(resolve => {
-        // 获取当前标签信息
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          // 关闭空白标签
-          if(tabs[0].url == "chrome://newtab/") {
-            blankTabId = tabs[0].id;
-          }
-          resolve();
-        })
-      }).then(() => {
         // 新建新窗口（先不激活，否则无法存储数据）
-        return new Promise(resolve => {
-          chrome.windows.create({ url: urls, focused: false }, window => {
-            resolve(window)
-          })
+        chrome.windows.create({ url: urls, focused: false, type: type }, window => {
+          resolve(window)
         })
-      }).then(window => {
-        // 存储数据
+      }).then((window) => {
+         // 存储数据
         return new Promise(resolve => {
+          // 更新时间
+          this.storageList[index].lastVisitTime = new Date().getTime();
+          // 搬定新的窗口id
           this.storageList[index].windowId = window.id;
+          // 排序到最前面
           this.storageList.unshift(this.storageList.splice(index , 1)[0]);
           chrome.storage.local.set({list: this.storageList}, () => {
             resolve(window);
           });
         })
-      }).then(window => {
+      }).then((window) => {
         // 激活窗口
         chrome.windows.update(window.id, { focused: true});
 
-        // 关闭空白标签
-        if(blankTabId != -1) {
-          chrome.tabs.remove(blankTabId);
+        // 获取空白标签页
+        if( ! this.isInCurrentWindow) {
+          for(let tab of this.currentWindow.tabs) {
+            if(tab.active == true && tab.url == 'chrome://newtab/') {
+              chrome.tabs.remove(tab.id);
+            }
+          }
         }
       })
     },
@@ -711,6 +718,7 @@ export default {
       this.oldGroup = this.list[this.currentIndex];
 
       // 获取当前窗口
+      // todo 需要再获取一遍吗？
       chrome.windows.getCurrent({populate: true}, window => {
         console.log(window)
         this.currentWindow = window;
@@ -853,6 +861,7 @@ export default {
     isDifference(currentGroup, window) {
       // 判断当前分组是否需要更新
       if(currentGroup.tabs.length != window.tabs.length) {
+        console.log('difference length')
         return true;
       }
       for(let i in currentGroup.tabs) {
@@ -861,8 +870,9 @@ export default {
           && ( tabs.url != window.tabs[i].url
             || tabs.title != window.tabs[i].title
             || (window.tabs[i].favIconUrl != undefined
-              && window.tabs[i].favIconUrl != ''
+              // && window.tabs[i].favIconUrl != ''
               && tabs.icon != window.tabs[i].favIconUrl))) {
+        console.log('difference 2', tabs, window.tabs[i])
           return true;
         }
       }
@@ -899,11 +909,11 @@ export default {
         resolve()
       });
     }).then(() => {
-      // 获取当前窗口
+      // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
       return new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, window => {
           this.currentWindowId = window.id;
-          // this.currentWindow = window;
+          this.currentWindow = window;
           resolve(window)
         })
       })

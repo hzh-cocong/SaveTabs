@@ -275,7 +275,6 @@
           :is="workspace.type"
           :config="config"
           :isLoad="isLoad"
-          :platform="platform"
           @finish="finish"
           ref="workspaces"></component>
       </el-carousel-item>
@@ -312,7 +311,6 @@ export default {
       activeWorkspaceIndex: -1,//0,
       workspaces: [],
       isLoad: false,
-      platform: '',
       isOpened: {},
       things: {},
       operateOrder: [ 'window', 'note', 'temporary' ],
@@ -427,8 +425,8 @@ export default {
 
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
-    openWindow() {
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow();
+    openWindow(event) {
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, event);
     },
     // openWindow(index) {
     //   if(this.$refs.workspaces == undefined
@@ -493,23 +491,23 @@ export default {
 
     keydown(event) {
       // console.log('keydown', event)
-      if(this.platform == '') return;
+      if(this._device.platform == '') return;
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
 
-      if(this.platform == 'Mac' && event.metaKey == true) {
+      if(this._device.platform == 'Mac' && event.metaKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
         // this.openWindow(index);
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
-      } else if(this.platform == 'Win' && event.altKey == true) {
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});
+      } else if(this._device.platform != '' && event.altKey == true) {
         event.stopPropagation();
         event.preventDefault();
 
         // this.openWindow(index);
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});
       }
     },
     selectDelay(type, event) {
@@ -615,12 +613,6 @@ export default {
     },
   },
   mounted() {
-    if(navigator.platform.indexOf("Win") == 0) {
-      this.platform = 'Win';
-    } else if(navigator.platform.indexOf("Mac") == 0) {
-      this.platform = 'Mac';
-    }
-
     // this.config = config;
     // this.config = userConfig+projectConfig
     // this.config = userConfig;

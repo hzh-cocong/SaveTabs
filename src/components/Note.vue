@@ -101,7 +101,8 @@
         <div class="right">
           <div v-if="isActive
                   || (activeTabs[item.tabId]
-                  && activeTabs[item.tabId].windowId == item.windowId)">
+                    && activeTabs[item.tabId].windowId == item.windowId)
+                  || (storageKeyword != '' && item.lastVisitTime != undefined)">
             <div v-if="isActive">
               <i
               class="el-icon-close"
@@ -136,6 +137,15 @@
                     : config.list_state_color }">
               {{ lang('opened') }}
             </div>
+            <div
+              v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+              :style="{
+                fontSize: config.list_state_size+'px',
+                color: isSelected
+                    ? config.list_focus_state_color
+                    : config.list_keymap_color }">
+              {{ timeShow(item.lastVisitTime) }}
+            </div>
           </div>
           <div
             v-show=" ! isActive
@@ -157,9 +167,10 @@
                       && (index-$refs.list.scrollLines+1) >= 1
                       && (index-$refs.list.scrollLines+1) <= 9"
               :style="{
-                fontSize: activeTabs[item.tabId]
-                        && activeTabs[item.tabId].windowId == item.windowId
-                        && activeTabs[item.tabId].url == item.url
+                fontSize: (activeTabs[item.tabId]
+                          && activeTabs[item.tabId].windowId == item.windowId
+                          && activeTabs[item.tabId].url == item.url)
+                        || (storageKeyword != ''  && item.lastVisitTime != undefined)
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
                 color: activeTabs[item.tabId]
@@ -324,6 +335,7 @@ export default {
         icon: this.currentTab.favIconUrl,
         tabId: this.currentTab.id,
         windowId: this.currentTab.windowId,
+        lastVisitTime: new Date().getTime(),
       });
 
       // 保存数据
@@ -360,6 +372,9 @@ export default {
     _openWindow() {
       let tab = this.list[ this.currentIndex ];
       let index = this.getStorageIndex();
+
+      // 更新时间
+      this.storageList[index].lastVisitTime = new Date().getTime();
 
       // 标签已打开，直接切换
       if( this.activeTabs[tab.tabId]

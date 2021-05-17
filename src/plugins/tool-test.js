@@ -32,6 +32,10 @@ temporary[0].lastVisitTime = new Date().getTime();
 
 
 notes = JSON.parse(notes);
+notes = notes.map((item, index) => {
+  item.lastVisitTime = index <= 5 ? new Date().getTime()+Math.ceil(Math.random()*1620963248) : undefined;
+  return item;
+})
 
 history = JSON.parse(history);
 history[0].lastVisitTime = new Date().getTime()-1000*8;
@@ -148,6 +152,10 @@ const tool = {
       // 方便测试
       //*
       mounted: function() {
+        // 兼容火狐浏览器
+        if(typeof chrome == "undefined") {
+          window.chrome = {};
+        }
         chrome.storage = {
           sync: {
             get: function(options, callback) {
@@ -231,6 +239,7 @@ const tool = {
     })
 
     // 添加实例方法
+
     Vue.prototype.$open = function (url, openerTabId) {
         chrome.tabs.create({
             url: url,
@@ -242,6 +251,36 @@ const tool = {
         active: true
       });
     }
+    Vue.prototype._device = (function() {
+      let platform = '';
+      let isPC = true;
+      let u = navigator.userAgent;
+      if(u.match(/Mobile/i)) {
+        // 移动端
+        if(u.indexOf('Android') > -1 || u.indexOf('Adr') > -1) {
+          platform = 'Android';
+        } else if(u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+          platform = 'IOS';
+        }
+        isPC = false;
+      } else {
+        // PC 端口
+        if(u.indexOf("Windows",0) != -1) {
+          platform = 'Win';
+        } else if(u.indexOf("Mac",0) != -1) {
+          platform = 'Mac';
+        } else if(u.indexOf("Linux",0) != -1) {
+          platform = 'Linux';
+        } else if(u.indexOf("X11",0) != -1) {
+          platform = 'Unix';
+        }
+        isPC = true;
+      }
+      return {
+        platform: platform,
+        isPC: isPC
+      };
+    })();
 
   }
 }

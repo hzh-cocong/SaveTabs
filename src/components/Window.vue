@@ -485,6 +485,7 @@ console.log('get_currentWindowStorageIndex3', index);
 
       // 查找
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+      // 注意这里关键词为空就不会去循环，所以优化效果可能不大
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
         return keywords.findIndex((keyword) => {

@@ -365,8 +365,8 @@ export default {
       currentIndex: -1,
       activeWindows: {},
 
-      isCurrentWindowChange: false,
-      isInCurrentWindow: false,
+      // isCurrentWindowChange: false,
+      // isInCurrentWindow: false,
 
       groupVisible: false,
       group: {},
@@ -386,8 +386,41 @@ export default {
   },
   computed: {
     currentWindowId() {
-      console.log('get_current_window_id', this.currentWindow.id)
+      console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;
+    },
+    currentWindowStorageIndex() {
+      // 判断是否存在在当前分组
+      console.log('get_currentWindowStorageIndex', this.storageList, this.currentWindowId)
+      if(this.currentWindowId == undefined) return -1;
+
+      let index = -1;
+      for(let i in this.storageList) {
+        if(this.storageList[i].windowId == this.currentWindowId) {
+          console.log('iiiiiiiiiiiiiiiiii', i, this.storageList[i], this.storageList[i].windowId, this.currentWindowId)
+          index = i;
+          break;
+        }
+      }
+      console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, index)
+      return index;
+    },
+    isInCurrentWindow() {
+      console.log('get_isInCurrentWindow', this.currentWindowStorageIndex)
+      return this.currentWindowStorageIndex != -1;
+    },
+    isCurrentWindowChange() {
+      console.log('get_isCurrentWindowChange', this.currentWindowStorageIndex)
+      if(this.currentWindowStorageIndex == -1) return false;
+
+      console.log('get_isCurrentWindowChange2', this.currentWindowStorageIndex, this.isDifference(
+        this.storageList[ this.currentWindowStorageIndex ],
+        this.currentWindow
+      ))
+      return this.isDifference(
+        this.storageList[ this.currentWindowStorageIndex ],
+        this.currentWindow
+      );
     }
   },
   methods: {
@@ -518,9 +551,9 @@ export default {
         }).then((window) => {
           // 更新结果
           this.currentWindow = window;
-          this.activeWindows[this.currentWindowId] = true;
-          this.isCurrentWindowChange = false;
-          this.isInCurrentWindow = true;
+          this.activeWindows[ this.currentWindowId ] = true;
+          // this.isCurrentWindowChange = false;
+          // this.isInCurrentWindow = true;
 
           // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
           this.storageKeyword = ' ';
@@ -687,9 +720,9 @@ export default {
         let index = this.getStorageIndex();
         this.storageList.splice(index , 1);
         chrome.storage.local.set({list: this.storageList}, () => {
-          if(group.windowId == this.currentWindowId) {
-            this.isInCurrentWindow = false;
-          }
+          // if(group.windowId == this.currentWindowId) {
+          //   this.isInCurrentWindow = false;
+          // }
           this.list.splice(this.currentIndex, 1);
           if(this.list.length < this.config.list_page_count
           && this.scrollDisabled == false) {
@@ -745,11 +778,11 @@ export default {
 
       // 存储数据
       chrome.storage.local.set({list: this.storageList}, () => {
-        this.isCurrentWindowChange = false;
+        // this.isCurrentWindowChange = false;
 
         // 更新结果（强制绑定需要这个，current update 可以不用）
         this.activeWindows[this.currentWindowId] = true;
-        this.isInCurrentWindow = true;
+        // this.isInCurrentWindow = true;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         let origin = this.storageKeyword;
@@ -772,11 +805,11 @@ export default {
       // 存储数据
       chrome.storage.local.set({list: this.storageList}, () => {
         // 判断当前分组是否需要更新
-        this.isCurrentWindowChange = this.isDifference(this.storageList[0], this.currentWindow);
+        // this.isCurrentWindowChange = this.isDifference(this.storageList[0], this.currentWindow);
 
         // 更新结果（强制绑定需要这个，current update 可以不用）
         this.activeWindows[this.currentWindowId] = true;
-        this.isInCurrentWindow = true;
+        // this.isInCurrentWindow = true;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         let origin = this.storageKeyword;
@@ -851,8 +884,19 @@ export default {
         // 覆盖当前标签
         chrome.tabs.remove(removeTabIds)
 
+        // 更新 currentWindow
+        this.currentWindow.tabs = this.oldGroup.tabs.map(tab => {
+          // 只关心这三个值
+          return {
+            title: tab.title,
+            favIconUrl: tab.icon,
+            url: tab.url,
+          }
+        })
+        console.log('change currentWindow', this.currentWindow);
+
         // 更新数据
-        this.isCurrentWindowChange = false;
+        // this.isCurrentWindowChange = false;//todo
         // 关闭 dialog
         this.differenceVisible = false;
       });
@@ -918,24 +962,25 @@ export default {
         })
       })
     }).then((window) => {
+      console.log(window) //todo
       // 处理当前窗口数据
 
       // 判断是否存在在当前分组
-      let index = -1;
-      for(let i in this.storageList) {
-        if(this.storageList[i].windowId == this.currentWindowId) {
-          index = i;
-          break;
-        }
-      }
-      if(index == -1) return;
+      // let index = -1;
+      // for(let i in this.storageList) {
+      //   if(this.storageList[i].windowId == this.currentWindowId) {
+      //     index = i;
+      //     break;
+      //   }
+      // }
+      // if(index == -1) return;
 
       // 标记
       // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
-      this.isInCurrentWindow = true;
+      // this.isInCurrentWindow = true;
 
       // 判断当前分组是否需要更新
-      this.isCurrentWindowChange = this.isDifference(this.storageList[index], window);
+      // this.isCurrentWindowChange = this.isDifference(this.storageList[index], window);
 
       return;
     }).then(() => {

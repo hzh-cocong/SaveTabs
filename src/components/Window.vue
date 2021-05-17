@@ -442,14 +442,17 @@ console.log('get_currentWindowStorageIndex3', index);
     currentStorageIndex() {
       console.log('get_currentStorageIndex', this.currentGroup)
       // let group = this.list[ this.currentIndex ];
-      for(let i in this.storageList) {
-        if(this.storageList[i].id == this.currentGroup.id) {
-          console.log('get_currentStorageIndex2', i)
-          return i;
-        }
-      }
-      console.log('get_currentStorageIndex3', -1)
-      return -1;
+      return this.storageList.findIndex(group => {
+        return group.id == this.currentGroup.id;
+      });
+      // for(let i in this.storageList) {
+      //   if(this.storageList[i].id == this.currentGroup.id) {
+      //     console.log('get_currentStorageIndex2', i)
+      //     return i;
+      //   }
+      // }
+      // console.log('get_currentStorageIndex3', -1)
+      // return -1;
     },
     currentTab() {
       console.log('get_currentTab', this.currentWindow.tabs)
@@ -481,17 +484,22 @@ console.log('get_currentWindowStorageIndex3', index);
       this.storageKeyword = keyword.trim();
 
       // 查找
-      // let filterList = this.storageList;
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
-        for(let keyword of keywords) {
-          if(name.indexOf(keyword) == -1) {
-            return false;
-          }
-        }
-        return true;
+        return keywords.findIndex((keyword) => {
+          return name.indexOf(keyword) == -1;
+        }) == -1;
       })
+      // let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
+      //   let name = group.name.toUpperCase();
+      //   for(let keyword of keywords) {
+      //     if(name.indexOf(keyword) == -1) {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // })
 
       // 重新排序
       let currentList = filterList.filter(group => {

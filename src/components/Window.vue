@@ -895,8 +895,6 @@ export default {
         })
         console.log('change currentWindow', this.currentWindow);
 
-        // 更新数据
-        // this.isCurrentWindowChange = false;//todo
         // 关闭 dialog
         this.differenceVisible = false;
       });
@@ -961,28 +959,6 @@ export default {
           resolve(window)
         })
       })
-    }).then((window) => {
-      console.log(window) //todo
-      // 处理当前窗口数据
-
-      // 判断是否存在在当前分组
-      // let index = -1;
-      // for(let i in this.storageList) {
-      //   if(this.storageList[i].windowId == this.currentWindowId) {
-      //     index = i;
-      //     break;
-      //   }
-      // }
-      // if(index == -1) return;
-
-      // 标记
-      // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
-      // this.isInCurrentWindow = true;
-
-      // 判断当前分组是否需要更新
-      // this.isCurrentWindowChange = this.isDifference(this.storageList[index], window);
-
-      return;
     }).then(() => {
       // 获取全部窗口
       return new Promise((resolve) => {

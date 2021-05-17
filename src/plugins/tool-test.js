@@ -218,6 +218,9 @@ const tool = {
           update: function(id, options, callback) {
             callback != undefined && callback(tabs[0]);
           },
+          remove: function(keys, callback) {
+            callback != undefined && callback();
+          },
         }
         chrome.history = {
           deleteUrl: function(options, callback) {

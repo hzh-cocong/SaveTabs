@@ -420,15 +420,36 @@ export default {
         this.currentWindow
       );
     },
+    currentGroup() {
+      console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
+      if(this.list.length == 0) return {};
+      return this.list[ this.currentIndex ];
+    },
     currentStorageIndex() {
-      let group = this.list[ this.currentIndex ];
+      console.log('get_currentStorageIndex', this.currentGroup)
+      // let group = this.list[ this.currentIndex ];
       for(let i in this.storageList) {
-        if(this.storageList[i].id == group.id) {
+        if(this.storageList[i].id == this.currentGroup.id) {
+          console.log('get_currentStorageIndex2', i)
           return i;
         }
       }
+      console.log('get_currentStorageIndex3', -1)
       return -1;
     },
+    currentTab() {
+      console.log('get_currentTab', this.currentWindow.tabs)
+
+      for(let tab of this.currentWindow.tabs) {
+        if(tab.active == true) {
+          console.log('get_currentTab2', tab)
+          return tab;
+        }
+      }
+
+      console.log('get_currentTab3', {})
+      return {};
+    }
   },
   methods: {
     up() {
@@ -601,12 +622,12 @@ export default {
     _openWindow(event) {
       console.log('openWindow', event)
 
-      let group = this.list[ this.currentIndex ];
-      let urls = group.tabs.map(tab => tab['url']);
+      // let group = this.list[ this.currentIndex ];
+      let urls = this.currentGroup.tabs.map(tab => tab['url']);
       // let index = this.getStorageIndex();
 
       // 窗口已打开，直接切换
-      if(this.activeWindows[group.windowId]) {
+      if(this.activeWindows[this.currentGroup.windowId]) {
         // 更新时间
         this.storageList[ this.currentStorageIndex ].lastVisitTime = new Date().getTime();
         // 排序到最前面
@@ -614,7 +635,7 @@ export default {
         // 先存储
         chrome.storage.local.set({list: this.storageList}, () => {
           // 再切换
-          chrome.windows.update(group.windowId, { focused: true});
+          chrome.windows.update(this.currentGroup.windowId, { focused: true});
         });
         return;
       }
@@ -658,27 +679,25 @@ export default {
         chrome.windows.update(window.id, { focused: true});
 
         // 获取空白标签页
-        if( ! this.isInCurrentWindow) {
-          for(let tab of this.currentWindow.tabs) {
-            if(tab.active == true && tab.url == 'chrome://newtab/') {
-              chrome.tabs.remove(tab.id);
-            }
-          }
+        if( ! this.isInCurrentWindow
+        && this.currentTab.url == 'chrome://newtab/') {
+          chrome.tabs.remove(this.currentTab.id);
         }
       })
     },
     openGroup() {
-      this.group = this.list[this.currentIndex];
+      // 不直接使用 currentGroup 是因为 this.group 会绑定 dom 元素，那样就会频繁刷新 dom
+      this.group = this.currentGroup; //this.list[this.currentIndex];
       this.groupVisible = true;
     },
     changeGroupName() {
       // let index = this.getStorageIndex();
-      this.group = this.list[this.currentIndex];
+      // this.group = this.list[this.currentIndex];
       this.$prompt('', this.lang('updateGroupName'), {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPlaceholder: this.lang('groupNameInput'),
-        inputValue: this.group.name,
+        inputValue: this.currentGroup.name,
         inputValidator: ( value ) => {
           value = value == null ? '' : value.trim();
 
@@ -716,8 +735,8 @@ export default {
       });
     },
     deleteGroup() {
-      let group = this.list[this.currentIndex];
-      this.$confirm(this.lang('deleteConfirm')+' ('+group.name+') ?', this.lang('tip'), {
+      // let group = this.list[this.currentIndex];
+      this.$confirm(this.lang('deleteConfirm')+' ('+this.currentGroup.name+') ?', this.lang('tip'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -755,7 +774,9 @@ export default {
       });
     },
     showDifference() {
-      this.oldGroup = this.list[this.currentIndex];
+      // 不直接使用 currentGroup 是因为 this.oldGroup 会绑定 dom 元素，那样就会频繁刷新 dom
+      // 不和 this.group 取相同的值也是为了避免不必要的 dom 刷新
+      this.oldGroup = this.currentGroup; // this.list[this.currentIndex];
 
       // 获取当前窗口
       chrome.windows.getCurrent({populate: true}, window => {
@@ -831,12 +852,7 @@ export default {
       // let index = this.getStorageIndex();
 
       // 获取当前标签所在位置
-      let currentTabIndex;
-      for(let tab of this.currentWindow.tabs) {
-        if(tab.active == true) {
-          currentTabIndex = tab.index;
-        }
-      }
+      let currentTabIndex = this.currentTab.index;
 
       // 获取当前所有标签页
       let currentTabIds = this.currentWindow.tabs.map(tab => {
@@ -879,25 +895,34 @@ export default {
       // 存储新数据（更新顺序）
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
       chrome.storage.local.set({list: this.storageList}, () => {
+        console.log('fffffffffffffffffff', this.currentWindow.tabs[currentTabIndex].id, removeTabIds);
         // 处理当前标签
         if(this.oldGroup.tabs[currentTabIndex] == undefined) {
+          console.log('a');
           // 移除当前标签
           chrome.tabs.remove(this.currentWindow.tabs[currentTabIndex].id)
         } else {
+          console.log('b');
           // 覆盖当前标签
           chrome.tabs.update(this.currentWindow.tabs[currentTabIndex].id, {url :this.oldGroup.tabs[currentTabIndex].url});
         }
 
-        // 覆盖当前标签
-        chrome.tabs.remove(removeTabIds)
+        //// 覆盖当前标签
+        //// chrome.tabs.remove(removeTabIds)
 
         // 更新 currentWindow
-        this.currentWindow.tabs = this.oldGroup.tabs.map(tab => {
-          // 只关心这三个值
+        this.currentWindow.tabs = this.oldGroup.tabs.map((tab, index) => {
+          console.log(index);
+          // 只关心这几个值
           return {
             title: tab.title,
-            favIconUrl: tab.icon,
             url: tab.url,
+
+            favIconUrl: tab.icon,
+
+            id: this.currentTab.id,
+            active: index == this.currentTab.index,
+            index: index,
           }
         })
         console.log('change currentWindow', this.currentWindow);
@@ -907,14 +932,14 @@ export default {
       });
     },
 
-    isDifference(currentGroup, window) {
+    isDifference(group, window) {
       // 判断当前分组是否需要更新
-      if(currentGroup.tabs.length != window.tabs.length) {
+      if(group.tabs.length != window.tabs.length) {
         console.log('difference length')
         return true;
       }
-      for(let i in currentGroup.tabs) {
-        let tabs = currentGroup.tabs[i];
+      for(let i in group.tabs) {
+        let tabs = group.tabs[i];
         if(window.tabs[i].status == 'complete'
           && ( tabs.url != window.tabs[i].url
             || tabs.title != window.tabs[i].title
@@ -928,8 +953,8 @@ export default {
       return false;
     },
     download() {
-      let group = this.list[this.currentIndex];
-      let filename = group.name + '.tabs.html';
+      // let group = this.list[this.currentIndex];
+      let filename = this.currentGroup.name + '.tabs.html';
 
       let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
       if( ! patt.test(filename)) {
@@ -938,7 +963,7 @@ export default {
 
       chrome.runtime.sendMessage({
           filename: filename,
-          tabs: group.tabs,
+          tabs: this.currentGroup.tabs,
       });
     },
   },

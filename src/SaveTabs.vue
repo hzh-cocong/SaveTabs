@@ -28,7 +28,7 @@
         v-if="themeDialogVisible"
         :list="themes"
         :itemHeight="65"
-        :itemShowCount="5"
+        :itemShowCount="3"
         style="width:200px"
         v-model="currentThemeIndex">
         <template #default="{ index, item, isSelected }">

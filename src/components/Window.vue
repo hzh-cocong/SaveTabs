@@ -393,15 +393,29 @@ export default {
       // 判断是否存在在当前分组
       console.log('get_currentWindowStorageIndex', this.storageList, this.currentWindowId)
       if(this.currentWindowId == undefined) return -1;
+console.log('get_currentWindowStorageIndex2');
 
-      for(let i in this.storageList) {
-        if(this.storageList[i].windowId == this.currentWindowId) {
-          console.log('iiiiiiiiiiiiiiiiii', i, this.storageList[i], this.storageList[i].windowId, this.currentWindowId)
-          console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, i)
-          return i;
-        }
-      }
-      return -1;
+      // 这个非常高效（找到第一个就停止遍历
+      let index = this.storageList.findIndex((group) => {
+        // console.log('a')
+        return group.windowId == this.currentWindowId;
+      })
+console.log('get_currentWindowStorageIndex3', index);
+      return index;
+      //
+      // for(let i in this.storageList) {
+      //   if(this.storageList[i].windowId == this.currentWindowId) {
+      //     // console.log('iiiiiiiiiiiiiiiiii', i, this.storageList[i], this.storageList[i].windowId, this.currentWindowId)
+      //     // console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, i)
+      //     return i;
+      //   }
+      //   // todo
+      //   // else if(i >= this.config.list_page_count) {
+      //   //   return -1;
+      //   // }
+      // }
+      // console.log('get_currentWindowStorageIndex3');
+      // return -1;
     },
     isInCurrentWindow() {
       console.log('get_isInCurrentWindow', this.currentWindowStorageIndex)
@@ -467,9 +481,11 @@ export default {
       this.storageKeyword = keyword.trim();
 
       // 查找
-      let filterList = this.storageList.filter(group => {
+      // let filterList = this.storageList;
+      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+      let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
-        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
+        for(let keyword of keywords) {
           if(name.indexOf(keyword) == -1) {
             return false;
           }
@@ -643,13 +659,25 @@ export default {
       // 当前窗口打开，且不关闭，也不进行存储更新（高亮会自动也没办法，不过感觉还不错）
       if((this._device.platform == 'Mac' && event.metaKey == true)
       || (this._device.platform != '' && event.altKey == true)) {
-        urls.forEach(url => {
-          chrome.tabs.create({url: url, active: false});
-          chrome.tabs.highlight({tabs: Array.from({
-              length: urls.length
-            }, (item, index)=> index+this.currentWindow.tabs.length
-          )})
+        Promise.all(urls.map((url) => {
+          return new Promise((resolve) => {
+            chrome.tabs.create({url: url, active: false}, (tab) => {
+              resolve(tab.index);
+            });
+          });
+        })).then((indexs) => {
+          chrome.tabs.highlight({tabs: indexs})
         })
+
+        // urls.forEach(url => {
+        //   chrome.tabs.create({url: url, active: false}, (tab) => {
+        //     chrome.tabs.highlight({tabs: [tab.index]})
+        //   });
+        //   // chrome.tabs.highlight({tabs: Array.from({
+        //   //     length: urls.length
+        //   //   }, (item, index)=> index+this.currentWindow.tabs.length
+        //   // )})
+        // })
         return;
       }
 
@@ -969,39 +997,90 @@ export default {
   },
   mounted() {
     window.w = this;
-    new Promise((resolve) => {
-      // 获取本地数据
-      chrome.storage.local.get({'list': []}, items => {
-        this.storageList = items.list;
-        resolve()
-      });
-    }).then(() => {
+
+    // 并行执行，效率更高
+    // 其实速度并没有多大提升，因为主要瓶颈在于获取本地数据，另外两个完全可以忽略不计
+    // 更大的问题其实是 filter 和 currentWindowStorageIndex
+    Promise.all([
+      new Promise((resolve) => {
+        // 获取本地数据
+        chrome.storage.local.get({'list': []}, items => {
+          // resolve(items.list)
+          this.storageList = items.list;
+          resolve();
+        });
+      }),
       // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
-      return new Promise((resolve) => {
-        chrome.windows.getCurrent({populate: true}, window => {
+      new Promise((resolve) => {
+        chrome.windows.getCurrent({populate: true}, (window) => {
+          // resolve(window)
           this.currentWindow = window;
-          resolve(window)
+          resolve();
         })
-      })
-    }).then(() => {
+      }),
       // 获取全部窗口
-      return new Promise((resolve) => {
+      new Promise((resolve) => {
         // 判断窗口是否已打开
-        chrome.windows.getAll({}, windows => {
-          resolve(windows);
+        chrome.windows.getAll({}, (windows) => {
+          // resolve(windows);
+          // 保存活跃的窗口
+          for(let window of windows) {
+            this.activeWindows[ window.id ] = true;
+          }
+          resolve();
         })
-      })
-    }).then((windows) => {
-      // 保存活跃的窗口
-      for(let window of windows) {
-        this.activeWindows[ window.id ] = true;
-      }
+      }),
+    ]).then((/* res */) => {
+      // 本地数据
+      // this.storageList = res[0];
+
+      // 当前窗口
+      // this.currentWindow = res[1];
+
+      // // 保存活跃的窗口
+      // for(let window of res[2]) {
+      //   this.activeWindows[ window.id ] = true;
+      // }
 
       this.$emit('finish');
 
       // 更新列表
       // this.search();
     })
+
+    // new Promise((resolve) => {
+    //   // 获取本地数据
+    //   chrome.storage.local.get({'list': []}, items => {
+    //     this.storageList = items.list;
+    //     resolve()
+    //   });
+    // }).then(() => {
+    //   // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
+    //   return new Promise((resolve) => {
+    //     chrome.windows.getCurrent({populate: true}, window => {
+    //       this.currentWindow = window;
+    //       resolve(window)
+    //     })
+    //   })
+    // }).then(() => {
+    //   // 获取全部窗口
+    //   return new Promise((resolve) => {
+    //     // 判断窗口是否已打开
+    //     chrome.windows.getAll({}, windows => {
+    //       resolve(windows);
+    //     })
+    //   })
+    // }).then((windows) => {
+    //   // 保存活跃的窗口
+    //   for(let window of windows) {
+    //     this.activeWindows[ window.id ] = true;
+    //   }
+
+    //   this.$emit('finish');
+
+    //   // 更新列表
+    //   // this.search();
+    // })
 
     this.$el.addEventListener("mousewheel", (event) => {
       const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;

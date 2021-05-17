@@ -394,16 +394,14 @@ export default {
       console.log('get_currentWindowStorageIndex', this.storageList, this.currentWindowId)
       if(this.currentWindowId == undefined) return -1;
 
-      let index = -1;
       for(let i in this.storageList) {
         if(this.storageList[i].windowId == this.currentWindowId) {
           console.log('iiiiiiiiiiiiiiiiii', i, this.storageList[i], this.storageList[i].windowId, this.currentWindowId)
-          index = i;
-          break;
+          console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, i)
+          return i;
         }
       }
-      console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, index)
-      return index;
+      return -1;
     },
     isInCurrentWindow() {
       console.log('get_isInCurrentWindow', this.currentWindowStorageIndex)
@@ -421,7 +419,16 @@ export default {
         this.storageList[ this.currentWindowStorageIndex ],
         this.currentWindow
       );
-    }
+    },
+    currentStorageIndex() {
+      let group = this.list[ this.currentIndex ];
+      for(let i in this.storageList) {
+        if(this.storageList[i].id == group.id) {
+          return i;
+        }
+      }
+      return -1;
+    },
   },
   methods: {
     up() {
@@ -596,14 +603,14 @@ export default {
 
       let group = this.list[ this.currentIndex ];
       let urls = group.tabs.map(tab => tab['url']);
-      let index = this.getStorageIndex();
+      // let index = this.getStorageIndex();
 
       // 窗口已打开，直接切换
       if(this.activeWindows[group.windowId]) {
         // 更新时间
-        this.storageList[index].lastVisitTime = new Date().getTime();
+        this.storageList[ this.currentStorageIndex ].lastVisitTime = new Date().getTime();
         // 排序到最前面
-        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
         // 先存储
         chrome.storage.local.set({list: this.storageList}, () => {
           // 再切换
@@ -637,11 +644,11 @@ export default {
          // 存储数据
         return new Promise(resolve => {
           // 更新时间
-          this.storageList[index].lastVisitTime = new Date().getTime();
+          this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
           // 搬定新的窗口id
-          this.storageList[index].windowId = window.id;
+          this.storageList[this.currentStorageIndex].windowId = window.id;
           // 排序到最前面
-          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+          this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
           chrome.storage.local.set({list: this.storageList}, () => {
             resolve(window);
           });
@@ -665,7 +672,7 @@ export default {
       this.groupVisible = true;
     },
     changeGroupName() {
-      let index = this.getStorageIndex();
+      // let index = this.getStorageIndex();
       this.group = this.list[this.currentIndex];
       this.$prompt('', this.lang('updateGroupName'), {
         confirmButtonText: '确定',
@@ -682,7 +689,7 @@ export default {
 
           // 窗口名不允许重复，自己的不算
           for(let i in this.storageList) {
-            if(i != index && this.storageList[i].name == value) {
+            if(i != this.currentStorageIndex && this.storageList[i].name == value) {
               return this.lang('groupNameRepeat');
             }
           }
@@ -695,12 +702,12 @@ export default {
         this.focus();
 
         // 未修改则不更新
-        if(this.storageList[index].name == value) {
+        if(this.storageList[ this.currentStorageIndex ].name == value) {
           return;
         }
 
         // 存储数据
-        this.storageList[index].name = value;
+        this.storageList[ this.currentStorageIndex ].name = value;
         chrome.storage.local.set({list: this.storageList}, () => {
 
         });
@@ -717,8 +724,8 @@ export default {
         center: true,
         customClass: 'window-message-box'
       }).then(() => {
-        let index = this.getStorageIndex();
-        this.storageList.splice(index , 1);
+        // let index = this.getStorageIndex();
+        this.storageList.splice(this.currentStorageIndex , 1);
         chrome.storage.local.set({list: this.storageList}, () => {
           // if(group.windowId == this.currentWindowId) {
           //   this.isInCurrentWindow = false;
@@ -762,10 +769,10 @@ export default {
     },
     updateGroup() {
       // 更新数据
-      let index = this.getStorageIndex();
-      this.storageList[index].windowId = this.currentWindowId;
-      this.storageList[index].lastVisitTime = new Date().getTime();
-      this.storageList[index].tabs = this.currentWindow.tabs.map(tab => {
+      // let index = this.getStorageIndex();
+      this.storageList[this.currentStorageIndex].windowId = this.currentWindowId;
+      this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
+      this.storageList[this.currentStorageIndex].tabs = this.currentWindow.tabs.map(tab => {
         return {
           url: tab.url,
           title: tab.title,
@@ -774,7 +781,7 @@ export default {
       })
 
       // 排到最前面
-      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+      this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
 
       // 存储数据
       chrome.storage.local.set({list: this.storageList}, () => {
@@ -795,12 +802,12 @@ export default {
     },
     bind() {
       // 更新数据
-      let index = this.getStorageIndex();
-      this.storageList[index].windowId = this.currentWindowId;
-      this.storageList[index].lastVisitTime = new Date().getTime();
+      // let index = this.getStorageIndex();
+      this.storageList[this.currentStorageIndex].windowId = this.currentWindowId;
+      this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
 
       // 排到最前面
-      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+      this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
 
       // 存储数据
       chrome.storage.local.set({list: this.storageList}, () => {
@@ -821,7 +828,7 @@ export default {
       })
     },
     restore() {
-      let index = this.getStorageIndex();
+      // let index = this.getStorageIndex();
 
       // 获取当前标签所在位置
       let currentTabIndex;
@@ -868,9 +875,9 @@ export default {
       chrome.tabs.remove(removeTabIds)
 
       // 更新时间
-      this.storageList[index].lastVisitTime = new Date().getTime();
+      this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
       // 存储新数据（更新顺序）
-      this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+      this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
       chrome.storage.local.set({list: this.storageList}, () => {
         // 处理当前标签
         if(this.oldGroup.tabs[currentTabIndex] == undefined) {
@@ -919,14 +926,6 @@ export default {
         }
       }
       return false;
-    },
-    getStorageIndex() {
-      let group = this.list[ this.currentIndex ];
-      for(let i in this.storageList) {
-        if(this.storageList[i].id == group.id) {
-          return i;
-        }
-      }
     },
     download() {
       let group = this.list[this.currentIndex];

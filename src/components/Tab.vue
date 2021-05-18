@@ -163,7 +163,10 @@ export default {
 
       isSearched: false,
 
-      lock: false,
+      w: {
+        lock: false,
+        timer: null,
+      },
     }
   },
   components: {
@@ -260,20 +263,27 @@ export default {
       // this.search();
     })
 
-    this.$el.addEventListener("mousewheel", (event) => {
-      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
-      const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
-      if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-        return;
+//     this.$el.addEventListener("mousewheel", (event) => {
+//       const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+//       const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
 
-      // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
-      if(this.lock == true) return;
-      this.lock = true;
+//       if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0) {
+//         // 上下滚动时睡眠，以免突然左右滚动
+//         this.w.lock = true;
+//         // 等上下滚动停止一段时间后才允许左右滚动
+//         clearTimeout(this.w.timer);
+//         this.w.timer = setTimeout(() => { this.w.lock = false; }, 100);
+//         return;
+//       }
+// event.preventDefault();
+//       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
+//       if(this.w.lock == true) return;
+//       this.w.lock = true;
 
-      eventDeltaX > 0 ? this.next() : this.prev();
+//       eventDeltaX > 0 ? this.next() : this.prev();
 
-      setTimeout(() => { this.lock = false; }, 1000);
-    })
+//       setTimeout(() => { this.w.lock = false; }, 1000);
+//     })
   }
 }
 </script>

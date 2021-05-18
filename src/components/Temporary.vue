@@ -242,27 +242,80 @@ export default {
 
       isShowOperationButton: true,
 
-      lock: 0,
+      w: {
+        lock: 0,
+        timer: null,
+      },
     }
   },
   components: {
     List,
   },
   methods: {
-    hideOperationButton() {
-      console.log('mousemove', this.lock)
+    hideOperationButton(event) {
+      // console.log('hdeOperationButton', event)
+      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+      // 向右滚动小于0，向左滚动大于0
 
-      // 告诉 wheel，我再监听，当 this.lock = 3 时，说明 wheel 在睡眠，不要去打扰它
-      if(this.lock != 3) this.lock = 2;
+      if(this.mainNode.className != 'main scroll') {
+        console.log('ffffffffffffffffffffffffff==')
+        return;
+      }
+
+      if( ! this.lock && eventDeltaX < 0 && this.mainNode.scrollLeft == 0) {
+        console.log('向左切换')
+        // event.stopPropagation();
+      } else if( ! this.lock && eventDeltaX > 0 && (this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2)) {
+        console.log('向右切换')
+        // event.stopPropagation();
+      } else {
+        event.stopPropagation();
+      }
+
+      // 滚动到左边或右边时不清楚计时
+      if( ! (eventDeltaX < 0 && this.mainNode.scrollLeft == 0 ||
+              this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2))  {
+        this.lock = true;
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => { this.lock = false; }, 1000);
+      }
+
+      //   console.log('s', eventDeltaX)
+      // if(this.mainNode.scrollLeft == 0
+      // || this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2) {
+      //   // event.stopPropagation();
+      //    event.stopPropagation();
+      // } else {
+      //   event.stopPropagation();
+      // }
+
+      // console.log('hdeOperationButton', this.mainNode.scrollLeft, this.mainNode.scrollWidth, this.mainNode.scrollWidth-this.mainNode.scrollLeft, this.config.width-10*2-40-5*2-10*2)
+      // event.preventDefault();
+      // event.stopPropagation();
+      // console.log('mousemove', this.w.lock)
+
+      // 告诉 wheel，我在监听，当 this.w.lock = 3 时，说明 wheel 在睡眠，不要去打扰它
+      if(this.w.lock != 3) this.w.lock = 2;
 
       this.isShowOperationButton = false;
     },
     mainEnter(event) {
+      // console.log('ssssssssss', event.target.className)
       // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
-      event.target.addEventListener('scroll', this.hideOperationButton);
+      this.mainNode = event.target;
+      // if(event.target.className != 'main scroll') {
+      //   console.log('sssssssssssssssssssssssssssssss---')
+      //   return;
+      // }
+      if(this.mainNode.scrollWidth <= 386) {
+        return;
+      }
+      console.log('fffffffffffffff', this.mainNode.scrollWidth)
+      event.target.addEventListener('mousewheel', this.hideOperationButton);
     },
     mainLeave(event) {
-      event.target.removeEventListener('scroll', this.hideOperationButton);
+      console.log('mainLeave================================')
+      event.target.removeEventListener('mousewheel', this.hideOperationButton);
       this.isShowOperationButton = true;
     },
 
@@ -477,54 +530,59 @@ export default {
     },
   },
   mounted() {
-    this.$el.addEventListener("mousewheel", (event) => {
-      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
-      const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
-      console.log('mousewheel:comein', this.lock, eventDeltaX, eventDeltaY);
-      // if(this.lock == 0 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-      //   || (this.lock != 0 && Math.abs(eventDeltaX) <= 0)) {
-      //   return;
-      // }
-      // if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-      //   return;
-      // if((this.lock == 0 && Math.abs(eventDeltaX) <= 0)
-      //   || (this.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
-      //   return;
-      // if((this.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-      //   || (this.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
-      //   return;
-      // lock = 0 说明刚开始出发，此时一定是要鼠标左右滑动，且没有上下滚动才有效
-      // lock == 1 说明内部没有左右滚动，此时虽然鼠标左右滑动，但上下就算没动也会有不为0的情况，所以就不判断上下是否滚动了
-      // lock == 2 说明内部有左右滚动，就不用判断鼠标状态了，我们要做的是让它睡眠
-      if((this.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-        || (this.lock == 1 && Math.abs(eventDeltaX) <= 0))
-        return;
+    // this.$el.addEventListener("mousewheel", (event) => {
+    //   const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+    //   const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
+    //   console.log('mousewheel:comein', this.w.lock, eventDeltaX, eventDeltaY);
+    //   // if(this.w.lock == 0 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+    //   //   || (this.w.lock != 0 && Math.abs(eventDeltaX) <= 0)) {
+    //   //   return;
+    //   // }
+    //   // if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+    //   //   return;
+    //   // if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0)
+    //   //   || (this.w.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
+    //   //   return;
+    //   // if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+    //   //   || (this.w.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
+    //   //   return;
+    //   // lock = 0 说明刚开始出发，此时一定是要鼠标左右滑动，且没有上下滚动才有效
+    //   // lock == 1 说明内部没有左右滚动，此时虽然鼠标左右滑动，但上下就算没动也会有不为0的情况，所以就不判断上下是否滚动了
+    //   // lock == 2 说明内部有左右滚动，就不用判断鼠标状态了，我们要做的是让它睡眠
+    //   if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
+    //     || (this.w.lock == 1 && Math.abs(eventDeltaX) <= 0))
+    //     return;
 
-      console.log('mousewheel:start', this.lock);
+    //   console.log('mousewheel:start', this.w.lock);
 
-      // 第一次滚动，会比 mousemove 先，为了直到有没有 mousemove，我们跳过这一步
-      if(this.lock == 0) { this.lock = 1; return;}
+    //   // 第一次滚动，会比 mousemove 先，为了直到有没有 mousemove，我们跳过这一步
+    //   if(this.w.lock == 0) { this.w.lock = 1; return;}
 
-      // 说明有 mousemove，暂停一段时间再监听
-      if(this.lock == 2) {
-        this.lock = 3;
-        setTimeout(() => { this.lock = 0; }, 1000);
-        return;
-      }
+    //   // 说明有 mousemove，暂停一段时间再监听
+    //   if(this.w.lock == 2) {
+    //     // this.w.lock = 3;
+    //     // setTimeout(() => { this.w.lock = 0; }, 1000);
 
-      // 睡眠中
-      if(this.lock == 3) return;
+    //      // 等 mousemove 停止一段时间后才允许左右切换
+    //     clearTimeout(this.w.timer);
+    //     this.w.timer = setTimeout(() => { this.w.lock = 0; }, 100);
 
-      console.log('mousewheel:goto', this.lock);
+    //     return;
+    //   }
 
-      // 可以滚动了，改为 3 是为了避免多次滚动
-      // this.lock == 1
-      this.lock = 3
+    //   // 睡眠中
+    //   if(this.w.lock == 3) return;
 
-      eventDeltaX > 0 ? this.next() : this.prev();
+    //   console.log('mousewheel:goto', this.w.lock);
 
-      setTimeout(() => { this.lock = 0; }, 1000);
-    })
+    //   // 可以滚动了，改为 3 是为了避免多次滚动
+    //   // this.w.lock == 1
+    //   this.w.lock = 3
+
+    //   eventDeltaX > 0 ? this.next() : this.prev();
+
+    //   setTimeout(() => { this.w.lock = 0; }, 1000);
+    // })
 
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {

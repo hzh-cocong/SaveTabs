@@ -324,6 +324,11 @@ export default {
       themeDialogVisible: false,
       themeScrollPosition: 0,
       // currentThemeIndex: -1,
+
+      w: {
+        lock: 0,
+        timer: null,
+      },
     }
   },
   computed: {
@@ -363,22 +368,24 @@ export default {
       this.$refs['input'].focus();
     },
     prev() {
-      // if(this.lock == true) return;
-      // this.lock = true;
+      /*
+      if(this.lock == true) return;
+      this.lock = true;
 
-      // this.$refs.carousel.prev();
-
-      // setTimeout(() => { this.lock = false; }, 500);
       this.$refs.carousel.prev();
+
+      setTimeout(() => { this.lock = false; }, 500);/*/
+      this.$refs.carousel.prev();//*/
     },
     next() {
-      // if(this.lock == true) return;
-      // this.lock = true;
+      /*
+      if(this.lock == true) return;
+      this.lock = true;
 
-      // this.$refs.carousel.next();
-
-      // setTimeout(() => { this.lock = false; }, 500);
       this.$refs.carousel.next();
+
+      setTimeout(() => { this.lock = false; }, 500);/*/
+      this.$refs.carousel.next();//*/
     },
 
     getTypeIndex(type) {
@@ -576,6 +583,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       this.search();
 
+      console.log('mousewheel change')
+
       // 屏蔽鼠标事件
       // if(this.$refs.workspaces != undefined
       // && this.$refs.workspaces[ this.activeWorkspaceRefIndex ] != undefined) {
@@ -638,6 +647,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // this.config = userConfig;
     // this.allWorkspaces = projectConfig.allWorkspaces;
 
+    this.focus();
+
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
 
@@ -690,6 +701,37 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     document.body.onload=() => {
       this.isLoad = true;
     };
+
+    let self = this;
+    this.$el.addEventListener("mousewheel", function mousewheelWatch(event) {
+      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
+      const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
+// console.log('mousewheel111', self.w.lock, event);
+      if(self.w.lock !=2 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)) {
+        // 上下滚动时睡眠，以免突然左右滚动
+        self.w.lock = 1;
+        // console.log('clear')
+        // 等上下滚动停止一段时间后才允许左右滚动
+        clearTimeout(self.w.timer);
+        self.w.timer = setTimeout(() => { self.w.lock = 0; }, 100);
+        return;
+      }
+      // console.log('mousewheel', self.w.lock);
+event.preventDefault();
+event.stopPropagation();
+      // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
+      if(self.w.lock != 0) return;
+      self.w.lock = 2;
+      // self.$el.removeEventListener("mousewheel", mousewheelWatch);
+
+      eventDeltaX > 0 ? self.next() : self.prev();
+
+      setTimeout(() => {
+        // console.log('add mousewheel')
+        self.w.lock = 0;
+        // self.$el.addEventListener("mousewheel", mousewheelWatch);
+      }, 800);
+    })
 
     // window.oncontextmenu = function(e){
     //   // 取消默认的浏览器自带右键

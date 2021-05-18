@@ -102,26 +102,35 @@ export default {
         && this.mouseIndex == newVal) return;
 
       // 键盘触发的事件
-
+console.log('currentIndex', newVal, oldVal)
       if(newVal > oldVal) {
         // 向下移动
-        if(this.currentIndex >= this.list.length) {
+        if(newVal >= this.list.length) {
+          // 到底反弹
           this.scrollLines = 0;
           this.$el.scrollTop = 0;
           this.$emit('change', 0);
         } else if(newVal >= this.scrollLines+this.itemShowCount) {
-          this.scrollLines++;
+          // this.scrollLines++;
+
+          // 可能多一次一行，也可能跳行
+          this.scrollLines = newVal-this.itemShowCount+1;
           this.$el.scrollTop = this.scrollLines*this.itemHeight;
         }
       } else {
+        // 向上移动
         if(newVal < 0) {
+          // 到顶反弹
           this.scrollLines = this.list.length-this.itemShowCount < 0
                             ? 0
                             : this.list.length-this.itemShowCount;
           this.$el.scrollTop = this.scrollLines*this.itemHeight;
           this.$emit('change', this.list.length-1);
         } else if(newVal < this.scrollLines) {
-          this.scrollLines--;
+          // this.scrollLines--;
+
+          // 可能多一次一行，也可能跳行
+          this.scrollLines = newVal;
           this.$el.scrollTop = this.scrollLines*this.itemHeight;
         }
       }

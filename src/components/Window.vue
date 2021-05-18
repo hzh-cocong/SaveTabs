@@ -528,8 +528,10 @@ console.log('get_currentWindowStorageIndex3', index);
       // this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
       if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) {
         this.currentIndex = 1;
+        console.log('ffffffffffffffffffffffffffff')
       } else {
         this.currentIndex = 0;
+        console.log('ffffffffffffffffffffffffffffffffff9')
       }
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁

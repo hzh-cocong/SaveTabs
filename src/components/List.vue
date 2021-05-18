@@ -309,9 +309,14 @@ export default {
 .list {
   /* padding: 0 10px; */ /* overlay */
   padding: 0 0 0 10px; /* 非 overlay 会占用空间 */
+  /*padding: 0 10px; /* 火狐样式 */
+  /* padding-right: calc(100% - 100vw); */
+  /* padding-left: calc(100vw - 100%); */
   margin: 0;
   /* overflow: overlay; */ /* element-ui 无限滚动不支持 overlay，且官方不再升级 */
-  overflow: auto;
+  /* overflow: auto */ /* auto 的话，数据没有超出时，由于没有滚动条占位，会影响宽度 */
+  overflow-y: scroll; /* 火狐无 overlay 属性，并且 scroll 不占用空间 */
+  overflow-x: hidden;
   /* scroll-snap-type: block mandatory; */
 
   /* 设置滚动条动画 */

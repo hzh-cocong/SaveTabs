@@ -476,6 +476,7 @@ console.log('get_currentWindowStorageIndex3', index);
       this.currentIndex++;
     },
     search(keyword) {
+      // alert(keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
 
@@ -1005,6 +1006,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
   },
   mounted() {
+    // todo（删除该段代码）
     window.w = this;
 
     // 并行执行，效率更高

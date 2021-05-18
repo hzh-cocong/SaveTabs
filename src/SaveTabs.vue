@@ -123,9 +123,9 @@
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
                     && (activeWorkspaceIndex=arguments[0],
-                        $refs.carousel.setActiveItem(activeWorkspaceIndex),
-                        focus())">
-            <span class="el-dropdown-link" @click="focus">
+                        $refs.carousel.setActiveItem(activeWorkspaceIndex)),
+                        focus()"><!-- 可能重复点击，所以还是要 focus 的 -->
+            <span class="el-dropdown-link" @click="focus"> <!-- 工作区标题 -->
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 style="width: 20px; height: 20px; position: relative; top: 2px;margin-right: 3px;"
@@ -164,7 +164,7 @@
                 :command="-1"
                 class="other"
                 style="width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
-                @click.native="themeDialogVisible=true;focus();">
+                @click.native="themeDialogVisible=true;"><!-- 顶部已甚至了 click focus -->
                 <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
               </el-dropdown-item>
               <el-dropdown-item
@@ -312,7 +312,7 @@ export default {
       workspaces: [],
       isLoad: false,
       isOpened: {},
-      things: {},
+      things: { 0: []}, // 一开始没有切换事件
       operateOrder: [ 'window', 'note', 'temporary' ],
       lock: false,
 
@@ -393,17 +393,30 @@ export default {
 
     finish() {
       // 只有组件在一开始创建的时候才会调用到这里
-      let something = this.things[ this.activeWorkspaceRefIndex ];
-      if(something) {
-        if(typeof(something) == 'string') {
-          this[something]();
-        } else {
-          this[something.method](...something.params);
-        }
+      let things = this.things[ this.activeWorkspaceRefIndex ];
+      if( ! things) {
+        // 没有其它事情
+        return;
       }
 
+      things.forEach((thing) => {
+        if(typeof(thing) == 'string') {
+          this[thing]();
+        } else {
+          this[thing.method](...thing.params);
+        }
+      });
+
+      // if(something) {
+      //   if(typeof(something) == 'string') {
+      //     this[something]();
+      //   } else {
+      //     this[something.method](...something.params);
+      //   }
+      // }
+
       // 输入框聚焦
-      this.focus();
+      // this.focus();
       // this.$refs['input'].focus();
 
       // 在这里开始显示图片，体验更好
@@ -416,10 +429,13 @@ export default {
     search() {
       if(this.$refs.workspaces == undefined
       || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+console.log('search', this.activeWorkspaceRefIndex )
+        this.things[ this.activeWorkspaceRefIndex ].push('search');
+
         // 如果在这之前已经有其它事情待处理（如添加），则不作查询，会有人帮忙处理
-        if(this.things[ this.activeWorkspaceRefIndex ] == undefined) {
-          this.things[ this.activeWorkspaceRefIndex ] = 'search';
-        }
+        // if(this.things[ this.activeWorkspaceRefIndex ] == undefined) {
+        //   this.things[ this.activeWorkspaceRefIndex ] = 'search';
+        // }
         return;
       }
 
@@ -428,41 +444,34 @@ export default {
     openWindow(event) {
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, event);
     },
-    // openWindow(index) {
-    //   if(this.$refs.workspaces == undefined
-    //   || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-    //     this.things[ this.activeWorkspaceRefIndex ] = 'openWindow';
-    //     return;
-    //   }
-    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index);
+    // down() {
+    //   // if(this.$refs.workspaces == undefined
+    //   // || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+    //   //   this.things[ this.activeWorkspaceRefIndex ].push('down');
+    //   //   return;
+    //   // }
+    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
     // },
-    down() {
-      if(this.$refs.workspaces == undefined
-      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-        this.things[ this.activeWorkspaceRefIndex ] = 'down';
-        return;
-      }
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
-    },
-    up() {
-      if(this.$refs.workspaces == undefined
-      || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-        this.things[ this.activeWorkspaceRefIndex ] = 'up';
-        return;
-      }
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
-    },
+    // up() {
+    //   // if(this.$refs.workspaces == undefined
+    //   // || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
+    //   //   this.things[ this.activeWorkspaceRefIndex ].push('up');
+    //   //   return;
+    //   // }
+    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
+    // },
     add(type) {
       // 先切换到对应的工作区
       let index = this.getTypeIndex(type);
-      this.$refs.carousel.setActiveItem(index);
+      this.$refs.carousel.setActiveItem(index); // 注意切换是异步的
+      console.log('add', this.activeWorkspaceRefIndex);
       if(this.isOpened[ index ] == undefined) {
         // 若工作区还未创建，则由 finish 来处理 add
         let refIndex = Object.keys(this.isOpened).length;
-        this.things[ refIndex ] = {
+        this.things[ refIndex ] = [{
           'method': 'add',
           'params': [type, this.keyword]
-        }
+        }]
         return;
       }
 
@@ -473,6 +482,7 @@ export default {
       //   return;
       // }
       workspace.add((isSuccess)=>{
+        // alert('f', JSON.stringify(isSuccess))
         if(isSuccess) {
           this.keyword = '';
           this.search();
@@ -521,10 +531,12 @@ export default {
       this.lock = true;
 
       if(type == 'down') {
-        this.down();
+        // this.down();
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
         setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'up') {
-        this.up();
+        // this.up();
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
         setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'left') {
         this.$refs.carousel.prev();
@@ -535,9 +547,16 @@ export default {
       }
     },
     workspaceChange(newIndex) {
+      console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
+console.log('workspaceChange2', this.activeWorkspaceRefIndex)
+        console.log('99999999999999999999999999999999999', this.activeWorkspaceRefIndex)
+        // add 会比这里先
+        if( ! this.things[ this.activeWorkspaceRefIndex ]) {
+          this.things[ this.activeWorkspaceRefIndex ] = [];
+        }
       }
 
       if( ! this.config.pinned) {
@@ -550,7 +569,8 @@ export default {
         });
       }
 
-      // 输入框聚焦
+      // 切换后输入框自动获取聚焦
+      // 其它地方注意不要再重复foucs，没有意义
       this.focus();
       // this.$refs['input'].focus();
 

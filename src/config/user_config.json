@@ -69,7 +69,7 @@
         "tab",
         "history"
     ],
-    "active_workspace_type": "tab",
+    "active_workspace_type": "window",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

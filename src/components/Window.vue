@@ -489,9 +489,14 @@ console.log('get_currentWindowStorageIndex3', index);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
-        return keywords.findIndex((keyword) => {
+        // 找出不匹配的过滤掉
+        return ! keywords.some((keyword) => {
+          // 不匹配则为 -1
           return name.indexOf(keyword) == -1;
-        }) == -1;
+        });
+        // return keywords.findIndex((keyword) => {
+        //   return name.indexOf(keyword) == -1;
+        // }) == -1;
       })
       // let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
       //   let name = group.name.toUpperCase();

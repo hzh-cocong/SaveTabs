@@ -340,7 +340,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
-  inject: ['focus', 'prev', 'next'],
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -377,11 +377,6 @@ export default {
       oldGroup: {},
       currentWindow: {},
       haveDifference: true,
-
-      w: {
-        lock: false,
-        timer: null,
-      },
     }
   },
   components: {
@@ -1102,29 +1097,6 @@ console.log('get_currentWindowStorageIndex3', index);
     //   // 更新列表
     //   // this.search();
     // })
-
-//     this.$el.addEventListener("mousewheel", (event) => {
-//       const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
-//       const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
-
-//       if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0) {
-//         // 上下滚动时睡眠，以免突然左右滚动
-//         this.w.lock = true;
-//         console.log('clear')
-//         // 等上下滚动停止一段时间后才允许左右滚动
-//         clearTimeout(this.w.timer);
-//         this.w.timer = setTimeout(() => { this.w.lock = false; }, 100);
-//         return;
-//       }
-// event.preventDefault();
-//       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
-//       if(this.w.lock == true) return;
-//       this.w.lock = true;
-
-//       eventDeltaX > 0 ? this.next() : this.prev();
-
-//       setTimeout(() => { this.w.lock = false; }, 1000);
-//     })
   }
 }
 </script>

@@ -207,7 +207,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
-  inject: ['focus', 'prev', 'next'],
+  inject: ['focus'],
   props: {
     config: {
       type: Object,
@@ -530,60 +530,6 @@ export default {
     },
   },
   mounted() {
-    // this.$el.addEventListener("mousewheel", (event) => {
-    //   const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
-    //   const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;
-    //   console.log('mousewheel:comein', this.w.lock, eventDeltaX, eventDeltaY);
-    //   // if(this.w.lock == 0 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-    //   //   || (this.w.lock != 0 && Math.abs(eventDeltaX) <= 0)) {
-    //   //   return;
-    //   // }
-    //   // if(Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-    //   //   return;
-    //   // if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0)
-    //   //   || (this.w.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
-    //   //   return;
-    //   // if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-    //   //   || (this.w.lock == 1 && (Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)))
-    //   //   return;
-    //   // lock = 0 说明刚开始出发，此时一定是要鼠标左右滑动，且没有上下滚动才有效
-    //   // lock == 1 说明内部没有左右滚动，此时虽然鼠标左右滑动，但上下就算没动也会有不为0的情况，所以就不判断上下是否滚动了
-    //   // lock == 2 说明内部有左右滚动，就不用判断鼠标状态了，我们要做的是让它睡眠
-    //   if((this.w.lock == 0 && Math.abs(eventDeltaX) <= 0 || eventDeltaY != 0)
-    //     || (this.w.lock == 1 && Math.abs(eventDeltaX) <= 0))
-    //     return;
-
-    //   console.log('mousewheel:start', this.w.lock);
-
-    //   // 第一次滚动，会比 mousemove 先，为了直到有没有 mousemove，我们跳过这一步
-    //   if(this.w.lock == 0) { this.w.lock = 1; return;}
-
-    //   // 说明有 mousemove，暂停一段时间再监听
-    //   if(this.w.lock == 2) {
-    //     // this.w.lock = 3;
-    //     // setTimeout(() => { this.w.lock = 0; }, 1000);
-
-    //      // 等 mousemove 停止一段时间后才允许左右切换
-    //     clearTimeout(this.w.timer);
-    //     this.w.timer = setTimeout(() => { this.w.lock = 0; }, 100);
-
-    //     return;
-    //   }
-
-    //   // 睡眠中
-    //   if(this.w.lock == 3) return;
-
-    //   console.log('mousewheel:goto', this.w.lock);
-
-    //   // 可以滚动了，改为 3 是为了避免多次滚动
-    //   // this.w.lock == 1
-    //   this.w.lock = 3
-
-    //   eventDeltaX > 0 ? this.next() : this.prev();
-
-    //   setTimeout(() => { this.w.lock = 0; }, 1000);
-    // })
-
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;

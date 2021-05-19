@@ -126,7 +126,7 @@
               <i
               class="el-icon-close"
               style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="deleteTab"
+              @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color}"></i>
@@ -141,7 +141,8 @@
                 borderColor: isSelected
                       ? config.list_current_focus_state_color
                       : config.list_current_state_color }">
-                <span>{{ lang('currentNote') }}</span>
+                {{ lang('currentNote') +( activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
+                <!-- <span>{{ lang('currentNote') }}</span> -->
             </div>
             <div
               v-else-if="activeTabs[item.url]"
@@ -150,7 +151,9 @@
                 color: isSelected
                     ? config.list_focus_state_color
                     : config.list_state_color }">
-              {{ lang('opened') }}
+              <!-- {{ lang('opened') }} -->
+              <!-- {{ lang('opened') + (activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }} -->
+              {{ lang('opened') + (isSelected && activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
             </div>
             <div
               v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
@@ -269,6 +272,15 @@ export default {
           return true;
         }
       })
+    },
+    currentNote() {
+      if(this.list.length == 0) return {};
+      return this.list[ this.currentIndex ];
+    },
+    currentStorageIndex() {
+      return this.storageList.findIndex(note => {
+        return note.id == this.currentNote.id;
+      });
     }
   },
   methods: {
@@ -422,10 +434,10 @@ console.log('add =====h')
         // 由于在添加的时候还顺带着切换，从而导致搜索，这两个是并行的，会有影响
         // 这里放到定时队列里，相当于排最后，避免冲突，会出现损坏的图片
         // 正式环境其实没有问题，因为图片都是可访问的，而且也没那么快
-        setTimeout(()=>{
-          callback(true)
-        }, 1)
-        // callback(true);
+        // setTimeout(()=>{
+        //   callback(true)
+        // }, 1)
+        callback(true);
       })
 
       // let id = nanoid();
@@ -456,9 +468,9 @@ console.log('add =====h')
       //   callback(true);
       // })
     },
-    openWindow(index) {
+    openWindow(index, event) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
 
@@ -468,69 +480,36 @@ console.log('add =====h')
       }
 
       this.currentIndex = currentIndex;
-      this._openWindow();
+      this._openWindow(event);
     },
-    _openWindow() {
-      let tab = this.list[ this.currentIndex ];
-      let index = this.getStorageIndex();
-
+    _openWindow(event) {
       // 更新时间
-      this.storageList[index].lastVisitTime = new Date().getTime();
+      this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
 
       // 标签已打开，直接切换
-      if( this.activeTabs[tab.tabId]
-        && this.activeTabs[tab.tabId].windowId == tab.windowId
-        && this.activeTabs[tab.tabId].url == tab.url) {
+      if(this.activeTabs[this.currentNote.url]) {
         // 存储新数据（排序发生变化）
-        this.storageList.unshift(this.storageList.splice(index , 1)[0]);
+        this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
+        // 先存储，再切换
         chrome.storage.local.set({tabs: this.storageList}, () => {
-          chrome.tabs.update(tab.tabId, { active: true }, () => {
-            // 先存储，再切换
-            chrome.windows.update(tab.windowId, { focused: true});
+          // 先激活标签，再切换窗口
+          chrome.tabs.update(this.activeTabs[this.currentNote.url].id, { active: true }, () => {
+            chrome.windows.update(this.activeTabs[this.currentNote.url].windowId, { focused: true});
           });
         });
         return;
       }
 
-      // 打开新标签
-      new Promise(resolve => {
-        // 新建标签
-        chrome.tabs.create({url: tab.url, active: false}, tab => {
-          resolve(tab);
-        })
-      }).then(tab => {
-        // 更新数据
-        return new Promise(resolve => {
-          this.storageList[index].tabId = tab.id;
-          this.storageList[index].windowId = tab.windowId;
-          this.storageList.unshift(this.storageList.splice(index , 1)[0]);
-          chrome.storage.local.set({tabs: this.storageList}, () => {
-            resolve(tab);
-          });
-        })
-      }).then((tab) => {
-        // 激活标签
-        chrome.tabs.update(tab.id, { active: true });
-        // 关闭空白标签
-        if(this.currentTab.url == "chrome://newtab/") {
-          chrome.tabs.remove(this.currentTab.id);
-        }
-
-        // 兼容非 popup 方式的操作（过于复杂，而且也不指定对，还是算了）
-        /*
-        this.activeTabs[this.currentTab.id] = {
-          id: tab.id,
-          url: tab.url,
-          windowId: tab.windowId,
-        }
-        this.storageKeyword = ' ';
-        this.search('');//*/
-      })
+      // 存储
+      this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
+      chrome.storage.local.set({tabs: this.storageList}, () => {
+        this.$open(this.currentNote.url, event);
+      });
     },
-    deleteTab() {
+    deleteNote() {
       let tab = this.list[ this.currentIndex ];
-      let index = this.getStorageIndex();
-      this.storageList.splice(index , 1);
+      // let index = this.getStorageIndex();
+      this.storageList.splice(this.currentStorageIndex , 1);
       chrome.storage.local.set({tabs: this.storageList}, () => {
         if(tab.tabId == this.currentTab.id
         && tab.windowId == this.currentTab.windowId
@@ -553,15 +532,6 @@ console.log('add =====h')
 
       this.focus();
     },
-
-    getStorageIndex() {
-      let tab = this.list[ this.currentIndex ];
-      for(let i in this.storageList) {
-        if(this.storageList[i].id == tab.id) {
-          return i;
-        }
-      }
-    }
   },
   mounted() {
     //todo
@@ -574,6 +544,10 @@ console.log('add =====h')
           this.storageList = items.tabs.map((tab) => {
             // 兼容旧版（旧版没有自动去除末尾 /）
             tab.url = tab.url.replace(/(\/*$)/g,"");
+            // 去除旧版一些没用的数据
+            delete tab.tabId;
+            delete tab.windowId;
+
             return tab;
           });
           resolve()

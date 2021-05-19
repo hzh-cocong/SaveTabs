@@ -612,8 +612,11 @@ console.log('get_currentWindowStorageIndex3', index);
         }).then((window) => {
           // 如果是已保存过并已打开（即当前窗口），则先解除当前窗口
           if(this.isInCurrentWindow) {
-            // 当前窗口肯定排在第一
-            this.storageList[0].windowId = -1;
+            // // 当前窗口肯定排在第一
+            // this.storageList[0].windowId = -1;
+
+            // 当前窗口不一定排第一，因为导入功能
+            this.storageList[ this.currentWindowStorageIndex ].windowId = -1;
           }
 
           // 添加数据并绑定窗口id

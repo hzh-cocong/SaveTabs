@@ -167,6 +167,8 @@ const tool = {
           let str = content.toUpperCase();
           for(let keyword of keywords) {
             keyword = keyword.toUpperCase();
+            if(keyword == '') continue;
+
             let index = 0;
             do {
               index = str.indexOf(keyword, index);

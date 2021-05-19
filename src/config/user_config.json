@@ -85,7 +85,7 @@
         "tab",
         "history"
     ],
-    "active_workspace_type": "note",
+    "active_workspace_type": "tabs",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

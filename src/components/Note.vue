@@ -35,18 +35,14 @@
       <div
         class="item"
         :style="{
-          backgroundColor: item.tabId == currentTab.id
-                        && item.windowId == currentTab.windowId
-                        && item.url == currentTab.url
+          backgroundColor: item.url == currentTab.url
                           ? ( isSelected
                               ? config.list_current_focus_background_color
                               : config.list_current_background_color)
                           : ( isSelected
                               ? config.list_focus_background_color
                               : config.list_background_color),
-          color: item.tabId == currentTab.id
-              && item.windowId == currentTab.windowId
-              && item.url == currentTab.url
+          color: item.url == currentTab.url
               ? ( isSelected
                   ? config.list_current_focus_font_color
                   : config.list_current_font_color)
@@ -54,18 +50,14 @@
                   ? config.list_focus_font_color
                   : config.list_font_color),
 
-          '--list-highlight-color': item.tabId == currentTab.id
-                                  && item.windowId == currentTab.windowId
-                                  && item.url == currentTab.url
+          '--list-highlight-color': item.url == currentTab.url
                                   ? ( isSelected
                                       ? config.list_current_focus_highlight_color
                                       : config.list_current_highlight_color)
                                   : ( isSelected
                                       ? config.list_focus_highlight_color
                                       : config.list_highlight_color),
-          '--list-highlight-weight': item.tabId == currentTab.id
-                                  && item.windowId == currentTab.windowId
-                                  && item.url == currentTab.url
+          '--list-highlight-weight': item.url == currentTab.url
                                   ? ( isSelected
                                       ? config.list_current_focus_highlight_weight
                                       : config.list_current_highlight_weight)
@@ -92,12 +84,6 @@
             <div slot="placeholder" class="image-slot">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <!-- <div slot="placeholder" class="image-slot">
-              <img
-                v-if="index >= config.item_show_count"
-                src="../assets/fallback.png"
-                style="width:100%; height: 100%;" />
-            </div> -->
           </el-image>
         </span>
 
@@ -134,8 +120,7 @@
 
         <div class="right">
           <div v-if="isActive
-                  || (activeTabs[item.tabId]
-                    && activeTabs[item.tabId].windowId == item.windowId)
+                  || activeTabs[item.url]
                   || (storageKeyword != '' && item.lastVisitTime != undefined)">
             <div v-if="isActive">
               <i
@@ -147,9 +132,7 @@
                 borderColor:config.list_focus_font_color}"></i>
             </div>
             <div
-              v-else-if="item.tabId == currentTab.id
-                      && item.windowId == currentTab.windowId
-                      && item.url == currentTab.url"
+              v-else-if="item.url == currentTab.url"
               :style="{
                 fontSize: config.list_state_size+'px',
                 color: isSelected
@@ -161,9 +144,7 @@
                 <span>{{ lang('currentNote') }}</span>
             </div>
             <div
-              v-else-if="activeTabs[item.tabId]
-                      && activeTabs[item.tabId].windowId == item.windowId
-                      && activeTabs[item.tabId].url == item.url"
+              v-else-if="activeTabs[item.url]"
               :style="{
                 fontSize: config.list_state_size+'px',
                 color: isSelected
@@ -182,10 +163,7 @@
             </div>
           </div>
           <div
-            v-show=" ! isActive
-                  && ! (item.tabId == currentTab.id
-                    && item.windowId == currentTab.windowId
-                    && item.url == currentTab.url)">
+            v-show=" ! isActive && item.url != currentTab.url">
             <span
               v-if="isSelected"
               :style="{
@@ -201,15 +179,11 @@
                       && (index-$refs.list.scrollLines+1) >= 1
                       && (index-$refs.list.scrollLines+1) <= 9"
               :style="{
-                fontSize: (activeTabs[item.tabId]
-                          && activeTabs[item.tabId].windowId == item.windowId
-                          && activeTabs[item.tabId].url == item.url)
+                fontSize: activeTabs[item.url]
                         || (storageKeyword != ''  && item.lastVisitTime != undefined)
                     ? config.list_state_size+'px'
                     : config.list_keymap_size+'px',
-                color: activeTabs[item.tabId]
-                    && activeTabs[item.tabId].windowId == item.windowId
-                    && activeTabs[item.tabId].url == item.url
+                color: activeTabs[item.url]
                     ? config.list_state_color
                     : config.list_keymap_color }">{{
                       _device.platform == 'Win'
@@ -258,7 +232,7 @@ export default {
       currentTab: {},
       activeTabs: {},
 
-      isInCurrentTab: false,
+      // isInCurrentTab: false,
 
       isSearched: false,
     }
@@ -288,6 +262,14 @@ export default {
 
       return highlightMap;
     },
+    isInCurrentTab() {
+      return this.storageList.some((tab) => {
+        // 兼容旧版（旧版没有自动去除末尾 /
+        if(tab.url == this.currentTab.url) {
+          return true;
+        }
+      })
+    }
   },
   methods: {
     up() {
@@ -297,42 +279,63 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
+      console.log('search===h', typeof this.storageKeyword, this.storageKeyword==undefined||this.storageKeyword.length);
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-
+console.log('search2===h');
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();
 
       // 查找
-      let filterList = this.storageList.filter(tab => {
+      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+      // 注意这里关键词为空就不会去循环，所以优化效果可能不大
+      let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
-        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
-          if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
-            return false;
-          }
-        }
-        return true;
+        // 找出不匹配的过滤掉
+        return ! keywords.some((keyword) => {
+          // 不匹配则为 -1
+          return title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1 ;
+        });
       })
+
+      // // 查找
+      // let filterList = this.storageList.filter(tab => {
+      //   let title = tab.title.toUpperCase();
+      //   let url = tab.url.toUpperCase();
+      //   for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
+      //     if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // })
 
       // 重新排序
       let currentList = filterList.filter(tab => {
+        return tab.url == this.currentTab.url;
+
         // 当前窗口需要三个条件同时满足
-        return tab.tabId == this.currentTab.id
-            && tab.windowId == this.currentTab.windowId
-            && tab.url == this.currentTab.url;
+        // return tab.tabId == this.currentTab.id
+        //     && tab.windowId == this.currentTab.windowId
+        //     && tab.url == this.currentTab.url;
       });
       let openedList = filterList.filter(tab => {
+        return this.activeTabs[tab.url]
+            && this.activeTabs[tab.url].url != this.currentTab.url;
+
         // 需已打开，并且地址未变化，而且不是当前窗口
-        return this.activeTabs[tab.tabId]
-            && this.activeTabs[tab.tabId].url == tab.url
-            && ! (tab.tabId == this.currentTab.id
-                && tab.windowId == this.currentTab.windowId);
+        // return this.activeTabs[tab.tabId]
+        //     && this.activeTabs[tab.tabId].url == tab.url
+        //     && ! (tab.tabId == this.currentTab.id
+        //         && tab.windowId == this.currentTab.windowId);
       });
       let closeList = filterList.filter(tab => {
-        return ! this.activeTabs[tab.tabId]
-              || this.activeTabs[tab.tabId].url != tab.url;
+        return ! this.activeTabs[tab.url];
+
+        // return ! this.activeTabs[tab.tabId]
+        //       || this.activeTabs[tab.tabId].url != tab.url;
       });
 
       // 列表赋值
@@ -377,33 +380,81 @@ export default {
         return;
       }
 
-      let id = nanoid();
-      this.storageList.unshift({
-        id: id,
-        title: this.currentTab.title,
-        url: this.currentTab.url,
-        icon: this.currentTab.favIconUrl,
-        tabId: this.currentTab.id,
-        windowId: this.currentTab.windowId,
-        lastVisitTime: new Date().getTime(),
-      });
+      // 获取当前标签
+      // 重新获取，因为网页可能还未加载完
+      new Promise((resolve) => {
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+          // 去除末尾 /
+          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"")
 
-      // 保存数据
-      chrome.storage.local.set({tabs: this.storageList}, () => {
-
-        this.activeTabs[this.currentTab.id] = {
-          id: this.currentTab.id,
-          url: this.currentTab.url,
-          windowId: this.currentTab.windowId,
-        }
-        this.isInCurrentTab = true;
+          resolve(tabs[0])
+        })
+      }).then((tab) => {
+        // 构造数据
+        this.storageList.unshift({
+          id: nanoid(),
+          title: tab.title,
+          url: tab.url,
+          icon: tab.favIconUrl,
+          // tabId: this.currentTab.id,
+          // windowId: this.currentTab.windowId,
+          lastVisitTime: new Date().getTime(),
+        });
+        return tab;
+      }).then((tab) => {
+        // 保存数据
+        return new Promise((resolve) => {
+          chrome.storage.local.set({tabs: this.storageList}, () => {
+            resolve(tab);
+          })
+        })
+      }).then((tab) => {
+        // 更新结果
+        this.currentTab = tab;
+        // 其实不写也没关系，只是要是 currenTab 真的变了就不好了（测试也容易，因为测试的数据有问题）
+        this.activeTabs[ this.currentTab.url ] = this.currentTab;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         this.storageKeyword = ' ';
-
+console.log('add =====h')
         // this.search(this.storageKeyword);
-        callback(true);
+
+        // 由于在添加的时候还顺带着切换，从而导致搜索，这两个是并行的，会有影响
+        // 这里放到定时队列里，相当于排最后，避免冲突，会出现损坏的图片
+        // 正式环境其实没有问题，因为图片都是可访问的，而且也没那么快
+        setTimeout(()=>{
+          callback(true)
+        }, 1)
+        // callback(true);
       })
+
+      // let id = nanoid();
+      // this.storageList.unshift({
+      //   id: id,
+      //   title: this.currentTab.title,
+      //   url: this.currentTab.url,
+      //   icon: this.currentTab.favIconUrl,
+      //   // tabId: this.currentTab.id,
+      //   // windowId: this.currentTab.windowId,
+      //   lastVisitTime: new Date().getTime(),
+      // });
+
+      // // 保存数据
+      // chrome.storage.local.set({tabs: this.storageList}, () => {
+
+      //   // this.activeTabs[this.currentTab.id] = {
+      //   //   id: this.currentTab.id,
+      //   //   url: this.currentTab.url,
+      //   //   windowId: this.currentTab.windowId,
+      //   // }
+      //   // this.isInCurrentTab = true;
+
+      //   // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+      //   this.storageKeyword = ' ';
+
+      //   // this.search(this.storageKeyword);
+      //   callback(true);
+      // })
     },
     openWindow(index) {
       if(index == undefined) {
@@ -516,56 +567,97 @@ export default {
     //todo
     window.n = this;
 
-    new Promise((resolve) => {
-      // 获取本地数据
-      chrome.storage.local.get({tabs: []}, items => {
-        this.storageList = items.tabs;
-        resolve()
-      });
-    }).then(() => {
+    Promise.all([
+      new Promise((resolve) => {
+        // 获取本地数据
+        chrome.storage.local.get({tabs: []}, items => {
+          this.storageList = items.tabs.map((tab) => {
+            // 兼容旧版（旧版没有自动去除末尾 /）
+            tab.url = tab.url.replace(/(\/*$)/g,"");
+            return tab;
+          });
+          resolve()
+        });
+      }),
       // 获取当前标签
-      return new Promise((resolve) => {
+      new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+          // 去除末尾 /
+          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"")
           this.currentTab = tabs[0];
           resolve()
         })
-      })
-    }).then(() => {
-      // 处理当前标签数据
-
-      // 判断是否存在在当前标签
-      let index = -1;
-      for(let i in this.storageList) {
-        if(this.storageList[i].windowId == this.currentTab.windowId
-          && this.storageList[i].tabId == this.currentTab.id
-          && this.storageList[i].url == this.currentTab.url) {
-          index = i;
-          break;
-        }
-      }
-      if(index == -1) return;
-
-      // 标记
-      // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
-      this.isInCurrentTab = true;
-    }).then(() => {
+      }),
       // 获取全部标签
-      return new Promise((resolve) => {
+      new Promise((resolve) => {
         chrome.tabs.query({}, tabs => {
-          resolve(tabs)
+          for(let tab of tabs) {
+            // 去除末尾 /
+            tab.url = tab.url.replace(/(\/*$)/g,"");
+            if(this.activeTabs[ tab.url ] == undefined) {
+              tab.count = 1;
+              this.activeTabs[ tab.url ] = tab;
+            } else {
+              this.activeTabs[ tab.url ].count++;
+            }
+          }
+          resolve()
         })
       })
-    }).then((tabs) => {
-      // 保存活跃的窗口
-      for(let tab of tabs) {
-        this.activeTabs[ tab.id ] = tab;// tab.windowId;
-      }
-
+    ]).then(() => {
       this.$emit('finish');
-
-      // 更新列表
-      // this.search(this.storageKeyword);
     })
+
+    // new Promise((resolve) => {
+    //   // 获取本地数据
+    //   chrome.storage.local.get({tabs: []}, items => {
+    //     this.storageList = items.tabs;
+    //     resolve()
+    //   });
+    // }).then(() => {
+    //   // 获取当前标签
+    //   return new Promise((resolve) => {
+    //     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+    //       this.currentTab = tabs[0];
+    //       resolve()
+    //     })
+    //   })
+    // }).then(() => {
+    //   // 处理当前标签数据
+
+    //   // 判断是否存在在当前标签
+    //   let index = -1;
+    //   for(let i in this.storageList) {
+    //     if(this.storageList[i].windowId == this.currentTab.windowId
+    //       && this.storageList[i].tabId == this.currentTab.id
+    //       && this.storageList[i].url == this.currentTab.url) {
+    //       index = i;
+    //       break;
+    //     }
+    //   }
+    //   if(index == -1) return;
+
+    //   // 标记
+    //   // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
+    //   this.isInCurrentTab = true;
+    // }).then(() => {
+    //   // 获取全部标签
+    //   return new Promise((resolve) => {
+    //     chrome.tabs.query({}, tabs => {
+    //       resolve(tabs)
+    //     })
+    //   })
+    // }).then((tabs) => {
+    //   // 保存活跃的窗口
+    //   for(let tab of tabs) {
+    //     this.activeTabs[ tab.id ] = tab;// tab.windowId;
+    //   }
+
+    //   this.$emit('finish');
+
+    //   // 更新列表
+    //   // this.search(this.storageKeyword);
+    // })
   }
 }
 </script>

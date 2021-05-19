@@ -644,6 +644,7 @@ console.log('get_currentWindowStorageIndex3', index);
         }).then((window) => {
           // 更新结果
           this.currentWindow = window;
+          // 其实不写也没关系，只是要是 currentWindow 真的变了就不好了
           this.activeWindows[ this.currentWindowId ] = true;
           // this.isCurrentWindowChange = false;
           // this.isInCurrentWindow = true;

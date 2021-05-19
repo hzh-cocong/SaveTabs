@@ -50,7 +50,22 @@
                               : config.list_current_font_color)
                           : ( isSelected
                               ? config.list_focus_font_color
-                              : config.list_font_color)
+                              : config.list_font_color),
+
+          '--list-highlight-color': item.windowId == currentWindowId
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_color
+                                      : config.list_current_highlight_color)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_color
+                                      : config.list_highlight_color),
+          '--list-highlight-weight': item.windowId == currentWindowId
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_weight
+                                      : config.list_current_highlight_weight)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_weight
+                                      : config.list_highlight_weight),
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
@@ -73,10 +88,21 @@
             </div>
           </el-image>
         </span>
+<!--
+        <span
+          class="title"
+          :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span> -->
+<!--
+        <span
+          class="title"
+          :style="{fontSize: config.list_font_size+'px'}"
+          v-html="highlightMap[item.id]"></span> -->
+
 
         <span
           class="title"
-          :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span>
+          :style="{fontSize: config.list_font_size+'px'}"
+          v-html="highlightMap[item.id]"></span>
 
         <div class="right">
           <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
@@ -383,6 +409,24 @@ export default {
     List,
   },
   computed: {
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = {};
+      this.list.forEach(item => {
+        highlightMap[ item.id ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
+      });
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
+    },
     currentWindowId() {
       console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;
@@ -492,19 +536,7 @@ console.log('get_currentWindowStorageIndex3', index);
           // 不匹配则为 -1
           return name.indexOf(keyword) == -1;
         });
-        // return keywords.findIndex((keyword) => {
-        //   return name.indexOf(keyword) == -1;
-        // }) == -1;
       })
-      // let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
-      //   let name = group.name.toUpperCase();
-      //   for(let keyword of keywords) {
-      //     if(name.indexOf(keyword) == -1) {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // })
 
       // 重新排序
       let currentList = filterList.filter(group => {
@@ -523,26 +555,25 @@ console.log('get_currentWindowStorageIndex3', index);
       this.page = 1;
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      // this.scrollDisabled = this.cacheList.length <= this.config.list_page_count;
       if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) {
         this.currentIndex = 1;
-        console.log('ffffffffffffffffffffffffffff')
       } else {
         this.currentIndex = 0;
-        console.log('ffffffffffffffffffffffffffffffffff9')
       }
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
     load() {
+      // 加载数据
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
         return;
       }
 
-      this.list.push(...data);
+      // 赋值
+      this.list = this.list.concat(data);
       this.page++;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
@@ -1151,9 +1182,16 @@ console.log('get_currentWindowStorageIndex3', index);
 .el-badge.refresh {
     margin-left: 10px;
 }
+
+
 </style>
 
 <style>
+.window strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
+
 .window .el-badge {
   margin-right: 10px;
   vertical-align: inherit;

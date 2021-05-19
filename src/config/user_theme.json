@@ -5,6 +5,8 @@
         "isSelect": true,
         "config": {
             "list_font_color": "#000000",
+            "list_highlight_color": "#ff0000",
+            "list_highlight_weight": "400",
             "list_background_color": "#ffffff",
             "list_state_color": "#339966",
             "list_keymap_color": "#0066CC",
@@ -19,6 +21,8 @@
 
             "list_focus_background_color": "#7497de",
             "list_focus_font_color": "#ffffff",
+            "list_focus_highlight_color": "#ff0000",
+            "list_focus_highlight_weight": "400",
             "list_focus_state_color": "#33FF66",
             "list_focus_keymap_color": "#33FF66",
 
@@ -76,6 +80,8 @@
         "isSelect": true,
         "config": {
             "list_font_color": "#000000",
+            "list_highlight_color": "blue",
+            "list_highlight_weight": "900",
             "list_background_color": "yellow",
             "list_state_color": "#339966",
             "list_keymap_color": "#0066CC",
@@ -90,6 +96,8 @@
 
             "list_focus_background_color": "#7497de",
             "list_focus_font_color": "#ffffff",
+            "list_focus_highlight_color": "green",
+            "list_focus_highlight_weight": "900",
             "list_focus_state_color": "#33FF66",
             "list_focus_keymap_color": "#33FF66",
 
@@ -147,6 +155,7 @@
         "isSelect": true,
         "config": {
             "list_font_color": "#000000",
+            "list_highlight_color": "green",
             "list_background_color": "#892402",
             "list_state_color": "#339966",
             "list_keymap_color": "#0066CC",
@@ -161,6 +170,8 @@
 
             "list_focus_background_color": "#faead1",
             "list_focus_font_color": "#ffffff",
+            "list_focus_highlight_color": "yellow",
+            "list_focus_highlight_weight": "900",
             "list_focus_state_color": "#33FF66",
             "list_focus_keymap_color": "#33FF66",
 

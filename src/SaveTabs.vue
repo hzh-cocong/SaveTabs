@@ -80,24 +80,25 @@
                       +'10px '
                       +(config.padding_width+10)+'px',
                 height: config.toolbar_height+'px',
-  '--toolbar_height': config.toolbar_height+'px',
-  '--toolbar-background-color': config.toolbar_background_color,
-  '--toolbar-border-color': config.toolbar_border_color,
 
-  '--toolbar-icon-color': config.toolbar_icon_color,
-  '--toolbar-icon-focus-color': config.toolbar_icon_focus_color,
+                '--toolbar_height': config.toolbar_height+'px',
+                '--toolbar-background-color': config.toolbar_background_color,
+                '--toolbar-border-color': config.toolbar_border_color,
 
-  '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
-  '--toolbar-input-font-color': config.toolbar_input_font_color,
-  '--toolbar-input-focus-color': config.toolbar_input_focus_color,
+                '--toolbar-icon-color': config.toolbar_icon_color,
+                '--toolbar-icon-focus-color': config.toolbar_icon_focus_color,
 
-  '--toolbar-button-font-color': config.toolbar_button_font_color,
-  '--toolbar-button-hover-font-color': config.toolbar_button_hover_font_color,
-  '--toolbar-button-active-font-color': config.toolbar_button_active_font_color,
-  '--toolbar-button-hover-border-color': config.toolbar_button_hover_border_color,
-  '--toolbar-button-active-border-color': config.toolbar_button_active_border_color,
-  '--toolbar-button-hover-background-color': config.toolbar_button_hover_background_color,
-  '--toolbar-button-active-background-color': config.toolbar_button_active_background_color,
+                '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
+                '--toolbar-input-font-color': config.toolbar_input_font_color,
+                '--toolbar-input-focus-color': config.toolbar_input_focus_color,
+
+                '--toolbar-button-font-color': config.toolbar_button_font_color,
+                '--toolbar-button-hover-font-color': config.toolbar_button_hover_font_color,
+                '--toolbar-button-active-font-color': config.toolbar_button_active_font_color,
+                '--toolbar-button-hover-border-color': config.toolbar_button_hover_border_color,
+                '--toolbar-button-active-border-color': config.toolbar_button_active_border_color,
+                '--toolbar-button-hover-background-color': config.toolbar_button_hover_background_color,
+                '--toolbar-button-active-background-color': config.toolbar_button_active_background_color,
 
                 }">
       <el-input
@@ -263,7 +264,8 @@
       :style="{ padding: '0 '
                         +config.padding_width+'px '
                         +config.padding_width+'px '
-                        +config.padding_width+'px' }"
+                        +config.padding_width+'px',
+              }"
       trigger="click"
       @change="workspaceChange"
       ref="carousel">
@@ -846,9 +848,7 @@ img {
   padding-bottom: 0px !important;
 }
 
-
 /* 组件共享样式 */
-
 .window-message-box {
   width: 80%;
   min-width: auto !important;

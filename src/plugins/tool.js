@@ -78,6 +78,58 @@ const tool = {
           var r = window.location.search.substr(1).match(reg); // 匹配目标参数
           if (r != null) return decodeURI(r[2]);
           return null; // 返回参数值
+        },
+        highlight(content, keywords, leftTag, rightTag) {
+          if(keywords == '') {
+            return content.escape();
+          }
+
+          keywords = keywords.split(/\s+/);
+
+          // 查找所有位置
+          let pos = [];
+          let str = content.toUpperCase();
+          for(let keyword of keywords) {
+            keyword = keyword.toUpperCase();
+            let index = 0;
+            do {
+              index = str.indexOf(keyword, index);
+              if(index == -1) break;
+              pos.push([index, index+keyword.length-1]);
+              index = index+keyword.length;
+            }while(index != -1);
+          }
+
+          // 合并重复区间
+          if(pos.length > 1) {
+            // alert('s')
+            pos = pos.sort(function(a, b){return a[0] - b[0]});
+            let merge = [];
+            for(let i = 0, k = 0; i < pos.length; i++) {
+              if(i == 0 || merge[k-1][1] < pos[i][0]) {
+                merge.push(pos[i]);
+                k++;
+              } else {
+                merge[k-1][1] = Math.max(merge[k-1][1], pos[i][1]);
+              }
+            }
+            pos = merge;
+          }
+
+          // 字符替换（高亮）
+          let res = '';
+          for(let i in pos) {
+            if(i == 0) {
+              res += content.substring(0, pos[i][0]).escape()
+                  + leftTag+content.substring(pos[i][0], pos[i][1]+1).escape()+rightTag;
+            } else {
+              res += content.substring(pos[i-1][1]+1, pos[i][0]).escape()
+                  + leftTag+content.substring(pos[i][0], pos[i][1]+1).escape()+rightTag;
+            }
+          }
+          res += content.substring(pos[pos.length-1][1]+1, content.length).escape();
+
+          return res;
         }
       }
     })
@@ -148,6 +200,20 @@ const tool = {
         isPC: isPC
       };
     })();
+
+    // 防止 xss 攻击
+    String.prototype.escape = function() {
+      var tagsToReplace = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&apos;',
+        '"': '&quot;',
+      };
+      return this.replace(/[&<>'"]/g, function(tag) {
+          return tagsToReplace[tag] || tag;
+      });
+    };
 
   }
 }

@@ -177,6 +177,10 @@ const tool = {
           }
 
           console.log('pos', JSON.parse(JSON.stringify(pos)));
+          // 无任何匹配
+          if(pos.length <= 0) {
+            return content.escape();
+          }
 
           // 合并重复区间
           if(pos.length > 1) {
@@ -210,9 +214,7 @@ const tool = {
                   + leftTag+content.substring(pos[i][0], pos[i][1]+1).escape()+rightTag;
             }
           }
-          if(pos.length > 0) {
-            res += content.substring(pos[pos.length-1][1]+1, content.length).escape();
-          }
+          res += content.substring(pos[pos.length-1][1]+1, content.length).escape();
 
           return res;
         }

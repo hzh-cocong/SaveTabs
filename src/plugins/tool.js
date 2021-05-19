@@ -100,6 +100,11 @@ const tool = {
             }while(index != -1);
           }
 
+          // 无任何匹配
+          if(pos.length <= 0) {
+            return content.escape();
+          }
+
           // 合并重复区间
           if(pos.length > 1) {
             // alert('s')

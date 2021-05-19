@@ -706,6 +706,7 @@ console.log('get_currentWindowStorageIndex3', index);
       }
 
       // 当前窗口打开，且不关闭，也不进行存储更新（高亮会自动也没办法，不过感觉还不错）
+      // 不自动关闭空白标签页，有隔离作用
       if((this._device.platform == 'Mac' && event.metaKey == true)
       || (this._device.platform != '' && event.ctrlKey == true)) {
         Promise.all(urls.map((url) => {

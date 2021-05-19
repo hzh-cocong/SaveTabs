@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="note">
 
   <el-alert
     type="info"
@@ -52,7 +52,26 @@
                   : config.list_current_font_color)
               : ( isSelected
                   ? config.list_focus_font_color
-                  : config.list_font_color)
+                  : config.list_font_color),
+
+          '--list-highlight-color': item.tabId == currentTab.id
+                                  && item.windowId == currentTab.windowId
+                                  && item.url == currentTab.url
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_color
+                                      : config.list_current_highlight_color)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_color
+                                      : config.list_highlight_color),
+          '--list-highlight-weight': item.tabId == currentTab.id
+                                  && item.windowId == currentTab.windowId
+                                  && item.url == currentTab.url
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_weight
+                                      : config.list_current_highlight_weight)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_weight
+                                      : config.list_highlight_weight),
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow()">
 
@@ -83,19 +102,34 @@
         </span>
 
         <div class="main">
-          <div
+          <!-- <div
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">{{
                 item.title
-            }}</div>
+            }}</div> -->
           <div
+            class="title"
+            :style="{ fontSize: config.list_font_size+'px' }"
+            v-html="highlightMap[item.id].title"></div>
+          <!-- <div
+            v-if="storageKeyword != ''"
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
+              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
+          <div
+            v-if="storageKeyword != ''"
+            class="sub-title"
+            :style="{
+              fontSize: config.list_explain_font_size+'px',
+              color: isSelected
+                    ? config.list_explain_focus_font_color
+                    : config.list_explain_font_color,
+              direction: isSelected ? 'rtl' : 'ltr' }"
+            v-html="highlightMap[item.id].url"></div>
         </div>
 
         <div class="right">
@@ -162,7 +196,7 @@
                     ? config.list_focus_keymap_color
                     : config.list_focus_keymap_color }">↩</span>
             <span
-              v-else-if="platform != ''
+              v-else-if="_device.platform != ''
                       && (index-$refs.list.scrollLines+1) <= config.item_show_count
                       && (index-$refs.list.scrollLines+1) >= 1
                       && (index-$refs.list.scrollLines+1) <= 9"
@@ -178,7 +212,7 @@
                     && activeTabs[item.tabId].url == item.url
                     ? config.list_state_color
                     : config.list_keymap_color }">{{
-                      platform == 'Win'
+                      _device.platform == 'Win'
                       ?  'Alt+'+(index-$refs.list.scrollLines+1)
                       : '⌘'+(index-$refs.list.scrollLines+1)
                       }}</span>
@@ -208,11 +242,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    platform: {
-      type: String,
-      required: false,
-      default: '',
     }
   },
   data() {
@@ -236,6 +265,29 @@ export default {
   },
   components: {
     List,
+  },
+  computed: {
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = {};
+      this.list.forEach(item => {
+        highlightMap[ item.id ] = {
+          title: this.highlight(item.title, this.storageKeyword, '<strong>', '</strong>'),
+          url: this.highlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
+        }
+      });
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
+    },
   },
   methods: {
     up() {
@@ -461,6 +513,9 @@ export default {
     }
   },
   mounted() {
+    //todo
+    window.n = this;
+
     new Promise((resolve) => {
       // 获取本地数据
       chrome.storage.local.get({tabs: []}, items => {
@@ -579,6 +634,11 @@ export default {
 .el-badge.refresh {
     margin-left: 10px;
 }
+</style>
 
-
+<style>
+.note strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
 </style>

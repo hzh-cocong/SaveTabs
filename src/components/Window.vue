@@ -16,9 +16,9 @@
         <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
         <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
@@ -250,7 +250,7 @@
           class="tab-name"
           type="default"
           :title="tab.url"
-          @click="$open(tab.url)">{{ tab.title }}</span>
+          @click="$open(tab.url, $event)">{{ tab.title }}</span>
 
       </li>
     </ul>
@@ -306,7 +306,7 @@
               class="tab-name"
               type="default"
               :title="'【icon】'+(tab.icon || '')+'\r\n'+'【url】'+tab.url"
-              @click="$open(tab.url)">{{ tab.title }}</span>
+              @click="$open(tab.url, $event)">{{ tab.title }}</span>
 
           </li>
         </ul>
@@ -707,7 +707,7 @@ console.log('get_currentWindowStorageIndex3', index);
 
       // 当前窗口打开，且不关闭，也不进行存储更新（高亮会自动也没办法，不过感觉还不错）
       if((this._device.platform == 'Mac' && event.metaKey == true)
-      || (this._device.platform != '' && event.altKey == true)) {
+      || (this._device.platform != '' && event.ctrlKey == true)) {
         Promise.all(urls.map((url) => {
           return new Promise((resolve) => {
             chrome.tabs.create({url: url, active: false}, (tab) => {
@@ -731,7 +731,7 @@ console.log('get_currentWindowStorageIndex3', index);
       }
 
       // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
-      // let type = this._device.isPC && event.shiftKey ? 'panel' : 'normal';
+      //let type = this._device.platform != '' && event.shiftKey ? 'panel' : 'normal';
       let type = 'normal';
       new Promise(resolve => {
         // 新建新窗口（先不激活，否则无法存储数据）

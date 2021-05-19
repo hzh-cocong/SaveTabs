@@ -140,35 +140,40 @@ const tool = {
     })
 
     // 添加实例方法
-    Vue.prototype.$open = function (url) {
-      // 注意 view 不支持，需要安装依赖
-      // let tab = await new Promise((resolve) => {
-      //   chrome.tabs.getCurrent((tab) => {
-      //     resolve(tab);
-      //   })
-      // })
-      // 注意 background 和 popup 没有结果
-      // chrome.tabs.getCurrent((tab) => {
-      //   console.log('tab', tab)
-      //   chrome.tabs.create({
-      //     url: url,
-      //     openerTabId: tab.id,
-      //     index: tab.index+1,
-      //   });
-      // })
-      chrome.tabs.query({active:true, currentWindow: true}, (tabs) => {
-        if(tabs.length == 1) {
-          chrome.tabs.create({
-            url: url,
-            openerTabId: tabs[0].id,
-            index: tabs[0].index+1,
-          });
-        } else {
-          chrome.tabs.create({
-            url: url
-          });
-        }
-      })
+    Vue.prototype.$open = function (url, event) {
+      // 不管空白页
+      // platform = '' 空的设备暂不支持其它方式打开
+      if(event != undefined
+      &&((this._device.platform == 'Mac' && event.metaKey == true)
+        || (this._device.platform != '' && event.ctrlKey == true))) {
+        // 覆盖当前窗口
+        chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
+          if(tabs.length == 1) {
+            chrome.tabs.update(tabs[0].id, { url: url });
+          } else {
+            chrome.tabs.create({ url: url });
+          }
+        })
+      } else if(event != undefined
+              && this._device.platform != ''
+              && event.shiftKey == true) {
+        // 新窗口打开
+        chrome.windows.create({ url: [ url ], focused: true, type: 'normal' })
+      } else if(event != undefined
+              && this._device.platform != ''
+              && event.altKey == true) {
+        // 新窗口打开（面板方式）
+        chrome.windows.create({ url: [ url ], focused: true, type: 'panel' })
+      } else {
+        // 下个位置打开（默认方式）
+        chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
+          if(tabs.length == 1) {
+            chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1 });
+          } else {
+            chrome.tabs.create({ url: url });
+          }
+        })
+      }
     }
     Vue.prototype.$active = function (tabId) {
       chrome.tabs.update(tabId, {

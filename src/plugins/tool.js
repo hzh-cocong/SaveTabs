@@ -142,7 +142,7 @@ const tool = {
     })
 
     // 添加实例方法
-    Vue.prototype.$open = function (url, event) {
+    Vue.prototype.$open = function (url, event, callback) {
       // 不管空白页
       // platform = '' 空的设备暂不支持其它方式打开
       if(event != undefined
@@ -151,28 +151,42 @@ const tool = {
         // 覆盖当前窗口
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
-            chrome.tabs.update(tabs[0].id, { url: url });
+            chrome.tabs.update(tabs[0].id, { url: url }, (tab) => {
+              // tab 并没有更新 url，我们来修复它，title其实也不对，不过并没有用到它，这里也无法修复
+              tab.url = url;
+              callback != undefined && callback(tab, 'cover');
+            });
           } else {
-            chrome.tabs.create({ url: url });
+            chrome.tabs.create({ url: url }, (tab) => {
+              callback != undefined && callback(tab, 'tab');
+            });
           }
         })
       } else if(event != undefined
               && this._device.platform != ''
               && event.shiftKey == true) {
         // 新窗口打开
-        chrome.windows.create({ url: [ url ], focused: true, type: 'normal' })
+        chrome.windows.create({ url: [ url ], focused: true, type: 'normal' }, (window) => {
+          callback != undefined && callback(window.tabs[0], 'window');
+        });
       } else if(event != undefined
               && this._device.platform != ''
               && event.altKey == true) {
         // 新窗口打开（面板方式）
-        chrome.windows.create({ url: [ url ], focused: true, type: 'panel' })
+        chrome.windows.create({ url: [ url ], focused: true, type: 'panel' }, (window) => {
+          callback != undefined && callback(window.tabs[0], 'panel');
+        });
       } else {
         // 下个位置打开（默认方式）
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
-            chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1 });
+            chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1 }, (tab) => {
+              callback != undefined && callback(tab, 'tab');
+            });
           } else {
-            chrome.tabs.create({ url: url });
+            chrome.tabs.create({ url: url }, (tab) => {
+              callback != undefined && callback(tab, 'tab');
+            });
           }
         })
       }

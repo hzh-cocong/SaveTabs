@@ -16,9 +16,9 @@
         <div v-if="storageList.length > 0">{{ lang('noteNoResult') }}</div>
         <div>{{ lang('noteCountTip')+storageList.length+lang('noteCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
@@ -65,7 +65,7 @@
                                       ? config.list_focus_highlight_weight
                                       : config.list_highlight_weight),
         }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
         <span
           class="left"
@@ -123,13 +123,28 @@
                   || activeTabs[item.url]
                   || (storageKeyword != '' && item.lastVisitTime != undefined)">
             <div v-if="isActive">
+              <div
+                v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
+                class="number-button"
+                @click.stop="deleteNote"
+                :style="{
+                  color:config.list_focus_font_color,
+                  borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
               <i
-              class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="deleteNote"
-              :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
+                v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
+                class="el-icon-close close-without-tab"
+                @click.stop="deleteNote"
+                :style="{
+                  color:config.list_focus_font_color,
+                  borderColor:config.list_focus_font_color }"></i>
+              <i
+                v-else
+                class="el-icon-close"
+                style="font-size: 20px;cursor:pointer;margin-right: 2px;"
+                @click.stop="deleteNote"
+                :style="{
+                  color:config.list_focus_font_color,
+                  borderColor:config.list_focus_font_color}"></i>
             </div>
             <div
               v-else-if="item.url == currentTab.url"
@@ -266,12 +281,25 @@ export default {
       return highlightMap;
     },
     isInCurrentTab() {
-      return this.storageList.some((tab) => {
-        // 兼容旧版（旧版没有自动去除末尾 /
-        if(tab.url == this.currentTab.url) {
-          return true;
-        }
-      })
+      // return this.storageList.some((tab) => {
+      //   // 兼容旧版（旧版没有自动去除末尾 /
+      //   if(tab.url == this.currentTab.url) {
+      //     return true;
+      //   }
+      // })
+      // console.log('isInCurrentTab');
+      // let count = 0;
+      // this.list.forEach((tab) => {
+      //   if(tab.url == this.currentTab.url) {
+      //     count++;
+      //   } else {
+      //     return count;
+      //   }
+      // })
+      // return count;
+
+      // 由于当前窗口会被排在最前面，所以并不需要遍历 storageList
+      return this.list.length > 0 && this.list[0].url == this.currentTab.url;
     },
     currentNote() {
       if(this.list.length == 0) return {};
@@ -424,7 +452,7 @@ console.log('search2===h');
         // 更新结果
         this.currentTab = tab;
         // 其实不写也没关系，只是要是 currenTab 真的变了就不好了（测试也容易，因为测试的数据有问题）
-        this.activeTabs[ this.currentTab.url ] = this.currentTab;
+        this.activeTabs[ this.currentTab.url ] = tab;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         this.storageKeyword = ' ';
@@ -502,36 +530,68 @@ console.log('add =====h')
 
       // 存储
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
+      console.log('111111111111', this.currentNote.url, this.currentNote.title)
+      // let s = true; if(s)return;
       chrome.storage.local.set({tabs: this.storageList}, () => {
-        this.$open(this.currentNote.url, event);
+        this.$open(this.currentNote.url, event, (tab, type) => {
+          console.log('333333333333', tab.url, tab.title, type)
+          if(type == 'cover') {
+            if(this.activeTabs[ this.currentTab.url ].count > 1) {
+              console.log('mmmmmmmmmmmmmmmmmmmmmm', this.activeTabs[ this.currentTab.url ].count, this.activeTabs[ this.currentTab.url ].id, this.activeTabs[ this.currentTab.url ].other)
+              this.activeTabs[ this.currentTab.url ].count--;
+              let gg = this.activeTabs[ this.currentTab.url ].other.splice(0, 1);
+              console.log('gg', gg)
+              this.activeTabs[ this.currentTab.url ].id = gg[0];
+              console.log('mmmmmmmmmmmmmmmmmmmmmm2', this.activeTabs[ this.currentTab.url ].count, this.activeTabs[ this.currentTab.url ].id, this.activeTabs[ this.currentTab.url ].other)
+            } else {
+              delete this.activeTabs[ this.currentTab.url ];
+            }
+
+            this.currentTab = tab;
+            this.activeTabs[ this.currentTab.url ] = tab;
+
+          console.log('444444444', this.currentTab.url, this.currentTab.title)
+            // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+            let origin = this.storageKeyword;
+            this.storageKeyword = ' ';
+            this.search(origin);
+
+            this.focus();
+          }
+        });
       });
     },
     deleteNote() {
-      let tab = this.list[ this.currentIndex ];
-      // let index = this.getStorageIndex();
+      // 移除数据
       this.storageList.splice(this.currentStorageIndex , 1);
       chrome.storage.local.set({tabs: this.storageList}, () => {
-        if(tab.tabId == this.currentTab.id
-        && tab.windowId == this.currentTab.windowId
-        && tab.url == this.currentTab.url) {
-          this.isInCurrentTab = false;
-        }
+        if( ! this.activeTabs[this.currentNote.url]) {
+console.log('aa')
+        } else if(this.activeTabs[this.currentNote.url].count > 1) {
+          // 存在多个网页则不关闭网页
+console.log('bb')
+        } else if(this.getCacheUrlCount(this.currentNote.url) > 1) {
+          // 存储了多个相同的网页也不自动关闭标签，直到只剩下一个
 
-        this.list.splice(this.currentIndex, 1);
-        if(this.list.length < this.config.list_page_count
-        && this.scrollDisabled == false) {
-          this.load();
-        }
-
-        if(this.activeTabs[tab.tabId]
-        && this.activeTabs[tab.tabId].url == tab.url) {
+        }else {
           // 如果删除的是已经打开的便签，则顺带把对应的标签页给关闭了
-          chrome.tabs.remove(tab.tabId);
+          chrome.tabs.remove(this.activeTabs[this.currentNote.url].id);
         }
-      });
 
-      this.focus();
+        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        let origin = this.storageKeyword;
+        this.storageKeyword = ' ';
+        this.search(origin);
+
+        this.focus();
+      })
     },
+
+    getCacheUrlCount(url) {
+      return this.cacheList.reduce((accumulator, tab) => {
+        return accumulator+(tab.url == url ? 1 : 0);
+      }, 0)
+    }
   },
   mounted() {
     //todo
@@ -570,9 +630,11 @@ console.log('add =====h')
             tab.url = tab.url.replace(/(\/*$)/g,"");
             if(this.activeTabs[ tab.url ] == undefined) {
               tab.count = 1;
+              tab.other = [];
               this.activeTabs[ tab.url ] = tab;
             } else {
               this.activeTabs[ tab.url ].count++;
+              this.activeTabs[ tab.url ].other.push(tab.id);
             }
           }
           resolve()
@@ -699,6 +761,36 @@ console.log('add =====h')
 }
 .el-badge.refresh {
     margin-left: 10px;
+}
+
+.number-button {
+  min-width: 10px;
+  height: 20px;
+  padding: 2px 7px;
+  font-size: 18px;
+  line-height: 20px;
+  border: 2px solid white;
+  border-radius: 20px;
+  margin-right: 15px;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  cursor:pointer;
+}
+.close-without-tab {
+  min-width: 20px;
+  height: 20px;
+  padding: 2px;
+  font-size: 20px;
+  border:2px solid white;
+  font-size: 18px;
+  border-radius: 20px;
+  text-align: center;
+  cursor:pointer;
+}
+.close-without-tab:before {
+  position: relative;
+  top: 1px;
 }
 </style>
 

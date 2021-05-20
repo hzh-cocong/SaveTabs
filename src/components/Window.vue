@@ -829,6 +829,7 @@ console.log('get_currentWindowStorageIndex3', index);
           //   this.isInCurrentWindow = false;
           // }
           this.list.splice(this.currentIndex, 1);
+          this.cacheList.splice(this.currentIndex, 1);
           if(this.list.length < this.config.list_page_count
           && this.scrollDisabled == false) {
             this.load();

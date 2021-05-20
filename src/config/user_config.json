@@ -44,7 +44,7 @@
     "list_scrollbar_color": "rgba(127, 127, 127, .6)",
     "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
 
-    "item_height": 120,
+    "item_height": 50,
     "item_show_count": 7,
 
     "width": 500,

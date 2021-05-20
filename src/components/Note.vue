@@ -116,6 +116,15 @@
                     : config.list_explain_font_color,
               direction: isSelected ? 'rtl' : 'ltr' }"
             v-html="highlightMap[item.id].url"></div>
+          <div
+            v-else
+            class="sub-title"
+            :style="{
+              fontSize: config.list_explain_font_size+'px',
+              color: isSelected
+                    ? config.list_explain_focus_font_color
+                    : config.list_explain_font_color }"
+            v-text="isSelected ? item.url : getDomain(item.url)"></div>
         </div>
 
         <div class="right">
@@ -131,7 +140,9 @@
                   color:config.list_focus_font_color,
                   borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
               <i
-                v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
+                v-if="activeTabs[item.url]
+                  && (activeTabs[item.url].count > 1
+                    || isRepeat(index))"
                 class="el-icon-close close-without-tab"
                 @click.stop="deleteNote"
                 :style="{
@@ -578,15 +589,58 @@ console.log('bb')
           chrome.tabs.remove(this.activeTabs[this.currentNote.url].id);
         }
 
-        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        let origin = this.storageKeyword;
-        this.storageKeyword = ' ';
-        this.search(origin);
+        // 移除，不重新search，体验不好
+        this.list.splice(this.currentIndex, 1);
+        this.cacheList.splice(this.currentIndex, 1);
+        if(this.list.length < this.config.list_page_count
+          && this.scrollDisabled == false) {
+          this.load();
+        }
+
+        // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        // let origin = this.storageKeyword;
+        // this.storageKeyword = ' ';
+        // this.search(origin);
 
         this.focus();
       })
     },
 
+    isRepeat(index) {
+      console.log('isRepeat', index)
+      if(this.cacheList[index].url == this.currentTab.url) {
+        console.log('isRepeat fffffff', index)
+        // 当前窗口只需比较附近即可
+        if(index > 0) {
+          console.log('isRepeat ffffffffff2', index)
+          if(this.cacheList[index-1].url == this.cacheList[index].url)
+            return true;
+        }
+        if(index+1 < this.cacheList.length) {
+          console.log('isRepeat fffffffffffffff3', this.cacheList.length)
+          if(this.cacheList[index+1].url == this.cacheList[index].url)
+            return true;
+        }
+      } else {
+        console.log('isRepeat jjjjjjjjjjj', index)
+        // 非当前窗口需要遍历所有 opened 窗口
+        for(let i in this.cacheList) {
+          let tab = this.cacheList[i];
+          if(i == index) continue;
+          console.log('isRepeat jjjjjjjjjjj2', i, index)
+          if( ! this.activeTabs[tab.url]) {
+            console.log('isRepeat jjjjjjjjjjj3', false)
+            return false;
+          } else {
+            console.log('isRepeat jjjjjjjjjjj4',  this.activeTabs[tab.url] == this.cacheList[index].url)
+            if(tab.url == this.cacheList[index].url) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    },
     getCacheUrlCount(url) {
       return this.cacheList.reduce((accumulator, tab) => {
         return accumulator+(tab.url == url ? 1 : 0);

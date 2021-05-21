@@ -66,7 +66,13 @@
           class="main"
           :class="{ scroll: isActive }"
           :style="{
-            height: config.item_height+'px'}">
+            height: config.item_height+'px',
+
+            'flex-direction': ! isSelected ? 'column' : 'row',
+            'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
+            'align-content': ! isSelected ? 'normal' : 'flex-start',
+            'justify-content': ! isSelected ? 'center' : 'flex-start',
+            }">
           <template v-if="isSelected">
             <!-- <div
               v-for="(tab, i) in item.tabs"
@@ -164,15 +170,16 @@
               </el-image>
               <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
             </div>
-            <!-- <div
+            <div
               class="sub-title"
               :style="{
                 fontSize: config.list_explain_font_size+'px',
                 color: isSelected
                       ? config.list_explain_focus_font_color
-                      : config.list_explain_font_color }">
+                      : config.list_explain_font_color,
+                marginLeft: (config.list_font_size+5)+'px' }">
                 {{ getDomain(item.tabs[0].url) }}
-            </div> -->
+            </div>
           </template>
         </div>
 
@@ -1063,13 +1070,21 @@ alert('空间不够')
 .item .main {
   flex: 1;
   text-align: left;
-  overflow: hidden;
+  overflow: auto;
   cursor: default;
 
   display: flex;
-  align-items: left;
-  align-content: flex-start;
+  align-items: flex-start; /* flex-wrap = wrap 才有效 */
+
+  /* flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: normal;
+  justify-content: center; */
+
+  /* flex-direction: row;
   flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-start; */
 }
 
 .item .main.scroll{

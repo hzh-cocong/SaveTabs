@@ -44,16 +44,16 @@
     "list_scrollbar_color": "rgba(127, 127, 127, .6)",
     "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
 
-    "item_height": 56,
+    "item_height": 50,
     "item_show_count": 7,
 
-    "width": 500,
+    "width": 540,
     "border_width": 8,
     "padding_width": 0,
     "border_color": "#ffffff",
     "background_color": "#ffffff",
 
-    "tag_line_count": 4,
+    "tag_line_count": 3,
 
     "toolbar_height": 40,
     "toolbar_background_color": "#ffffff",

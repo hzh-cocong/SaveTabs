@@ -68,7 +68,7 @@
           :style="{
             height: config.item_height+'px'}">
           <template v-if="isSelected">
-            <div
+            <!-- <div
               v-for="(tab, i) in item.tabs"
               :key="i"
               style="display: flex; align-items: center; border: 1px solid red; overflow: hidden; white-space: nowrap; cursor: default;"
@@ -96,21 +96,21 @@
               </el-image>
               <span
                 :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
-            </div>
+            </div> -->
 
 
 
-            <!-- <el-tag
+            <el-tag
               v-for="(tab, i) in item.tabs"
-              :key="index+'.'+i"
-              style="cursor: default;"
-              :style="{ height: (tagConfig.tag_padding_top*2+tagConfig.tag_font_size)+'px',
-                        width: 'calc(100% / '+tagConfig.tag_line_count+' - '+tagConfig.tag_margin_right+'px)',
+              :key="i"
+              style="box-sizing: content-box;cursor: default;"
+              :style="{ height: tagConfig.tag_font_size+'px',
+                        width: 'calc(100% / '+(storageKeyword == '' || item.tabs.length > tagConfig.tag_line_count ? tagConfig.tag_line_count : item.tabs.length)
+                                              +' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
                         margin: tagConfig.tag_margin_top+'px '
                               + tagConfig.tag_margin_right+'px 0px 0px',
                         padding: tagConfig.tag_padding_top+'px '
                                 +tagConfig.tag_padding_left+'px' }"
-              size="mini"
               type="info"
               :effect="'light'"
               :closable="false"
@@ -120,7 +120,8 @@
                 v-if="isLoad"
                 :src="getIcon(tab.icon, tab.url, 12)"
                 :style="{ width: tagConfig.tag_font_size+'px',
-                          height: tagConfig.tag_font_size+'px', }"
+                          height: tagConfig.tag_font_size+'px',
+                          marginRight: tagConfig.tag_padding_left+'px' }"
                 fit="cover"
                 :lazy="index >= config.item_show_count">
                 <div slot="error" class="image-slot">
@@ -132,9 +133,9 @@
               </el-image>
               <span
                 class="tab-title"
-                style="line-height: 25px;"
-                :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
-            </el-tag> -->
+                :style="{ fontSize: tagConfig.tag_font_size+'px',
+                          width: 'calc(100% - '+(tagConfig.tag_font_size+tagConfig.tag_padding_left*1)+'px' }">{{ tab.title || tab.url }}</span>
+            </el-tag>
           </template>
           <template v-else>
             <div
@@ -1119,18 +1120,22 @@ alert('空间不够')
 }
 
 .el-tag {
-  display: flex;
+  line-height: 1;
+  overflow: hidden;
 }
 .el-tag .el-image{
-  width: 12px;
-  height: 12px;
-  margin-right: 5px;
-  margin-top: 3px;
+  /* vertical-align: middle; */
+
 }
 .el-tag .tab-title {
   display: inline-block;
-  flex: 1;
+  vertical-align: top;
   overflow: hidden;
+  /* vertical-align: middle; */
+
+  /* display: inline-block;
+  flex: 1;
+  overflow: hidden; */
   /* text-overflow: ellipsis;
   white-space: nowrap; */
 }

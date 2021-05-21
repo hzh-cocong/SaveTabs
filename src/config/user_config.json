@@ -53,6 +53,8 @@
     "border_color": "#ffffff",
     "background_color": "#ffffff",
 
+    "tag_line_count": 2,
+
     "toolbar_height": 40,
     "toolbar_background_color": "#ffffff",
     "toolbar_border_color": "#dcdfe6",
@@ -85,7 +87,7 @@
         "tab",
         "history"
     ],
-    "active_workspace_type": "note",
+    "active_workspace_type": "temporary",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

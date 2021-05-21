@@ -64,32 +64,27 @@
 
         <div
           class="main"
-          @mouseenter="mainEnter"
-          @mouseleave="mainLeave"
           :class="{ scroll: isActive }"
           :style="{
-            height: config.item_height+'px',
-            flexDirection: ! isSelected ? 'row' : 'column',
-            alignContent: ! isSelected ? 'center' : 'stretch', }">
+            height: config.item_height+'px'}">
           <template v-if="isSelected">
-            <el-tag
+            <div
               v-for="(tab, i) in item.tabs"
-              :key="index+'.'+i"
-              :title="tab.title+'\r\n'+tab.url"
-              style="margin:3px 3px 0px 0px;cursor: pointer;"
-              size="mini"
-              :type="tabFocus[index+'|'+i] ? 'primary' : 'info'"
-              :effect="'light'"
-              :closable="isActive"
-              :disable-transitions="true"
-              :hit="false"
-              @mouseover.native="$set(tabFocus, index+'|'+i, true)"
-              @mouseout.native="$set(tabFocus, index+'|'+i, false)"
-              @click.stop="openTab(i)"
-              @close.stop="deleteTab(i)">
+              :key="i"
+              style="display: flex; align-items: center; border: 1px solid red; overflow: hidden; white-space: nowrap; cursor: default;"
+              :style="{ height: tagConfig.tag_font_size+'px',
+                        width: 'calc(100% / '+tagConfig.tag_line_count+' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
+                        margin: tagConfig.tag_margin_top+'px '
+                              + tagConfig.tag_margin_right+'px 0px 0px',
+                        padding: tagConfig.tag_padding_top+'px '
+                                +tagConfig.tag_padding_left+'px' }">
               <el-image
                 v-if="isLoad"
                 :src="getIcon(tab.icon, tab.url, 12)"
+                style="flex: none;"
+                :style="{ width: tagConfig.tag_font_size+'px',
+                          height: tagConfig.tag_font_size+'px',
+                          marginRight: tagConfig.tag_padding_left+'px' }"
                 fit="cover"
                 :lazy="index >= config.item_show_count">
                 <div slot="error" class="image-slot">
@@ -98,20 +93,48 @@
                 <div slot="placeholder" class="image-slot">
                   <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
                 </div>
-                <!-- <div slot="placeholder" class="image-slot">
-                  <img
-                    v-if="index >= config.item_show_count"
-                    src="../assets/fallback.png"
-                    style="width:100%; height: 100%;" />
-                </div> -->
+              </el-image>
+              <span
+                :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
+            </div>
+
+
+
+            <!-- <el-tag
+              v-for="(tab, i) in item.tabs"
+              :key="index+'.'+i"
+              style="cursor: default;"
+              :style="{ height: (tagConfig.tag_padding_top*2+tagConfig.tag_font_size)+'px',
+                        width: 'calc(100% / '+tagConfig.tag_line_count+' - '+tagConfig.tag_margin_right+'px)',
+                        margin: tagConfig.tag_margin_top+'px '
+                              + tagConfig.tag_margin_right+'px 0px 0px',
+                        padding: tagConfig.tag_padding_top+'px '
+                                +tagConfig.tag_padding_left+'px' }"
+              size="mini"
+              type="info"
+              :effect="'light'"
+              :closable="false"
+              :disable-transitions="true"
+              :hit="false">
+              <el-image
+                v-if="isLoad"
+                :src="getIcon(tab.icon, tab.url, 12)"
+                :style="{ width: tagConfig.tag_font_size+'px',
+                          height: tagConfig.tag_font_size+'px', }"
+                fit="cover"
+                :lazy="index >= config.item_show_count">
+                <div slot="error" class="image-slot">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
+                <div slot="placeholder" class="image-slot">
+                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                </div>
               </el-image>
               <span
                 class="tab-title"
-                :style="{
-                    width: isSelected
-                        ? ( isActive ? '145px' : '57px')
-                        : '140px'}">{{ tab.title || tab.url }}</span>
-            </el-tag>
+                style="line-height: 25px;"
+                :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
+            </el-tag> -->
           </template>
           <template v-else>
             <div
@@ -140,20 +163,30 @@
               </el-image>
               <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
             </div>
-            <div
+            <!-- <div
               class="sub-title"
               :style="{
                 fontSize: config.list_explain_font_size+'px',
                 color: isSelected
                       ? config.list_explain_focus_font_color
                       : config.list_explain_font_color }">
-                {{ item.tabs[0].url }}
-            </div>
+                {{ getDomain(item.tabs[0].url) }}
+            </div> -->
           </template>
         </div>
 
         <div class="right">
-          <div v-if="isActive && isShowOperationButton">
+
+            <el-popover
+              v-show="isActive"
+              placement="left"
+              title="标题"
+              width="200"
+              trigger="hover"
+              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+              <el-button slot="reference" circle size="small" >3</el-button>
+            </el-popover>
+          <div v-if="isActive">
             <i
               class="el-icon-close"
               style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
@@ -179,7 +212,7 @@
                 color: config.list_focus_keymap_color,
               }">↩</span>
             <span
-              v-else-if="platform != ''
+              v-else-if="_device.platform != ''
                 && (index-$refs.list.scrollLines+1) <= config.item_show_count
                 && (index-$refs.list.scrollLines+1) >= 1
                 && (index-$refs.list.scrollLines+1) <= 9"
@@ -187,7 +220,7 @@
                 fontSize: config.list_keymap_size+'px',
                 color: config.list_keymap_color,
               }">{{
-                  platform == 'Win'
+                  _device.platform == 'Win'
                 ?  'Alt+'+(index-$refs.list.scrollLines+1)
                 : '⌘'+(index-$refs.list.scrollLines+1)
                 }}</span>
@@ -236,89 +269,522 @@ export default {
 
       currentIndex: -1,
 
-      tabFocus: {},
-
       isSearched: false,
-
-      isShowOperationButton: true,
-
-      w: {
-        lock: 0,
-        timer: null,
-      },
     }
   },
   components: {
     List,
   },
-  methods: {
-    hideOperationButton(event) {
-      // console.log('hdeOperationButton', event)
-      const eventDeltaX = -event.wheelDeltaX || event.deltaX * 3;
-      // 向右滚动小于0，向左滚动大于0
+  computed: {
+ // 行数尽可能多，字体尽可能大
+    tagConfig() {
+      let item_height = this.config.item_height;
+      let border = 1; // 上下左右
 
-      if(this.mainNode.className != 'main scroll') {
-        console.log('ffffffffffffffffffffffffff==')
-        return;
+      let tag_margin_top_min = 3;
+      // let tag_margin_right_min = 3; // 和 tag_margin_top_min 相同
+      // let tag_padding_min = 3; // 和 tag_margin_top_min 相同
+      let tag_font_size_min = 12;
+      let tag_row_count_min = 1;
+      // let tag_line_count_min = 1;
+
+      let tag_margin_top_max = 10;
+      // let tag_margin_right_max = 10; // 同上
+      // let tag_padding_max = 3; // 同上
+      let tag_font_size_max = this.config.list_font_size;
+      // let tag_row_count_min = 0; // 不限制
+      // let tag_line_count_max = 0; // 不限制
+
+      // 使用从小变大的原则，以下是变化顺序
+      // tag_line_count
+      // tag_font_size
+      // tag_margin_top
+      // adjust （反计算得出）
+
+      // 提示
+      //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+      //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+      //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+      //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+      //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+      // tag_row_count_min
+      let tag_row_count = tag_row_count_min;
+      let row_count = Math.floor((item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2));
+      if(row_count > tag_row_count_min) {
+        tag_row_count = row_count;
+      }
+console.log('oooooooooooo', tag_row_count, (item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2))
+console.log('oooooooo2', 3*(tag_font_size_min+tag_margin_top_min*3+border*2)+tag_margin_top_min);
+      // tag_font_size
+      let tag_font_size = tag_font_size_min;
+      let font_size = (item_height-tag_margin_top_min)/tag_row_count-tag_margin_top_min*3-border*2;
+      if(font_size > tag_font_size_min) {
+        tag_font_size = font_size >= tag_font_size_max ? tag_font_size_max : font_size;
       }
 
-      if( ! this.lock && eventDeltaX < 0 && this.mainNode.scrollLeft == 0) {
-        console.log('向左切换')
-        // event.stopPropagation();
-      } else if( ! this.lock && eventDeltaX > 0 && (this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2)) {
-        console.log('向右切换')
-        // event.stopPropagation();
+      // tag_margin_top
+      let tag_margin_top = tag_margin_top_min;
+      let margin_top = (item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count);
+      if(margin_top > tag_margin_top_min) {
+        tag_margin_top = margin_top >= tag_margin_top_max ? tag_margin_top_max : margin_top;
+      }
+
+      let tag_padding_top = tag_margin_top;
+
+      // 提示
+      //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+      //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+      //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+      //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+      //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+      let height = (tag_margin_top*3+tag_font_size+border*2)*tag_row_count+tag_margin_top;
+      if(height < item_height) {
+        console.log('tagConfig 有剩余空间', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+
+        // 和 字体 优先不同，这里由于是按 tag_row_count 优先计算，其它值都是最小的了，如果再强塞一个，会导致它们被强制缩小
+        // tag_row_count++;
+
+        // 由于没有强制添加行，所以这里其实是放大
+
+        // 先放大 tag_font_size
+        let font_size = (item_height-tag_margin_top)/tag_row_count-tag_margin_top*3-border*2;
+        tag_font_size = font_size >= tag_font_size_max ? tag_font_size_max : font_size;
+
+        if(tag_font_size != font_size) {
+
+          // 再放大 tag_margin_top
+          margin_top = (item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count);
+          tag_margin_top = margin_top >= tag_margin_top_max ? tag_margin_top_max : margin_top;
+          tag_padding_top = tag_margin_top;
+
+          if(tag_margin_top != margin_top) {
+
+            // 强制缩小 tag_padding_top 直到 1
+            let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+            tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+            console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
+
+            if(tag_padding_top != padding_top) {
+              // 强制缩小 tag_margin_top 直到 1
+              margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+              tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+              console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
+
+              if(tag_margin_top != margin_top) {
+                console.error('tagConfig 我尽力了');
+              }
+            }
+          }
+        }
+      } else if(height > item_height) {
+        console.log('tagConfig 空间不够', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+alert('空间不够')
+        // 空间不够，此时全部值都应该是最小值
+
+        // 强制缩小 tag_padding_top 直到 1
+        let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+        tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+        console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
+
+        if(tag_padding_top != padding_top) {
+          // 强制缩小 tag_margin_top 直到 1
+          margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+          tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+          console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
+
+          if(tag_margin_top != margin_top) {
+            console.error('tagConfig 我尽力了');
+          }
+        }
       } else {
-        event.stopPropagation();
+        // 相等则说明找到了合适的值
+        console.log('tagConfig 值完全合适', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+        // alert('值完全合适')
       }
 
-      // 滚动到左边或右边时不清楚计时
-      if( ! (eventDeltaX < 0 && this.mainNode.scrollLeft == 0 ||
-              this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2))  {
-        this.lock = true;
-        clearTimeout(this.timer);
-        this.timer = setTimeout(() => { this.lock = false; }, 1000);
+      console.log('tagConfig 上下计算结果', tag_row_count, tag_font_size, tag_margin_top, tag_padding_top)
+
+      // 开放给用户设置
+      let tag_line_count = this.config.tag_line_count;
+
+      let tag_margin_right = tag_margin_top;
+      let tag_padding_left = tag_margin_top;
+
+      console.log('tagConfig 最后结果', {
+        tag_row_count,
+        tag_line_count,
+
+        tag_font_size,
+
+        tag_margin_top,
+        tag_margin_right,
+
+        tag_padding_top,
+        tag_padding_left,
+
+        height: (tag_padding_top*2+tag_font_size)+'px',
+        width: 'calc(100% / '+tag_line_count+' - '+(tag_padding_left*2+1*2+tag_margin_right)+'px)',
+        margin: tag_margin_top+'px '
+              + tag_margin_right+'px 0px 0px',
+        padding: tag_padding_top+'px '
+                +tag_padding_left+'px',
+
+        item_height: tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top,
+      })
+
+      return {
+        tag_row_count,
+        tag_line_count,
+
+        tag_font_size,
+
+        tag_margin_top,
+        tag_margin_right,
+
+        tag_padding_top,
+        tag_padding_left,
       }
-
-      //   console.log('s', eventDeltaX)
-      // if(this.mainNode.scrollLeft == 0
-      // || this.mainNode.scrollWidth-this.mainNode.scrollLeft == this.config.width-10*2-40-5*2-10*2) {
-      //   // event.stopPropagation();
-      //    event.stopPropagation();
-      // } else {
-      //   event.stopPropagation();
-      // }
-
-      // console.log('hdeOperationButton', this.mainNode.scrollLeft, this.mainNode.scrollWidth, this.mainNode.scrollWidth-this.mainNode.scrollLeft, this.config.width-10*2-40-5*2-10*2)
-      // event.preventDefault();
-      // event.stopPropagation();
-      // console.log('mousemove', this.w.lock)
-
-      // 告诉 wheel，我在监听，当 this.w.lock = 3 时，说明 wheel 在睡眠，不要去打扰它
-      if(this.w.lock != 3) this.w.lock = 2;
-
-      this.isShowOperationButton = false;
-    },
-    mainEnter(event) {
-      // console.log('ssssssssss', event.target.className)
-      // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
-      this.mainNode = event.target;
-      // if(event.target.className != 'main scroll') {
-      //   console.log('sssssssssssssssssssssssssssssss---')
-      //   return;
-      // }
-      if(this.mainNode.scrollWidth <= 386) {
-        return;
-      }
-      console.log('fffffffffffffff', this.mainNode.scrollWidth)
-      event.target.addEventListener('mousewheel', this.hideOperationButton);
-    },
-    mainLeave(event) {
-      console.log('mainLeave================================')
-      event.target.removeEventListener('mousewheel', this.hideOperationButton);
-      this.isShowOperationButton = true;
     },
 
+
+
+//     // 行数尽可能多
+//     tagConfig() {
+//       let item_height = this.config.item_height;
+//       let border = 1; // 上下左右
+
+//       let tag_margin_top_min = 3;
+//       // let tag_margin_right_min = 3; // 和 tag_margin_top_min 相同
+//       // let tag_padding_min = 3; // 和 tag_margin_top_min 相同
+//       let tag_font_size_min = 12;
+//       let tag_row_count_min = 1;
+//       // let tag_line_count_min = 1;
+
+//       let tag_margin_top_max = 10;
+//       // let tag_margin_right_max = 10; // 同上
+//       // let tag_padding_max = 3; // 同上
+//       let tag_font_size_max = this.config.list_font_size;
+//       // let tag_row_count_min = 0; // 不限制
+//       // let tag_line_count_max = 0; // 不限制
+
+//       // 使用从小变大的原则，以下是变化顺序
+//       // tag_line_count
+//       // tag_font_size
+//       // tag_margin_top
+//       // adjust （反计算得出）
+
+//       // 提示
+//       //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+//       //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+//       //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+//       // tag_row_count_min
+//       let tag_row_count = tag_row_count_min;
+//       let row_count = Math.floor((item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2));
+//       if(row_count > tag_row_count_min) {
+//         tag_row_count = row_count;
+//       }
+// console.log('oooooooooooo', tag_row_count, (item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2))
+// console.log('oooooooo2', 3*(tag_font_size_min+tag_margin_top_min*3+border*2)+tag_margin_top_min);
+//       // tag_font_size
+//       let tag_font_size = tag_font_size_min;
+//       let font_size = (item_height-tag_margin_top_min)/tag_row_count-tag_margin_top_min*3-border*2;
+//       if(font_size > tag_font_size_min) {
+//         tag_font_size = font_size >= tag_font_size_max ? tag_font_size_max : font_size;
+//       }
+
+//       // tag_margin_top
+//       let tag_margin_top = tag_margin_top_min;
+//       let margin_top = (item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count);
+//       if(margin_top > tag_margin_top_min) {
+//         tag_margin_top = margin_top >= tag_margin_top_max ? tag_margin_top_max : margin_top;
+//       }
+
+//       let tag_padding_top = tag_margin_top;
+
+//       // 提示
+//       //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+//       //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+//       //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+//       let height = (tag_margin_top*3+tag_font_size+border*2)*tag_row_count+tag_margin_top;
+//       if(height < item_height) {
+//         console.log('tagConfig 有剩余空间', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+
+//         // 和 字体 优先不同，这里由于是按 tag_row_count 优先计算，其它值都是最小的了，如果再强塞一个，会导致它们被强制缩小
+//         // tag_row_count++;
+
+//         // 由于没有强制添加行，所以这里其实是放大
+
+//         // 先放大 tag_margin_top
+//         margin_top = (item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count);
+//         tag_margin_top = margin_top <= tag_margin_top_min ? tag_margin_top_min : margin_top;
+//         tag_padding_top = tag_margin_top;
+
+//         if(tag_margin_top != margin_top) {
+//           // 再放大 tag_font_size
+//           let font_size = (item_height-tag_margin_top)/tag_row_count-tag_margin_top*3-border*2;
+//           tag_font_size = font_size <= tag_font_size_min ? tag_font_size_min : font_size;
+
+//           if(tag_font_size != font_size) {
+//             // 强制缩小 tag_padding_top 直到 1
+//             let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+//             tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+//             console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
+
+//             if(tag_padding_top != padding_top) {
+//               // 强制缩小 tag_margin_top 直到 1
+//               margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+//               tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+//               console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
+
+//               if(tag_margin_top != margin_top) {
+//                 console.error('tagConfig 我尽力了');
+//               }
+//             }
+//           }
+//         }
+//       } else if(height > item_height) {
+//         console.log('tagConfig 空间不够', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+// alert('空间不够')
+//         // 空间不够，此时全部值都应该是最小值
+
+//         // 强制缩小 tag_padding_top 直到 1
+//         let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+//         tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+//         console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
+
+//         if(tag_padding_top != padding_top) {
+//           // 强制缩小 tag_margin_top 直到 1
+//           margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+//           tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+//           console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
+
+//           if(tag_margin_top != margin_top) {
+//             console.error('tagConfig 我尽力了');
+//           }
+//         }
+//       } else {
+//         // 相等则说明找到了合适的值
+//         console.log('tagConfig 值完全合适', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
+//         // alert('值完全合适')
+//       }
+
+//       console.log('tagConfig 上下计算结果', tag_row_count, tag_font_size, tag_margin_top, tag_padding_top)
+
+//       // 开放给用户设置
+//       let tag_line_count = this.config.tag_line_count;
+
+//       let tag_margin_right = tag_margin_top;
+//       let tag_padding_left = tag_margin_top;
+
+//       console.log('tagConfig 最后结果', {
+//         tag_row_count,
+//         tag_line_count,
+
+//         tag_font_size,
+
+//         tag_margin_top,
+//         tag_margin_right,
+
+//         tag_padding_top,
+//         tag_padding_left,
+
+//         height: (tag_padding_top*2+tag_font_size)+'px',
+//         width: 'calc(100% / '+tag_line_count+' - '+(tag_padding_left*2+1*2+tag_margin_right)+'px)',
+//         margin: tag_margin_top+'px '
+//               + tag_margin_right+'px 0px 0px',
+//         padding: tag_padding_top+'px '
+//                 +tag_padding_left+'px',
+
+//         item_height: tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top,
+//       })
+
+//       return {
+//         tag_row_count,
+//         tag_line_count,
+
+//         tag_font_size,
+
+//         tag_margin_top,
+//         tag_margin_right,
+
+//         tag_padding_top,
+//         tag_padding_left,
+//       }
+//     },
+
+
+// 字体尽可能大
+//     tagConfig() {
+//       let item_height = this.config.item_height;
+//       let border = 1; // 上下左右
+
+//       let tag_margin_top_min = 3;
+//       // let tag_margin_right_min = 3; // 和 tag_margin_top_min 相同
+//       // let tag_padding_min = 3; // 和 tag_margin_top_min 相同
+//       let tag_font_size_min = 12;
+//       let tag_row_count_min = 1;
+//       // let tag_line_count_min = 1;
+
+//       let tag_margin_top_max = 10;
+//       // let tag_margin_right_max = 10; // 同上
+//       // let tag_padding_max = 3; // 同上
+//       let tag_font_size_max = this.config.list_font_size;
+//       // let tag_row_count_min = 0; // 不限制
+//       // let tag_line_count_max = 0; // 不限制
+
+//       // 使用从小变大的原则，以下是变化顺序
+//       // tag_font_size
+//       // tag_margin_top
+//       // tag_line_count
+//       // adjust （反计算得出）
+
+//       // 提示
+//       //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+//       //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+//       //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+//       // tag_font_size
+//       let tag_font_size = tag_font_size_min;
+//       let font_size = (item_height-tag_margin_top_min)/tag_row_count_min-tag_margin_top_min*3-border*2;
+//       if(font_size > tag_font_size_min) {
+//         tag_font_size = font_size >= tag_font_size_max ? tag_font_size_max : font_size;
+//       }
+
+//       // tag_margin_top
+//       let tag_margin_top = tag_margin_top_min;
+//       let margin_top = (item_height-tag_row_count_min*(tag_font_size+border*2))/(1+3*tag_row_count_min);
+//       if(margin_top > tag_margin_top_min) {
+//         tag_margin_top = margin_top >= tag_margin_top_max ? tag_margin_top_max : margin_top;
+//       }
+
+//       // tag_row_count_min
+//       let tag_row_count = tag_row_count_min;
+//       let row_count = Math.floor((item_height-tag_margin_top)/(tag_margin_top*3+tag_font_size+border*2));
+//       if(row_count > tag_row_count_min) {
+//         tag_row_count = row_count;
+//       }
+
+//       let tag_padding_top = tag_margin_top;
+
+//       // 提示
+//       //item_height = tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top
+//       //item_height = tag_row_count*(tag_font_size+tag_margin_top*3+border*2)+tag_margin_top
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count)
+//       //tag_padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2
+//       //tag_margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count)
+
+//       let height = (tag_margin_top*3+tag_font_size+border*2)*tag_row_count+tag_margin_top;
+//       if(height < item_height) {
+//         console.log('tagConfig 有剩余空间', height, item_height, tag_row_count, tag_font_size, tag_margin_top)
+
+//         // 有剩余空间则想办法再添加一个
+//         tag_row_count++;
+
+//         // 先缩小 tag_margin_top
+//         margin_top = (item_height-tag_row_count*(tag_font_size+border*2))/(1+3*tag_row_count);
+//         tag_margin_top = margin_top <= tag_margin_top_min ? tag_margin_top_min : margin_top;
+//         tag_padding_top = tag_margin_top;
+
+//         if(tag_margin_top != margin_top) {
+//           // 再缩小 tag_font_size
+//           let font_size = (item_height-tag_margin_top)/tag_row_count-tag_margin_top*3-border*2;
+//           tag_font_size = font_size <= tag_font_size_min ? tag_font_size_min : font_size;
+
+//           if(tag_font_size != font_size) {
+//             // 强制缩小 tag_padding_top 直到 1
+//             let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+//             tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+
+//             if(tag_padding_top != padding_top) {
+//               // 强制缩小 tag_margin_top 直到 1
+//               margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+//               tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+
+//               if(tag_margin_top != margin_top) {
+//                 console.error('tagConfig 我尽力了');
+//               }
+//             }
+//           }
+//         }
+//       } else if(height > item_height) {
+//         console.log('tagConfig 空间不够', height, item_height, tag_row_count, tag_font_size, tag_margin_top)
+// alert('空间不够')
+//         // 空间不够，此时全部值都应该是最小值
+
+//         // 强制缩小 tag_padding_top 直到 1
+//         let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
+//         tag_padding_top = padding_top <= 1 ? 1 : padding_top;
+
+//         if(tag_padding_top != padding_top) {
+//           // 强制缩小 tag_margin_top 直到 1
+//           margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
+//           tag_margin_top = margin_top <= 1 ? 1 : margin_top;
+
+//           if(tag_margin_top != margin_top) {
+//             console.error('tagConfig 我尽力了');
+//           }
+//         }
+//       } else {
+//         // 相等则说明找到了合适的值
+//         console.log('值完全合适')
+//         // alert('值完全合适')
+//       }
+
+//       console.log('tagConfig 上下计算结果', tag_row_count, tag_font_size, tag_margin_top, tag_padding_top)
+
+//       // 开放给用户设置
+//       let tag_line_count = this.config.tag_line_count;
+
+//       let tag_margin_right = tag_margin_top;
+//       let tag_padding_left = tag_margin_top;
+
+//       console.log('tagConfig 最后结果', {
+//         tag_row_count,
+//         tag_line_count,
+
+//         tag_font_size,
+
+//         tag_margin_top,
+//         tag_margin_right,
+
+//         tag_padding_top,
+//         tag_padding_left,
+
+//         height: (tag_padding_top*2+tag_font_size)+'px',
+//         width: 'calc(100% / '+tag_line_count+' - '+(tag_padding_left*2+1*2+tag_margin_right)+'px)',
+//         margin: tag_margin_top+'px '
+//               + tag_margin_right+'px 0px 0px',
+//         padding: tag_padding_top+'px '
+//                 +tag_padding_left+'px',
+
+//         item_height: tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top,
+//       })
+
+//       return {
+//         tag_row_count,
+//         tag_line_count,
+
+//         tag_font_size,
+
+//         tag_margin_top,
+//         tag_margin_right,
+
+//         tag_padding_top,
+//         tag_padding_left,
+//       }
+//     }
+  },
+  methods: {
     up() {
       this.currentIndex--;
     },
@@ -530,6 +996,9 @@ export default {
     },
   },
   mounted() {
+    // todo
+    window.t = this;
+
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
@@ -597,9 +1066,8 @@ export default {
   cursor: default;
 
   display: flex;
-  flex-direction: column;
   align-items: left;
-  justify-content: flex-start;
+  align-content: flex-start;
   flex-wrap: wrap;
 }
 

@@ -87,7 +87,7 @@
         "tab",
         "history"
     ],
-    "active_workspace_type": "temporary",
+    "active_workspace_type": "history",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

@@ -61,12 +61,6 @@
             <div slot="placeholder" class="image-slot">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
-            <!-- <div slot="placeholder" class="image-slot">
-              <img
-                v-if="index >= config.item_show_count"
-                src="../assets/fallback.png"
-                style="width:100%; height: 100%;" />
-            </div> -->
           </el-image>
         </span>
 
@@ -76,14 +70,14 @@
             :style="{ fontSize: config.list_font_size+'px' }">{{
                 item.title || item.deleteUrl
             }}</div>
-          <!-- <div
+          <div
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
+              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
         </div>
 
         <div class="right">
@@ -113,7 +107,7 @@
                 color: config.list_focus_keymap_color,
               }">↩</span>
             <span
-              v-else-if="platform != ''
+              v-else-if="_device.platform != ''
                 && (index-$refs.list.scrollLines+1) <= config.item_show_count
                 && (index-$refs.list.scrollLines+1) >= 1
                 && (index-$refs.list.scrollLines+1) <= 9"
@@ -121,7 +115,7 @@
                 fontSize: config.list_keymap_size+'px',
                 color: config.list_keymap_color,
               }">{{
-                  platform == 'Win'
+                  _device.platform == 'Win'
                 ?  'Alt+'+(index-$refs.list.scrollLines+1)
                 : '⌘'+(index-$refs.list.scrollLines+1)
                 }}</span>
@@ -304,6 +298,9 @@ export default {
     }
   },
   mounted() {
+    // todo
+    window.h = this;
+
     this.$emit('finish');
 
     // 更新列表

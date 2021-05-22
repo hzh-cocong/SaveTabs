@@ -325,7 +325,7 @@ console.log('currentIndex', newVal, oldVal)
   /* overflow: overlay; */ /* element-ui 无限滚动不支持 overlay，且官方不再升级 */
   /* overflow: auto */ /* auto 的话，数据没有超出时，由于没有滚动条占位，会影响宽度 */
   overflow-y: scroll; /* 火狐无 overlay 属性，并且 scroll 不占用空间 */
-  overflow-x: hidden;
+  overflow-x: auto; /* 注意不能为 hidden，否则图片懒加载会失效 */
   /* scroll-snap-type: block mandatory; */
 
   /* 设置滚动条动画 */

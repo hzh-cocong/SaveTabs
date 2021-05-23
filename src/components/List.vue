@@ -311,16 +311,16 @@ console.log('a')
       }, self.w.speed);
     },
 
-    // choice(index) {
-    //   let currentIndex = index+this.scrollLines-1;
-    //   if(currentIndex >= this.list.length || index > this.itemShowCount) {
-    //     return false;
-    //   }
+    choice(index) {
+      let currentIndex = index+this.scrollLines-1;
+      if(currentIndex >= this.list.length || index > this.itemShowCount) {
+        return false;
+      }
 
-    //   // this.currentIndex = currentIndex;
-    //   this.$emit('change', currentIndex);
-    //   return true;
-    // },
+      // this.currentIndex = currentIndex;
+      this.$emit('change', currentIndex);
+      return true;
+    },
     // adjust() {
 
     // },

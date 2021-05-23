@@ -341,19 +341,19 @@ export default {
         return;
       }
 
-      // if( ! this.$refs.list.choice(index)) {
-      //   return;
-      // }
-
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
-      this.currentIndex = currentIndex;
-      console.log('Kengdkeng', this.currentIndex, this.$refs.list.currentIndex);
-      setTimeout(()=>{
-        console.log('Kengdkeng2', this.currentIndex, this.$refs.list.currentIndex);
-      },)
+
+      // let currentIndex = index+this.$refs.list.scrollLines-1;
+      // if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      //   return;
+      // }
+      // this.currentIndex = currentIndex;
+      // console.log('Kengdkeng', this.currentIndex, this.$refs.list.currentIndex);
+      // setTimeout(()=>{
+      //   console.log('Kengdkeng2', this.currentIndex, this.$refs.list.currentIndex);
+      // },)
 
       this._openWindow(event);
     },
@@ -372,13 +372,15 @@ export default {
         this.list.splice(this.currentIndex+1, 0, ...this.currentHistory.subFiles.splice(0, this.currentHistory.count));
         console.log('展开', this.list.length)
 
-        console.warn('kkkk', this.list.length, this.$refs.list.list.length);
-        if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
-          let index = this.config.item_show_count-this.currentHistory.count-1;
-          // index = index < 0 ? 0 : index;
-          console.warn('kkkk2')
-          this.$refs.list.currentTo(index);
-        }
+        this.$nextTick(() => {
+          // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
+          if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
+            let index = this.config.item_show_count-this.currentHistory.count-1;
+            // index = index < 0 ? 0 : index;
+            console.warn('kkkk2')
+            this.$refs.list.currentTo(index);
+          }
+        })
         // this.$refs.list.currentToTop();
       } else {
         // 收起

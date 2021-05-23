@@ -244,6 +244,8 @@ console.log('currentIndex', newVal, oldVal)
       })
     },
     scrollDeal(e) {
+      // console.log('scrollDeal', e)
+
       let self = this;
 
       // 真是奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
@@ -258,11 +260,11 @@ console.log('currentIndex', newVal, oldVal)
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function scrollWatch() {
         self.w.t2 = e.target.scrollTop;
-        console.log('ff')
+        console.log('ff', self.w.t2, self.w.t1, self.w.ulOn)
         if(self.w.t2 == self.w.t1 && self.w.ulOn != true){
           if(e.target.scrollTop%self.itemHeight != 0) {
             // 注意，由于 scrollTop 改变，会再次触发 scoll 事件，所以 speed = 0 是为了其立即执行，不过由于js的事件循环，其依然是在最后运行的
-
+console.log('a')
             self.w.speed = 0;
             // self.w.moveStep = 2;
             self.w.moveStep = self.itemHeight*2/50 < 1 ? 1 : self.itemHeight*2/50;
@@ -280,7 +282,7 @@ console.log('currentIndex', newVal, oldVal)
                                   : self.w.moveStep;/*/
               e.target.scrollTop -= 1;//*/
             }
-          } else {
+          } else {console.log(self.scrollLines,  e.target.scrollTop, e.target.scrollTop/self.itemHeight);
             self.w.speed = 100;
             self.scrollLines = e.target.scrollTop/self.itemHeight;
 
@@ -309,16 +311,16 @@ console.log('currentIndex', newVal, oldVal)
       }, self.w.speed);
     },
 
-    choice(index) {
-      let currentIndex = index+this.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.itemShowCount) {
-        return false;
-      }
+    // choice(index) {
+    //   let currentIndex = index+this.scrollLines-1;
+    //   if(currentIndex >= this.list.length || index > this.itemShowCount) {
+    //     return false;
+    //   }
 
-      // this.currentIndex = currentIndex;
-      this.$emit('change', currentIndex);
-      return true;
-    },
+    //   // this.currentIndex = currentIndex;
+    //   this.$emit('change', currentIndex);
+    //   return true;
+    // },
     // adjust() {
 
     // },
@@ -338,10 +340,16 @@ console.log('currentIndex', newVal, oldVal)
     },
     // 移动列表，使得当前被选中行处于窗口的 index 位置（index 从 0 算起）
     currentTo(index) {
+      console.log('currentTo 00 ', index, this.visiualIndex, this.scrollLines, this.scrollLines*this.itemHeight, this.$el.scrollTop);
+
       if(index < 0) index = 0;
       else if(index >= this.itemShowCount) index = this.itemShowCount-1;
 
+      console.log('currentTo 01 ', index, this.visiualIndex);
+
       if(index == this.visiualIndex) return;
+
+      console.log('currentTo', index, this.visiualIndex, this.scrollLines);
 
       if(index < this.visiualIndex) {
         scrollLines = this.scrollLines+(this.visiualIndex-index);
@@ -349,12 +357,16 @@ console.log('currentIndex', newVal, oldVal)
         scrollLines = this.scrollLines-(index-this.visiualIndex);
       }
 
+      console.log('currentTo2', scrollLines, this.scrollLines);
+
       let scrollLines;
       if(scrollLines < 0) {
         scrollLines = 0;
       } else if(scrollLines > this.list.length-this.itemShowCount) {
         scrollLines = this.list.length-this.itemShowCount;
       }
+
+      console.log('currentTo3', scrollLines, this.scrollLines);
 
       if(scrollLines == this.scrollLines) return;
 

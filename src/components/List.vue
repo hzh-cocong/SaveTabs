@@ -145,6 +145,12 @@ console.log('currentIndex', newVal, oldVal)
         }
     }
   },
+  computed: {
+    visiualIndex() {
+      console.log('visiualIndex', this.currentIndex-this.scrollLines)
+      return this.currentIndex-this.scrollLines;
+    }
+  },
   methods: {
     ulEnter() {
       this.w.ulEnter = true;
@@ -301,9 +307,84 @@ console.log('currentIndex', newVal, oldVal)
           self.w.timer = setTimeout(scrollWatch, self.w.speed);
         }
       }, self.w.speed);
+    },
+
+    choice(index) {
+      let currentIndex = index+this.scrollLines-1;
+      if(currentIndex >= this.list.length || index > this.itemShowCount) {
+        return false;
+      }
+
+      // this.currentIndex = currentIndex;
+      this.$emit('change', currentIndex);
+      return true;
+    },
+    // adjust() {
+
+    // },
+
+    // 移动列表，使得当前被选中行处于窗口最顶部
+    currentToTop() {
+      this.currentTo(0);
+      // console.log('currentToTop', this.currentIndex, this.list.length, this.list.length-this.itemShowCount);
+      // this.scrollLines = this.currentIndex < this.list.length-this.itemShowCount
+      //                   ? this.currentIndex
+      //                   : this.list.length-this.itemShowCount;
+      // // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
+      // setTimeout(() => {
+      //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
+      //   console.log('currentToTop2', this.scrollLines, this.$el.scrollTop, this.scrollLines*this.itemHeight);
+      // }, 0)
+    },
+    // 移动列表，使得当前被选中行处于窗口的 index 位置（index 从 0 算起）
+    currentTo(index) {
+      if(index < 0) index = 0;
+      else if(index >= this.itemShowCount) index = this.itemShowCount-1;
+
+      if(index == this.visiualIndex) return;
+
+      if(index < this.visiualIndex) {
+        scrollLines = this.scrollLines+(this.visiualIndex-index);
+      } else {
+        scrollLines = this.scrollLines-(index-this.visiualIndex);
+      }
+
+      let scrollLines;
+      if(scrollLines < 0) {
+        scrollLines = 0;
+      } else if(scrollLines > this.list.length-this.itemShowCount) {
+        scrollLines = this.list.length-this.itemShowCount;
+      }
+
+      if(scrollLines == this.scrollLines) return;
+
+      this.scrollLines = scrollLines;
+
+      // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
+      setTimeout(() => {
+        this.$el.scrollTop = this.scrollLines*this.itemHeight;
+      }, 0)
+
+
+      // let scrollLines = this.currentIndex-index < this.list.length-this.itemShowCount
+      //                   ? this.currentIndex-index
+      //                   : this.list.length-this.itemShowCount;
+      // console.log('currentTo', index, scrollLines, this.scrollLines)
+      // if(scrollLines < 0 || scrollLines == this.scrollLines) {
+      //   return;
+      // }
+
+      // this.scrollLines = scrollLines;
+
+      // setTimeout(() => {
+      //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
+      // }, 0)
     }
   },
   mounted() {
+    // todo
+    window.list = this;
+
     // document.body.style.cursor = "none";
     this.mouseRealMoveRegister();
 

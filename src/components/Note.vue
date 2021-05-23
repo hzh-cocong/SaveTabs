@@ -405,13 +405,16 @@ console.log('search2===h');
       this.isSearched = true;
     },
     load() {
+      // 加载数据
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
       if(data.length <= 0) {
         this.scrollDisabled = true;
         return;
       }
 
-      this.list.push(...data);
+      // 赋值
+      this.list = this.list.concat(data);
+      // this.list.push(...data);
       this.page++;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },

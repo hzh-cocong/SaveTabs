@@ -68,8 +68,7 @@
           <div
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title || item.deleteUrl
-            }}</div>
+              index+'|'+item.type+(item.type == 'folder' ? '('+item.count+')' : '')+' | '+(item.title || item.url) }}</div>
           <div
             class="sub-title"
             :style="{
@@ -156,18 +155,24 @@ export default {
       list: [],
 
       lastVisitTime: new Date().getTime(),
+      startTime: 0,
+
       scrollDisabled: true,
       storageKeyword: null,
 
       currentIndex: -1,
-
-      startTime: 0,
 
       isSearched: false,
     }
   },
   components: {
     List,
+  },
+  computed: {
+    currentHistory() {
+      if(this.list.length == 0) return {};
+      return this.list[ this.currentIndex ];
+    },
   },
   methods: {
     up() {
@@ -182,21 +187,17 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      let lastVisitTime = new Date().getTime();
-      this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
+      this.lastVisitTime = new Date().getTime();
 
-      // 查找
-      chrome.history.search({
-          text: this.storageKeyword,
-          startTime: this.startTime,
-          endTime: lastVisitTime,
-          maxResults: this.config.list_page_count,
-        }, (historys)=>{
-        // 谷歌提供的接口返回的结果过有时候会是错误的
-        historys = historys.sort((a, b)=>{
-          return b.lastVisitTime-a.lastVisitTime;
-        });
+      // 默认只展示 24 小时内的数据（体验不好）
+      // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
+      // 反正历史记录就不太对，不如将错就错
+      this.startTime = 0;
+
+      // 查找历史
+      this.query((historys) => {
+        console.log('history.search', historys);
         if(historys.length == 0) {
           this.list = [];
           this.currentIndex = 0; //-1;（-1比较危险，不过bug修复后应该没问题，下个版本再思考-1的问题吧）
@@ -208,81 +209,184 @@ export default {
           return;
         }
 
-        let historys2 = historys.filter((history) => {
-          return history.lastVisitTime < lastVisitTime;
-        })
+        let list = [];
+        let map = {};
+        let lastDomain = '';
+        for(let i = 0; i <= historys.length; i++) {
+          let domain = i == historys.length ? '' : this.getDomain(historys[i].url);
 
-        this.list = historys2;
-        this.currentIndex = 0;
-        this.scrollDisabled = historys.length < this.config.list_page_count;
-        if(this.list.length == 0) {
-          this.lastVisitTime = lastVisitTime-1000*1;
-        } else {
-          this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
+          if(i == historys.length || (i != 0 && domain != lastDomain)) {
+            let data = map[ lastDomain ];
+            if(data.length == 1) {
+              let file = data[0];
+              file.type = 'file';
+              list.push(file);
+            } else {
+              let folder = {
+                type: 'folder',
+                fold: true,
+                count: data.length,
+
+                title: data[0].title ,
+                url: lastDomain,
+                lastVisitTime: data[0].lastVisitTime,
+
+                subFiles: data.map(subFile => {
+                  subFile.type = 'sub-file';
+                  return subFile;
+                }),
+              }
+              list.push(folder);
+            }
+            delete map[ lastDomain ];
+
+            if(i == historys.length) break;
+          }
+
+          if(map[ domain ] == undefined) {
+            map[ domain ] = [ historys[i] ];
+          } else {
+            map[ domain ].push(historys[i]);
+          }
+
+          lastDomain = domain;
         }
+
+        this.list = list;
+        this.currentIndex = 0;
+        this.scrollDisabled = false;
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
       })
     },
     load() {
-      // 查找
-      chrome.history.search({
-          text: this.storageKeyword,
-          startTime: this.startTime,
-          endTime: this.lastVisitTime,
-          maxResults: this.config.list_page_count,
-        }, (historys)=>{
-        historys = historys.sort((a, b)=>{
-          return b.lastVisitTime-a.lastVisitTime;
-        });
+      // 查找历史
+      this.query((historys) => {
+        console.log('history.load', historys);
 
         if(historys.length == 0) {
           this.scrollDisabled = true;
           return;
         }
 
-        let historys2 = historys.filter((history) => {
-          // if(history.lastVisitTime >= this.lastVisitTime) console.warn('aaaaaa');
+        this.list = this.list.concat(historys);
+        // this.scrollDisabled = false; // 加载前本来就是 false
+      })
+    },
+    query(callback) {
+      let max = 100; // 100
+
+      // 查找
+      chrome.history.search({
+          text: this.storageKeyword,
+          startTime: this.startTime,
+          endTime: this.lastVisitTime,
+          maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+        }, (historys)=>{
+        console.log('chrome.history.search', {
+          text: this.storageKeyword,
+          startTime: this.startTime,
+          endTime: this.lastVisitTime,
+          maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+        }, historys)
+
+        // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
+        historys = historys.sort((a, b)=>{
+          return b.lastVisitTime-a.lastVisitTime;
+        });
+
+        // 这个比较特殊，这里处理结果会更准确
+        // 其实当过滤完了没数据后，已经没得救了，所以还是交给别人处理吧
+        // this.scrollDisabled = historys.length < max;
+
+        if(historys.length == 0) {
+          callback([]);
+          return;
+          // return [];
+        }
+
+        // 谷歌可能返回超出时间范围的结果，很容易被看出，这里我们给它过滤一下
+        historys = historys.filter((history) => {
           return history.lastVisitTime < this.lastVisitTime;
         })
 
-        this.list.push(...historys2);
-        // this.lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        this.scrollDisabled = historys.length < this.config.list_page_count;
-        let lastVisitTime = Math.floor(this.list[this.list.length-1].lastVisitTime)-1000;
-        // console.warn('history.loading.result', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
-        if(this.lastVisitTime <= lastVisitTime) {
-          // console.error('history.loading.result.wrong', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime));
-          lastVisitTime = this.lastVisitTime-1000*1;
+        // 过滤
+        if(historys.length == 0) {
+          // 糟糕，被过滤完了
+          console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
+          // this.lastVisitTime = this.lastVisitTime-1000*1;
+          console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
+          callback([]);
+          return;
         }
+
+        let lastVisitTime = Math.floor(historys[historys.length-1].lastVisitTime)-1;
+        // if(this.lastVisitTime <= lastVisitTime) {
+        //   // todo 没问题就注释掉这个判断
+        //   // 由于比 this.lastVisitTime 大或等于的都被过滤掉了，并且如果都过滤完的话，在前面就已经返回了，不会运行到这里，所以这个理论上不能出现
+        //   console.error('history.loading.result.error', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime), historys);
+        //   lastVisitTime = this.lastVisitTime-1000*1;
+        // }
         this.lastVisitTime = lastVisitTime;
+
+        callback(historys);
+        // return history;
       })
     },
-    openWindow(index) {
+
+    openWindow(index, event) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
+
+      // if( ! this.$refs.list.choice(index)) {
+      //   return;
+      // }
 
       let currentIndex = index+this.$refs.list.scrollLines-1;
       if(currentIndex >= this.list.length || index > this.config.item_show_count) {
         return;
       }
-
       this.currentIndex = currentIndex;
-      this._openWindow();
-    },
-    _openWindow() {
-      // alert('ss')
-      let history = this.list[ this.currentIndex ];
-      let url = history.url;
+      console.log('Kengdkeng', this.currentIndex, this.$refs.list.currentIndex);
+      setTimeout(()=>{
+        console.log('Kengdkeng2', this.currentIndex, this.$refs.list.currentIndex);
+      },)
 
-      // 打开新标签
-      this.$open(url);
-      // chrome.tabs.create({
-      //   url: url,
-      // })
+      this._openWindow(event);
+    },
+    _openWindow(event) {
+      if(this.currentHistory.type.indexOf('file') != -1) {
+        // 打开新标签
+        this.$open(this.currentHistory.url, event);
+        return;
+      }
+
+      // 展开或收起目录
+      // if(this.currentHistory.type == 'folder')
+
+      if(this.currentHistory.fold) {
+        // 展开
+        this.list.splice(this.currentIndex+1, 0, ...this.currentHistory.subFiles.splice(0, this.currentHistory.count));
+        console.log('展开', this.list.length)
+
+        console.warn('kkkk', this.list.length, this.$refs.list.list.length);
+        if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
+          let index = this.config.item_show_count-this.currentHistory.count-1;
+          // index = index < 0 ? 0 : index;
+          console.warn('kkkk2')
+          this.$refs.list.currentTo(index);
+        }
+        // this.$refs.list.currentToTop();
+      } else {
+        // 收起
+        this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
+      }
+
+      this.currentHistory.fold = ! this.currentHistory.fold;
+      this.focus();
     },
     deleteHistory(index) {
       let url = this.list[index].url;

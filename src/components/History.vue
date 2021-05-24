@@ -51,7 +51,13 @@
             height: (config.item_height-20)+'px' }">
           <el-image
             v-if="isLoad"
-            :src="getIcon('', item.url, config.item_height-20)"
+            :src="getIcon('', item.count == undefined
+                            ? item.url
+                            : (
+                                item.subFiles.length > 0
+                              ? item.subFiles[0].url
+                              : list[index+1].url
+                            ), config.item_height-20)"
             style="width:100%; height: 100%;"
             fit="cover"
             :lazy="index >= config.item_show_count">
@@ -68,7 +74,18 @@
           <div
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">{{
-              index+'|'+item.type+(item.type == 'folder' ? '('+item.count+')' : '')+' | '+(item.title || item.url) }}</div>
+              item.count == undefined || item.count == 1
+            ? (
+                item.count == undefined
+                ? (index + ' | ' + 'file' + ' | ' + (item.title || item.url))
+                : (index + ' | ' + 'file' + ' | ' + (item.subFiles[0].title || item.subFiles[0].url))
+              )
+            : (
+                item.subFiles.length > 0
+                ? (index + ' | ' + 'folder' +'('+item.count+')'+ ' | ' + '+' + (item.subFiles[0].title || item.subFiles[0].url))
+                : (index + ' | ' + 'folder' +'('+item.count+')'+ ' | ' + '-' + (list[index+1].title || list[index+1].url))
+              )
+            }}</div>
           <div
             class="sub-title"
             :style="{
@@ -76,7 +93,19 @@
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div>
+              direction: isSelected ? 'rtl' : 'ltr' }">{{
+                item.count == undefined || item.count == 1
+              ? (
+                  item.count == undefined
+                  ? item.url
+                  : item.subFiles[0].url
+                )
+              : (
+                  item.subFiles.length > 0
+                  ? getDomain(item.subFiles[0].url)
+                  : getDomain(list[index+1].url)
+                )
+              }}</div>
         </div>
 
         <div class="right">
@@ -84,7 +113,7 @@
             <i
               class="el-icon-close"
               style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="deleteHistory(index)"
+              @click.stop="deleteHistory"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color}"></i>
@@ -96,7 +125,16 @@
                 color: isSelected
                   ? config.list_focus_state_color
                   : config.list_state_color,
-              }">{{ timeShow(item.lastVisitTime) }}</span>
+              }">{{
+                timeShow(
+                  item.count == undefined
+                ? item.lastVisitTime
+                : (
+                    item.subFiles.length > 0
+                  ? item.subFiles[0].lastVisitTime
+                  : list[index+1].lastVisitTime
+                ))
+              }}</span>
           </div>
           <div v-if=" ! isActive">
             <span
@@ -163,6 +201,9 @@ export default {
       currentIndex: -1,
 
       isSearched: false,
+
+      urlMap: {},
+      lastDomain: '',
     }
   },
   components: {
@@ -173,6 +214,19 @@ export default {
       if(this.list.length == 0) return {};
       return this.list[ this.currentIndex ];
     },
+    currentFolderIndex() {
+      // 从当前位置网上寻找父亲
+      console.log('currentFolderIndex', this.currentIndex)
+      let k = this.currentIndex;
+      while(this.list[ k ].count == undefined) k--;
+      console.log('currentFolderIndex', this.currentIndex, k, this.list[k])
+      return k;
+    },
+    currentFolder() {
+      // 从当前位置网上寻找父亲
+      console.log('currentFolder', this.list[ this.currentFolderIndex ]);
+      return this.list[ this.currentFolderIndex ];
+    }
   },
   methods: {
     up() {
@@ -209,50 +263,8 @@ export default {
           return;
         }
 
-        let list = [];
-        let map = {};
-        let lastDomain = '';
-        for(let i = 0; i <= historys.length; i++) {
-          let domain = i == historys.length ? '' : this.getDomain(historys[i].url);
-
-          if(i == historys.length || (i != 0 && domain != lastDomain)) {
-            let data = map[ lastDomain ];
-            if(data.length == 1) {
-              let file = data[0];
-              file.type = 'file';
-              list.push(file);
-            } else {
-              let folder = {
-                type: 'folder',
-                fold: true,
-                count: data.length,
-
-                title: data[0].title ,
-                url: lastDomain,
-                lastVisitTime: data[0].lastVisitTime,
-
-                subFiles: data.map(subFile => {
-                  subFile.type = 'sub-file';
-                  return subFile;
-                }),
-              }
-              list.push(folder);
-            }
-            delete map[ lastDomain ];
-
-            if(i == historys.length) break;
-          }
-
-          if(map[ domain ] == undefined) {
-            map[ domain ] = [ historys[i] ];
-          } else {
-            map[ domain ].push(historys[i]);
-          }
-
-          lastDomain = domain;
-        }
-
-        this.list = list;
+        this.list = [];
+        this.mergeHistory(this.list, historys);
         this.currentIndex = 0;
         this.scrollDisabled = false;
 
@@ -270,12 +282,11 @@ export default {
           return;
         }
 
-        this.list = this.list.concat(historys);
-        // this.scrollDisabled = false; // 加载前本来就是 false
+        this.mergeHistory(this.list, historys);
       })
     },
     query(callback) {
-      let max = 100; // 100
+      let max = 5; // todo
 
       // 查找
       chrome.history.search({
@@ -345,62 +356,140 @@ export default {
         return;
       }
 
-      // let currentIndex = index+this.$refs.list.scrollLines-1;
-      // if(currentIndex >= this.list.length || index > this.config.item_show_count) {
-      //   return;
-      // }
-      // this.currentIndex = currentIndex;
-      // console.log('Kengdkeng', this.currentIndex, this.$refs.list.currentIndex);
-      // setTimeout(()=>{
-      //   console.log('Kengdkeng2', this.currentIndex, this.$refs.list.currentIndex);
-      // },)
-
       this._openWindow(event);
     },
     _openWindow(event) {
-      if(this.currentHistory.type.indexOf('file') != -1) {
+      if(this.currentHistory.count == 1) {
         // 打开新标签
         this.$open(this.currentHistory.url, event);
         return;
       }
 
       // 展开或收起目录
-      // if(this.currentHistory.type == 'folder')
-
-      if(this.currentHistory.fold) {
+      if(this.currentHistory.subFiles.length > 0) {
         // 展开
         this.list.splice(this.currentIndex+1, 0, ...this.currentHistory.subFiles.splice(0, this.currentHistory.count));
         console.log('展开', this.list.length)
 
+        // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
         this.$nextTick(() => {
-          // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
           if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
             let index = this.config.item_show_count-this.currentHistory.count-1;
             // index = index < 0 ? 0 : index;
             console.warn('kkkk2')
             this.$refs.list.currentTo(index);
           }
+          // this.$refs.list.currentToTop();
         })
-        // this.$refs.list.currentToTop();
       } else {
         // 收起
         this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
       }
-
-      this.currentHistory.fold = ! this.currentHistory.fold;
       this.focus();
     },
-    deleteHistory(index) {
-      let url = this.list[index].url;
-      chrome.history.deleteUrl({ url: url }, () => {
-        this.list.splice(index, 1);
-        if(this.list.length < this.config.list_page_count
-        && this.scrollDisabled == false) {
-          this.load();
-        }
-      })
+    deleteHistory() {
+      // 删除单独一条历史记录
+      if(this.currentHistory.count == 1) {
+        chrome.history.deleteUrl({ url: this.currentHistory.subFiles[0].url }, () => {
 
+          this.list.splice(this.currentIndex, 1);
+          // if(this.list.length < this.config.list_page_count
+          // && this.scrollDisabled == false) {
+          //   this.load();
+          // }
+        })
+        return;
+      }
+
+      // 删除文件夹内的某条历史记录（肯定展开了）
+      if(this.currentHistory.count == undefined) {
+        chrome.history.deleteUrl({ url: this.currentHistory.url }, () => {
+          if(this.currentFolder.count-1 == 1) {
+            // 收起文件夹
+            let index = this.currentFolderIndex+1 == this.currentIndex
+                      ? this.currentFolderIndex+2  // 删除第一条
+                      : this.currentFolderIndex+1; // 删除最后一条
+            // 先收起
+            this.currentFolder.subFiles = this.list.slice(index, index+1);
+            this.currentFolder.count--;
+            // 再全部移除
+            this.list.splice(this.currentFolderIndex+1, 2);
+          } else {
+            this.currentFolder.count--;
+            this.list.splice(this.currentIndex, 1);
+          }
+          // if(this.list.length < this.config.list_page_count
+          // && this.scrollDisabled == false) {
+          //   this.load();
+          // }
+        })
+
+        return;
+      }
+
+      // 删除整个文件夹（未展开）
+      if(this.currentHistory.count != undefined && this.currentHistory.subFiles.length != 0) {
+        Promise.all(this.currentHistory.subFiles.map((history) => {
+          return new Promise(resolve => {
+            chrome.history.deleteUrl({ url: history.url }, () => {
+              resolve()
+            })
+          })
+        })).then(() => {
+          this.list.splice(this.currentIndex, 1);
+        });
+
+        return;
+      }
+
+      // 删除整个文件夹（已展开）
+      if(this.currentHistory.count != undefined && this.currentHistory.subFiles.length == 0) {
+        let historys = this.list.slice(this.currentIndex+1, this.currentIndex+this.currentHistory.count+1);
+
+        Promise.all(historys.map((history) => {
+          return new Promise(resolve => {
+            chrome.history.deleteUrl({ url: history.url }, () => {
+              resolve()
+            })
+          })
+        })).then(() => {
+          this.list.splice(this.currentIndex, this.currentHistory.count+1);
+        });
+
+        return;
+      }
+
+      // todo
       this.focus();
+    },
+
+    mergeHistory(list, historys) {
+      let k = list.length-1;
+      for(let history of historys) {
+        let domain = this.getDomain(history.url);
+        let lastDomain = k >= 0 ? this.getDomain(list[k].url || list[k].subFiles[0].url) : '';
+        // let lastDomain = k >= 0 ? this.getDomain(list[k].url || list[k].subFiles[0].url) : '';
+console.log('ggggggggg', domain, lastDomain, history)
+        if(domain == lastDomain && list[k].count == undefined) {
+          // 文件夹展开的情况（一般不会遇到）
+console.warn('难得遇到');
+          let l = k;
+          while(this.list[ l ].count == undefined) l--;
+          list[l].count++;
+          list[++k] = history;
+        } else if(domain == lastDomain && list[k].count != undefined) {
+          // 文件夹未展开
+          list[k].subFiles.push(history);
+          list[k].count++;
+        } else {
+          // 新文件夹
+          list[++k] = {
+            count: 1,
+            subFiles: [ history ],
+          }
+        }
+      }
+      console.log('list', list)
     }
   },
   mounted() {

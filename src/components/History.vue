@@ -40,7 +40,10 @@
                           : config.list_background_color,
           color: isSelected
                 ? config.list_focus_font_color
-                : config.list_font_color
+                : config.list_font_color,
+          marginLeft: item.count == undefined
+                    ? 10+'px'
+                    : 0
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow()">
 
@@ -186,14 +189,24 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    history: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {
+          date: null,
+        }
+      },
     }
   },
   data() {
     return {
       list: [],
 
-      lastVisitTime: new Date().getTime(),
-      startTime: 0,
+      lastVisitTime: null, // new Date().getTime(),
+      lastEndTime: null,
+      // startTime: 0,
 
       scrollDisabled: true,
       storageKeyword: null,
@@ -209,7 +222,45 @@ export default {
   components: {
     List,
   },
+  watch: {
+    // todo
+    "history.date": function(newVal, oldVal) {
+      console.log('history.date', this.history.date, newVal, oldVal);
+      this.search();
+    },
+    "history.visible": function(newVal, oldVal) {
+      console.log('history.visible', newVal, oldVal);
+      this.search();
+    },
+
+    // history: {
+    //   handler: function(newVal, oldVal) {
+
+
+    //     console.log('have to search')
+    //     console.log('history.date', JSON.stringify(newVal), JSON.stringify(oldVal))
+    //   },
+    //   deep: true,
+    // }
+  },
   computed: {
+    endTime() {
+      console.log('computed.endTime');
+      if(this.history.date == null) {
+        // return null;
+        return new Date().getTime();
+      } else {
+        return this.history.date.getTime()+86400000-1000;
+      }
+    },
+    startTime() {
+      console.log('computed.startTime');
+      if(this.history.date == null) {
+        return 0;
+      } else {
+        return this.history.date.getTime();
+      }
+    },
     currentHistory() {
       if(this.list.length == 0) return {};
       return this.list[ this.currentIndex ];
@@ -236,18 +287,38 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword == keyword.trim()) return;
+        this.storageKeyword = keyword.trim();
+      }
+
+      /*
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
 
-      this.storageKeyword = keyword.trim();
+      this.storageKeyword = keyword.trim();//*/
 
-      this.lastVisitTime = new Date().getTime();
+      console.log('search', this.storageKeyword, keyword,  this.endTime, new Date().getTime());
+
+      if(this.lastEndTime == this.endTime) return;
+
+      this.lastEndTime = this.endTime;
+      this.lastVisitTime = this.endTime;
+
+      // let lastVisitTime = this.history.visible && this.endTime != null ? this.endTime : new Date().getTime();
+      // if(Math.abs(this.lastVisitTime-lastVisitTime) < 1000) return;
+
+      console.log('search2', this.storageKeyword, this.lastEndTime, this.lastVisitTime);
+
+      // this.lastVisitTime = lastVisitTime;
+      // this.lastVisitTime = new Date().getTime();
 
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
       // 反正历史记录就不太对，不如将错就错
-      this.startTime = 0;
+      // this.startTime = 0;
 
       // 查找历史
       this.query((historys) => {
@@ -286,7 +357,7 @@ export default {
       })
     },
     query(callback) {
-      let max = 5; // todo
+      let max = 100; // todo
 
       // 查找
       chrome.history.search({
@@ -295,7 +366,7 @@ export default {
           endTime: this.lastVisitTime,
           maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
         }, (historys)=>{
-        console.log('chrome.history.search', {
+        console.log('chrome.history.query', {
           text: this.storageKeyword,
           startTime: this.startTime,
           endTime: this.lastVisitTime,
@@ -359,6 +430,7 @@ export default {
       this._openWindow(event);
     },
     _openWindow(event) {
+      console.log('chrome-extension://__MSG_@@extension_id__/background.png')
       if(this.currentHistory.count == 1) {
         // 打开新标签
         this.$open(this.currentHistory.url, event);
@@ -467,12 +539,13 @@ export default {
       let k = list.length-1;
       for(let history of historys) {
         let domain = this.getDomain(history.url);
-        let lastDomain = k >= 0 ? this.getDomain(list[k].url || list[k].subFiles[0].url) : '';
-        // let lastDomain = k >= 0 ? this.getDomain(list[k].url || list[k].subFiles[0].url) : '';
-console.log('ggggggggg', domain, lastDomain, history)
+        let lastDomain = k >= 0
+                      ? ( list[k].count == undefined
+                        ? this.getDomain(list[k].url)
+                        : this.getDomain(list[k].subFiles[0].url))
+                      : '';
         if(domain == lastDomain && list[k].count == undefined) {
           // 文件夹展开的情况（一般不会遇到）
-console.warn('难得遇到');
           let l = k;
           while(this.list[ l ].count == undefined) l--;
           list[l].count++;

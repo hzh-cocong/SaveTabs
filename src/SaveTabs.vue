@@ -230,22 +230,21 @@
               placement="top-start"
               trigger="manual"
               transition=""
-              @after-enter="history.dateShow ? $refs.date.focus() : ''">
+              @after-enter="history.date == null ? $refs.date.focus() : ''">
               <el-date-picker
                 type="date"
                 v-model="history.date"
                 placeholder="选择日期"
                 :picker-options="history.pickerOptions"
-                @focus="history.dateShow = true"
-                @blur="history.dateShow = false; focus();"
+                @blur="focus();"
                 @change="history.date == null ? history.visible = false : '';focus();"
                 ref="date">
               </el-date-picker>
-              <i
+              <!-- <i
                 class="el-icon-delete"
                 style="margin-left: 10px;cursor: pointer;"
                 :style="{ color: history.date == null ? '#c0c4cc' : 'inherit',
-                          cursor: history.date == null ? 'not-allowed' : 'pointer' }"></i>
+                          cursor: history.date == null ? 'not-allowed' : 'pointer' }"></i> -->
               <i
                 class="el-icon-date"
                 slot="reference"
@@ -348,7 +347,7 @@ export default {
         date: null,
         visible: false,
         lastVisible: false,
-        dateShow: true,
+        isActive: true,
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now();
@@ -591,10 +590,12 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         if(this.history.lastVisible) {
           this.history.visible = this.history.lastVisible;
           this.history.lastVisible = false;
+          this.history.isActive = true;
         }
       } else if(this.history.visible) {
-        this.history.lastVisible = this.history.visible;
+        this.history.lastVisible = this.history.date != null && this.history.visible;
         this.history.visible = false;
+        this.history.isActive = false;
       }
 
       this.search();

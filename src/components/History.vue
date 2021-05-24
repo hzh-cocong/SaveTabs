@@ -230,7 +230,7 @@ export default {
     },
     "history.visible": function(newVal, oldVal) {
       console.log('history.visible', newVal, oldVal);
-      this.search();
+      if(this.history.isActive) this.search();
     },
 
     // history: {
@@ -246,7 +246,7 @@ export default {
   computed: {
     endTime() {
       console.log('computed.endTime');
-      if(this.history.date == null) {
+      if(this.history.date == null || ! this.history.visible) {
         // return null;
         return new Date().getTime();
       } else {
@@ -255,7 +255,7 @@ export default {
     },
     startTime() {
       console.log('computed.startTime');
-      if(this.history.date == null) {
+      if(this.history.date == null ||  ! this.history.visible) {
         return 0;
       } else {
         return this.history.date.getTime();
@@ -293,26 +293,14 @@ export default {
         this.storageKeyword = keyword.trim();
       }
 
-      /*
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
-
-      this.storageKeyword = keyword.trim();//*/
-
       console.log('search', this.storageKeyword, keyword,  this.endTime, new Date().getTime());
 
-      if(this.lastEndTime == this.endTime) return;
+      if(keyword == undefined && this.lastEndTime == this.endTime) return;
+
+      console.log('search2', this.storageKeyword, this.lastEndTime, this.endTime);
 
       this.lastEndTime = this.endTime;
       this.lastVisitTime = this.endTime;
-
-      // let lastVisitTime = this.history.visible && this.endTime != null ? this.endTime : new Date().getTime();
-      // if(Math.abs(this.lastVisitTime-lastVisitTime) < 1000) return;
-
-      console.log('search2', this.storageKeyword, this.lastEndTime, this.lastVisitTime);
-
-      // this.lastVisitTime = lastVisitTime;
-      // this.lastVisitTime = new Date().getTime();
 
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;

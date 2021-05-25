@@ -720,19 +720,22 @@ console.log('get_currentWindowStorageIndex3', index);
               resolve(tab.index);
             });
           });
+        })).then((/*indexs*/) => {
+          // chrome.tabs.highlight({tabs: indexs})
+        })
+        return;
+      }
+
+      if(this._device.platform != '' && event.altKey == true) {
+        Promise.all(urls.map((url) => {
+          return new Promise((resolve) => {
+            chrome.tabs.create({url: url, active: false}, (tab) => {
+              resolve(tab.index);
+            });
+          });
         })).then((indexs) => {
           chrome.tabs.highlight({tabs: indexs})
         })
-
-        // urls.forEach(url => {
-        //   chrome.tabs.create({url: url, active: false}, (tab) => {
-        //     chrome.tabs.highlight({tabs: [tab.index]})
-        //   });
-        //   // chrome.tabs.highlight({tabs: Array.from({
-        //   //     length: urls.length
-        //   //   }, (item, index)=> index+this.currentWindow.tabs.length
-        //   // )})
-        // })
         return;
       }
 

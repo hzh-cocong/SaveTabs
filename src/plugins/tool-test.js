@@ -320,14 +320,14 @@ const tool = {
       if(event != undefined
       &&((this._device.platform == 'Mac' && event.metaKey == true)
         || (this._device.platform != '' && event.ctrlKey == true))) {
-        // 覆盖当前窗口
+        // 下个位置打开，但不激活
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
-            chrome.tabs.update(tabs[0].id, { url: url }, (tab) => {
-              callback != undefined && callback(tab, 'cover');
+            chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1, active: false }, (tab) => {
+              callback != undefined && callback(tab, 'tab');
             });
           } else {
-            chrome.tabs.create({ url: url }, (tab) => {
+            chrome.tabs.create({ url: url, active: false }, (tab) => {
               callback != undefined && callback(tab, 'tab');
             });
           }
@@ -342,10 +342,20 @@ const tool = {
       } else if(event != undefined
               && this._device.platform != ''
               && event.altKey == true) {
-        // 新窗口打开（面板方式）
-        chrome.windows.create({ url: [ url ], focused: true, type: 'panel' }, (window) => {
-          callback != undefined && callback(window.tabs[0], 'panel');
-        });
+        // 覆盖当前窗口
+        chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
+          if(tabs.length == 1) {
+            chrome.tabs.update(tabs[0].id, { url: url }, (tab) => {
+              // tab 并没有更新 url，我们来修复它，title其实也不对，不过并没有用到它，这里也无法修复
+              tab.url = url;
+              callback != undefined && callback(tab, 'cover');
+            });
+          } else {
+            chrome.tabs.create({ url: url }, (tab) => {
+              callback != undefined && callback(tab, 'tab');
+            });
+          }
+        })
       } else {
         // 下个位置打开（默认方式）
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {

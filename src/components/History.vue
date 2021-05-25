@@ -205,7 +205,6 @@ export default {
       list: [],
       cacheList: [],
 
-      // page: 0,
       scrollDisabled: true,
       queryDisabled: false,
       storageKeyword: null,
@@ -309,7 +308,7 @@ export default {
         if(historys.length == 0) {
           this.cacheList = [];
           this.list = [];
-          // this.page = 0;
+
           this.currentIndex = 0; //-1;（-1比较危险，不过bug修复后应该没问题，下个版本再思考-1的问题吧）
           this.scrollDisabled = true;
           this.queryDisabled = true;
@@ -322,9 +321,22 @@ export default {
 
         this.cacheList = [];
         this.mergeHistory(this.cacheList, historys);
+
+        // 只有一条时自动展开
+        if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
+          let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
+
+          this.cacheList.push(...historys);
+          // this.cacheList.splice(1, 0, ...historys);
+
+          this.currentIndex = 1;
+        } else {
+          this.currentIndex = 0;
+        }
+
         this.list = this.cacheList.slice(0, this.config.list_page_count);
-        // this.page = 1;
-        this.currentIndex = 0;
+
+        // query 并不精确，有可能这次只返回一条，下次却返回10条
         this.scrollDisabled = false;
         this.queryDisabled = false;
 
@@ -357,6 +369,12 @@ console.log('load3', this.list.length)
         console.log('history.load', historys);
 
         if(historys.length == 0) {
+          if( ! isPrepare) {
+            console.log('0000000000000000000000', this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+            this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+            this.scrollDisabled = true;
+          }
+
           this.queryDisabled = true;
           return;
         }
@@ -365,7 +383,6 @@ console.log('load3', this.list.length)
         console.log('history.load2', this.cacheList);
 
         if( ! isPrepare) {
-          // 理论上不会调到这里，因为有预加载（并发的话倒是有可能）
           console.warn('pppppppppppppppppppppppppppppppp================')
           this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
         }
@@ -569,7 +586,8 @@ console.log('删除整个文件夹（已展开）')
         if(domain == lastDomain && list[k].count == undefined) {
           // 文件夹展开的情况（一般不会遇到）
           let l = k;
-          while(this.list[ l ].count == undefined) l--;
+          while(list[ l ].count == undefined) l--;
+
           list[l].count++;
           list[++k] = history;
         } else if(domain == lastDomain && list[k].count != undefined) {

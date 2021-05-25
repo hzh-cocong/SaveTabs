@@ -51,7 +51,7 @@
     "border_width": 8,
     "padding_width": 0,
     "border_color": "#ffffff",
-    "background_color": "#ffffff",
+    "background_color": "red",
 
     "tag_line_count": 3,
 

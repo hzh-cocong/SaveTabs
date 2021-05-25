@@ -107,7 +107,7 @@
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         v-model="keyword"
-        :clearable="this.keyword == '' ? false : true"
+        :clearable="keyword == '' ? false : true"
         @keydown.down.native.prevent="selectDelay('down', $event)"
         @keydown.up.native.prevent="selectDelay('up', $event)"
         @keydown.left.native="selectDelay('left', $event)"
@@ -240,17 +240,18 @@
                 @change="history.date == null ? history.visible = false : '';focus();"
                 ref="date">
               </el-date-picker>
-              <!-- <i
+              <i
                 class="el-icon-delete"
                 style="margin-left: 10px;cursor: pointer;"
-                :style="{ color: history.date == null ? '#c0c4cc' : 'inherit',
-                          cursor: history.date == null ? 'not-allowed' : 'pointer' }"></i> -->
+                :style="{ color: history.date == null || keyword.trim() != '' ? '#c0c4cc' : 'inherit',
+                          cursor: history.date == null || keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
+                @click="history.date == null || keyword.trim() != '' ? '' : history.isDel = true"></i>
               <i
                 class="el-icon-date"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
-                          color: config.toolbar_icon_color }"
+                          color: history.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
                 @click="history.visible = ! history.visible;history.visible ? '' : focus()"></i>
             </el-popover>
           </template>
@@ -348,6 +349,7 @@ export default {
         visible: false,
         lastVisible: false,
         isActive: true,
+        isDel: false,
         pickerOptions: {
           disabledDate(time) {
             return time.getTime() > Date.now();

@@ -265,6 +265,16 @@ export default {
       console.log('history.visible', newVal, oldVal);
       if(this.history.isActive) this.search();
     },
+    "history.isDel": function(newVal, oldVal) {
+      console.log('history.isDel', newVal, oldVal);
+      if( ! this.history.isDel) return;
+      this.deleteRange(this.startTime, this.endTime, () => {
+        this.storageKeyword = undefined; // 这样列表才会刷新
+        this.search('');
+        this.history.isDel = false;
+        this.focus();
+      });
+    },
   },
   computed: {
     highlightMap() {
@@ -674,6 +684,22 @@ console.log('删除整个文件夹（已展开）')
         }
       }
       console.log('list', list)
+    },
+
+    deleteRange(startTime, endTime, callback) {
+      console.log('deleteRange', startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
+      this.$confirm("确定删除？", '提示', {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true,
+        customClass: 'window-message-box'
+      }).then(() => {
+        chrome.history.deleteRange({
+          startTime: startTime,
+          endTime: endTime,
+        }, callback)
+      }).catch(callback);
     }
   },
   mounted() {

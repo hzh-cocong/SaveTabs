@@ -301,6 +301,9 @@ const tool = {
           search: function(options, callback) {
             callback != undefined && callback(history.slice(0, options.maxResults));
           },
+          deleteRange: function(options, callback) {
+            callback != undefined && callback();
+          }
         }
         chrome.bookmarks = {
           search: function(options, callback) {

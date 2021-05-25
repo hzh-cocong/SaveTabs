@@ -550,6 +550,7 @@ console.log('load3', this.list.length)
                 : this.currentHistory.subFiles[0].url
 console.log('_openWindow', url)
         this.$open(url, event);
+        this.focus();
         return;
       }
 
@@ -585,6 +586,8 @@ console.log('_openWindow', url)
 console.log('删除单独一条历史记录')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
+
+          this.focus();
         })
         return;
       }
@@ -610,6 +613,8 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             this.cacheList.splice(this.currentIndex, 1);
             this.list.splice(this.currentIndex, 1);
           }
+
+          this.focus();
         })
 
         return;
@@ -627,6 +632,8 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
 console.log('删除整个文件夹（未展开）')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
+
+          this.focus();
         });
 
         return;
@@ -646,13 +653,12 @@ console.log('删除整个文件夹（未展开）')
 console.log('删除整个文件夹（已展开）')
           this.cacheList.splice(this.currentIndex, this.currentHistory.count+1);
           this.list.splice(this.currentIndex, this.currentHistory.count+1);
+
+          this.focus();
         });
 
         return;
       }
-
-      // todo
-      this.focus();
     },
 
     mergeHistory(list, historys) {

@@ -33,8 +33,8 @@
 export default {
   name: 'List',
   model: {
-      prop: 'currentIndex',
-      event: 'change'
+    prop: 'currentIndex',
+    event: 'change'
   },
   props: {
     list: {

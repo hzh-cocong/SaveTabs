@@ -303,6 +303,9 @@ const tool = {
           },
           deleteRange: function(options, callback) {
             callback != undefined && callback();
+          },
+          deleteAll: function(callback) {
+            callback != undefined && callback();
           }
         }
         chrome.bookmarks = {

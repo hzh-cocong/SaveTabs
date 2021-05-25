@@ -243,9 +243,9 @@
               <i
                 class="el-icon-delete"
                 style="margin-left: 10px;cursor: pointer;"
-                :style="{ color: history.date == null || keyword.trim() != '' ? '#c0c4cc' : 'inherit',
-                          cursor: history.date == null || keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
-                @click="history.date == null || keyword.trim() != '' ? '' : history.isDel = true"></i>
+                :style="{ color: keyword.trim() != '' ? '#c0c4cc' : 'inherit',
+                          cursor: keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
+                @click="keyword.trim() != '' ? '' : history.isDel = true"></i>
               <i
                 class="el-icon-date"
                 slot="reference"
@@ -322,6 +322,7 @@ export default {
   provide(){
     return {
       focus: this.focus,
+      input: this.input,
     }
   },
   data() {
@@ -393,6 +394,10 @@ export default {
     focus() {
       // 输入框聚焦
       this.$refs['input'].focus();
+    },
+    input(value) {
+      this.keyword = value;
+      this.search();
     },
 
     getTypeIndex(type) {

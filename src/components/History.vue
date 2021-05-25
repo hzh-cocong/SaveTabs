@@ -148,12 +148,33 @@
         <div class="right">
           <div v-if="isActive">
             <i
+              v-if="storageKeyword != getDomain(item.count == undefined
+                                              ? item.url
+                                              : (
+                                                  item.subFiles.length > 0
+                                                ? item.subFiles[0].url
+                                                : list[index+1].url
+                                              ))"
+              class="el-icon-more"
+              style="font-size: 20px;cursor:pointer;margin-right: 16px;"
+              @click.stop="input(
+                            getDomain(
+                              item.count == undefined
+                              ? item.url
+                              : (
+                                  item.subFiles.length > 0
+                                ? item.subFiles[0].url
+                                : list[index+1].url
+                              )
+                            ))"
+              :style="{
+                color:config.list_focus_font_color}"></i>
+            <i
               class="el-icon-close"
               style="font-size: 20px;cursor:pointer;margin-right: 2px;"
               @click.stop="deleteHistory"
               :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
+                color:config.list_focus_font_color}"></i>
           </div>
           <div v-if=" ! isActive">
             <span
@@ -200,6 +221,25 @@
     </template>
   </list>
 
+  <el-dialog
+    :visible.sync="dialogVisible"
+    :append-to-body="true"
+    width="80%"
+    title="清除浏览数据"
+    @close="focus">
+    <el-select v-model="range" style="width: 100%;">
+      <el-option :value="3600000" label="过去一小时"></el-option>
+      <el-option :value="86400000" label="过去24小时"></el-option>
+      <el-option :value="604800000" label="过去7天"></el-option>
+      <el-option :value="2419200000" label="过去4周"></el-option>
+      <el-option :value="-1" label="时间不限"></el-option>
+    </el-select>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="clearRange">确 定</el-button>
+    </span>
+  </el-dialog>
+
   </div>
 </template>
 
@@ -208,7 +248,7 @@ import List from './List.vue'
 
 export default {
   name: 'History',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -250,6 +290,9 @@ export default {
       lastVisitTime: null, // new Date().getTime(),
       lastEndTime: null,
       // startTime: 0,
+
+      range: 3600000,
+      dialogVisible: false,
     }
   },
   components: {
@@ -268,12 +311,18 @@ export default {
     "history.isDel": function(newVal, oldVal) {
       console.log('history.isDel', newVal, oldVal);
       if( ! this.history.isDel) return;
-      this.deleteRange(this.startTime, this.endTime, () => {
-        this.storageKeyword = undefined; // 这样列表才会刷新
-        this.search('');
+
+      if(this.history.date == null) {
+        this.dialogVisible = true;
         this.history.isDel = false;
-        this.focus();
-      });
+      } else {
+        this.deleteRange(this.startTime, this.endTime, () => {
+          this.storageKeyword = undefined; // 这样列表才会刷新
+          this.search('');
+          this.history.isDel = false;
+          this.focus();
+        });
+      }
     },
   },
   computed: {
@@ -411,6 +460,11 @@ export default {
           // this.cacheList.splice(1, 0, ...historys);
 
           this.currentIndex = 1;
+
+          // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
         } else {
           this.currentIndex = 0;
         }
@@ -692,6 +746,28 @@ console.log('删除整个文件夹（已展开）')
       console.log('list', list)
     },
 
+    clearRange() {
+      if(this.range == -1) {
+console.log('deleteAll')
+        chrome.history.deleteAll(() => {
+          this.storageKeyword = undefined; // 这样列表才会刷新
+          this.search('');
+          this.dialogVisible = false;
+        })
+      }  else {
+        let endTime = new Date().getTime();
+        let startTime = endTime-this.range;
+console.log('clearRange', this.range, startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
+        chrome.history.deleteRange({
+          startTime: startTime,
+          endTime: endTime,
+        }, () => {
+          this.storageKeyword = undefined; // 这样列表才会刷新
+          this.search('');
+          this.dialogVisible = false;
+        })
+      }
+    },
     deleteRange(startTime, endTime, callback) {
       console.log('deleteRange', startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
       this.$confirm("确定删除？", '提示', {

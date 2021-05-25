@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="history">
 
   <el-alert
     type="info"
@@ -42,8 +42,12 @@
                 ? config.list_focus_font_color
                 : config.list_font_color,
 
-
-
+          '--list-highlight-color': ( isSelected
+                                      ? config.list_focus_highlight_color
+                                      : config.list_highlight_color),
+          '--list-highlight-weight': ( isSelected
+                                      ? config.list_focus_highlight_weight
+                                      : config.list_highlight_weight),
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
@@ -80,6 +84,16 @@
           <div
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }">
+            <i
+              v-if="item.count != undefined && item.count > 1"
+              style="margin-right: 10px;"
+              :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
+                          'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
+            <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
+          </div>
+          <!-- <div
+            class="title"
+            :style="{ fontSize: config.list_font_size+'px' }">
             <template v-if="item.count == undefined || item.count == 1">
               {{ item.count == undefined
               ? (item.title || item.url)
@@ -90,15 +104,24 @@
                 style="margin-right: 10px;"
                 :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
                             'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
-              <!-- <span
-                v-show="isSelected"
-                style="margin-right: 10px;">{{ '('+item.count+')' }}</span> -->
               <span>{{ item.subFiles.length > 0
                       ? (item.subFiles[0].title || item.subFiles[0].url)
                       : (list[index+1].title || list[index+1].url) }}</span>
             </template>
-          </div>
+          </div> -->
           <div
+            class="sub-title"
+            :style="{
+              fontSize: config.list_explain_font_size+'px',
+              color: isSelected
+                    ? config.list_explain_focus_font_color
+                    : config.list_explain_font_color,
+              direction: isSelected ? 'rtl' : 'ltr' }"
+              v-html="item.count == undefined || item.count == 1
+                    ? highlightMap[index].url
+                    : highlightMap[index].domain+' | '+item.count">
+          </div>
+          <!-- <div
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
@@ -117,7 +140,7 @@
                     : getDomain(list[index+1].url))
                   + ' | '+item.count }}
               </template>
-          </div>
+          </div> -->
         </div>
 
         <div class="right">
@@ -268,6 +291,7 @@ export default {
         highlightMap[ index ] = {
           title: this.highlight(title, this.storageKeyword, '<strong>', '</strong>'),
           url: this.highlight(url, this.storageKeyword, '<strong>', '</strong>'),
+          domain: this.highlight(this.getDomain(url), this.storageKeyword, '<strong>', '</strong>'),
         }
       });
 
@@ -339,7 +363,7 @@ export default {
       console.log('search2', this.storageKeyword, this.lastEndTime, this.endTime);
 
       this.lastEndTime = this.endTime;
-      this.lastVisitTime = this.endTime;
+      let lastVisitTime = this.endTime;
 
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
@@ -387,7 +411,7 @@ export default {
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
-      })
+      }, lastVisitTime)
     },
     load() {
 console.log('load', this.cacheList.length, this.list.length+this.config.list_page_count)
@@ -433,20 +457,23 @@ console.log('load3', this.list.length)
         }
       })
     },
-    query(callback) {
+    query(callback, lastVisitTime) {
       let max = this.config.list_page_count > 51 ? this.config.list_page_count: 51;
+
+      // 防止并发问题
+      lastVisitTime = lastVisitTime == undefined ? this.lastVisitTime : lastVisitTime;
 
       // 查找
       chrome.history.search({
           text: this.storageKeyword,
           startTime: this.startTime,
-          endTime: this.lastVisitTime,
+          endTime: lastVisitTime,
           maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
         }, (historys)=>{
         console.log('chrome.history.query', {
           text: this.storageKeyword,
           startTime: this.startTime,
-          endTime: this.lastVisitTime,
+          endTime: lastVisitTime,
           maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
         }, historys)
 
@@ -467,7 +494,10 @@ console.log('load3', this.list.length)
 
         // 谷歌可能返回超出时间范围的结果，很容易被看出，这里我们给它过滤一下
         historys = historys.filter((history) => {
-          return history.lastVisitTime < this.lastVisitTime;
+          // 去除末尾 /
+          history.url = history.url.replace(/(\/*$)/g,"");
+
+          return history.lastVisitTime < lastVisitTime;
         })
 
         // 过滤
@@ -480,17 +510,9 @@ console.log('load3', this.list.length)
           return;
         }
 
-        let lastVisitTime = Math.floor(historys[historys.length-1].lastVisitTime)-1;
-        // if(this.lastVisitTime <= lastVisitTime) {
-        //   // todo 没问题就注释掉这个判断
-        //   // 由于比 this.lastVisitTime 大或等于的都被过滤掉了，并且如果都过滤完的话，在前面就已经返回了，不会运行到这里，所以这个理论上不能出现
-        //   console.error('history.loading.result.error', this.lastVisitTime, this.timeShow(this.lastVisitTime), lastVisitTime, this.timeShow(lastVisitTime), historys);
-        //   lastVisitTime = this.lastVisitTime-1000*1;
-        // }
-        this.lastVisitTime = lastVisitTime;
+        this.lastVisitTime = Math.floor(historys[historys.length-1].lastVisitTime)-1;
 
         callback(historys);
-        // return history;
       })
     },
 
@@ -726,6 +748,11 @@ console.log('删除整个文件夹（已展开）')
 .el-badge.refresh {
     margin-left: 10px;
 }
+</style>
 
-
+<style>
+.history strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
 </style>

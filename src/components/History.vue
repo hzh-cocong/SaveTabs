@@ -41,9 +41,21 @@
           color: isSelected
                 ? config.list_focus_font_color
                 : config.list_font_color,
-          marginLeft: item.count == undefined
-                    ? 10+'px'
-                    : 0
+
+          '--list-highlight-color': item.url == currentTab.url
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_color
+                                      : config.list_current_highlight_color)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_color
+                                      : config.list_highlight_color),
+          '--list-highlight-weight': item.url == currentTab.url
+                                  ? ( isSelected
+                                      ? config.list_current_focus_highlight_weight
+                                      : config.list_current_highlight_weight)
+                                  : ( isSelected
+                                      ? config.list_focus_highlight_weight
+                                      : config.list_highlight_weight),
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
@@ -51,7 +63,10 @@
           class="left"
           :style="{
             width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px' }">
+            height: (config.item_height-20)+'px',
+            marginLeft: item.count == undefined
+                      ? 10+'px'
+                      : 0 }">
           <el-image
             v-if="isLoad"
             :src="getIcon('', item.count == undefined
@@ -76,19 +91,25 @@
         <div class="main">
           <div
             class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
-              item.count == undefined || item.count == 1
-            ? (
-                item.count == undefined
-                ? (index + ' | ' + 'file' + ' | ' + (item.title || item.url))
-                : (index + ' | ' + 'file' + ' | ' + (item.subFiles[0].title || item.subFiles[0].url))
-              )
-            : (
-                item.subFiles.length > 0
-                ? (index + ' | ' + 'folder' +'('+item.count+')'+ ' | ' + '+' + (item.subFiles[0].title || item.subFiles[0].url))
-                : (index + ' | ' + 'folder' +'('+item.count+')'+ ' | ' + '-' + (list[index+1].title || list[index+1].url))
-              )
-            }}</div>
+            :style="{ fontSize: config.list_font_size+'px' }">
+            <template v-if="item.count == undefined || item.count == 1">
+              {{ item.count == undefined
+              ? (item.title || item.url)
+              : (item.subFiles[0].title || item.subFiles[0].url) }}
+            </template>
+            <template v-else>
+              <i
+                style="margin-right: 10px;"
+                :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
+                            'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
+              <!-- <span
+                v-show="isSelected"
+                style="margin-right: 10px;">{{ '('+item.count+')' }}</span> -->
+              <span>{{ item.subFiles.length > 0
+                      ? (item.subFiles[0].title || item.subFiles[0].url)
+                      : (list[index+1].title || list[index+1].url) }}</span>
+            </template>
+          </div>
           <div
             class="sub-title"
             :style="{
@@ -96,19 +117,19 @@
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{
-                item.count == undefined || item.count == 1
-              ? (
-                  item.count == undefined
+              direction: isSelected ? 'rtl' : 'ltr' }">
+              <template v-if="item.count == undefined || item.count == 1">
+                {{ item.count == undefined
                   ? item.url
-                  : item.subFiles[0].url
-                )
-              : (
-                  item.subFiles.length > 0
-                  ? getDomain(item.subFiles[0].url)
-                  : getDomain(list[index+1].url)
-                )
-              }}</div>
+                  : item.subFiles[0].url }}
+              </template>
+              <template v-else>
+                {{ ( item.subFiles.length > 0
+                    ? getDomain(item.subFiles[0].url)
+                    : getDomain(list[index+1].url))
+                  + ' | '+item.count }}
+              </template>
+          </div>
         </div>
 
         <div class="right">
@@ -233,6 +254,28 @@ export default {
     },
   },
   computed: {
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = {};
+      this.list.forEach(item => {
+        highlightMap[ item.id ] = {
+          title: this.highlight(item.title, this.storageKeyword, '<strong>', '</strong>'),
+          url: this.highlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
+        }
+      });
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
+    },
+
     endTime() {
       console.log('computed.endTime');
       if(this.history.date == null || ! this.history.visible) {

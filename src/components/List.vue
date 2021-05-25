@@ -103,6 +103,15 @@ export default {
 
       // 键盘触发的事件
 console.log('currentIndex', newVal, oldVal)
+
+      if(this.list.length == 0) {
+        console.log('sssssssssss', this.currentIndex)
+        this.scrollLines = 0;
+        this.$el.scrollTop = 0;
+        this.$emit('change', -1);
+        return;
+      }
+
       if(newVal > oldVal) {
         // 向下移动
         if(newVal >= this.list.length) {
@@ -149,6 +158,11 @@ console.log('currentIndex', newVal, oldVal)
       && newVal.length-this.scrollLines  <= this.itemShowCount) {
       console.log('777777777777777777', newVal.length, oldVal.length)
         this.load();
+      }
+
+      if(newVal.length == 0) {
+        console.log('list.watch', newVal.length)
+        this.$emit('change', -1);
       }
     }
   },

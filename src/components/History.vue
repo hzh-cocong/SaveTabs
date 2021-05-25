@@ -27,6 +27,8 @@
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="config.list_scrollbar_color"
+    :scrollbarFocusColor="config.list_scrollbar_focus_color"
     v-model="currentIndex"
     ref="list"
     @load="load"
@@ -147,7 +149,7 @@
           <div v-if="isActive">
             <i
               class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
+              style="font-size: 20px;cursor:pointer;margin-right: 2px;"
               @click.stop="deleteHistory"
               :style="{
                 color:config.list_focus_font_color,
@@ -325,7 +327,7 @@ export default {
     //   // this.list.concat(this.list.length, this.list.length+this.config.list_page_count);
     // },
     currentHistory() {
-      if(this.list.length == 0) return {};
+      if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentFolderIndex() {
@@ -378,7 +380,7 @@ export default {
           this.cacheList = [];
           this.list = [];
 
-          this.currentIndex = 0; //-1;（-1比较危险，不过bug修复后应该没问题，下个版本再思考-1的问题吧）
+          this.currentIndex = -1;
           this.scrollDisabled = true;
           this.queryDisabled = true;
 
@@ -529,6 +531,8 @@ console.log('load3', this.list.length)
       this._openWindow(event);
     },
     _openWindow(event) {
+      if(this.currentHistory == null) return;
+
       if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
         // 打开新标签
         let url = this.currentHistory.count == undefined

@@ -384,7 +384,6 @@ export default {
       cacheList: [],
       storageList: [],
 
-      page: 0,
       scrollDisabled: true,
       storageKeyword: undefined,
 
@@ -478,7 +477,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     currentGroup() {
       console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
-      if(this.list.length == 0) return {};
+      if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {
@@ -550,15 +549,15 @@ console.log('get_currentWindowStorageIndex3', index);
       });
 
       // 列表赋值
-      this.cacheList = currentList.concat(openedList).concat(closeList);
+      this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
+      // this.cacheList = currentList.concat(openedList).concat(closeList);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.page = 1;
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) {
         this.currentIndex = 1;
       } else {
-        this.currentIndex = 0;
+        this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
@@ -566,16 +565,19 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     load() {
       // 加载数据
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
-
-      // 赋值
-      this.list = this.list.concat(data);
-      this.page++;
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
+
+      // let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      // if(data.length <= 0) {
+      //   this.scrollDisabled = true;
+      //   return;
+      // }
+
+      // // 赋值
+      // this.list.push(...data);
+      // // this.list = this.list.concat(data);
+      // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
       this.$prompt('', '添加', {
@@ -687,6 +689,8 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     _openWindow(event) {
       console.log('openWindow', event)
+
+      if(this.currentGroup == null) return;
 
       // let group = this.list[ this.currentIndex ];
       let urls = this.currentGroup.tabs.map(tab => tab['url']);
@@ -830,10 +834,10 @@ console.log('get_currentWindowStorageIndex3', index);
           // }
           this.list.splice(this.currentIndex, 1);
           this.cacheList.splice(this.currentIndex, 1);
-          if(this.list.length < this.config.list_page_count
-          && this.scrollDisabled == false) {
-            this.load();
-          }
+          // if(this.list.length < this.config.list_page_count
+          // && this.scrollDisabled == false) {
+          //   this.load();
+          // }
         });
         this.focus();
       }).catch(() => {

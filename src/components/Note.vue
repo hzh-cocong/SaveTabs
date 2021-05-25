@@ -27,6 +27,8 @@
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="config.list_scrollbar_color"
+    :scrollbarFocusColor="config.list_scrollbar_focus_color"
     v-model="currentIndex"
     ref="list"
     @load="load"
@@ -253,7 +255,6 @@ export default {
       cacheList: [],
       storageList: [],
 
-      page: 0,
       scrollDisabled: true,
       storageKeyword: undefined,
 
@@ -313,7 +314,7 @@ export default {
       return this.list.length > 0 && this.list[0].url == this.currentTab.url;
     },
     currentNote() {
-      if(this.list.length == 0) return {};
+      if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {
@@ -390,15 +391,15 @@ console.log('search2===h');
       });
 
       // 列表赋值
-      this.cacheList = currentList.concat(openedList).concat(closeList);
+      this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
+      // this.cacheList = currentList.concat(openedList).concat(closeList);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.page = 1;
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       if(isFirstSearch && this.isInCurrentTab && this.list.length > 1) {
         this.currentIndex = 1;
       } else {
-        this.currentIndex = 0;
+        this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
@@ -406,17 +407,20 @@ console.log('search2===h');
     },
     load() {
       // 加载数据
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
-
-      // 赋值
-      this.list = this.list.concat(data);
-      // this.list.push(...data);
-      this.page++;
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
+
+      // let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      // if(data.length <= 0) {
+      //   this.scrollDisabled = true;
+      //   return;
+      // }
+
+      // // 赋值
+      // this.list = this.list.concat(data);
+      // // this.list.push(...data);
+      // this.page++;
+      // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
       // 当前标签只能有一个
@@ -525,6 +529,8 @@ console.log('add =====h')
       this._openWindow(event);
     },
     _openWindow(event) {
+      if(this.currentNote == null) return;
+
       // 更新时间
       this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
 
@@ -595,10 +601,10 @@ console.log('bb')
         // 移除，不重新search，体验不好
         this.list.splice(this.currentIndex, 1);
         this.cacheList.splice(this.currentIndex, 1);
-        if(this.list.length < this.config.list_page_count
-          && this.scrollDisabled == false) {
-          this.load();
-        }
+        // if(this.list.length < this.config.list_page_count
+        //   && this.scrollDisabled == false) {
+        //   this.load();
+        // }
 
         // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         // let origin = this.storageKeyword;

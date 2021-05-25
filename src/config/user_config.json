@@ -41,8 +41,8 @@
     "list_current_explain_focus_highlight_color": "#f73131",
     "list_current_focus_state_color": "#ffffff",
 
-    "list_scrollbar_color": "rgba(127, 127, 127, .6)",
-    "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
+    "list_scrollbar_color": "blue",
+    "list_scrollbar_focus_color": "red",
 
     "item_height": 50,
     "item_show_count": 7,

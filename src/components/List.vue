@@ -141,8 +141,15 @@ console.log('currentIndex', newVal, oldVal)
       // 搜索时列表数量发生变化，可能不需要滚动条
       if(newVal.length <= this.itemShowCount
       && oldVal.length > this.itemShowCount) {
-          this.$el.className = "list";
-        }
+        this.$el.className = "list";
+      }
+
+      // 解决由于列表被删除时触底加载问题（v-infinite-scroll 需要靠滚动事件，但这个并不会触发，所以需要我们自己处理）
+      if(this.scrollDisabled == false
+      && newVal.length-this.scrollLines  <= this.itemShowCount) {
+      console.log('777777777777777777', newVal.length, oldVal.length)
+        this.load();
+      }
     }
   },
   computed: {
@@ -260,7 +267,7 @@ console.log('currentIndex', newVal, oldVal)
       clearTimeout(self.w.timer);
       self.w.timer = setTimeout(function scrollWatch() {
         self.w.t2 = e.target.scrollTop;
-        console.log('ff', self.w.t2, self.w.t1, self.w.ulOn)
+        // console.log('ff', self.w.t2, self.w.t1, self.w.ulOn)
         if(self.w.t2 == self.w.t1 && self.w.ulOn != true){
           if(e.target.scrollTop%self.itemHeight != 0) {
             // 注意，由于 scrollTop 改变，会再次触发 scoll 事件，所以 speed = 0 是为了其立即执行，不过由于js的事件循环，其依然是在最后运行的

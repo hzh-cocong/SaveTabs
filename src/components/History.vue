@@ -45,7 +45,7 @@
                     ? 10+'px'
                     : 0
         }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
+        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
         <span
           class="left"
@@ -203,20 +203,20 @@ export default {
   data() {
     return {
       list: [],
+      cacheList: [],
 
-      lastVisitTime: null, // new Date().getTime(),
-      lastEndTime: null,
-      // startTime: 0,
-
+      // page: 0,
       scrollDisabled: true,
+      queryDisabled: false,
       storageKeyword: null,
 
       currentIndex: -1,
 
       isSearched: false,
 
-      urlMap: {},
-      lastDomain: '',
+      lastVisitTime: null, // new Date().getTime(),
+      lastEndTime: null,
+      // startTime: 0,
     }
   },
   components: {
@@ -232,16 +232,6 @@ export default {
       console.log('history.visible', newVal, oldVal);
       if(this.history.isActive) this.search();
     },
-
-    // history: {
-    //   handler: function(newVal, oldVal) {
-
-
-    //     console.log('have to search')
-    //     console.log('history.date', JSON.stringify(newVal), JSON.stringify(oldVal))
-    //   },
-    //   deep: true,
-    // }
   },
   computed: {
     endTime() {
@@ -261,6 +251,11 @@ export default {
         return this.history.date.getTime();
       }
     },
+
+    // list() {
+    //   return this.cacheList.slice(0, this.page*this.config.list_page_count);
+    //   // this.list.concat(this.list.length, this.list.length+this.config.list_page_count);
+    // },
     currentHistory() {
       if(this.list.length == 0) return {};
       return this.list[ this.currentIndex ];
@@ -274,7 +269,7 @@ export default {
       return k;
     },
     currentFolder() {
-      // 从当前位置网上寻找父亲
+      // 从当前位置寻找父亲
       console.log('currentFolder', this.list[ this.currentFolderIndex ]);
       return this.list[ this.currentFolderIndex ];
     }
@@ -312,9 +307,12 @@ export default {
       this.query((historys) => {
         console.log('history.search', historys);
         if(historys.length == 0) {
+          this.cacheList = [];
           this.list = [];
+          // this.page = 0;
           this.currentIndex = 0; //-1;（-1比较危险，不过bug修复后应该没问题，下个版本再思考-1的问题吧）
-          this.scrollDisabled == true;
+          this.scrollDisabled = true;
+          this.queryDisabled = true;
 
           // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
           this.isSearched = true;
@@ -322,30 +320,59 @@ export default {
           return;
         }
 
-        this.list = [];
-        this.mergeHistory(this.list, historys);
+        this.cacheList = [];
+        this.mergeHistory(this.cacheList, historys);
+        this.list = this.cacheList.slice(0, this.config.list_page_count);
+        // this.page = 1;
         this.currentIndex = 0;
         this.scrollDisabled = false;
+        this.queryDisabled = false;
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
       })
     },
     load() {
+console.log('load', this.cacheList.length, this.list.length+this.config.list_page_count)
+      let isPrepare = false;
+      if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
+        // 性能最高
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+
+        // 预加载，即下次翻页需要调用接口时，那么这次就先调用接口
+        console.log('load2', this.cacheList.length, this.list.length+this.config.list_page_count)
+        if(this.cacheList.length >= this.list.length+this.config.list_page_count) return;
+        isPrepare = true;
+      }
+console.log('load3', this.list.length)
+
+      if(this.queryDisabled && ! isPrepare) {
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+        this.scrollDisabled = true;
+        return;
+      }
+
       // 查找历史
       this.query((historys) => {
         console.log('history.load', historys);
 
         if(historys.length == 0) {
-          this.scrollDisabled = true;
+          this.queryDisabled = true;
           return;
         }
 
-        this.mergeHistory(this.list, historys);
+        this.mergeHistory(this.cacheList, historys);
+        console.log('history.load2', this.cacheList);
+
+        if( ! isPrepare) {
+          // 理论上不会调到这里，因为有预加载（并发的话倒是有可能）
+          console.warn('pppppppppppppppppppppppppppppppp================')
+          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+        }
       })
     },
     query(callback) {
-      let max = 100; // todo
+      let max = this.config.list_page_count > 51 ? this.config.list_page_count: 51;
 
       // 查找
       chrome.history.search({
@@ -418,18 +445,23 @@ export default {
       this._openWindow(event);
     },
     _openWindow(event) {
-      console.log('chrome-extension://__MSG_@@extension_id__/background.png')
-      if(this.currentHistory.count == 1) {
+      if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
         // 打开新标签
-        this.$open(this.currentHistory.url, event);
+        let url = this.currentHistory.count == undefined
+                ? this.currentHistory.url
+                : this.currentHistory.subFiles[0].url
+console.log('_openWindow', url)
+        this.$open(url, event);
         return;
       }
 
       // 展开或收起目录
       if(this.currentHistory.subFiles.length > 0) {
         // 展开
-        this.list.splice(this.currentIndex+1, 0, ...this.currentHistory.subFiles.splice(0, this.currentHistory.count));
-        console.log('展开', this.list.length)
+        let historys = this.currentHistory.subFiles.splice(0, this.currentHistory.count);
+        this.cacheList.splice(this.currentIndex+1, 0, ...historys);
+        this.list.splice(this.currentIndex+1, 0, ...historys);
+        console.log('展开', this.list.length, this.cacheList.length)
 
         // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
         this.$nextTick(() => {
@@ -443,6 +475,7 @@ export default {
         })
       } else {
         // 收起
+        this.cacheList.splice(this.currentIndex+1, this.currentHistory.count);
         this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
       }
       this.focus();
@@ -451,12 +484,9 @@ export default {
       // 删除单独一条历史记录
       if(this.currentHistory.count == 1) {
         chrome.history.deleteUrl({ url: this.currentHistory.subFiles[0].url }, () => {
-
+console.log('删除单独一条历史记录')
+          this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
-          // if(this.list.length < this.config.list_page_count
-          // && this.scrollDisabled == false) {
-          //   this.load();
-          // }
         })
         return;
       }
@@ -465,6 +495,7 @@ export default {
       if(this.currentHistory.count == undefined) {
         chrome.history.deleteUrl({ url: this.currentHistory.url }, () => {
           if(this.currentFolder.count-1 == 1) {
+console.log('删除文件夹内的某条历史记录（肯定展开了）1')
             // 收起文件夹
             let index = this.currentFolderIndex+1 == this.currentIndex
                       ? this.currentFolderIndex+2  // 删除第一条
@@ -473,15 +504,14 @@ export default {
             this.currentFolder.subFiles = this.list.slice(index, index+1);
             this.currentFolder.count--;
             // 再全部移除
+            this.cacheList.splice(this.currentFolderIndex+1, 2);
             this.list.splice(this.currentFolderIndex+1, 2);
           } else {
+console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             this.currentFolder.count--;
+            this.cacheList.splice(this.currentIndex, 1);
             this.list.splice(this.currentIndex, 1);
           }
-          // if(this.list.length < this.config.list_page_count
-          // && this.scrollDisabled == false) {
-          //   this.load();
-          // }
         })
 
         return;
@@ -496,6 +526,8 @@ export default {
             })
           })
         })).then(() => {
+console.log('删除整个文件夹（未展开）')
+          this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
         });
 
@@ -513,6 +545,8 @@ export default {
             })
           })
         })).then(() => {
+console.log('删除整个文件夹（已展开）')
+          this.cacheList.splice(this.currentIndex, this.currentHistory.count+1);
           this.list.splice(this.currentIndex, this.currentHistory.count+1);
         });
 

@@ -42,20 +42,8 @@
                 ? config.list_focus_font_color
                 : config.list_font_color,
 
-          '--list-highlight-color': item.url == currentTab.url
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_color
-                                      : config.list_current_highlight_color)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_color
-                                      : config.list_highlight_color),
-          '--list-highlight-weight': item.url == currentTab.url
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_weight
-                                      : config.list_current_highlight_weight)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_weight
-                                      : config.list_highlight_weight),
+
+
         }"
         @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
 
@@ -262,10 +250,24 @@ export default {
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = {};
-      this.list.forEach(item => {
-        highlightMap[ item.id ] = {
-          title: this.highlight(item.title, this.storageKeyword, '<strong>', '</strong>'),
-          url: this.highlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
+      this.list.forEach((item, index) => {
+        let url = item.count == undefined
+                ? item.url
+                : (
+                    item.subFiles.length > 0
+                  ? item.subFiles[0].url
+                  : this.list[index+1].url
+                );
+        let title = item.count == undefined
+                  ? item.title
+                  : (
+                      item.subFiles.length > 0
+                    ? item.subFiles[0].title
+                    : this.list[index+1].title
+                  );
+        highlightMap[ index ] = {
+          title: this.highlight(title, this.storageKeyword, '<strong>', '</strong>'),
+          url: this.highlight(url, this.storageKeyword, '<strong>', '</strong>'),
         }
       });
 

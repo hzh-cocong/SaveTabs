@@ -53,7 +53,8 @@
     "rules": {
       "no-unsafe-negation": "off",
       "no-useless-escape": "off",
-      "no-global-assign": ["error", {"exceptions": ["chrome"]}]
+      "no-global-assign": ["error", {"exceptions": ["chrome"]}],
+      "no-constant-condition": ["error", { "checkLoops": false }]
     }
   },
   "browserslist": [

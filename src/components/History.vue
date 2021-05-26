@@ -632,6 +632,7 @@ console.log('_openWindow', url)
         this.cacheList.splice(this.currentIndex+1, this.currentHistory.count);
         this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
       }
+
       this.focus();
     },
     deleteHistory() {

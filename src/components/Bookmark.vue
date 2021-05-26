@@ -49,11 +49,15 @@
           :style="{
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px',
-            marginLeft: item.marginLeft+'px' }">
+            marginLeft: tree.marginLeft[item.id]+'px' }">
           <template v-if="isLoad">
             <img
-              v-if="item.isFolder"
+              v-if="item.children && item.children.length > 0"
               src="../assets/folder.png"
+              style="width:100%; height: 100%;" />
+            <img
+              v-else-if="item.children && item.children.length <= 0"
+              src="../assets/folder-opened.png"
               style="width:100%; height: 100%;" />
             <el-image
               v-else
@@ -78,13 +82,13 @@
                 item.title
             }}</div>
           <div
-            v-if="isSelected && item.path != ''"
+            v-if="isSelected && tree.path[item.parentId]"
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">{{ item.path }}</div>
+                    : config.list_explain_font_color }">{{ tree.path[item.parentId] + (item.children ? ' | ' + tree.count[item.id] : '') }}</div>
         </div>
 
         <div class="right">
@@ -162,6 +166,30 @@ export default {
       if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
+    tree() {
+      let marginLeft = {};
+      let path = {};
+      let count = {};
+      this.list.forEach((bookmark) => {
+        // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+(this.config.item_height-10) || 0);
+        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
+
+        path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
+
+        count[bookmark.id] = bookmark.children == undefined
+                            ? 0
+                            : bookmark.children.reduce((accumulator, b) => {
+                              return accumulator+(b.parentId == bookmark.id ? 1 : 0);
+                            }, 0);
+        count[bookmark.parentId]++; // 展开后上层算出来肯定是0，就让子目录来计算吧
+      })
+      console.log({marginLeft, path, count});
+      return {
+        marginLeft,
+        path,
+        count
+      };
+    },
   },
   methods: {
     up() {
@@ -233,7 +261,7 @@ export default {
       if(this.currentBookmark == null) return;
 
       // 打开网页
-      if( ! this.currentBookmark.isFolder) {
+      if( ! this.currentBookmark.children) {
         this.$open(this.currentBookmark.url);
         return;
       }
@@ -246,34 +274,71 @@ export default {
         console.log('展开', this.list.length)
       } else {
         // 收起
-        this.currentBookmark.children = this.list.splice(this.currentIndex+1, this.currentBookmark.count);
-        console.log('收起', this.list.length)
+        let map = [];
+        let lastIndex = this.currentIndex+1;
+        let id = this.currentBookmark.id;
+        while(lastIndex < this.list.length) {
+          if(this.list[lastIndex].parentId != id) {
+            if(map.length == 0) break;
+
+            id = map.pop();
+            continue;
+          }
+
+          if(this.list[lastIndex].children != undefined
+          && this.list[lastIndex].children.length == 0) {
+            map.push(id);
+            id = this.list[lastIndex].id;
+          }
+
+          lastIndex++;
+        }
+
+        let count = lastIndex-(this.currentIndex+1);
+        this.currentBookmark.children = this.list.splice(this.currentIndex+1, count);
+        console.log('收起', this.list.length, this.currentIndex+1, lastIndex, count)
       }
+
+      this.focus();
     },
 
-    test(bookmark, list, marginLeft, path) {
-      marginLeft = marginLeft == undefined ? 0 : marginLeft;
-      path = path == undefined ? '' : path;
+    // expand(folder) {
+    //   let bookmark;
+    //   let list = [];
+    //   while(bookmark = folder.children.shift()) {
+    //     if(bookmark.father == undefined) {
+    //       bookmark.father = folder;
+    //     }
+    //     list.push(bookmark);
+    //   }
+    //   return list;
+    // },
 
-      list.push({
-        isFolder: bookmark.children ? true : false,
+    // test(bookmark, list, marginLeft, path) {
+    //   marginLeft = marginLeft == undefined ? 0 : marginLeft;
+    //   path = path == undefined ? '' : path;
 
-        id: bookmark.id,
-        parentId: bookmark.parentId,
-        title: bookmark.title,
-        url: bookmark.url,
-        marginLeft: marginLeft,
-        path: path,
+    //   list.push(bookmark);
 
-        children: bookmark.children,
-      });
+    //   // list.push({
+    //   //   // isFolder: bookmark.children ? true : false,
 
-      if( ! bookmark.children) return;
+    //   //   id: bookmark.id,
+    //   //   parentId: bookmark.parentId,
+    //   //   title: bookmark.title,
+    //   //   url: bookmark.url,
+    //   //   marginLeft: marginLeft,
+    //   //   path: path,
 
-      // for(let b of bookmark.children) {
-      //   this.test(b, list, marginLeft+10, path+'/'+bookmark.title);
-      // }
-    }
+    //   //   children: bookmark.children,
+    //   // });
+
+    //   if( ! bookmark.children) return;
+
+    //   // for(let b of bookmark.children) {
+    //   //   this.test(b, list, marginLeft+10, path+'/'+bookmark.title);
+    //   // }
+    // }
   },
   mounted() {
     // todo
@@ -281,10 +346,14 @@ export default {
 
 
     chrome.bookmarks.getTree((bookmarks) => {
-      // console.log(bookmarks[0])
+      console.log(bookmarks)
       // this.originList = bookmarks[0];
-      this.test(bookmarks[0].children[0], this.originList)
-      this.test(bookmarks[0].children[1], this.originList)
+
+      // this.test(bookmarks[0].children[0], this.originList)
+      // this.test(bookmarks[0].children[1], this.originList)
+
+      // this.originList = this.expand(bookmarks[0]);
+      this.originList.push(...bookmarks[0].children);
       console.log(this.originList);
 
       this.$emit('finish');

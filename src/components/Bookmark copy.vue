@@ -48,27 +48,26 @@
           class="left"
           :style="{
             width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px',
-            marginLeft: item.marginLeft+'px' }">
-          <template v-if="isLoad">
-            <img
-              v-if="item.isFolder"
-              src="../assets/folder.png"
-              style="width:100%; height: 100%;" />
-            <el-image
-              v-else
-              :src="getIcon('', item.url, config.item_height-20)"
-              style="width:100%; height: 100%;"
-              fit="cover"
-              :lazy="index >= config.item_show_count">
-              <div slot="error" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-              <div slot="placeholder" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-            </el-image>
-          </template>
+            height: (config.item_height-20)+'px' }">
+          <el-image
+            v-if="isLoad"
+            :src="getIcon('', item.url, config.item_height-20)"
+            style="width:100%; height: 100%;"
+            fit="cover"
+            :lazy="index >= config.item_show_count">
+            <div slot="error" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <div slot="placeholder" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <!-- <div slot="placeholder" class="image-slot">
+              <img
+                v-if="index >= config.item_show_count"
+                src="../assets/fallback.png"
+                style="width:100%; height: 100%;" />
+            </div> -->
+          </el-image>
         </span>
 
         <div class="main">
@@ -78,13 +77,12 @@
                 item.title
             }}</div>
           <div
-            v-if="isSelected && item.path != ''"
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">{{ item.path }}</div>
+                    : config.list_explain_font_color }">{{ item.url }}</div>
         </div>
 
         <div class="right">
@@ -95,7 +93,7 @@
               color: config.list_focus_keymap_color,
             }">↩</span>
           <span
-            v-else-if="_device.platform != ''
+            v-else-if="platform != ''
               && (index-$refs.list.scrollLines+1) <= config.item_show_count
               && (index-$refs.list.scrollLines+1) >= 1
               && (index-$refs.list.scrollLines+1) <= 9"
@@ -103,7 +101,7 @@
               fontSize: config.list_keymap_size+'px',
               color: config.list_keymap_color,
             }">{{
-                _device.platform == 'Win'
+                platform == 'Win'
               ?  'Alt+'+(index-$refs.list.scrollLines+1)
               : '⌘'+(index-$refs.list.scrollLines+1)
               }}</span>
@@ -118,7 +116,7 @@
 
 <script>
 import List from './List.vue'
-// import Sortable from 'sortablejs';
+import Sortable from 'sortablejs';
 
 export default {
   name: 'Bookmark',
@@ -157,12 +155,6 @@ export default {
   components: {
     List,
   },
-  computed: {
-    currentBookmark() {
-      if(this.list.length == 0) return null;
-      return this.list[ this.currentIndex ];
-    },
-  },
   methods: {
     up() {
       this.currentIndex--;
@@ -176,32 +168,30 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      this.list = this.originList;
+      // 查找
+      let filterList = this.originList.filter(bookmark => {
+        // if(bookmark.url == undefined) return false;
 
-      // // 查找
-      // let filterList = this.originList.filter(bookmark => {
-      //   // if(bookmark.url == undefined) return false;
+        let title = bookmark.title.toUpperCase();
+        let url = bookmark.url.toUpperCase();
+        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
+          if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
+            return false;
+          }
+        }
+        return true;
+      })
 
-      //   let title = bookmark.title.toUpperCase();
-      //   let url = bookmark.url.toUpperCase();
-      //   for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
-      //     if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // })
+      // 列表赋值
+      this.cacheList = filterList;
+      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.page = 1;
 
-      // // 列表赋值
-      // this.cacheList = filterList;
-      // this.list = this.cacheList.slice(0, this.config.list_page_count);
-      // this.page = 1;
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
+      this.currentIndex = 0;
 
-      // this.scrollDisabled = this.list.length >= this.cacheList.length;
-      // this.currentIndex = 0;
-
-      // // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-      // this.isSearched = true;
+      // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+      this.isSearched = true;
     },
     load() {
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
@@ -229,90 +219,61 @@ export default {
       this._openWindow();
     },
     _openWindow() {
-      // 列表为空
-      if(this.currentBookmark == null) return;
-
-      // 打开网页
-      if( ! this.currentBookmark.isFolder) {
-        this.$open(this.currentBookmark.url);
-        return;
-      }
-
-      // 展开或收起目录
-      if(this.currentBookmark.children.length > 0) {
-        // 展开
-        let bookmarks = this.currentBookmark.children.splice(0, this.currentBookmark.children.length);
-        this.list.splice(this.currentIndex+1, 0, ...bookmarks);
-        console.log('展开', this.list.length)
-      } else {
-        // 收起
-        this.currentBookmark.children = this.list.splice(this.currentIndex+1, this.currentBookmark.count);
-        console.log('收起', this.list.length)
-      }
-    },
-
-    test(bookmark, list, marginLeft, path) {
-      marginLeft = marginLeft == undefined ? 0 : marginLeft;
-      path = path == undefined ? '' : path;
-
-      list.push({
-        isFolder: bookmark.children ? true : false,
-
-        id: bookmark.id,
-        parentId: bookmark.parentId,
-        title: bookmark.title,
-        url: bookmark.url,
-        marginLeft: marginLeft,
-        path: path,
-
-        children: bookmark.children,
-      });
-
-      if( ! bookmark.children) return;
-
-      // for(let b of bookmark.children) {
-      //   this.test(b, list, marginLeft+10, path+'/'+bookmark.title);
-      // }
+      let bookmark = this.list[ this.currentIndex ];
+      this.$open(bookmark.url);
     }
   },
   mounted() {
-    // todo
-    window.b = this;
+    // 查找
+    chrome.bookmarks.search({}, (bookmarks)=>{
+      // 过滤掉文件夹
+      bookmarks = bookmarks.filter(bookmark => {
+        if(bookmark.url == undefined) {
+          return false;
+        } else {
+          return true;
+        }
+      })
 
+      // 最近添加的排在最前面
+      bookmarks = bookmarks.sort((a, b)=>{
+        return b.dateAdded-a.dateAdded;
+      });
 
-    chrome.bookmarks.getTree((bookmarks) => {
-      // console.log(bookmarks[0])
-      // this.originList = bookmarks[0];
-      this.test(bookmarks[0].children[0], this.originList)
-      this.test(bookmarks[0].children[1], this.originList)
-      console.log(this.originList);
+      this.originList = bookmarks;
 
       this.$emit('finish');
+
+      // 更新列表
+      // this.search();
+
+
+      //创建拖拽对象
+      // this.sortable =
+      Sortable.create(document.querySelector('.list'), {
+        // sort: this.isEditOrder, //是否可进行拖拽排序
+        animation: 150,
+        // 过滤器，不需要进行拖动的元素
+        // filter: ".disabled",
+        // ghostClass: 'ghost',
+        // draggable: '.enabled',
+        chosenClass: 'chosen',
+        //拖拽完成，移除拖拽之前的位置上的元素，在拖拽之后的位置上添加拖拽元素
+        onEnd: ({ newIndex, oldIndex }) => {
+          console.log(newIndex, oldIndex)
+          // if(newIndex == oldIndex) {
+          //   return;
+          // }
+          // if(newIndex >= this.workspacesConfig.workspaces.length) {
+          //   newIndex = this.workspacesConfig.workspaces.length-1;
+          // }
+          // this.workspacesConfig.workspaces.splice(newIndex, 0, this.workspacesConfig.workspaces.splice(oldIndex , 1)[0]);
+
+          // this.updateWorkspace();
+        }
+      })
+
     })
-
-    // 查找
-    // chrome.bookmarks.search({}, (bookmarks)=>{
-    //   // 过滤掉文件夹
-    //   bookmarks = bookmarks.filter(bookmark => {
-    //     if(bookmark.url == undefined) {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   })
-
-    //   // 最近添加的排在最前面
-    //   bookmarks = bookmarks.sort((a, b)=>{
-    //     return b.dateAdded-a.dateAdded;
-    //   });
-
-    //   this.originList = bookmarks;
-
-    //   this.$emit('finish');
-
-    //   // 更新列表
-    //   // this.search();
-    // })
   }
 }
 </script>

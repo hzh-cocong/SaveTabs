@@ -156,7 +156,7 @@
                                                 : list[index+1].url
                                               ))"
               class="el-icon-more"
-              style="font-size: 20px;cursor:pointer;margin-right: 16px;"
+              style="font-size: 20px;cursor:pointer;margin-right: 11px;padding: 5px;"
               @click.stop="input(
                             getDomain(
                               item.count == undefined
@@ -477,7 +477,7 @@ export default {
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
-      }, lastVisitTime)
+      }, lastVisitTime, 27)
     },
     load() {
 console.log('load', this.cacheList.length, this.list.length+this.config.list_page_count)
@@ -523,8 +523,9 @@ console.log('load3', this.list.length)
         }
       })
     },
-    query(callback, lastVisitTime) {
-      let max = this.config.list_page_count > 51 ? this.config.list_page_count: 51;
+    query(callback, lastVisitTime, max) {
+      max = max == undefined ? 55 : max;
+      max = max < this.config.list_page_count ? this.config.list_page_count : max;
 
       // 防止并发问题
       lastVisitTime = lastVisitTime == undefined ? this.lastVisitTime : lastVisitTime;

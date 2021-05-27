@@ -446,7 +446,8 @@ let b = new Date().getTime();
         if(bookmark.children.length <= 0) continue;
 
         // 目录没有被标记展开，跳过（点击不用管状态，非点击需要）
-        if(currentIndex != index && ! this.state[ bookmark.id ]) continue;
+        // if(currentIndex != index && ! this.state[ bookmark.id ]) continue;
+        if(currentIndex != index) continue;
 
         // 展开目录
         list.splice(currentIndex+1, 0, ...bookmark.children);
@@ -458,18 +459,23 @@ let b = new Date().getTime();
     },
     searchCollapse(list, index) {
       // 搜索列表需要用别的方式收起文件夹
-      // 收起（子目录必须收起来，否则再次展开时的count就不对了）
 
+      // 收起（子目录必须收起来，否则再次展开时的count就不对了）
       let stack = [];
       let count = list[index].count;
       let lastIndex = index+1;
       let parentIndex = index;
+
+      // 空文件夹
+      if(count == undefined) return;
+
       while(true) {
         if(count <= 0) {
           // 收起该层
+          console.log('收起1', lastIndex, parentIndex+1, lastIndex-(parentIndex+1), list[parentIndex].title);
           let total = lastIndex-(parentIndex+1);
           list[parentIndex].children = list.splice(parentIndex+1, total);
-          console.log('收起', lastIndex, parentIndex+1, total);
+          console.log('收起2', lastIndex, parentIndex+1, total);
 
           if(stack.length == 0) break;
 
@@ -477,27 +483,6 @@ let b = new Date().getTime();
           [parentIndex, count] = stack.pop();
           lastIndex = lastIndex-total; // parentIndex+1;
 
-
-          // if(stack.length == 0) {
-          //   // 收起最后一层
-          //   let total = lastIndex-(parentIndex+1);
-          //   list[parentIndex].children = list.splice(parentIndex+1, total);
-          //   console.log('收起最后一层', lastIndex, parentIndex+1, total);
-
-          //   break;
-          // }
-
-          // // 收起该层
-          // let total = lastIndex-(parentIndex+1);
-          // list[parentIndex].children = list.splice(parentIndex+1, total);
-          // console.log('收起', lastIndex, parentIndex+1, total);
-
-          // // 回到上层
-          // [parentIndex, count] = stack.pop();
-          // lastIndex = lastIndex-total; // parentIndex+1;
-
-          // console.log('回到上层', lastIndex, parentIndex, count, JSON.stringify(stack));
-// if(window.test == undefined) window.test = 0; window.test++;if(window.test == 1)break;
           continue;
         }
 
@@ -505,9 +490,10 @@ let b = new Date().getTime();
         count--;
 
         if(bookmark.children != undefined
-        && bookmark.children.length == 0) {
+        && bookmark.children.length == 0
+        && bookmark.count > 0) {
           stack.push([parentIndex, count]);
-          count = list[lastIndex].count;
+          count = bookmark.count;
           parentIndex = lastIndex;
         }
 

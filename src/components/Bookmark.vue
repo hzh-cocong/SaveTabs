@@ -389,6 +389,20 @@ let b = new Date().getTime();
         return;
       }
 
+      // 搜索列表需要用别的方式展开或收起目录
+      if(this.storageKeyword != '') {
+        // 展开或收起目录
+        if(this.currentBookmark.children.length > 0) {
+          // 展开
+          this.searchExpand(this.list, this.currentIndex);
+        } else {
+          // 收起
+          this.searchCollapse(this.list, this.currentIndex);
+        }
+        this.focus();
+        return;
+      }
+
       // 展开或收起目录
       if(this.currentBookmark.children.length > 0) {
         // 展开
@@ -414,6 +428,91 @@ let b = new Date().getTime();
       }
 
       this.focus();
+    },
+
+    searchExpand(list, index) {
+      // 搜索列表需要用别的方式打开文件夹
+
+      // 展开（如果子目录需要展开也会自动展开）
+      let endIndex = index;
+      let stack = [];
+      for(let currentIndex = index, endIndex = index; currentIndex <= endIndex; currentIndex++) {
+        let bookmark = list[currentIndex];
+
+        // 不是目录，跳过
+        if( ! bookmark.children) continue;
+
+        // 目录已展开，跳过
+        if(bookmark.children.length <= 0) continue;
+
+        // 目录没有被标记展开，跳过（点击不用管状态，非点击需要）
+        if(currentIndex != index && ! this.state[ bookmark.id ]) continue;
+
+        // 展开目录
+        list.splice(currentIndex+1, 0, ...bookmark.children);
+        stack.push([currentIndex, bookmark.children.length]);
+        endIndex += bookmark.children.length;
+        bookmark.count = bookmark.children.length;
+        bookmark.children = [];
+      }
+    },
+    searchCollapse(list, index) {
+      // 搜索列表需要用别的方式收起文件夹
+      // 收起（子目录必须收起来，否则再次展开时的count就不对了）
+
+      let stack = [];
+      let count = list[index].count;
+      let lastIndex = index+1;
+      let parentIndex = index;
+      while(true) {
+        if(count <= 0) {
+          // 收起该层
+          let total = lastIndex-(parentIndex+1);
+          list[parentIndex].children = list.splice(parentIndex+1, total);
+          console.log('收起', lastIndex, parentIndex+1, total);
+
+          if(stack.length == 0) break;
+
+          // 回到上层
+          [parentIndex, count] = stack.pop();
+          lastIndex = lastIndex-total; // parentIndex+1;
+
+
+          // if(stack.length == 0) {
+          //   // 收起最后一层
+          //   let total = lastIndex-(parentIndex+1);
+          //   list[parentIndex].children = list.splice(parentIndex+1, total);
+          //   console.log('收起最后一层', lastIndex, parentIndex+1, total);
+
+          //   break;
+          // }
+
+          // // 收起该层
+          // let total = lastIndex-(parentIndex+1);
+          // list[parentIndex].children = list.splice(parentIndex+1, total);
+          // console.log('收起', lastIndex, parentIndex+1, total);
+
+          // // 回到上层
+          // [parentIndex, count] = stack.pop();
+          // lastIndex = lastIndex-total; // parentIndex+1;
+
+          // console.log('回到上层', lastIndex, parentIndex, count, JSON.stringify(stack));
+// if(window.test == undefined) window.test = 0; window.test++;if(window.test == 1)break;
+          continue;
+        }
+
+        let bookmark = list[lastIndex];
+        count--;
+
+        if(bookmark.children != undefined
+        && bookmark.children.length == 0) {
+          stack.push([parentIndex, count]);
+          count = list[lastIndex].count;
+          parentIndex = lastIndex;
+        }
+
+        lastIndex++;
+      }
     },
 
     expand(list, index, isClick) {
@@ -449,17 +548,19 @@ let b = new Date().getTime();
       let parentId = list[index].id;
       let lastIndex = index+1;
       while(lastIndex < list.length) {
-        if(list[lastIndex].parentId != parentId) {
+        let bookmark = list[lastIndex];
+
+        if(bookmark.parentId != parentId) {
           if(stack.length == 0) break;
 
           parentId = stack.pop();
           continue;
         }
 
-        if(list[lastIndex].children != undefined
-        && list[lastIndex].children.length == 0) {
+        if(bookmark.children != undefined
+        && bookmark.children.length == 0) {
           stack.push(parentId);
-          parentId = list[lastIndex].id;
+          parentId = bookmark.id;
         }
 
         lastIndex++;

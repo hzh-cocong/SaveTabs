@@ -49,7 +49,7 @@
           :style="{
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px',
-            marginLeft: tree.marginLeft[item.id]+'px' }">
+            marginLeft: originTree.marginLeft[item.id]+'px' }">
           <template v-if="isLoad">
             <img
               v-if="item.children && item.children.length > 0"
@@ -82,13 +82,13 @@
                 item.title
             }}</div>
           <div
-            v-if="isSelected && tree.path[item.parentId]"
+            v-if="isSelected && originTree.path[item.parentId]"
             class="sub-title"
             :style="{
               fontSize: config.list_explain_font_size+'px',
               color: isSelected
                     ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">{{ tree.path[item.parentId] + (item.children ? ' | ' + tree.count[item.id] : '') }}</div>
+                    : config.list_explain_font_color }">{{ originTree.path[item.parentId] + (item.children ? ' | ' + originTree.count[item.id] : '') }}</div>
         </div>
 
         <div class="right">
@@ -152,10 +152,11 @@ export default {
       scrollDisabled: true,
       storageKeyword: null,
 
-      page: 0,
       currentIndex: -1,
 
       isSearched: false,
+
+      state: {},
     }
   },
   components: {
@@ -166,28 +167,78 @@ export default {
       if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
-    tree() {
+    // tree() {
+    //   let marginLeft = {};
+    //   let path = {};
+    //   let count = {};
+    //   this.list.forEach((bookmark) => {
+    //     // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+(this.config.item_height-10) || 0);
+    //     marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
+
+    //     path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
+
+    //     count[bookmark.id] = bookmark.children == undefined
+    //                         ? 0
+    //                         : bookmark.children.reduce((accumulator, b) => {
+    //                           return accumulator+(b.parentId == bookmark.id ? 1 : 0);
+    //                         }, 0);
+    //     count[bookmark.parentId]++; // 展开后上层算出来肯定是0，就让子目录来计算吧
+    //   })
+    //   console.log({marginLeft, path, count});
+    //   return {
+    //     marginLeft,
+    //     path,
+    //     count
+    //   };
+    // },
+
+    originTree() {
       let marginLeft = {};
       let path = {};
       let count = {};
-      this.list.forEach((bookmark) => {
-        // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+(this.config.item_height-10) || 0);
-        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
+      let total = 0;
 
+      let map = [];
+      let index = 0;
+      let list = this.originList;
+      while(true) {
+        if(index >= list.length) {
+          if(map.length == 0) break;
+
+          [list, index] = map.pop();
+          index++;
+          continue;
+        }
+
+        let bookmark = list[index];
+
+        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0); //
         path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
+        count[bookmark.parentId] == undefined ? count[bookmark.parentId] = 1 : count[bookmark.parentId]++;
+        if(bookmark.children == undefined) total++;
 
-        count[bookmark.id] = bookmark.children == undefined
-                            ? 0
-                            : bookmark.children.reduce((accumulator, b) => {
-                              return accumulator+(b.parentId == bookmark.id ? 1 : 0);
-                            }, 0);
-        count[bookmark.parentId]++; // 展开后上层算出来肯定是0，就让子目录来计算吧
-      })
-      console.log({marginLeft, path, count});
+        if(bookmark.children == undefined || bookmark.children == 0) {
+          // 非目录或目录已展开，则继续往下遍历
+
+          index++;
+        } else {
+          // 存在子目录且未展开，则进入到子目录
+
+          // 先保存当前状态
+          map.push([list, index]);
+
+          // 开始遍历子目录
+          list = bookmark.children;
+          index = 0;
+        }
+      }
+
+      console.log('tttttttttttttt', { marginLeft, path, count, total })
       return {
-        marginLeft,
+        marginLeft, //
         path,
-        count
+        count,
+        total,
       };
     },
   },
@@ -204,32 +255,48 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      this.list = this.originList;
+      if(this.storageKeyword.length == 0) {
+        this.list = this.originList;
 
-      // // 查找
-      // let filterList = this.originList.filter(bookmark => {
-      //   // if(bookmark.url == undefined) return false;
+        this.currentIndex = 0;
 
-      //   let title = bookmark.title.toUpperCase();
-      //   let url = bookmark.url.toUpperCase();
-      //   for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
-      //     if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // })
+        // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+        this.isSearched = true;
 
-      // // 列表赋值
-      // this.cacheList = filterList;
-      // this.list = this.cacheList.slice(0, this.config.list_page_count);
-      // this.page = 1;
+        return;
+      }
 
-      // this.scrollDisabled = this.list.length >= this.cacheList.length;
-      // this.currentIndex = 0;
+      // 使用浏览器自带的查找功能
+      chrome.bookmarks.search({query: this.storageKeyword}, (bookmarks)=>{
+        console.log('chrome.bookmarks.search', bookmarks);
+        // 过滤掉文件夹
+        Promise.all(
+          bookmarks.filter(bookmark => bookmark.url == undefined).map(bookmark => {
+            console.log('ffffff', bookmark.id)
+            return new Promise(resolve => {
+              chrome.bookmarks.getSubTree(bookmark.id, tree => {
+                console.log('fffffffff2', tree)
+                bookmark.children = tree[0].children;
+                resolve();
+              })
+            })
+          })
+        ).then(() => {
+          // 文件夹排在前面
+          bookmarks = bookmarks.sort((a, b)=>{
+            return a.url == undefined && b.url == undefined // 两个都是文件夹
+                  ? 0
+                  : (
+                    a.url != undefined && b.url != undefined // 两个都是书签
+                    ? 0
+                    : ( a.url == undefined ? -1 : 1 ) // 文件夹排前面（因为这个结果比较少）
+                  );
+          });
 
-      // // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-      // this.isSearched = true;
+          this.list = bookmarks;
+          this.currentIndex = 0;
+        })
+      })
     },
     load() {
       let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
@@ -269,119 +336,113 @@ export default {
       // 展开或收起目录
       if(this.currentBookmark.children.length > 0) {
         // 展开
-        let bookmarks = this.currentBookmark.children.splice(0, this.currentBookmark.children.length);
-        this.list.splice(this.currentIndex+1, 0, ...bookmarks);
-        console.log('展开', this.list.length)
+
+        // 先存储再去操作，因为列表有可能会发生滚动
+        this.state[ this.currentBookmark.id ] = true;
+        chrome.storage.local.set({'bookmark': { state: this.state }}, () => {
+
+        });
+
+        this.expand(this.list, this.currentIndex, true);
       } else {
         // 收起
-        let map = [];
-        let lastIndex = this.currentIndex+1;
-        let id = this.currentBookmark.id;
-        while(lastIndex < this.list.length) {
-          if(this.list[lastIndex].parentId != id) {
-            if(map.length == 0) break;
 
-            id = map.pop();
-            continue;
-          }
+        // 先存储再去操作，因为列表有可能会发生滚动
+        // this.state[ this.currentBookmark.id ] = false;
+        delete this.state[ this.currentBookmark.id ]
+        chrome.storage.local.set({'bookmark': { state: this.state }}, () => {
 
-          if(this.list[lastIndex].children != undefined
-          && this.list[lastIndex].children.length == 0) {
-            map.push(id);
-            id = this.list[lastIndex].id;
-          }
+        });
 
-          lastIndex++;
-        }
-
-        let count = lastIndex-(this.currentIndex+1);
-        this.currentBookmark.children = this.list.splice(this.currentIndex+1, count);
-        console.log('收起', this.list.length, this.currentIndex+1, lastIndex, count)
+        this.collapse(this.list, this.currentIndex);
       }
 
       this.focus();
     },
 
-    // expand(folder) {
-    //   let bookmark;
-    //   let list = [];
-    //   while(bookmark = folder.children.shift()) {
-    //     if(bookmark.father == undefined) {
-    //       bookmark.father = folder;
-    //     }
-    //     list.push(bookmark);
-    //   }
-    //   return list;
-    // },
+    expand(list, index, isClick) {
+      // 展开（如果子目录需要展开也会自动展开）
 
-    // test(bookmark, list, marginLeft, path) {
-    //   marginLeft = marginLeft == undefined ? 0 : marginLeft;
-    //   path = path == undefined ? '' : path;
+      console.log('sssss', index);
+      let parentId = list[index].parentId;
+      for(let currentIndex = index; currentIndex < list.length; currentIndex++) {
+        console.log('expand')
+        let bookmark = list[currentIndex];
 
-    //   list.push(bookmark);
+        // 和一开始的目录同级，说明超出了，结束（被点对象除外）
+        if(currentIndex != index && bookmark.parentId == parentId) break;
 
-    //   // list.push({
-    //   //   // isFolder: bookmark.children ? true : false,
+        // 不是目录，跳过
+        if( ! bookmark.children) continue;
 
-    //   //   id: bookmark.id,
-    //   //   parentId: bookmark.parentId,
-    //   //   title: bookmark.title,
-    //   //   url: bookmark.url,
-    //   //   marginLeft: marginLeft,
-    //   //   path: path,
+        // 目录已展开，跳过
+        if(bookmark.children.length <= 0) continue;
 
-    //   //   children: bookmark.children,
-    //   // });
+        // 目录没有被标记展开，跳过（点击不用管状态，非点击需要）
+        if((currentIndex == index && ! isClick && ! this.state[ bookmark.id ])
+        || (currentIndex != index && ! this.state[ bookmark.id ])) continue;
 
-    //   if( ! bookmark.children) return;
+        // 展开目录
+        list.splice(currentIndex+1, 0, ...bookmark.children);
+        bookmark.children = [];
+      }
+    },
+    collapse(list, index) {
+      // 收起（不自动收起子目录，可以提高效率）
+      let map = [];
+      let lastIndex = index+1;
+      let id = list[index].id;
+      while(lastIndex < list.length) {
+        if(list[lastIndex].parentId != id) {
+          if(map.length == 0) break;
 
-    //   // for(let b of bookmark.children) {
-    //   //   this.test(b, list, marginLeft+10, path+'/'+bookmark.title);
-    //   // }
-    // }
+          id = map.pop();
+          continue;
+        }
+
+        if(list[lastIndex].children != undefined
+        && list[lastIndex].children.length == 0) {
+          map.push(id);
+          id = list[lastIndex].id;
+        }
+
+        lastIndex++;
+      }
+
+      let count = lastIndex-(index+1);
+      list[index].children = list.splice(index+1, count);
+      console.log('收起', list.length, index+1, lastIndex, count)
+    },
   },
   mounted() {
     // todo
     window.b = this;
 
+    Promise.all([
+      new Promise((resolve) => {
+        chrome.bookmarks.getTree((bookmarks) => {
+          console.log(bookmarks)
 
-    chrome.bookmarks.getTree((bookmarks) => {
-      console.log(bookmarks)
-      // this.originList = bookmarks[0];
+          this.originList.push(...bookmarks[0].children);
+          console.log(this.originList);
 
-      // this.test(bookmarks[0].children[0], this.originList)
-      // this.test(bookmarks[0].children[1], this.originList)
+          resolve();
+        })
+      }),
+      new Promise((resolve) => {
+        // 获取书签打开状态
+        chrome.storage.local.get({'bookmark': { state: {}}}, items => {
+          this.state = items.bookmark.state;
+          resolve();
+        });
+      }),
+    ]).then(() => {
+      console.log('state', this.state);
 
-      // this.originList = this.expand(bookmarks[0]);
-      this.originList.push(...bookmarks[0].children);
-      console.log(this.originList);
+      this.expand(this.originList, 0, false);
 
       this.$emit('finish');
     })
-
-    // 查找
-    // chrome.bookmarks.search({}, (bookmarks)=>{
-    //   // 过滤掉文件夹
-    //   bookmarks = bookmarks.filter(bookmark => {
-    //     if(bookmark.url == undefined) {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   })
-
-    //   // 最近添加的排在最前面
-    //   bookmarks = bookmarks.sort((a, b)=>{
-    //     return b.dateAdded-a.dateAdded;
-    //   });
-
-    //   this.originList = bookmarks;
-
-    //   this.$emit('finish');
-
-    //   // 更新列表
-    //   // this.search();
-    // })
   }
 }
 </script>

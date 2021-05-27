@@ -612,9 +612,11 @@ console.log('_openWindow', url)
       // 展开或收起目录
       if(this.currentHistory.subFiles.length > 0) {
         // 展开
-        let historys = this.currentHistory.subFiles.splice(0, this.currentHistory.count);
+        // let historys = this.currentHistory.subFiles.splice(0, this.currentHistory.count);
+        let historys = this.currentHistory.subFiles;
         this.cacheList.splice(this.currentIndex+1, 0, ...historys);
         this.list.splice(this.currentIndex+1, 0, ...historys);
+        this.currentHistory.subFiles = [];
         console.log('展开', this.list.length, this.cacheList.length)
 
         // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的

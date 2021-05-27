@@ -54,7 +54,9 @@
       "no-unsafe-negation": "off",
       "no-useless-escape": "off",
       "no-global-assign": ["error", {"exceptions": ["chrome"]}],
-      "no-constant-condition": ["error", { "checkLoops": false }]
+      "no-constant-condition": ["error", { "checkLoops": false }],
+      "no-unused-vars": ["error", { "args": "none" }],
+      "no-empty": ["error", { "allowEmptyCatch": true }]
     }
   },
   "browserslist": [

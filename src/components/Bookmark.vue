@@ -294,19 +294,14 @@ let b = new Date().getTime();
         marginLeft[ index ] = lastMarginLeft;
 
         if(bookmark.count != undefined && bookmark.children.length <= 0) {
+          console.log('searchTree:push', JSON.stringify(stack));
           stack.push([lastMarginLeft, count]);
           lastMarginLeft += 20;
           count = bookmark.count;
         }
 
-        // if(count <= 0) {
-        //   while(stack.length > 0) {
-        //     [lastMarginLeft, count] = stack.pop();
-        //     if(count > 0) break;
-        //   }
-        // }
-
         while(count <= 0 && stack.length > 0) {
+          console.log('searchTree:pop', JSON.stringify(stack));
           [lastMarginLeft, count] = stack.pop();
         }
       }

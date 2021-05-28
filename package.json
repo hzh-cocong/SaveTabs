@@ -55,7 +55,7 @@
       "no-useless-escape": "off",
       "no-global-assign": ["error", {"exceptions": ["chrome"]}],
       "no-constant-condition": ["error", { "checkLoops": false }],
-      "no-unused-vars": ["error", { "args": "none" }],
+      "no-unused-vars": ["none", { "args": "none" }],
       "no-empty": ["error", { "allowEmptyCatch": true }]
     }
   },

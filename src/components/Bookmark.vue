@@ -53,7 +53,7 @@
                       ? tree.marginLeft[item.id]
                       : ( list.length - index <= searchFolderBoundary
                         ? 0
-                        : searchTree.marginLeft[item.id])
+                        : searchTree.marginLeft[index])
                       )+'px' }">
           <template v-if="isLoad">
             <img
@@ -168,9 +168,9 @@ export default {
       isSearched: false,
 
       rootId: -1,
-      searchFolderBoundary: -1,
-
       state: {},
+
+      searchFolderBoundary: -1,
     }
   },
   components: {
@@ -280,10 +280,37 @@ let b = new Date().getTime();
     },
 
     searchTree() {
+      console.log('searchTree')
+
       let marginLeft = {};
-      this.list.forEach((bookmark, index) => {
-        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
-      })
+      let stack = [];
+      let lastMarginLeft = 0;
+      let count = 0;
+      for(let index = 0; index < this.list.length; index++) {
+        let bookmark = this.list[index];
+
+        if(count > 0) count--;
+
+        marginLeft[ index ] = lastMarginLeft;
+
+        if(bookmark.count != undefined && bookmark.children.length <= 0) {
+          stack.push([lastMarginLeft, count]);
+          lastMarginLeft += 20;
+          count = bookmark.count;
+        }
+
+        // if(count <= 0) {
+        //   while(stack.length > 0) {
+        //     [lastMarginLeft, count] = stack.pop();
+        //     if(count > 0) break;
+        //   }
+        // }
+
+        while(count <= 0 && stack.length > 0) {
+          [lastMarginLeft, count] = stack.pop();
+        }
+      }
+
       console.log({marginLeft});
       return {
         marginLeft,
@@ -453,7 +480,7 @@ let b = new Date().getTime();
         list.splice(currentIndex+1, 0, ...bookmark.children);
         stack.push([currentIndex, bookmark.children.length]);
         endIndex += bookmark.children.length;
-        bookmark.count = bookmark.children.length;
+        bookmark.count = bookmark.children.length; // 加 count 标记，这个是临时的，会因为搜索而消失
         bookmark.children = [];
       }
     },
@@ -466,7 +493,7 @@ let b = new Date().getTime();
       let lastIndex = index+1;
       let parentIndex = index;
 
-      // 空文件夹
+      // 空文件夹是没有count的
       if(count == undefined) return;
 
       while(true) {

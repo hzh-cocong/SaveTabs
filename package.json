@@ -29,6 +29,7 @@
     "babel-plugin-component": "^1.1.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "image-webpack-loader": "^7.0.1",
     "svgo": "^1.1.0",
     "svgo-loader": "^2.1.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
@@ -53,10 +54,33 @@
     "rules": {
       "no-unsafe-negation": "off",
       "no-useless-escape": "off",
-      "no-global-assign": ["error", {"exceptions": ["chrome"]}],
-      "no-constant-condition": ["error", { "checkLoops": false }],
-      "no-unused-vars": ["off", { "args": "none" }],
-      "no-empty": ["error", { "allowEmptyCatch": true }]
+      "no-global-assign": [
+        "error",
+        {
+          "exceptions": [
+            "chrome"
+          ]
+        }
+      ],
+      "no-constant-condition": [
+        "error",
+        {
+          "checkLoops": false
+        }
+      ],
+      "no-unused-vars": [
+        "off",
+        {
+          "args": "none"
+        }
+      ],
+      "no-empty": [
+        "error",
+        {
+          "allowEmptyCatch": true
+        }
+      ],
+      "vue/no-use-v-if-with-v-for": "off"
     }
   },
   "browserslist": [

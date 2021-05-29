@@ -30,9 +30,7 @@ import SaveTabs from './SaveTabs.vue'
 // // 设置语言
 // locale.use(lang)
 
-
-// todo
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 new Vue({
   render: h => h(SaveTabs),

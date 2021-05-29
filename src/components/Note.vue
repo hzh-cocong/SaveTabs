@@ -338,7 +338,7 @@ console.log('search2===h');
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();
-
+console.warn('isSearched');
       // 查找
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
@@ -401,7 +401,7 @@ console.log('search2===h');
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
-
+console.warn('isSearched2');
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
@@ -656,9 +656,16 @@ console.log('bb')
       }, 0)
     }
   },
+  beforeUpdate() {
+    console.warn('beforeUpdate');
+  },
+  updated() {
+    console.warn('updated');
+  },
   mounted() {
     //todo
-    window.n = this;
+    window.n = this;let a = new Date().getTime();
+console.warn('mounted', a);
 
     Promise.all([
       new Promise((resolve) => {
@@ -704,6 +711,10 @@ console.log('bb')
         })
       })
     ]).then(() => {
+
+      let b = new Date().getTime();
+console.warn('finish', b, (b-a)/1000)
+
       this.$emit('finish');
     })
 

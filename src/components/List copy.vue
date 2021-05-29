@@ -11,36 +11,15 @@
     @mousedown="w.ulOn = true;"
     @mouseup="w.ulOn = false"
     @contextmenu="w.ulOn = false">
-    <!-- <li
-      v-for="(item, index) in list"
-      v-if="index >= scrollLines-1 && index < scrollLines+itemShowCount+1"
-      class="list-item"
-      :key="index"
-      :style="{ height: index >= scrollLines && index < scrollLines+itemShowCount
-                      ? itemHeight+'px'
-                      : ( index == scrollLines-1
-                        ? scrollLines*itemHeight+'px'
-                        : (list.length-scrollLines-itemShowCount)*itemHeight+'px'),
-                }"
-      @mouseenter="mouseSelect(index)"
-      @mouseleave="mouseIndex=-1">
-      <slot
-        :index="index"
-        :item="item"
-        :isSelected="index==currentIndex"
-        :isActive="index==currentIndex
-                  && currentIndex==mouseIndex
-                  && mouseStart == true">{{ item }}</slot>
-    </li> -->
-
     <li
-      v-for="(item, index) in list"
       class="list-item"
+      v-for="(item, index) in list"
       :key="index"
       @mouseenter="mouseSelect(index)"
       @mouseleave="mouseIndex=-1"
       :style="{ height: itemHeight+'px' }">
       <slot
+        v-if="index >= scrollLines && index < scrollLines+itemShowCount"
         :index="index"
         :item="item"
         :isSelected="index==currentIndex"
@@ -300,9 +279,6 @@ console.log('currentIndex', newVal, oldVal)
         self.$el.className = "list scroll";
       }
 
-      // if(e.target.scrollTop%self.itemHeight == 0) {
-      //   self.scrollLines = e.target.scrollTop/self.itemHeight;
-      // }
       if(self.w.flag) { // 向上滚动
         self.scrollLines = Math.ceil(e.target.scrollTop/self.itemHeight);
       } else {

@@ -53,15 +53,6 @@
             "svg": "star-solid",
             "placeholder": "bookmarkPlaceholder",
             "isEnabled": true
-        },
-        "test": {
-            "type": "test",
-            "title": "test",
-            "icon": ["fab", "windows"],
-            "icon_simple": "el-icon-download",
-            "svg": "windows-brands",
-            "placeholder": "windowPlaceholder",
-            "isEnabled": true
         }
     },
     "colorAttributes": {

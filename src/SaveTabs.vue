@@ -316,6 +316,7 @@ import Temporary from './components/Temporary.vue'
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
 import userTheme from './config/user_theme.json'
+import Test from './components/Test.vue'
 
 export default {
   name: 'app',
@@ -388,7 +389,8 @@ export default {
     Tab,
     Bookmark,
     Note,
-    Temporary
+    Temporary,
+    Test,
   },
   methods: {
     focus() {
@@ -724,6 +726,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     // 这个才是最对的
     document.body.onload=() => {
+      console.warn('isLoad');
       this.isLoad = true;
     };
 

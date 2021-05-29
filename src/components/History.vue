@@ -416,7 +416,7 @@ export default {
         if(this.storageKeyword == keyword.trim()) return;
         this.storageKeyword = keyword.trim();
       }
-
+console.warn('isSearched');
       console.log('search', this.storageKeyword, keyword,  this.endTime, new Date().getTime());
 
       if(keyword == undefined && this.lastEndTime == this.endTime) return;
@@ -431,9 +431,9 @@ export default {
 
       // 反正历史记录就不太对，不如将错就错
       // this.startTime = 0;
-
+console.warn('isSearched2');
       // 查找历史
-      this.query((historys) => {
+      this.query((historys) => {console.warn('isSearched3');
         console.log('history.search', historys);
         if(historys.length == 0) {
           this.cacheList = [];
@@ -788,10 +788,16 @@ console.log('clearRange', this.range, startTime, endTime, this.timeShow(startTim
       }).catch(callback);
     }
   },
+  beforeUpdate() {
+    console.warn('beforeUpdate');
+  },
+  updated() {
+    console.warn('updated');
+  },
   mounted() {
     // todo
     window.h = this;
-
+console.warn('mounted')
     this.$emit('finish');
 
     // 更新列表

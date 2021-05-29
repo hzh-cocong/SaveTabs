@@ -1,4 +1,4 @@
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   pages: {
@@ -29,57 +29,42 @@ module.exports = {
   },
 
   productionSourceMap: false, //生产环境是否生成 sourceMap 文件，一般情况不建议打开
+  lintOnSave: process.env.NODE_ENV !== 'production', //
 
   chainWebpack: config => {
     config.module
       .rule('svg-sprite')
       .use('svgo-loader')
-      .loader('svgo-loader');
+      .loader('svgo-loader')
 
     // 禁止代码分离
     config.optimization.delete("splitChunks");
 
-    // config.optimization.minimizer = [new UglifyJsPlugin()];
-
-    // if (process.env.NODE_ENV === 'production') {
-    //   config.plugins.push(new UglifyJsPlugin())
-    // }
+    // 压缩图片
+    // 和 svg-sprite 冲突，暂时不解决，而且压缩后反而变大了
+    // config.module
+    //     .rule('images')
+    //     .test(/\.(png|jpe?g|gif|svg|webp)(\?.*)?$/)
+    //     .use('image-webpack-loader')
+    //     .loader('image-webpack-loader')
+    //     .options({ bypassOnDebug: true, disable: true, })
   },
 
   configureWebpack: {
-    // optimization: {
-    //   minimizer: [
-    //     new UglifyJsPlugin({
-    //       test: /\.js(\?.*)?$/i,
-    //       uglifyOptions: {
-    //         warnings: false,
-    //         parse: {},
-    //         compress: {},
-    //         mangle: true, // Note `mangle.properties` is `false` by default.
-    //         output: null,
-    //         toplevel: false,
-    //         nameCache: null,
-    //         ie8: false,
-    //         keep_fnames: false,
-    //       },
-    //     })
-    //   ]
-    // },
-    // plugins: [
-    //   new UglifyJsPlugin({
-    //     test: /\.js(\?.*)?$/i,
-    //     uglifyOptions: {
-    //       warnings: false,
-    //       parse: {},
-    //       compress: {},
-    //       mangle: true, // Note `mangle.properties` is `false` by default.
-    //       output: null,
-    //       toplevel: false,
-    //       nameCache: null,
-    //       ie8: false,
-    //       keep_fnames: false,
-    //     },
-    //   })
-    // ]
+    plugins: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            comments: false, // 去掉注释
+          },
+          warnings: false,
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+            pure_funcs: ['console.log']//移除console
+          },
+        }
+      })
+    ],
   }
 }

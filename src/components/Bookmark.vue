@@ -51,10 +51,7 @@
             height: (config.item_height-20)+'px',
             marginLeft: (storageKeyword == ''
                       ? tree.marginLeft[item.id]
-                      : ( list.length - index <= searchFolderBoundary
-                        ? 0
-                        : searchTree.marginLeft[index])
-                      )+'px' }">
+                      : searchTree.marginLeft[index])+'px' }">
           <template v-if="isLoad">
             <img
               v-if="item.children && item.children.length > 0"
@@ -169,8 +166,6 @@ export default {
 
       rootId: -1,
       state: {},
-
-      searchFolderBoundary: -1,
     }
   },
   components: {
@@ -324,30 +319,61 @@ let b = new Date().getTime();
       if(this.storageKeyword == keyword.trim()) return;
 
       this.storageKeyword = keyword.trim();
-
+console.warn('isSearched');
       if(this.storageKeyword.length == 0) {
+
+        // this.originList = bookmarks;
+        this.expand(this.originList, 0, false);
         this.list = this.originList;
 
         this.currentIndex = 0;
-
-        // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
 
+        console.warn('isSearched2');
+
+        // this.getTree((bookmarks) => {
+        //   console.log(bookmarks);
+
+        //   // this.originList = bookmarks;
+        //   // this.expand(this.originList, 0, false);
+        //   // this.list = this.originList;
+
+        //   this.currentIndex = 0;
+
+        //   // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+        //   this.isSearched = true;
+        // })
+      } else {
+        this.query(this.storageKeyword, (bookmarks) => {
+          this.list = bookmarks;
+          this.currentIndex = this.list.length > 0 ? 0 : -1;
+
+          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+          this.isSearched = true;
+        })
+      }
+    },
+    load() {
+      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      if(data.length <= 0) {
+        this.scrollDisabled = true;
         return;
       }
 
+      this.list.push(...data);
+      this.page++;
+      this.scrollDisabled = this.list.length >= this.cacheList.length;
+    },
+    query(keyword, callback) {
       // 使用浏览器自带的查找功能
-      chrome.bookmarks.search({query: this.storageKeyword}, (bookmarks)=>{
-        console.log('chrome.bookmarks.search', bookmarks);
+      chrome.bookmarks.search({query: keyword}, (bookmarks)=>{
         Promise.all(
           // 给文件夹添加补充子树
           bookmarks.filter(bookmark => {
               return bookmark.url == undefined
             }).map(bookmark => {
-            console.log('ffffff', bookmark.id)
             return new Promise(resolve => {
               chrome.bookmarks.getSubTree(bookmark.id, subTree => {
-                console.log('fffffffff2', subTree)
                 bookmark.children = subTree[0].children;
                 resolve();
               })
@@ -365,28 +391,25 @@ let b = new Date().getTime();
                   );
           });
 
-          let searchFolderCount = bookmarks.findIndex(bookmark => {
-            return bookmark.url != undefined;
-          });
-          this.searchFolderBoundary = bookmarks.length-searchFolderCount;
-          console.log('searchFolderBoundary', this.searchFolderBoundary, bookmarks.length, searchFolderCount);
-
-          this.list = bookmarks;
-          this.currentIndex = 0;
+          callback(bookmarks);
         })
       })
     },
-    load() {
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
+    getTree(callback) {
+      chrome.bookmarks.getTree((bookmarks) => {
+        console.log('chrome.bookmarks.getTree', bookmarks)
+        if(bookmarks.length <= 0) {
+          console.error('不太可能出现', bookmarks)
+          callback(bookmarks);
+          return;
+        }
 
-      this.list.push(...data);
-      this.page++;
-      this.scrollDisabled = this.list.length >= this.cacheList.length;
+        let root = bookmarks[0];
+        this.rootId = root.id;
+        callback(root.children);
+      })
     },
+
     openWindow(index) {
       if(index == undefined) {
         this._openWindow();
@@ -579,26 +602,20 @@ let b = new Date().getTime();
       console.log('收起', list.length, index+1, lastIndex, count)
     },
   },
+  beforeUpdate() {
+    console.warn('beforeUpdate');
+  },
+  updated() {
+    console.warn('updated');
+  },
   mounted() {
     // todo
-    window.b = this;
-
+    window.b = this;let a = new Date().getTime();
+console.warn('mounted', a);
     Promise.all([
       new Promise((resolve) => {
-        chrome.bookmarks.getTree((bookmarks) => {
-          console.log(bookmarks)
-
-          if(bookmarks.length <= 0) {
-            console.error('不太可能出现', bookmarks)
-            resolve();
-            return;
-          }
-
-          let root = bookmarks[0];
-          this.rootId = root.id;
-          this.originList.push(...root.children);
-          console.log(this.originList);
-
+        this.getTree((bookmarks) => {
+          this.originList = bookmarks;
           resolve();
         })
       }),
@@ -612,10 +629,15 @@ let b = new Date().getTime();
     ]).then(() => {
       console.log('state', this.state);
 
-      this.expand(this.originList, 0, false);
+      // this.expand(this.originList, 0, false);
+      // this.list = this.originList;
+
+      let b = new Date().getTime();
+console.warn('finish', b, (b-a)/1000)
 
       this.$emit('finish');
     })
+      console.warn('mounted2');
   }
 }
 </script>

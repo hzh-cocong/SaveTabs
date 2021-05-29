@@ -2,10 +2,10 @@
   <div class="window">
 
   <el-alert
+    v-if="isSearched && list.length == 0"
     type="info"
     :closable="false"
     show-icon
-    v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
     :style="{ width: (config.width-20)+'px' }">
     <div
@@ -33,7 +33,7 @@
     ref="list"
     @load="load"
     @click.native="focus">
-    <template #default="{ index, item, isActive, isSelected }">
+    <template  v-slot="{ index, item, isActive, isSelected }">
       <div
         class="item"
         :style="{
@@ -76,33 +76,23 @@
             height: (config.item_height-20)+'px' }">
           <el-image
             v-if="isLoad"
-            :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)"
+            :src="iconMap[index]"
             style="width:100%; height: 100%;"
             fit="cover"
-            :lazy="index >= config.item_show_count">
+            lazy>
             <div slot="error">
               <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
             </div>
           </el-image>
         </span>
-<!--
-        <span
-          class="title"
-          :style="{fontSize: config.list_font_size+'px'}">{{ item.name }}</span> -->
-<!--
-        <span
-          class="title"
-          :style="{fontSize: config.list_font_size+'px'}"
-          v-html="highlightMap[item.id]"></span> -->
-
 
         <span
           class="title"
           :style="{fontSize: config.list_font_size+'px'}"
-          v-html="highlightMap[item.id]"></span>
+          v-html="highlightMap[item.id]+' | '+index"></span>
 
         <div class="right">
           <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
@@ -225,7 +215,9 @@
           v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
       </span>
     </div>
+    <!-- v-if="groupVisible" 减少不必要的调用 -->
     <ul
+      v-if="groupVisible"
       class="group-list"
       :style="{ height: (30*config.item_show_count)+'px' }">
       <li
@@ -242,7 +234,7 @@
             <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder">
-            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
 
@@ -256,7 +248,9 @@
     </ul>
   </el-dialog>
 
+  <!-- 由于该 dialog 绑定了一些比较耗时的 computed，会导致页面启动时多次 update，所以加多个 v-if -->
   <el-dialog
+    v-if="isSearched"
     :visible.sync="differenceVisible"
     :append-to-body="true"
     :destroy-on-close="true"
@@ -273,7 +267,8 @@
           v-if=" ! haveDifference">{{ '无差别' }}</span>
       </span>
     </div>
-    <div class="compare">
+    <!-- v-if="differenceVisible" 减少不必要的更新，如 getIcon 会因为别的变化而多次调用-->
+    <div class="compare" v-if="differenceVisible">
       <div class="left">
         <div style="text-align: center;padding: 5px 0;">
           <span>旧</span>
@@ -293,12 +288,13 @@
               :src="getIcon(tab.icon, tab.url, 20)"
               style="width:20px; height:20px;"
               fit="cover"
+              scroll-container=".group-list"
               lazy>
               <div slot="error">
                 <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -326,8 +322,11 @@
             v-for="(tab, index) in currentWindow.tabs"
             :key="index">
 
+            <!-- 由于 ul 使用了 overlay，所以要加
+              scroll-container=".group-list"，但是这里不生效，应该是联合滚动的原因，
+              不过由于是当前窗口的图标，那缓存肯定有，直接拿缓存速度更快，也无所谓懒加载了 -->
             <el-image
-              :src="getIcon(tab.favIconUrl, tab.url, 20)"
+              :src="getIcon('', tab.url, 20)"
               style="width:20px; height:20px;"
               fit="cover"
               lazy>
@@ -335,7 +334,7 @@
                 <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -408,6 +407,14 @@ export default {
     List,
   },
   computed: {
+    iconMap() {
+      // let iconMap = [];
+      console.log('getIcon:iconMap');
+
+      return this.list.map((item, index) => {
+        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.config.item_height-20);
+      })
+    },
     highlightMap() {
       console.log('===========================hh')
 
@@ -524,7 +531,7 @@ console.log('get_currentWindowStorageIndex3', index);
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();
-
+console.warn('isSearched');
       // 查找
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
@@ -559,7 +566,7 @@ console.log('get_currentWindowStorageIndex3', index);
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
-
+console.warn('isSearched2');
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
@@ -1054,10 +1061,16 @@ console.log('get_currentWindowStorageIndex3', index);
       });
     },
   },
+  beforeUpdate() {
+    console.warn('beforeUpdate');
+  },
+  updated() {
+    console.warn('updated');
+  },
   mounted() {
     // todo（删除该段代码）
-    window.w = this;
-
+    window.w = this;let a = new Date().getTime();
+console.warn('mounted', a);
     // 并行执行，效率更高
     // 其实速度并没有多大提升，因为主要瓶颈在于获取本地数据，另外两个完全可以忽略不计
     // 更大的问题其实是 filter 和 currentWindowStorageIndex
@@ -1101,6 +1114,9 @@ console.log('get_currentWindowStorageIndex3', index);
       // for(let window of res[2]) {
       //   this.activeWindows[ window.id ] = true;
       // }
+
+      let b = new Date().getTime();
+console.warn('finish', b, (b-a)/1000)
 
       this.$emit('finish');
 

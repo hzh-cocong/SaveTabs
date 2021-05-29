@@ -11,6 +11,30 @@
     @mousedown="w.ulOn = true;"
     @mouseup="w.ulOn = false"
     @contextmenu="w.ulOn = false">
+    <li
+      v-for="(item, index) in list"
+      v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
+          || index == list.length-1"
+      class="list-item"
+      :key="index"
+      :style="{ height: index > (rangeUp)-scrollCache && index < (rangeDown+itemShowCount-1)+scrollCache
+                      || index == list.length-1
+                    ? itemHeight+'px'
+                    : ( index == rangeUp-scrollCache
+                      ? (index+1)*itemHeight+'px'
+                      : ((list.length-index-itemShowCount)-1)*itemHeight+'px'),
+                }"
+      @mouseenter="mouseSelect(index)"
+      @mouseleave="mouseIndex=-1">
+      <slot
+        :index="index"
+        :item="item"
+        :isSelected="index==currentIndex"
+        :isActive="index==currentIndex
+                  && currentIndex==mouseIndex
+                  && mouseStart == true">{{ item }}</slot>
+    </li>
+
     <!-- <li
       v-for="(item, index) in list"
       v-if="index >= scrollLines-1 && index < scrollLines+itemShowCount+1"
@@ -33,7 +57,7 @@
                   && mouseStart == true">{{ item }}</slot>
     </li> -->
 
-    <li
+    <!-- <li
       v-for="(item, index) in list"
       class="list-item"
       :key="index"
@@ -47,7 +71,7 @@
         :isActive="index==currentIndex
                   && currentIndex==mouseIndex
                   && mouseStart == true">{{ item }}</slot>
-    </li>
+    </li> -->
   </ul>
 </template>
 
@@ -73,7 +97,7 @@ export default {
     },
     currentIndex: {
       type: Number,
-      required: require,
+      required: true,
     },
     scrollDisabled: {
       type: Boolean,
@@ -96,6 +120,16 @@ export default {
       scrollLines: 0,
       mouseIndex: -1,
       mouseStart: true,
+
+      // // 指 scrollLines 的上方活动访问，或者下方，即实际有两倍的 scrollRange
+      // // 注意该值只绑定一次，以后 itemShowCount 变了 scrollRange 也不会变
+      // scrollRange: this.itemShowCount,
+      // // 缓冲地带，即当 scrollLines 超出 scrollRange 时，可能会出现空白，而缓冲就是为了填补这片空白的
+      // // 同样分为上方或者下方，只单独作用于对应的方向
+      // scrollCache: this.itemShowCount,
+
+      rangeUp: 0,
+      rangeDown: 2*this.itemShowCount,
 
       w: {
         index: 0,
@@ -186,15 +220,68 @@ console.log('currentIndex', newVal, oldVal)
         console.log('list.watch', newVal.length)
         this.$emit('change', -1);
       }
-    }
+    },
+    scrollLines(newVal, oldVal) {
+      console.log('scrollLines', newVal, oldVal);
+
+      if(newVal < this.rangeUp || newVal > this.rangeDown) {
+        console.log('scrollLines:getRange', this.rangeUp, this.rangeDown);
+
+        this.rangeUp = this.getRangeUp();
+        this.rangeDown = this.getRangeDown();
+
+        console.log('scrollLines:getRange2', this.rangeUp, this.rangeDown);
+      }
+    },
+    itemShowCount(newVal, oldVal) {
+      console.log('itemShowCount:scrollLines', newVal, oldVal);
+
+      console.log('scrollLines:scrollLines:getRange', this.rangeUp, this.rangeDown);
+      this.rangeUp = this.getRangeUp();
+      this.rangeDown = this.getRangeDown();
+      console.log('scrollLines:scrollLines:getRange2', this.rangeUp, this.rangeDown);
+    },
   },
   computed: {
     visiualIndex() {
       console.log('visiualIndex', this.currentIndex-this.scrollLines)
       return this.currentIndex-this.scrollLines;
+    },
+    scrollRange() {
+      // 指 scrollLines 的上方活动访问，或者下方，即实际有两倍的 scrollRange
+      return 2*this.itemShowCount;
+    },
+    scrollCache() {
+      // 缓冲地带，即当 scrollLines 超出 scrollRange 时，可能会出现空白，而缓冲就是为了填补这片空白的
+      // 同样分为上方或者下方，只单独作用于对应的方向
+      return Math.ceil(this.itemShowCount/2);
     }
   },
   methods: {
+    getRangeUp() {
+      // scrollLines < rangeUp 时，rangeUp 将更新
+
+      let rangeUp = this.scrollLines - this.scrollRange;
+      if(rangeUp < 0)
+        rangeUp = 0;
+      else if(rangeUp+2*this.scrollRange >= this.list.length)
+        rangeUp = this.list.length-this.itemShowCount-2*this.scrollRange;
+    console.log('scrollLines:getRangeUp', rangeUp);
+      return rangeUp;
+    },
+    getRangeDown() {
+      // scrollLines > rangeDown rangeDown 将更新
+
+      let rangeDown = this.rangeUp+2*this.scrollRange;
+      // 由于 rangeUp 已经提前做了判断，所以到了这里这种事是不可能发生的
+      if(this.rangeUp > 0 && rangeDown >= this.list.length) {
+        console.warn('scrollLines:isImpossible');
+        rangeDown = this.list.length-this.itemShowCount;
+      }
+  console.log('scrollLines:getRangeDown', this.rangeUp, rangeDown, this.scrollRange);
+      return rangeDown;
+    },
+
     ulEnter() {
       this.w.ulEnter = true;
 
@@ -444,7 +531,7 @@ console.log('a')
       // setTimeout(() => {
       //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
       // }, 0)
-    }
+    },
   },
   mounted() {
     // todo

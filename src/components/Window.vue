@@ -33,7 +33,7 @@
     ref="list"
     @load="load"
     @click.native="focus">
-    <template  v-slot="{ index, item, isActive, isSelected }">
+    <template #default="{ index, item, isActive, isSelected }">
       <div
         class="item"
         :style="{
@@ -74,6 +74,7 @@
           :style="{
             width: (config.item_height-20)+'px',
             height: (config.item_height-20)+'px' }">
+            <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)" -->
           <el-image
             v-if="isLoad"
             :src="iconMap[index]"
@@ -178,8 +179,6 @@
                 color: config.list_focus_keymap_color }">↩</span>
             <span
               v-else-if="_device.platform != ''
-                      && (index-$refs.list.scrollLines+1) <= config.item_show_count
-                      && (index-$refs.list.scrollLines+1) >= 1
                       &&  (index-$refs.list.scrollLines+1) <= 9"
               :style="{
                 fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
@@ -188,9 +187,13 @@
                 color: activeWindows[item.windowId]
                     ? config.list_state_color
                     : config.list_keymap_color }">{{
-                      _device.platform == 'Mac'
-                      ?  '⌘'+(index-$refs.list.scrollLines+1)
-                      : 'Alt+'+(index-$refs.list.scrollLines+1)
+                        (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+                      + ( 1 > index-$refs.list.scrollLines+1
+                        ? 1
+                        : (index-$refs.list.scrollLines+1 > config.item_show_count
+                          ? config.item_show_count
+                          : index-$refs.list.scrollLines+1)
+                        )
                       }}</span>
           </div>
         </div>
@@ -408,12 +411,16 @@ export default {
   },
   computed: {
     iconMap() {
-      // let iconMap = [];
       console.log('getIcon:iconMap');
+      let a = new Date().getTime();
 
-      return this.list.map((item, index) => {
+      let ss = this.list.map((item, index) => {
         return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.config.item_height-20);
       })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
     },
     highlightMap() {
       console.log('===========================hh')

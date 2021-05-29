@@ -15,7 +15,8 @@ const tool = {
           return (2**Math.ceil(Math.log(size/16)/Math.log(2)))*16;
         },
         getIcon(icon, url, size) {
-          console.warn('getIcon', icon, url ,size);
+          // console.warn('getIcon', icon, url ,size);
+          console.warn('getIcon')
           // 网址空直接返回空
           if(url == '' || url == undefined) return '';
 

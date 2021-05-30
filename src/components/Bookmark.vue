@@ -343,7 +343,17 @@ let b = new Date().getTime();
 
       this.storageKeyword = keyword.trim();
 
-      if(this.storageKeyword.length == 0) {
+      if( ! this.isSearched) {
+        // 避免第一次加载页面时重复 getTree
+console.log('chrome.bookmarks.getTree.first')
+        this.expand(this.originList, 0, false);
+        this.list = this.originList;
+        this.currentIndex = 0;
+        this.scrollDisabled = true;
+
+        // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+        this.isSearched = true;
+      } else if(this.storageKeyword.length == 0) {
         // 搜索是异步的，先用之前的填补，否则搜索列表数据会因为使用不同的 marginLeft 而错误，进而形成闪烁。
         this.list = this.originList;
         this.currentIndex = 0;
@@ -358,11 +368,10 @@ let b = new Date().getTime();
 
           this.currentIndex = 0;
           this.scrollDisabled = true;
-
-          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-          this.isSearched = true;
         })
-      } else {
+      }
+
+      if(this.storageKeyword.length > 0){
         // 加上这个会山所问题
         // this.isSearched = false;
         // this.list = [];
@@ -373,9 +382,6 @@ let b = new Date().getTime();
 
           this.currentIndex = this.list.length > 0 ? 0 : -1;
           this.scrollDisabled = this.list.length >= this.cacheList.length;
-
-          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-          this.isSearched = true;
         })
       }
     },
@@ -631,12 +637,12 @@ let b = new Date().getTime();
     window.b = this;let a = new Date().getTime();
 console.warn('mounted', a);
     Promise.all([
-      // new Promise((resolve) => {
-      //   this.getTree((bookmarks) => {
-      //     this.originList = bookmarks;
-      //     resolve();
-      //   })
-      // }),
+      new Promise((resolve) => {
+        this.getTree((bookmarks) => {
+          this.originList = bookmarks;
+          resolve();
+        })
+      }),
       new Promise((resolve) => {
         // 获取书签打开状态
         chrome.storage.local.get({'bookmark': { state: {}}}, items => {
@@ -646,9 +652,6 @@ console.warn('mounted', a);
       }),
     ]).then(() => {
       console.log('state', this.state);
-
-      // this.expand(this.originList, 0, false);
-      // this.list = this.originList;
 
       let b = new Date().getTime();
 console.warn('finish', b, (b-a)/1000)

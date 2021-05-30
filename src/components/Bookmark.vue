@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bookmark">
 
   <el-alert
     v-if="isSearched && list.length == 0"
@@ -116,12 +116,16 @@
     </template>
   </list>
 
+  <ul class="park">
+    <li>test</li>
+  </ul>
+
   </div>
 </template>
 
 <script>
 import List from './List.vue'
-// import Sortable from 'sortablejs';
+import Sortable from 'sortablejs';
 
 export default {
   name: 'Bookmark',
@@ -157,6 +161,8 @@ export default {
 
       rootId: -1,
       state: {},
+
+      sortable: null,
     }
   },
   components: {
@@ -367,6 +373,8 @@ console.log('chrome.bookmarks.getTree.first')
           this.expand(this.originList, 0, false);
           this.list = this.originList;
 
+          this.sortable.option('disabled', false);
+
           this.currentIndex = 0;
           this.scrollDisabled = true;
         })
@@ -381,6 +389,9 @@ console.log('chrome.bookmarks.getTree.first')
 console.log('chrome.bookmarks.getTree.second')
           this.cacheList = bookmarks;
           this.list = this.cacheList.slice(0, this.config.list_page_count);
+
+          // 禁止拖动排序
+          this.sortable.option('disabled', true);
 
           this.currentIndex = this.list.length > 0 ? 0 : -1;
           this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -627,6 +638,146 @@ console.log('chrome.bookmarks.getTree.second')
       list[index].children = list.splice(index+1, count);
       console.log('收起', list.length, index+1, lastIndex, count)
     },
+
+    sortInit() {
+      //创建拖拽对象
+      //
+      console.log('sortInit', document.querySelector('.bookmark .list'));
+      this.sortable = Sortable.create(document.querySelector('.bookmark .list'), {
+        disabled: false, // boolean 定义是否此sortable对象是否可用，为true时sortable对象不能拖放排序等功能，为false时为可以进行排序，相当于一个开关；
+        group: 'shared',
+
+        // sort: this.isEditOrder, //是否可进行拖拽排序
+        animation: 150,
+        // 过滤器，不需要进行拖动的元素
+        // filter: ".disabled",
+        // ghostClass: 'ghost',
+        // draggable: '.enabled',
+        chosenClass: 'chosen',
+        // 开始拖拽的时候
+        onStart: (/**Event*/evt) => {
+          let index = evt.oldIndex;
+          let bookmark = this.list[ index ];
+          console.log('onStart', index, bookmark);
+
+          // 如果是文件夹且已展开则先收起
+          if(bookmark.children && bookmark.children.length <= 0) {
+            this.collapse(this.list, index);
+          }
+
+        },
+        onMove:  (/**Event*/evt, /**Event*/originalEvent) => {
+          console.log('onMove', evt.willInsertAfter, this.currentIndex);
+
+          // return false;
+          // Example: https://jsbin.com/nawahef/edit?js,output
+          // evt.dragged; // dragged HTMLElement
+          // evt.draggedRect; // DOMRect {left, top, right, bottom}
+          // evt.related; // HTMLElement on which have guided
+          // evt.relatedRect; // DOMRect
+          // evt.willInsertAfter; // Boolean that is true if Sortable will insert drag element after target by default
+          // originalEvent.clientY; // mouse position
+          // return false; — for cancel
+          // return -1; — insert before target
+          // return 1; — insert after target
+        },
+        // 列表内元素顺序更新的时候触发
+        onUpdate: (/**Event*/evt) => {
+          // 还原为运来的Dom，让vue自己去更新，否则又会被移回去
+          let newIndex = evt.newIndex;
+          let oldIndex = evt.oldIndex;
+
+          let ul = this.$refs.list.$el;
+          let newLi = ul.children[newIndex];
+          let oldLi = ul.children[oldIndex];
+
+          console.log('onUpdate',newIndex, oldIndex, ul, newLi, oldLi);
+
+          // 先删除移动的节点
+          ul.removeChild(newLi);
+
+          // 再插入移动的节点到原有节点，还原了移动的操作
+          if(newIndex > oldIndex) {
+              ul.insertBefore(newLi,oldLi);
+          } else {
+              ul.insertBefore(newLi,oldLi.nextSibling);
+          }
+        },
+        //拖拽完成，移除拖拽之前的位置上的元素，在拖拽之后的位置上添加拖拽元素
+        onEnd: ({ newIndex, oldIndex }) => {
+          console.log('onEnd', newIndex, oldIndex)
+
+          let dragBookmark = this.list[ oldIndex ];
+          let targetBookmark = this.list[ newIndex ];
+
+          if(dragBookmark.parentId == targetBookmark.parentId) {
+            // 在同一个目录内移动
+            chrome.bookmarks.move(dragBookmark.id, {
+                index: targetBookmark.index
+              }, (s) => {
+                console.log('onEnd:1', s);
+                this.list.splice(newIndex,1,...this.list.splice(oldIndex, 1 , this.list[newIndex]));
+                this.currentIndex = newIndex;
+            });
+            return;
+          }
+
+          if( ! targetBookmark.children) {
+            // 移到其它目录内
+            chrome.bookmarks.move(dragBookmark.id, {
+                parentId: targetBookmark.parentId,
+                index: targetBookmark.index
+              }, (s) => {
+                console.log('onEnd:2', s);
+                dragBookmark.parentId = targetBookmark.parentId;
+                this.list.splice(newIndex,1,...this.list.splice(oldIndex, 1 , this.list[newIndex]));
+                this.currentIndex = newIndex;
+            });
+            return;
+          }
+
+          if(targetBookmark.children.length > 0) {
+            // 文件夹是收起的，则是平级关系
+            chrome.bookmarks.move(dragBookmark.id, {
+                parentId: targetBookmark.parentId,
+                index: targetBookmark.index
+              }, (s) => {
+                console.log('onEnd:3', s);
+                this.list.splice(newIndex,1,...this.list.splice(oldIndex, 1 , this.list[newIndex]));
+                this.currentIndex = newIndex;
+            });
+            return;
+          }
+
+          if(targetBookmark.children.length <= 0) {
+            // 文件夹是展开的，则移到文件夹里去
+            // 移到其它目录内
+            chrome.bookmarks.move(dragBookmark.id, {
+                parentId: targetBookmark.id,
+                index: 0,
+              }, (s) => {
+                console.log('onEnd:4', s);
+                this.list.splice(newIndex,1,...this.list.splice(oldIndex, 1 , this.list[newIndex]));
+                this.currentIndex = newIndex;
+            });
+            return;
+          }
+        }
+      })
+
+      Sortable.create(document.querySelector('.park'), {
+        disabled: false, // boolean 定义是否此sortable对象是否可用，为true时sortable对象不能拖放排序等功能，为false时为可以进行排序，相当于一个开关；
+        group: 'shared',
+
+        // sort: this.isEditOrder, //是否可进行拖拽排序
+        animation: 150,
+        // 过滤器，不需要进行拖动的元素
+        // filter: ".disabled",
+        // ghostClass: 'ghost',
+        // draggable: '.enabled',
+        chosenClass: 'chosen',
+      })
+    },
   },
   beforeUpdate() {
     console.warn('beforeUpdate');
@@ -657,6 +808,11 @@ console.warn('mounted', a);
 
       let b = new Date().getTime();
 console.warn('finish', b, (b-a)/1000)
+
+      this.sortInit();
+
+      // todo
+      window.sortable = this.sortable;
 
       this.$emit('finish');
     })
@@ -729,5 +885,39 @@ console.warn('finish', b, (b-a)/1000)
     margin-left: 10px;
 }
 
-
+.park {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 20px;
+  top: calc(50% - 20px);
+  padding: 0;
+  margin: 0;
+  /* border: 2px solid gray; */
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: hsla(0,0%,100%,.9);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  list-style:none;
+  z-index: 0;
+}
+.park:hover {
+  width: 80px;
+  height: 80px;
+  top: calc(50% - 40px);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+}
+.park:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: blur(20px);
+  margin: -30px;
+  z-index: -1;
+}
 </style>

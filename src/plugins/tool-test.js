@@ -340,17 +340,20 @@ const tool = {
           getTree: function(callback) {
             setTimeout(() => {
               callback != undefined && callback(JSON.parse(bookmarkTree));
-            }, 1000)
+            }, 1)
           },
           search: function(options, callback) {
             setTimeout(() => {
               callback != undefined && callback(JSON.parse(bookmarks));
-            }, 1000)
+            }, 0)
           },
           remove: function(options, callback) {
             callback != undefined && callback();
           },
           getSubTree: function(options, callback) {
+            callback != undefined && callback(JSON.parse(bookmarkSubTree));
+          },
+          move: function(id, destination, callback) {
             callback != undefined && callback(JSON.parse(bookmarkSubTree));
           },
         }

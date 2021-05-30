@@ -406,24 +406,6 @@ export default {
 
       return highlightMap;
     },
-    // highlightMap() {
-    //   console.log('===========================hh')
-
-    //   let a = new Date().getTime();
-
-    //   // 速度非常非常快，无需再缓存优化
-    //   // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-    //   let highlightMap = {};
-    //   this.list.forEach(item => {
-    //     highlightMap[ item.id ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
-    //   });
-
-    //   let b = new Date().getTime();
-
-    //   console.log('===h', (b-a)/1000);
-
-    //   return highlightMap;
-    // },
     currentWindowId() {
       console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;
@@ -509,6 +491,7 @@ console.log('get_currentWindowStorageIndex3', index);
   },
   methods: {
     itemStyle({ index, item, isActive, isSelected }) {
+      console.log('itemStyle');
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.windowId == this.currentWindowId) {
         if(isSelected) {
@@ -1106,6 +1089,8 @@ console.warn('mounted', a);
         chrome.storage.local.get({'list': []}, items => {
           // resolve(items.list)
           this.storageList = items.list;
+          let b = new Date().getTime();
+          console.warn('获取本地数据', b, (b-a)/1000)
           resolve();
         });
       }),
@@ -1114,6 +1099,8 @@ console.warn('mounted', a);
         chrome.windows.getCurrent({populate: true}, (window) => {
           // resolve(window)
           this.currentWindow = window;
+          let b = new Date().getTime();
+          console.warn('获取当前窗口', b, (b-a)/1000)
           resolve();
         })
       }),
@@ -1126,6 +1113,8 @@ console.warn('mounted', a);
           for(let window of windows) {
             this.activeWindows[ window.id ] = true;
           }
+          let b = new Date().getTime();
+          console.warn('判断窗口是否已打开', b, (b-a)/1000)
           resolve();
         })
       }),

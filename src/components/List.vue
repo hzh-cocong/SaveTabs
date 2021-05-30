@@ -11,7 +11,51 @@
     @mousedown="w.ulOn = true;"
     @mouseup="w.ulOn = false"
     @contextmenu="w.ulOn = false">
+
+    <!-- 这里不要使用 list.length，不然会很卡，也知道为啥，猜测是 vue 会检查整个 list 是否发生变化导致，改成外部传入就圆满了 -->
     <li
+      v-for="(item, index) in list"
+      v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
+          || index == listLength-1"
+      class="list-item"
+      :key="index"
+      :class="[typeof itemClassName === 'function'
+                ? itemClassName({ index,
+                                  item,
+                                  isSelected: index==currentIndex,
+                                  isActive: index==currentIndex
+                                          && currentIndex==mouseIndex
+                                          && mouseStart == true})
+                : itemClassName]"
+      :style="[{ height: index > (rangeUp)-scrollCache && index < (rangeDown+itemShowCount-1)+scrollCache
+                      || index == listLength-1
+                    ? itemHeight+'px'
+                    : ( index == rangeUp-scrollCache
+                      ? (index+1)*itemHeight+'px'
+                      : ((listLength-index-itemShowCount)-1)*itemHeight+'px'),
+                },
+
+                typeof itemStyle === 'function'
+                ? itemStyle({ index,
+                              item,
+                              isSelected: index==currentIndex,
+                              isActive: index==currentIndex
+                                      && currentIndex==mouseIndex
+                                      && mouseStart == true})
+                : itemStyle]"
+      @click="$emit('itemClick', $event, index, item)"
+      @mouseenter="mouseSelect(index)"
+      @mouseleave="mouseIndex=-1">
+      <slot
+        :index="index"
+        :item="item"
+        :isSelected="index==currentIndex"
+        :isActive="index==currentIndex
+                  && currentIndex==mouseIndex
+                  && mouseStart == true">{{ item }}</slot>
+    </li>
+
+    <!-- <li
       v-for="(item, index) in list"
       v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
           || index == list.length-1"
@@ -33,9 +77,35 @@
         :isActive="index==currentIndex
                   && currentIndex==mouseIndex
                   && mouseStart == true">{{ item }}</slot>
-    </li>
+    </li> -->
 
-    <!-- <li
+<!--
+    <li
+      v-for="(item, index) in list"
+      v-if="index >= scrollLines-1 && index < scrollLines+itemShowCount+1
+          || index == listLength"
+      class="list-item"
+      :key="index"
+      :style="{ height: index >= scrollLines && index < scrollLines+itemShowCount
+                      ? itemHeight+'px'
+                      : ( index == scrollLines-1
+                        ? scrollLines*itemHeight+'px'
+                        : (list.length-scrollLines-itemShowCount)*itemHeight+'px'),
+                }"
+      @mouseenter="mouseSelect(index)"
+      @mouseleave="mouseIndex=-1">
+      <slot
+        :index="index"
+        :item="item"
+        :isSelected="index==currentIndex"
+        :isActive="index==currentIndex
+                  && currentIndex==mouseIndex
+                  && mouseStart == true">{{ item }}</slot>
+    </li>
+ -->
+
+<!--
+    <li
       v-for="(item, index) in list"
       v-if="index >= scrollLines-1 && index < scrollLines+itemShowCount+1"
       class="list-item"
@@ -114,6 +184,21 @@ export default {
       require: false,
       default: 'rgba(127, 127, 127, .9)',
     },
+    listLength: {
+      type: Number,
+      require: false,
+      default: 0,
+    },
+    itemClassName: {
+      type: [String, Function],
+      require: false,
+      default: '',
+    },
+    itemStyle: {
+      type: [Object, Function],
+      require: false,
+      default: {},
+    }
   },
   data() {
     return {
@@ -248,13 +333,17 @@ console.log('currentIndex', newVal, oldVal)
       return this.currentIndex-this.scrollLines;
     },
     scrollRange() {
+      console.log('scrollRange');
       // 指 scrollLines 的上方活动访问，或者下方，即实际有两倍的 scrollRange
       return 2*this.itemShowCount;
+      // return 1;
     },
     scrollCache() {
+      console.log('scrollCache');
       // 缓冲地带，即当 scrollLines 超出 scrollRange 时，可能会出现空白，而缓冲就是为了填补这片空白的
       // 同样分为上方或者下方，只单独作用于对应的方向
       return Math.ceil(this.itemShowCount/2);
+      // return 1;
     }
   },
   methods: {
@@ -453,7 +542,7 @@ console.log('a')
 
     choice(index) {
       let currentIndex = index+this.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.itemShowCount) {
+      if(index > this.itemShowCount || currentIndex >= this.list.length) {
         return false;
       }
 

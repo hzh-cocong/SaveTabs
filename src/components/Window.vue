@@ -24,180 +24,146 @@
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="config.list_scrollbar_color"
     :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: item.windowId == currentWindowId
-                          ? ( isSelected
-                              ? config.list_current_focus_background_color
-                              : config.list_current_background_color)
-                          : ( isSelected
-                              ? config.list_focus_background_color
-                              : config.list_background_color),
-          color: item.windowId == currentWindowId
-                          ? ( isSelected
-                              ? config.list_current_focus_font_color
-                              : config.list_current_font_color)
-                          : ( isSelected
-                              ? config.list_focus_font_color
-                              : config.list_font_color),
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+          <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)" -->
+        <el-image
+          v-if="isLoad"
+          :src="iconMap[index]"
+          style="width:100%; height: 100%;"
+          fit="cover"
+          lazy>
+          <div slot="error">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div slot="placeholder">
+            <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+          </div>
+        </el-image>
+      </span>
 
-          '--list-highlight-color': item.windowId == currentWindowId
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_color
-                                      : config.list_current_highlight_color)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_color
-                                      : config.list_highlight_color),
-          '--list-highlight-weight': item.windowId == currentWindowId
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_weight
-                                      : config.list_current_highlight_weight)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_weight
-                                      : config.list_highlight_weight),
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
+      <span
+        class="title"
+        :style="{fontSize: config.list_font_size+'px'}"
+        v-html="highlightMap[index]+' | '+index"></span>
 
-        <span
-          class="left"
-          :style="{
-            width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px' }">
-            <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)" -->
-          <el-image
-            v-if="isLoad"
-            :src="iconMap[index]"
-            style="width:100%; height: 100%;"
-            fit="cover"
-            lazy>
-            <div slot="error">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-            <div slot="placeholder">
-              <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
-            </div>
-          </el-image>
-        </span>
-
-        <span
-          class="title"
-          :style="{fontSize: config.list_font_size+'px'}"
-          v-html="highlightMap[item.id]+' | '+index"></span>
-
-        <div class="right">
-          <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
-            <div v-if="isActive">
-              <el-badge
-                v-if="isCurrentWindowChange && item.windowId == currentWindowId"
-                is-dot
-                class="refresh"
-                :style="{ borderColor: config.list_current_focus_state_color } " >
-                <el-button
-                  type="warning"
-                  icon="el-icon-refresh"
-                  circle
-                  @click.stop="showDifference"></el-button>
-              </el-badge>
+      <div class="right">
+        <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
+          <div v-if="isActive">
+            <el-badge
+              v-if="isCurrentWindowChange && item.windowId == currentWindowId"
+              is-dot
+              class="refresh"
+              :style="{ borderColor: config.list_current_focus_state_color } " >
               <el-button
-                v-if="! isInCurrentWindow && ! activeWindows[item.windowId]"
                 type="warning"
                 icon="el-icon-refresh"
                 circle
                 @click.stop="showDifference"></el-button>
-              <el-button
-                type="success"
-                icon="el-icon-folder-opened"
-                circle
-                @click.stop="openGroup"></el-button>
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                circle
-                @click.stop="changeGroupName"></el-button>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click.stop="deleteGroup"></el-button>
-            </div>
-            <div
-              v-else-if="item.windowId == currentWindowId"
-              :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                      ? config.list_current_focus_state_color
-                      : config.list_current_state_color,
-                borderColor: isSelected
-                      ? config.list_current_focus_state_color
-                      : config.list_current_state_color }">
-              <template v-if="isCurrentWindowChange">
-                <el-badge
-                  is-dot>
-                  <span style="margin-right: 5px;">{{ lang('currentWindow') }}</span>
-                </el-badge>
-              </template>
-              <template v-else>
-                <span>{{ lang('currentWindow') }}</span>
-              </template>
-            </div>
-            <div
-              v-else-if="activeWindows[item.windowId]"
-              :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_state_color }">
-              {{ lang('opened') }}
-            </div>
-            <div
-              v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
-              :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_keymap_color }">
-              {{ timeShow(item.lastVisitTime) }}
-            </div>
+            </el-badge>
+            <el-button
+              v-if="! isInCurrentWindow && ! activeWindows[item.windowId]"
+              type="warning"
+              icon="el-icon-refresh"
+              circle
+              @click.stop="showDifference"></el-button>
+            <el-button
+              type="success"
+              icon="el-icon-folder-opened"
+              circle
+              @click.stop="openGroup"></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              circle
+              @click.stop="changeGroupName"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click.stop="deleteGroup"></el-button>
           </div>
           <div
-            v-show=" ! isActive && item.windowId != currentWindowId">
-            <span
-              v-if="isSelected"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_focus_keymap_color }">↩</span>
-            <span
-              v-else-if="_device.platform != ''
-                      &&  (index-$refs.list.scrollLines+1) <= 9"
-              :style="{
-                fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                    ? config.list_state_size+'px'
-                    : config.list_keymap_size+'px',
-                color: activeWindows[item.windowId]
-                    ? config.list_state_color
-                    : config.list_keymap_color }">{{
-                        (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-                      + ( 1 > index-$refs.list.scrollLines+1
-                        ? 1
-                        : (index-$refs.list.scrollLines+1 > config.item_show_count
-                          ? config.item_show_count
-                          : index-$refs.list.scrollLines+1)
-                        )
-                      }}</span>
+            v-else-if="item.windowId == currentWindowId"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color,
+              borderColor: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color }">
+            <template v-if="isCurrentWindowChange">
+              <el-badge
+                is-dot>
+                <span style="margin-right: 5px;">{{ lang('currentWindow') }}</span>
+              </el-badge>
+            </template>
+            <template v-else>
+              <span>{{ lang('currentWindow') }}</span>
+            </template>
+          </div>
+          <div
+            v-else-if="activeWindows[item.windowId]"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                  ? config.list_focus_state_color
+                  : config.list_state_color }">
+            {{ lang('opened') }}
+          </div>
+          <div
+            v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                  ? config.list_focus_state_color
+                  : config.list_keymap_color }">
+            {{ timeShow(item.lastVisitTime) }}
           </div>
         </div>
-
+        <div
+          v-show=" ! isActive && item.windowId != currentWindowId">
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color }">↩</span>
+          <span
+            v-else-if="_device.platform != ''
+                    &&  (index-$refs.list.scrollLines+1) <= 9"
+            :style="{
+              fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
+                  ? config.list_state_size+'px'
+                  : config.list_keymap_size+'px',
+              color: activeWindows[item.windowId]
+                  ? config.list_state_color
+                  : config.list_keymap_color }">{{
+                      (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+                    + ( 1 > index-$refs.list.scrollLines+1
+                      ? 1
+                      : (index-$refs.list.scrollLines+1 > config.item_show_count
+                        ? config.item_show_count
+                        : index-$refs.list.scrollLines+1)
+                      )
+                    }}</span>
+        </div>
       </div>
     </template>
   </list>
@@ -429,9 +395,9 @@ export default {
 
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-      let highlightMap = {};
-      this.list.forEach(item => {
-        highlightMap[ item.id ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
+      let highlightMap = new Array(this.list.length);
+      this.list.forEach((item, index) => {
+        highlightMap[ index ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
       });
 
       let b = new Date().getTime();
@@ -440,6 +406,24 @@ export default {
 
       return highlightMap;
     },
+    // highlightMap() {
+    //   console.log('===========================hh')
+
+    //   let a = new Date().getTime();
+
+    //   // 速度非常非常快，无需再缓存优化
+    //   // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+    //   let highlightMap = {};
+    //   this.list.forEach(item => {
+    //     highlightMap[ item.id ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
+    //   });
+
+    //   let b = new Date().getTime();
+
+    //   console.log('===h', (b-a)/1000);
+
+    //   return highlightMap;
+    // },
     currentWindowId() {
       console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;
@@ -524,6 +508,43 @@ console.log('get_currentWindowStorageIndex3', index);
     }
   },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(item.windowId == this.currentWindowId) {
+        if(isSelected) {
+          return {
+            'background-color': this.config.list_current_focus_background_color,
+            'color': this.config.list_current_focus_font_color,
+            '--list-highlight-color': this.config.list_current_focus_highlight_color,
+            '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
+          }
+        } else {
+          return {
+            'background-color': this.config.list_current_background_color,
+            'color': this.config.list_current_font_color,
+            '--list-highlight-color': this.config.list_current_highlight_color,
+            '--list-highlight-weight': this.config.list_current_highlight_weight,
+          }
+        }
+      } else {
+        if(isSelected) {
+          return {
+            'background-color': this.config.list_focus_background_color,
+            'color': this.config.list_focus_font_color,
+            '--list-highlight-color': this.config.list_focus_highlight_color,
+            '--list-highlight-weight': this.config.list_focus_highlight_weight,
+          }
+        } else {
+          return {
+            'background-color': this.config.list_background_color,
+            'color': this.config.list_font_color,
+            '--list-highlight-color': this.config.list_highlight_color,
+            '--list-highlight-weight': this.config.list_highlight_weight,
+          }
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -693,12 +714,10 @@ console.warn('isSearched2');
         return;
       }
 
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
 
-      this.currentIndex = currentIndex;
       this._openWindow(event);
     },
     _openWindow(event) {
@@ -1170,7 +1189,7 @@ console.warn('finish', b, (b-a)/1000)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -1185,11 +1204,11 @@ console.warn('finish', b, (b-a)/1000)
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 10px;
   text-align: center;
 }
-.item .title {
+.list >>> .list-item .title {
   /* border: 1px solid blue; */
   text-align: left;
   cursor: default;
@@ -1198,7 +1217,7 @@ console.warn('finish', b, (b-a)/1000)
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

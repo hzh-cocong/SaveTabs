@@ -88,7 +88,7 @@ const tool = {
         },
         getIcon(icon, url, size) {
           // console.warn('getIcon', icon, url ,size);
-          console.warn('getIcon')
+          // console.warn('getIcon')
           // 网址空直接返回空
           if(url == '' || url == undefined) return '';
 

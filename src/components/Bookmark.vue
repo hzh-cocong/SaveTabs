@@ -24,6 +24,7 @@
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"

@@ -59,7 +59,7 @@ module.exports = {
           },
           warnings: false,
           compress: {
-            drop_console: true, // todo true
+            drop_console: true,
             drop_debugger: true,
             pure_funcs: ['console.log']//移除console
           },

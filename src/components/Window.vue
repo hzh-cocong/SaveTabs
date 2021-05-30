@@ -491,7 +491,6 @@ console.log('get_currentWindowStorageIndex3', index);
   },
   methods: {
     itemStyle({ index, item, isActive, isSelected }) {
-      console.log('itemStyle');
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.windowId == this.currentWindowId) {
         if(isSelected) {

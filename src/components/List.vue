@@ -13,47 +13,48 @@
     @contextmenu="w.ulOn = false">
 
     <!-- 这里不要使用 list.length，不然会很卡，也知道为啥，猜测是 vue 会检查整个 list 是否发生变化导致，改成外部传入就圆满了 -->
-    <li
-      v-for="(item, index) in list"
-      v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
-          || index == listLength-1"
-      class="list-item"
-      :key="index"
-      :class="[typeof itemClassName === 'function'
-                ? itemClassName({ index,
-                                  item,
-                                  isSelected: index==currentIndex,
-                                  isActive: index==currentIndex
-                                          && currentIndex==mouseIndex
-                                          && mouseStart == true})
-                : itemClassName]"
-      :style="[{ height: index > (rangeUp)-scrollCache && index < (rangeDown+itemShowCount-1)+scrollCache
-                      || index == listLength-1
-                    ? itemHeight+'px'
-                    : ( index == rangeUp-scrollCache
-                      ? (index+1)*itemHeight+'px'
-                      : ((listLength-index-itemShowCount)-1)*itemHeight+'px'),
-                },
+    <template v-for="(item, index) in list">
+      <li
+        v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
+            || index == listLength-1"
+        class="list-item"
+        :key="index"
+        :class="[typeof itemClassName === 'function'
+                  ? itemClassName({ index,
+                                    item,
+                                    isSelected: index==currentIndex,
+                                    isActive: index==currentIndex
+                                            && currentIndex==mouseIndex
+                                            && mouseStart == true})
+                  : itemClassName]"
+        :style="[{ height: index > (rangeUp)-scrollCache && index < (rangeDown+itemShowCount-1)+scrollCache
+                        || index == listLength-1
+                      ? itemHeight+'px'
+                      : ( index == rangeUp-scrollCache
+                        ? (index+1)*itemHeight+'px'
+                        : ((listLength-index-itemShowCount)-1)*itemHeight+'px'),
+                  },
 
-                typeof itemStyle === 'function'
-                ? itemStyle({ index,
-                              item,
-                              isSelected: index==currentIndex,
-                              isActive: index==currentIndex
-                                      && currentIndex==mouseIndex
-                                      && mouseStart == true})
-                : itemStyle]"
-      @click="$emit('itemClick', $event, index, item)"
-      @mouseenter="mouseSelect(index)"
-      @mouseleave="mouseIndex=-1">
-      <slot
-        :index="index"
-        :item="item"
-        :isSelected="index==currentIndex"
-        :isActive="index==currentIndex
-                  && currentIndex==mouseIndex
-                  && mouseStart == true">{{ item }}</slot>
-    </li>
+                  typeof itemStyle === 'function'
+                  ? itemStyle({ index,
+                                item,
+                                isSelected: index==currentIndex,
+                                isActive: index==currentIndex
+                                        && currentIndex==mouseIndex
+                                        && mouseStart == true})
+                  : itemStyle]"
+        @click="$emit('itemClick', $event, index, item)"
+        @mouseenter="mouseSelect(index)"
+        @mouseleave="mouseIndex=-1">
+        <slot
+          :index="index"
+          :item="item"
+          :isSelected="index==currentIndex"
+          :isActive="index==currentIndex
+                    && currentIndex==mouseIndex
+                    && mouseStart == true">{{ item }}</slot>
+      </li>
+    </template>
 
     <!-- <li
       v-for="(item, index) in list"

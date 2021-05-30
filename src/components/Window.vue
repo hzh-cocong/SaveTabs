@@ -64,7 +64,7 @@
         v-html="highlightMap[index]+' | '+index"></span>
 
       <div class="right">
-        <div v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
+        <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
             <el-badge
               v-if="isCurrentWindowChange && item.windowId == currentWindowId"
@@ -137,9 +137,8 @@
                   : config.list_keymap_color }">
             {{ timeShow(item.lastVisitTime) }}
           </div>
-        </div>
-        <div
-          v-show=" ! isActive && item.windowId != currentWindowId">
+        </template>
+        <template v-if=" ! isActive && item.windowId != currentWindowId">
           <span
             v-if="isSelected"
             :style="{
@@ -163,7 +162,7 @@
                         : index-$refs.list.scrollLines+1)
                       )
                     }}</span>
-        </div>
+        </template>
       </div>
     </template>
   </list>
@@ -406,6 +405,7 @@ export default {
 
       return highlightMap;
     },
+
     currentWindowId() {
       console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;

@@ -12,7 +12,7 @@
     "list_explain_font_size": 12,
     "list_state_size": 12,
     "list_keymap_size": 16,
-    "list_page_count": 8,
+    "list_page_count": 5,
 
     "list_focus_background_color": "#7497de",
     "list_focus_font_color": "#ffffff",
@@ -45,7 +45,7 @@
     "list_scrollbar_focus_color": "red",
 
     "item_height": 50,
-    "item_show_count": 7,
+    "item_show_count": 4,
 
     "width": 500,
     "border_width": 8,
@@ -88,7 +88,7 @@
         "history",
         "test"
     ],
-    "active_workspace_type": "window",
+    "active_workspace_type": "bookmark",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

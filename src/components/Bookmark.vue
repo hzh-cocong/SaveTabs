@@ -2,10 +2,10 @@
   <div>
 
   <el-alert
+    v-if="isSearched && list.length == 0"
     type="info"
     :closable="false"
     show-icon
-    v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
     :style="{ width: (config.width-20)+'px' }">
     <div
@@ -28,100 +28,90 @@
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color,
-          color: isSelected
-                ? config.list_focus_font_color
-                : config.list_font_color
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px',
+          marginLeft: (storageKeyword == ''
+                    ? tree.marginLeft[item.id]
+                    : searchTree.marginLeft[index])+'px' }">
+        <template v-if="isLoad">
+          <img
+            v-if="item.children && item.children.length > 0"
+            src="../assets/folder.png"
+            style="width:100%; height: 100%;" />
+          <img
+            v-else-if="item.children && item.children.length <= 0"
+            src="../assets/folder-opened.png"
+            style="width:100%; height: 100%;" />
+          <el-image
+            v-else
+            :src="iconMap[index]"
+            style="width:100%; height: 100%;"
+            fit="cover"
+            :lazy="index >= config.item_show_count">
+            <div slot="error" class="image-slot">
+              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            </div>
+            <div slot="placeholder" class="image-slot">
+              <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            </div>
+          </el-image>
+        </template>
+      </span>
 
-        <span
-          class="left"
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">{{
+              item.title
+              + ( ! isSelected || tree.path[item.parentId]
+                ? ''
+                : ' (' +tree.bookmarkCount[item.id]+') ')
+          }}</div>
+        <div
+          v-if="isSelected && tree.path[item.parentId]"
+          class="sub-title"
           :style="{
-            width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px',
-            marginLeft: (storageKeyword == ''
-                      ? tree.marginLeft[item.id]
-                      : searchTree.marginLeft[index])+'px' }">
-          <template v-if="isLoad">
-            <img
-              v-if="item.children && item.children.length > 0"
-              src="../assets/folder.png"
-              style="width:100%; height: 100%;" />
-            <img
-              v-else-if="item.children && item.children.length <= 0"
-              src="../assets/folder-opened.png"
-              style="width:100%; height: 100%;" />
-            <el-image
-              v-else
-              :src="getIcon('', item.url, config.item_height-20)"
-              style="width:100%; height: 100%;"
-              fit="cover"
-              :lazy="index >= config.item_show_count">
-              <div slot="error" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-              <div slot="placeholder" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-            </el-image>
-          </template>
-        </span>
-
-        <div class="main">
-          <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title
-                + ( ! isSelected || tree.path[item.parentId]
-                  ? ''
-                  : ' (' +tree.bookmarkCount[item.id]+') ')
-            }}</div>
-          <div
-            v-if="isSelected && tree.path[item.parentId]"
-            class="sub-title"
-            :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">
-            {{  (tree.path[item.parentId] ? tree.path[item.parentId] : '')
-              + (item.children ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id] : '') }}
-          </div>
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }">
+          {{  (tree.path[item.parentId] ? tree.path[item.parentId] : '')
+            + (item.children ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id] : '') }}
         </div>
+      </div>
 
-        <div class="right">
-          <span
-            v-if="isSelected"
-            :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
-            }">↩</span>
-          <span
-            v-else-if="_device.platform != ''
-              && (index-$refs.list.scrollLines+1) <= config.item_show_count
-              && (index-$refs.list.scrollLines+1) >= 1
-              && (index-$refs.list.scrollLines+1) <= 9"
-            :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_keymap_color,
-            }">{{
-                _device.platform == 'Win'
-              ?  'Alt+'+(index-$refs.list.scrollLines+1)
-              : '⌘'+(index-$refs.list.scrollLines+1)
-              }}</span>
-        </div>
-
+      <div class="right">
+        <span
+          v-if="isSelected"
+          :style="{
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_focus_keymap_color,
+          }">↩</span>
+        <span
+          v-else-if="_device.platform != ''
+                  &&  (index-$refs.list.scrollLines+1) <= 9"
+          :style="{
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color,
+          }">{{
+              (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+            + ( 1 > index-$refs.list.scrollLines+1
+              ? 1
+              : (index-$refs.list.scrollLines+1 > config.item_show_count
+                ? config.item_show_count
+                : index-$refs.list.scrollLines+1)
+              )
+            }}</span>
       </div>
     </template>
   </list>
@@ -173,6 +163,19 @@ export default {
     List,
   },
   computed: {
+    iconMap() {
+      console.log('getIcon:iconMap');
+      let a = new Date().getTime();
+
+      let ss = this.list.map((item, index) => {
+        return this.getIcon('', item.url, this.config.item_height-20);
+      })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
+    },
+
     currentBookmark() {
       if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
@@ -309,6 +312,25 @@ let b = new Date().getTime();
     },
   },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(isSelected) {
+        return {
+          'background-color': this.config.list_focus_background_color,
+          'color': this.config.list_focus_font_color,
+          '--list-highlight-color': this.config.list_focus_highlight_color,
+          '--list-highlight-weight': this.config.list_focus_highlight_weight,
+        }
+      } else {
+        return {
+          'background-color': this.config.list_background_color,
+          'color': this.config.list_font_color,
+          '--list-highlight-color': this.config.list_highlight_color,
+          '--list-highlight-weight': this.config.list_highlight_weight,
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -320,34 +342,28 @@ let b = new Date().getTime();
       if(this.storageKeyword == keyword.trim()) return;
 
       this.storageKeyword = keyword.trim();
-console.warn('isSearched');
+
       if(this.storageKeyword.length == 0) {
+        this.getTree((bookmarks) => {
+          console.log('getTree', bookmarks);
 
-        // this.originList = bookmarks;
-        this.expand(this.originList, 0, false);
-        this.list = this.originList;
+          this.originList = bookmarks;
+          this.expand(this.originList, 0, false);
+          this.list = this.originList;
 
-        this.currentIndex = 0;
-        this.isSearched = true;
+          this.currentIndex = 0;
+          this.scrollDisabled = true;
 
-        console.warn('isSearched2');
-
-        // this.getTree((bookmarks) => {
-        //   console.log(bookmarks);
-
-        //   // this.originList = bookmarks;
-        //   // this.expand(this.originList, 0, false);
-        //   // this.list = this.originList;
-
-        //   this.currentIndex = 0;
-
-        //   // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-        //   this.isSearched = true;
-        // })
+          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+          this.isSearched = true;
+        })
       } else {
         this.query(this.storageKeyword, (bookmarks) => {
-          this.list = bookmarks;
+          this.cacheList = bookmarks;
+          this.list = this.cacheList.slice(0, this.config.list_page_count);
+
           this.currentIndex = this.list.length > 0 ? 0 : -1;
+          this.scrollDisabled = this.list.length >= this.cacheList.length;
 
           // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
           this.isSearched = true;
@@ -355,14 +371,9 @@ console.warn('isSearched');
       }
     },
     load() {
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
-
-      this.list.push(...data);
-      this.page++;
+      console.warn('load----------------')
+      // 加载数据
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     query(keyword, callback) {
@@ -413,25 +424,23 @@ console.warn('isSearched');
 
     openWindow(index) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
 
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
 
-      this.currentIndex = currentIndex;
-      this._openWindow();
+      this._openWindow(event);
     },
-    _openWindow() {
+    _openWindow(event) {
       // 列表为空
       if(this.currentBookmark == null) return;
 
       // 打开网页
       if( ! this.currentBookmark.children) {
-        this.$open(this.currentBookmark.url);
+        this.$open(this.currentBookmark.url, event);
         return;
       }
 
@@ -440,12 +449,11 @@ console.warn('isSearched');
         // 展开或收起目录
         if(this.currentBookmark.children.length > 0) {
           // 展开
-          this.searchExpand(this.list, this.currentIndex);
+          this.searchExpand(this.currentIndex);
         } else {
           // 收起
-          this.searchCollapse(this.list, this.currentIndex);
+          this.searchCollapse(this.currentIndex);
         }
-        this.focus();
         return;
       }
 
@@ -472,18 +480,16 @@ console.warn('isSearched');
 
         this.collapse(this.list, this.currentIndex);
       }
-
-      this.focus();
     },
 
-    searchExpand(list, index) {
+    searchExpand(index) {
       // 搜索列表需要用别的方式打开文件夹
 
       // 展开（如果子目录需要展开也会自动展开）
       let endIndex = index;
       let stack = [];
       for(let currentIndex = index, endIndex = index; currentIndex <= endIndex; currentIndex++) {
-        let bookmark = list[currentIndex];
+        let bookmark = this.list[currentIndex];
 
         // 不是目录，跳过
         if( ! bookmark.children) continue;
@@ -496,19 +502,20 @@ console.warn('isSearched');
         if(currentIndex != index) continue;
 
         // 展开目录
-        list.splice(currentIndex+1, 0, ...bookmark.children);
+        this.cacheList.splice(currentIndex+1, 0, ...bookmark.children);
+        this.list.splice(currentIndex+1, 0, ...bookmark.children);
         stack.push([currentIndex, bookmark.children.length]);
         endIndex += bookmark.children.length;
         bookmark.count = bookmark.children.length; // 加 count 标记，这个是临时的，会因为搜索而消失
         bookmark.children = [];
       }
     },
-    searchCollapse(list, index) {
+    searchCollapse(index) {
       // 搜索列表需要用别的方式收起文件夹
 
       // 收起（子目录必须收起来，否则再次展开时的count就不对了）
       let stack = [];
-      let count = list[index].count;
+      let count = this.list[index].count;
       let lastIndex = index+1;
       let parentIndex = index;
 
@@ -518,9 +525,10 @@ console.warn('isSearched');
       while(true) {
         if(count <= 0) {
           // 收起该层
-          console.log('收起1', lastIndex, parentIndex+1, lastIndex-(parentIndex+1), list[parentIndex].title);
+          console.log('收起1', lastIndex, parentIndex+1, lastIndex-(parentIndex+1), this.list[parentIndex].title);
           let total = lastIndex-(parentIndex+1);
-          list[parentIndex].children = list.splice(parentIndex+1, total);
+          this.list[parentIndex].children = this.list.splice(parentIndex+1, total);
+          this.cacheList.splice(parentIndex+1, total);
           console.log('收起2', lastIndex, parentIndex+1, total);
 
           if(stack.length == 0) break;
@@ -532,7 +540,7 @@ console.warn('isSearched');
           continue;
         }
 
-        let bookmark = list[lastIndex];
+        let bookmark = this.list[lastIndex];
         count--;
 
         if(bookmark.children != undefined
@@ -614,12 +622,12 @@ console.warn('isSearched');
     window.b = this;let a = new Date().getTime();
 console.warn('mounted', a);
     Promise.all([
-      new Promise((resolve) => {
-        this.getTree((bookmarks) => {
-          this.originList = bookmarks;
-          resolve();
-        })
-      }),
+      // new Promise((resolve) => {
+      //   this.getTree((bookmarks) => {
+      //     this.originList = bookmarks;
+      //     resolve();
+      //   })
+      // }),
       new Promise((resolve) => {
         // 获取书签打开状态
         chrome.storage.local.get({'bookmark': { state: {}}}, items => {
@@ -645,7 +653,7 @@ console.warn('finish', b, (b-a)/1000)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -660,11 +668,11 @@ console.warn('finish', b, (b-a)/1000)
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 10px;
   text-align: center;
 }
-.item .main {
+.list >>> .list-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -676,17 +684,17 @@ console.warn('finish', b, (b-a)/1000)
   /* justify-content: space-evenly; */
   justify-content: center;
 }
-.item .title {
+.list >>> .list-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
+.list >>> .list-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

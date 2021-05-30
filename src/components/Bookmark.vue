@@ -344,6 +344,11 @@ let b = new Date().getTime();
       this.storageKeyword = keyword.trim();
 
       if(this.storageKeyword.length == 0) {
+        // 搜索是异步的，先用之前的填补，否则搜索列表数据会因为使用不同的 marginLeft 而错误，进而形成闪烁。
+        this.list = this.originList;
+        this.currentIndex = 0;
+        this.scrollDisabled = true;
+
         this.getTree((bookmarks) => {
           console.log('getTree', bookmarks);
 
@@ -358,6 +363,10 @@ let b = new Date().getTime();
           this.isSearched = true;
         })
       } else {
+        // 加上这个会山所问题
+        // this.isSearched = false;
+        // this.list = [];
+
         this.query(this.storageKeyword, (bookmarks) => {
           this.cacheList = bookmarks;
           this.list = this.cacheList.slice(0, this.config.list_page_count);

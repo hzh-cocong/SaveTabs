@@ -338,10 +338,14 @@ const tool = {
         }
         chrome.bookmarks = {
           getTree: function(callback) {
-            callback != undefined && callback(JSON.parse(bookmarkTree));
+            setTimeout(() => {
+              callback != undefined && callback(JSON.parse(bookmarkTree));
+            }, 1000)
           },
           search: function(options, callback) {
-            callback != undefined && callback(JSON.parse(bookmarks));
+            setTimeout(() => {
+              callback != undefined && callback(JSON.parse(bookmarks));
+            }, 1000)
           },
           remove: function(options, callback) {
             callback != undefined && callback();

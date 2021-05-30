@@ -181,6 +181,7 @@ export default {
       return this.list[ this.currentIndex ];
     },
     tree() {
+console.log('computed:tree')
       let marginLeft = {};
       let path = {};
       let itemCount = {};
@@ -281,7 +282,7 @@ let b = new Date().getTime();
     searchTree() {
       console.log('searchTree')
 
-      let marginLeft = {};
+      let marginLeft = new Array(this.list.length);
       let stack = [];
       let lastMarginLeft = 0;
       let count = 0;
@@ -305,7 +306,7 @@ let b = new Date().getTime();
         }
       }
 
-      console.log({marginLeft});
+      console.log('computed:searchTree', {marginLeft});
       return {
         marginLeft,
       };
@@ -377,6 +378,7 @@ console.log('chrome.bookmarks.getTree.first')
         // this.list = [];
 
         this.query(this.storageKeyword, (bookmarks) => {
+console.log('chrome.bookmarks.getTree.second')
           this.cacheList = bookmarks;
           this.list = this.cacheList.slice(0, this.config.list_page_count);
 

@@ -51,20 +51,20 @@ module.exports = {
   },
 
   configureWebpack: {
-    // plugins: [
-    //   new UglifyJsPlugin({
-    //     uglifyOptions: {
-    //       output: {
-    //         comments: false, // 去掉注释
-    //       },
-    //       warnings: false,
-    //       compress: {
-    //         drop_console: true,
-    //         drop_debugger: true,
-    //         pure_funcs: ['console.log']//移除console
-    //       },
-    //     }
-    //   })
-    // ],
+    plugins: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            comments: false, // 去掉注释
+          },
+          warnings: false,
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+            pure_funcs: ['console.log']//移除console
+          },
+        }
+      })
+    ],
   }
 }

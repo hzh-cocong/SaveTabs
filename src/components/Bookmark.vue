@@ -72,7 +72,7 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">{{
-              item.title
+              item.title + ' | ' + index + ' | '
               + ( ! isSelected || tree.path[item.parentId]
                 ? ''
                 : ' (' +tree.bookmarkCount[item.id]+') ')

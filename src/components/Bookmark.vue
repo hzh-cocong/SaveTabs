@@ -70,16 +70,25 @@
       </span>
 
       <div class="main">
+        <template v-if="storageKeyword == ''">
+          <div
+            class="title"
+            :style="{ fontSize: config.list_font_size+'px' }">{{
+                item.title
+                + ( ! isSelected || tree.path[item.parentId]
+                  ? ''
+                  : ' (' +tree.bookmarkCount[item.id]+') ')
+            }}</div>
+        </template>
+        <template v-else>
+          <span
+            class="title"
+            :style="{ fontSize: config.list_font_size+'px' }"
+            v-html="highlightMap[index]"></span>
+        </template>
+
         <div
-          class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">{{
-              item.title + ' | ' + index + ' | '
-              + ( ! isSelected || tree.path[item.parentId]
-                ? ''
-                : ' (' +tree.bookmarkCount[item.id]+') ')
-          }}</div>
-        <div
-          v-if="isSelected && tree.path[item.parentId]"
+          v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')"
           class="sub-title"
           :style="{
             fontSize: config.list_explain_font_size+'px',
@@ -191,6 +200,27 @@ export default {
       console.log('getIcon:iconMap', (b-a)/1000);
 
       return ss;
+    },
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 书签自带的搜索系统是按字搜索的，相邻的字存在顺序关系，空格隔开的则没有，这里暂时加空格处理
+      let storageKeyword = this.storageKeyword.split('').join(' ');
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = new Array(this.list.length);
+      this.list.forEach((item, index) => {
+        highlightMap[ index ] = this.highlight(item.title, storageKeyword, '<strong>', '</strong>');
+      });
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
     },
 
     currentBookmark() {
@@ -823,4 +853,20 @@ console.warn('finish', b, (b-a)/1000)
 .el-badge.refresh {
     margin-left: 10px;
 }
+</style>
+<style>
+.bookmark strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
+
+.bookmark .el-badge {
+  margin-right: 10px;
+  vertical-align: inherit;
+}
+.bookmark .el-badge__content {
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+
 </style>

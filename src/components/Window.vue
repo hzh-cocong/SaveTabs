@@ -61,7 +61,7 @@
       <span
         class="title"
         :style="{fontSize: config.list_font_size+'px'}"
-        v-html="highlightMap[index]+' | '+index"></span>
+        v-html="highlightMap[index]"></span>
 
       <div class="right">
         <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">

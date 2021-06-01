@@ -270,10 +270,8 @@ const tool = {
                       "22": true,
                     },
                     position: {
-                      // currentIndex: 12,
-                      // visiualIndex: 4,
-                      currentIndex: 0,
-                      visiualIndex: 0,
+                      currentIndex: 12,
+                      visiualIndex: 2,
                     }
                   }
                 });

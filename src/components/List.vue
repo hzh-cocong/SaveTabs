@@ -410,7 +410,15 @@ console.log('currentIndex', newVal, oldVal)
       //   index = scrollLines;
       // else if(index >= scrollLines+this.itemShowCount)
       //   index = scrollLines+this.itemShowCount-1;
+
+      // 鼠标在靠近边界时会触发下一个而非当前个，所以这里要限制一下
+      if(index < this.scrollLines)
+        index = this.scrollLines;
+      else if(index >= this.scrollLines+this.itemShowCount)
+        index = this.scrollLines+this.itemShowCount-1;
+
       this.mouseIndex = index;
+
       console.log('mouseSelect2', this.mouseIndex, scrollLines, this.$el.scrollTop);
 
       // 列表滚动时就不选择了，这样体验更好
@@ -524,12 +532,12 @@ console.log('a')
               || (self.mouseStart == false && self.mouseIndex != -1)) {
               self.$el.className = "list";
             }
-console.log('lllllllllllllllllllllllllllllllllll');
+
             // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
             // 就会让当前鼠标所指向的项目选中
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)){
               self.mouseSelect(self.mouseIndex);
-              console.log('lllllllllllllllllllllllllllllllllll22', e.target.scrollTop);
+              self.$emit('scrollEnd');
               return;
             }
 
@@ -539,7 +547,7 @@ console.log('lllllllllllllllllllllllllllllllllll');
             else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
               self.$emit('change', self.scrollLines+self.itemShowCount-1);
 
-            console.log('lllllllllllllllllllllllllllllllllll2');
+            self.$emit('scrollEnd');
           }
         } else if(self.w.t2 == self.w.t1 && self.w.ulOn == true) {
           self.w.timer = setTimeout(scrollWatch, self.w.speed);
@@ -586,7 +594,9 @@ console.log('lllllllllllllllllllllllllllllllllll');
       console.log('currentTo 01 ', index, this.visiualIndex);
 
       // 恰好，一开始 this.visiualIndex = -1，index 无论取何值都不会错过
-      if(index == this.visiualIndex) return;
+      // 虽然如此，但一开始是不会调用这个的，因为很多依赖还未更新
+      // 还是以最后的 $el.scrollTop 值为准备
+      // if(index == this.visiualIndex) return;
 
       console.log('currentTo', index, this.visiualIndex, this.scrollLines);
 
@@ -609,15 +619,19 @@ console.log('lllllllllllllllllllllllllllllllllll');
       console.log('currentTo3', scrollLines, this.scrollLines);
 
       // 一开始 this.scrollLines 从负值被强制变为 0，所以相等，被跳过了。
-      if(scrollLines == this.scrollLines) return;
+      // 还是以最后的 $el.scrollTop 值为准备
+      // if(scrollLines == this.scrollLines) return;
 
       this.scrollLines = scrollLines;
 
       // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
-      this.$nextTick(() => {
-        console.log('list.currentTo', index);
-        this.$el.scrollTop = this.scrollLines*this.itemHeight;
-      });
+      let scrollTop = this.scrollLines*this.itemHeight;
+      if(this.$el.scrollTop != scrollTop) {
+        this.$nextTick(() => {
+          console.log('list.currentTo', index);
+          this.$el.scrollTop = scrollTop;
+        });
+      }
       // setTimeout(() => {
       //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
       // }, 0)

@@ -33,7 +33,8 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow">
+    @itemClick="_openWindow"
+    @scrollEnd="scrollEnd">
     <template #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
@@ -153,12 +154,17 @@ export default {
       currentIndex: -1,
 
       isSearched: false,
+      isSearching: true,
 
       rootId: -1,
       state: {},
       position: {
         currentIndex: 0, // -1 就是会导致到顶反弹
         visiualIndex: 0,
+      },
+
+      w: {
+        timer: null,
       },
     }
   },
@@ -167,13 +173,10 @@ export default {
   },
   watch: {
     currentIndex(newVal, oldVal) {
-      console.log('bookmark.watch.currentIndex', newVal, oldVal)
-      // if(this.storageKeyword.length == 0) {
-      //   this.position.currentIndex = newVal;
-      //   this.position.visiualIndex = this.currentIndex-this.$refs.list.scrollLines;
-      //   // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
-      //   console.log('bookmark.watch.currentIndex2', this.currentIndex-this.$refs.list.scrollLines, this.$refs.list.scrollLines, this.$refs.list.visiualIndex)
-      // }
+      if( ! this.isSearching) {
+        // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
+        this.positionRecord(newVal, newVal-this.$refs.list.scrollLines);
+      }
     }
   },
   computed: {
@@ -370,6 +373,9 @@ console.log('chrome.bookmarks.getTree.first')
           // vue 依赖更新是异步的，此时 对于 list 组件，所有值都为更新，currentTo 是无效的，所以要放到异步里去
           this.$nextTick(() => {
             this.$refs.list.currentTo(this.position.visiualIndex);
+
+            // 等移动到指定位置再开启，否则会触发滚动事件
+            this.isSearching = false;
           });
         }
 
@@ -383,6 +389,7 @@ console.log('chrome.bookmarks.getTree.first')
         this.list = this.originList;
 
         this.currentIndex = this.position.currentIndex;
+        // this.$refs.list.currentTo(this.position.visiualIndex);
 
         // this.currentIndex = 0;
         this.scrollDisabled = true;
@@ -404,6 +411,8 @@ console.log('chrome.bookmarks.getTree.first')
 
           // this.currentIndex = 0;
           this.scrollDisabled = true;
+
+          this.isSearching = false;
         })
       }
 
@@ -411,6 +420,8 @@ console.log('chrome.bookmarks.getTree.first')
         // 加上这个会山所问题
         // this.isSearched = false;
         // this.list = [];
+
+        this.isSearching = true;
 
         this.query(this.storageKeyword, (bookmarks) => {
 console.log('chrome.bookmarks.getTree.second')
@@ -474,7 +485,7 @@ console.log('chrome.bookmarks.getTree.second')
       })
     },
 
-    openWindow(index) {
+    openWindow(index, event) {
       if(index == undefined) {
         this._openWindow(event);
         return;
@@ -515,7 +526,7 @@ console.log('chrome.bookmarks.getTree.second')
 
         // 先存储再去操作，因为列表有可能会发生滚动
         this.state[ this.currentBookmark.id ] = true;
-        chrome.storage.local.set({'bookmark': { state: this.state }}, () => {
+        chrome.storage.local.set({'bookmark': { state: this.state, position: this.position }}, () => {
 
         });
 
@@ -526,7 +537,7 @@ console.log('chrome.bookmarks.getTree.second')
         // 先存储再去操作，因为列表有可能会发生滚动
         // this.state[ this.currentBookmark.id ] = false;
         delete this.state[ this.currentBookmark.id ]
-        chrome.storage.local.set({'bookmark': { state: this.state }}, () => {
+        chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
 
         });
 
@@ -662,6 +673,48 @@ console.log('chrome.bookmarks.getTree.second')
       list[index].children = list.splice(index+1, count);
       console.log('收起', list.length, index+1, lastIndex, count)
     },
+
+    scrollEnd() {
+      if( ! this.isSearching) {
+        // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
+        this.positionRecord(this.currentIndex, this.currentIndex-this.$refs.list.scrollLines);
+      }
+    },
+    positionRecord(currentIndex, visiualIndex) {
+      // if(this.isSearching) return;
+      if(this.position.currentIndex == currentIndex
+      && this.position.visiualIndex == visiualIndex) return;
+
+      console.log('positionRecord'
+      ,this.position.currentIndex,
+      this.position.visiualIndex,
+      currentIndex, visiualIndex);
+
+      // 通过键盘快捷键操作可能会关闭窗口，应在最短的时间内保存
+      if(this.position.currentIndex != currentIndex
+      && this.position.visiualIndex != visiualIndex) {
+        clearTimeout(this.w.timer);
+
+        this.position.currentIndex = currentIndex;
+        this.position.visiualIndex = visiualIndex;
+
+        chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
+          console.log('positionRecord20', currentIndex, visiualIndex);
+        });
+        return;
+      }
+
+      this.position.currentIndex = currentIndex;
+      this.position.visiualIndex = visiualIndex;
+
+      // 限流
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
+          console.log('positionRecord21', currentIndex, visiualIndex);
+        });
+      }, 200);
+    }
   },
   beforeUpdate() {
     console.warn('beforeUpdate');

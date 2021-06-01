@@ -1137,40 +1137,6 @@ console.warn('finish', b, (b-a)/1000)
       // 更新列表
       // this.search();
     })
-
-    // new Promise((resolve) => {
-    //   // 获取本地数据
-    //   chrome.storage.local.get({'list': []}, items => {
-    //     this.storageList = items.list;
-    //     resolve()
-    //   });
-    // }).then(() => {
-    //   // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
-    //   return new Promise((resolve) => {
-    //     chrome.windows.getCurrent({populate: true}, window => {
-    //       this.currentWindow = window;
-    //       resolve(window)
-    //     })
-    //   })
-    // }).then(() => {
-    //   // 获取全部窗口
-    //   return new Promise((resolve) => {
-    //     // 判断窗口是否已打开
-    //     chrome.windows.getAll({}, windows => {
-    //       resolve(windows);
-    //     })
-    //   })
-    // }).then((windows) => {
-    //   // 保存活跃的窗口
-    //   for(let window of windows) {
-    //     this.activeWindows[ window.id ] = true;
-    //   }
-
-    //   this.$emit('finish');
-
-    //   // 更新列表
-    //   // this.search();
-    // })
   }
 }
 </script>

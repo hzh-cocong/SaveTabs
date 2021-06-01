@@ -15,7 +15,8 @@
     <!-- 这里不要使用 list.length，不然会很卡，也知道为啥，猜测是 vue 会检查整个 list 是否发生变化导致，改成外部传入就圆满了 -->
     <template v-for="(item, index) in list">
       <li
-        v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache"
+        v-if="index >= (rangeUp)-scrollCache && index <= (rangeDown+itemShowCount-1)+scrollCache
+            || index == listLength-1"
         class="list-item"
         :key="index"
         :class="[typeof itemClassName === 'function'
@@ -27,10 +28,11 @@
                                             && mouseStart == true})
                   : itemClassName]"
         :style="[{ height: index > (rangeUp)-scrollCache && index < (rangeDown+itemShowCount-1)+scrollCache
+                        || index == listLength-1
                       ? itemHeight+'px'
                       : ( index == rangeUp-scrollCache
                         ? (index+1)*itemHeight+'px'
-                        : (listLength-index)*itemHeight+'px'),
+                        : ((listLength-index-itemShowCount)-1)*itemHeight+'px'),
                   },
 
                   typeof itemStyle === 'function'
@@ -213,7 +215,7 @@ export default {
       // scrollCache: this.itemShowCount,
 
       rangeUp: 0,
-      rangeDown: 0, // 2*this.itemShowCount,
+      rangeDown: 2*this.itemShowCount,
 
       w: {
         index: 0,
@@ -406,12 +408,11 @@ console.log('currentIndex', newVal, oldVal)
       // } else {
       //   scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
       // }
-      // if(index < scrollLines)
-      //   index = scrollLines;
-      // else if(index >= scrollLines+this.itemShowCount)
-      //   index = scrollLines+this.itemShowCount-1;
+      if(index < scrollLines)
+        index = scrollLines;
+      else if(index >= scrollLines+this.itemShowCount)
+        index = scrollLines+this.itemShowCount-1;
       this.mouseIndex = index;
-      console.log('mouseSelect2', this.mouseIndex, scrollLines, this.$el.scrollTop);
 
       // 列表滚动时就不选择了，这样体验更好
       if(this.w.isScrolling) {
@@ -529,7 +530,7 @@ console.log('lllllllllllllllllllllllllllllllllll');
             // 就会让当前鼠标所指向的项目选中
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)){
               self.mouseSelect(self.mouseIndex);
-              console.log('lllllllllllllllllllllllllllllllllll22', e.target.scrollTop);
+              console.log('lllllllllllllllllllllllllllllllllll22');
               return;
             }
 
@@ -647,12 +648,6 @@ console.log('lllllllllllllllllllllllllllllllllll');
   mounted() {
     // todo
     window.list = this;
-
-    // 一开始尽量显示少一点，一半就行了，加快启动速度
-    this.rangeDown = this.scrollRange;
-
-    // this.rangeUp = this.getRangeUp();
-    // this.rangeDown = this.getRangeDown();
 
     // document.body.style.cursor = "none";
     this.mouseRealMoveRegister();

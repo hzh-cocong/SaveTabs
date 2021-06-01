@@ -27,214 +27,198 @@
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">>
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color,
-          color: isSelected
-                ? config.list_focus_font_color
-                : config.list_font_color
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
-
-        <span
-          class="left"
-          :style="{
-            width: (config.item_height-10)+'px',
-            height: (config.item_height-10)+'px' }">
-          <div class="image" :style="{ height: (config.item_height-14)+'px' }">
-            <div class="a" :style="{
-              transform : 'scale('+config.item_height/50*1.3+', '+config.item_height/50*1.3+')'
-            }">{{ item.tabs.length}}</div>
-            <div class="b" :style="{
-              transform : 'scale('+config.item_height/50/2+', '+config.item_height/50/2+')',
-              marginTop : config.item_height > 50
-                        ? ((config.item_height-50)/5) + 'px'
-                        : 0,
-            }">{{ lang('temporaryTabTip') }}</div>
-          </div>
-        </span>
-
-        <div
-          class="main"
-          :class="{ scroll: isActive }"
-          :style="{
-            height: config.item_height+'px',
-
-            'flex-direction': ! isSelected ? 'column' : 'row',
-            'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
-            'align-content': ! isSelected ? 'normal' : 'flex-start',
-            'justify-content': ! isSelected ? 'center' : 'flex-start',
-            }">
-          <template v-if="isSelected">
-            <!-- <div
-              v-for="(tab, i) in item.tabs"
-              :key="i"
-              style="display: flex; align-items: center; border: 1px solid red; overflow: hidden; white-space: nowrap; cursor: default;"
-              :style="{ height: tagConfig.tag_font_size+'px',
-                        width: 'calc(100% / '+tagConfig.tag_line_count+' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
-                        margin: tagConfig.tag_margin_top+'px '
-                              + tagConfig.tag_margin_right+'px 0px 0px',
-                        padding: tagConfig.tag_padding_top+'px '
-                                +tagConfig.tag_padding_left+'px' }">
-              <el-image
-                v-if="isLoad"
-                :src="getIcon(tab.icon, tab.url, 12)"
-                style="flex: none;"
-                :style="{ width: tagConfig.tag_font_size+'px',
-                          height: tagConfig.tag_font_size+'px',
-                          marginRight: tagConfig.tag_padding_left+'px' }"
-                fit="cover"
-                :lazy="index >= config.item_show_count">
-                <div slot="error" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-                <div slot="placeholder" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-              </el-image>
-              <span
-                :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
-            </div> -->
-
-
-
-            <el-tag
-              v-for="(tab, i) in item.tabs"
-              :key="i"
-              style="box-sizing: content-box;cursor: default;"
-              :style="{ height: tagConfig.tag_font_size+'px',
-                        width: 'calc(100% / '+(storageKeyword == '' || item.tabs.length > tagConfig.tag_line_count ? tagConfig.tag_line_count : item.tabs.length)
-                                              +' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
-                        margin: tagConfig.tag_margin_top+'px '
-                              + tagConfig.tag_margin_right+'px 0px 0px',
-                        padding: tagConfig.tag_padding_top+'px '
-                                +tagConfig.tag_padding_left+'px' }"
-              type="info"
-              :effect="'light'"
-              :closable="false"
-              :disable-transitions="true"
-              :hit="false">
-              <el-image
-                v-if="isLoad"
-                :src="getIcon(tab.icon, tab.url, 12)"
-                :style="{ width: tagConfig.tag_font_size+'px',
-                          height: tagConfig.tag_font_size+'px',
-                          marginRight: tagConfig.tag_padding_left+'px' }"
-                fit="cover"
-                :lazy="index >= config.item_show_count">
-                <div slot="error" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-                <div slot="placeholder" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-              </el-image>
-              <span
-                class="tab-title"
-                :style="{ fontSize: tagConfig.tag_font_size+'px',
-                          width: 'calc(100% - '+(tagConfig.tag_font_size+tagConfig.tag_padding_left*1)+'px' }">{{ tab.title || tab.url }}</span>
-            </el-tag>
-          </template>
-          <template v-else>
-            <div
-            class="title"
-            style="display:flex; overflow: hidden; align-items: center;"
-            :style="{ fontSize: config.list_font_size+'px' }">
-              <el-image
-                v-if="isLoad"
-                :src="getIcon(item.tabs[0].icon, item.tabs[0].url, 12)"
-                fit="cover"
-                :style="{ width: config.list_font_size+'px',
-                          height: config.list_font_size+'px' }"
-                :lazy="index >= config.item_show_count">
-                <div slot="error" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-                <div slot="placeholder" class="image-slot">
-                  <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-                </div>
-                <!-- <div slot="placeholder" class="image-slot">
-                  <img
-                    v-if="index >= config.item_show_count"
-                    src="../assets/fallback.png"
-                    style="width:100%; height: 100%;" />
-                </div> -->
-              </el-image>
-              <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
-            </div>
-            <div
-              class="sub-title"
-              :style="{
-                fontSize: config.list_explain_font_size+'px',
-                color: isSelected
-                      ? config.list_explain_focus_font_color
-                      : config.list_explain_font_color,
-                marginLeft: (config.list_font_size+5)+'px' }">
-                {{ getDomain(item.tabs[0].url) }}
-            </div>
-          </template>
+          width: (config.item_height-10)+'px',
+          height: (config.item_height-10)+'px' }">
+        <div class="image" :style="{ height: (config.item_height-14)+'px' }">
+          <div class="a" :style="{
+            transform : 'scale('+config.item_height/50*1.3+', '+config.item_height/50*1.3+')'
+          }">{{ item.tabs.length}}</div>
+          <div class="b" :style="{
+            transform : 'scale('+config.item_height/50/2+', '+config.item_height/50/2+')',
+            marginTop : config.item_height > 50
+                      ? ((config.item_height-50)/5) + 'px'
+                      : 0,
+          }">{{ lang('temporaryTabTip') }}</div>
         </div>
+      </span>
 
-        <div class="right">
+      <div
+        class="main"
+        :class="{ scroll: isActive }"
+        :style="{
+          height: config.item_height+'px',
 
-            <el-popover
-              v-show="isActive"
-              placement="left"
-              title="标题"
-              width="200"
-              trigger="hover"
-              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-              <el-button slot="reference" circle size="small" >3</el-button>
-            </el-popover>
-          <div v-if="isActive">
-            <i
-              class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="deleteTemporary"
-              :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
-          </div>
-          <div v-if=" ! isActive">
+          'flex-direction': ! isSelected ? 'column' : 'row',
+          'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
+          'align-content': ! isSelected ? 'normal' : 'flex-start',
+          'justify-content': ! isSelected ? 'center' : 'flex-start',
+          }">
+        <template v-if="isSelected">
+          <!-- <div
+            v-for="(tab, i) in item.tabs"
+            :key="i"
+            style="display: flex; align-items: center; border: 1px solid red; overflow: hidden; white-space: nowrap; cursor: default;"
+            :style="{ height: tagConfig.tag_font_size+'px',
+                      width: 'calc(100% / '+tagConfig.tag_line_count+' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
+                      margin: tagConfig.tag_margin_top+'px '
+                            + tagConfig.tag_margin_right+'px 0px 0px',
+                      padding: tagConfig.tag_padding_top+'px '
+                              +tagConfig.tag_padding_left+'px' }">
+            <el-image
+              v-if="isLoad"
+              :src="getIcon(tab.icon, tab.url, 12)"
+              style="flex: none;"
+              :style="{ width: tagConfig.tag_font_size+'px',
+                        height: tagConfig.tag_font_size+'px',
+                        marginRight: tagConfig.tag_padding_left+'px' }"
+              fit="cover"
+              :lazy="index >= config.item_show_count">
+              <div slot="error" class="image-slot">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+              <div slot="placeholder" class="image-slot">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+            </el-image>
             <span
-              :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                  ? config.list_focus_state_color
-                  : config.list_state_color,
-              }">{{ timeShow(item.lastVisitTime) }}</span>
-          </div>
-          <div v-if=" ! isActive">
+              :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
+          </div> -->
+
+
+
+          <el-tag
+            v-for="(tab, i) in item.tabs"
+            :key="i"
+            style="box-sizing: content-box;cursor: default;"
+            :style="{ height: tagConfig.tag_font_size+'px',
+                      width: 'calc(100% / '+(storageKeyword == '' || item.tabs.length > tagConfig.tag_line_count ? tagConfig.tag_line_count : item.tabs.length)
+                                            +' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
+                      margin: tagConfig.tag_margin_top+'px '
+                            + tagConfig.tag_margin_right+'px 0px 0px',
+                      padding: tagConfig.tag_padding_top+'px '
+                              +tagConfig.tag_padding_left+'px' }"
+            type="info"
+            :effect="'light'"
+            :closable="false"
+            :disable-transitions="true"
+            :hit="false">
+            <el-image
+              v-if="isLoad"
+              :src="getIcon(tab.icon, tab.url, tagConfig.tag_font_size)"
+              :style="{ width: tagConfig.tag_font_size+'px',
+                        height: tagConfig.tag_font_size+'px',
+                        marginRight: tagConfig.tag_padding_left+'px' }"
+              fit="cover"
+              :lazy="false">
+              <div slot="error" class="image-slot">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+              <div slot="placeholder" class="image-slot">
+                <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+              </div>
+            </el-image>
             <span
-              v-if="isSelected"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_focus_keymap_color,
-              }">↩</span>
-            <span
-              v-else-if="_device.platform != ''
-                && (index-$refs.list.scrollLines+1) <= config.item_show_count
-                && (index-$refs.list.scrollLines+1) >= 1
-                && (index-$refs.list.scrollLines+1) <= 9"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_keymap_color,
-              }">{{
-                  _device.platform == 'Win'
-                ?  'Alt+'+(index-$refs.list.scrollLines+1)
-                : '⌘'+(index-$refs.list.scrollLines+1)
-                }}</span>
+              class="tab-title"
+              :style="{ fontSize: tagConfig.tag_font_size+'px',
+                        width: 'calc(100% - '+(tagConfig.tag_font_size+tagConfig.tag_padding_left*1)+'px' }">{{ tab.title || tab.url }}</span>
+          </el-tag>
+        </template>
+        <template v-else>
+          <div
+          class="title"
+          style="display:flex; overflow: hidden; align-items: center;"
+          :style="{ fontSize: config.list_font_size+'px' }">
+            <el-image
+              v-if="isLoad"
+              :src="iconMap[index]"
+              fit="cover"
+              :style="{ width: config.list_font_size+'px',
+                        height: config.list_font_size+'px' }"
+              lazy>
+              <div slot="error" class="image-slot">
+                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              </div>
+              <div slot="placeholder" class="image-slot">
+                <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+              </div>
+            </el-image>
+            <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
           </div>
+          <div
+            class="sub-title"
+            :style="{
+              fontSize: config.list_explain_font_size+'px',
+              color: isSelected
+                    ? config.list_explain_focus_font_color
+                    : config.list_explain_font_color,
+              marginLeft: (config.list_font_size+5)+'px' }">
+              {{ getDomain(item.tabs[0].url) }}
+          </div>
+        </template>
+      </div>
+
+      <div class="right">
+
+          <el-popover
+            v-show="isActive"
+            placement="left"
+            title="标题"
+            width="200"
+            trigger="hover"
+            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+            <el-button slot="reference" circle size="small" >3</el-button>
+          </el-popover>
+        <div v-if="isActive">
+          <i
+            class="el-icon-close"
+            style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
+            @click.stop="deleteTemporary"
+            :style="{
+              color:config.list_focus_font_color,
+              borderColor:config.list_focus_font_color}"></i>
         </div>
-
+        <div v-if=" ! isActive">
+          <span
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                ? config.list_focus_state_color
+                : config.list_state_color,
+            }">{{ timeShow(item.lastVisitTime) }}</span>
+        </div>
+        <div v-if=" ! isActive">
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+          <span
+            v-else-if="_device.platform != ''
+              && (index-$refs.list.scrollLines+1) <= 9"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color,
+            }">{{
+                (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+              + ( 1 > index-$refs.list.scrollLines+1
+                ? 1
+                : (index-$refs.list.scrollLines+1 > config.item_show_count
+                  ? config.item_show_count
+                  : index-$refs.list.scrollLines+1)
+                )
+              }}</span>
+        </div>
       </div>
     </template>
   </list>
@@ -284,7 +268,20 @@ export default {
     List,
   },
   computed: {
- // 行数尽可能多，字体尽可能大
+    iconMap() {
+      console.log('getIcon:iconMap');
+      let a = new Date().getTime();
+
+      let ss = this.list.map((item, index) => {
+        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.config.list_font_size);
+      })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
+    },
+
+    // 行数尽可能多，字体尽可能大
     tagConfig() {
       let item_height = this.config.item_height;
       let border = 1; // 上下左右
@@ -793,6 +790,25 @@ alert('空间不够')
 //     }
   },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(isSelected) {
+        return {
+          'background-color': this.config.list_focus_background_color,
+          'color': this.config.list_focus_font_color,
+          '--list-highlight-color': this.config.list_focus_highlight_color,
+          '--list-highlight-weight': this.config.list_focus_highlight_weight,
+        }
+      } else {
+        return {
+          'background-color': this.config.list_background_color,
+          'color': this.config.list_font_color,
+          '--list-highlight-color': this.config.list_highlight_color,
+          '--list-highlight-weight': this.config.list_highlight_weight,
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -893,17 +909,15 @@ alert('空间不够')
     },
     openWindow(index) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
 
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
 
-      this.currentIndex = currentIndex;
-      this._openWindow();
+      this._openWindow(event);
     },
     _openWindow() {
       let temporary = this.list[ this.currentIndex ];
@@ -1022,7 +1036,7 @@ alert('空间不够')
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -1037,12 +1051,12 @@ alert('空间不够')
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 5px;
   text-align: center;
   cursor: default;
 }
-.item .image {
+.list >>> .list-item .image {
   /* background-color: #c0c4cb; */
   border-radius: 5px;
   border: 2px solid #c0c4cb;
@@ -1067,7 +1081,7 @@ alert('空间不够')
   font-size: 12px;
   /* transform : scale(0.5,0.5); */
 }
-.item .main {
+.list >>> .list-item .main {
   flex: 1;
   text-align: left;
   overflow: auto;
@@ -1087,33 +1101,33 @@ alert('空间不够')
   justify-content: flex-start; */
 }
 
-.item .main.scroll{
+.list >>> .list-item .main.scroll{
   overflow-x: overlay;
 }
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
-.item .main.scroll::-webkit-scrollbar {
+.list >>> .list-item .main.scroll::-webkit-scrollbar {
   height: 10px;
   background: transparent;
 }
 /*定义滑块圆角*/
-.item .main.scroll::-webkit-scrollbar-thumb {
+.list >>> .list-item .main.scroll::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: rgb(115 115 115 / 50%);
 }
 
-.item .title {
+.list >>> .list-item .title {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
+.list >>> .list-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

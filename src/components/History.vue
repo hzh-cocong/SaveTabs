@@ -29,194 +29,171 @@
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="config.list_scrollbar_color"
     :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">>
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color,
-          color: isSelected
-                ? config.list_focus_font_color
-                : config.list_font_color,
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px',
+          marginLeft: item.count == undefined
+                    ? 10+'px'
+                    : 0 }">
+        <el-image
+          v-if="isLoad"
+          :src="iconMap[index]"
+          style="width:100%; height: 100%;"
+          fit="cover"
+          lazy>
+          <div slot="error" class="image-slot">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div slot="placeholder" class="image-slot">
+            <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+          </div>
+        </el-image>
+      </span>
 
-          '--list-highlight-color': ( isSelected
-                                      ? config.list_focus_highlight_color
-                                      : config.list_highlight_color),
-          '--list-highlight-weight': ( isSelected
-                                      ? config.list_focus_highlight_weight
-                                      : config.list_highlight_weight),
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
-
-        <span
-          class="left"
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">
+          <i
+            v-if="item.count != undefined && item.count > 1"
+            style="margin-right: 10px;"
+            :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
+                        'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
+          <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
+        </div>
+        <!-- <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">
+          <template v-if="item.count == undefined || item.count == 1">
+            {{ item.count == undefined
+            ? (item.title || item.url)
+            : (item.subFiles[0].title || item.subFiles[0].url) }}
+          </template>
+          <template v-else>
+            <i
+              style="margin-right: 10px;"
+              :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
+                          'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
+            <span>{{ item.subFiles.length > 0
+                    ? (item.subFiles[0].title || item.subFiles[0].url)
+                    : (list[index+1].title || list[index+1].url) }}</span>
+          </template>
+        </div> -->
+        <div
+          class="sub-title"
           :style="{
-            width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px',
-            marginLeft: item.count == undefined
-                      ? 10+'px'
-                      : 0 }">
-          <el-image
-            v-if="isLoad"
-            :src="getIcon('', item.count == undefined
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }"
+            v-html="item.count == undefined || item.count == 1
+                  ? highlightMap[index].url
+                  : highlightMap[index].domain+' | '+item.count">
+        </div>
+        <!-- <div
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }">
+            <template v-if="item.count == undefined || item.count == 1">
+              {{ item.count == undefined
+                ? item.url
+                : item.subFiles[0].url }}
+            </template>
+            <template v-else>
+              {{ ( item.subFiles.length > 0
+                  ? getDomain(item.subFiles[0].url)
+                  : getDomain(list[index+1].url))
+                + ' | '+item.count }}
+            </template>
+        </div> -->
+      </div>
+
+      <div class="right">
+        <div v-if="isActive">
+          <i
+            v-if="storageKeyword != getDomain(item.count == undefined
+                                            ? item.url
+                                            : (
+                                                item.subFiles.length > 0
+                                              ? item.subFiles[0].url
+                                              : list[index+1].url
+                                            ))"
+            class="el-icon-more"
+            style="font-size: 20px;cursor:pointer;margin-right: 11px;padding: 5px;"
+            @click.stop="input(
+                          getDomain(
+                            item.count == undefined
                             ? item.url
                             : (
                                 item.subFiles.length > 0
                               ? item.subFiles[0].url
                               : list[index+1].url
-                            ), config.item_height-20)"
-            style="width:100%; height: 100%;"
-            fit="cover"
-            :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-            <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-          </el-image>
-        </span>
-
-        <div class="main">
-          <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">
-            <i
-              v-if="item.count != undefined && item.count > 1"
-              style="margin-right: 10px;"
-              :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
-                          'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
-            <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
-          </div>
-          <!-- <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">
-            <template v-if="item.count == undefined || item.count == 1">
-              {{ item.count == undefined
-              ? (item.title || item.url)
-              : (item.subFiles[0].title || item.subFiles[0].url) }}
-            </template>
-            <template v-else>
-              <i
-                style="margin-right: 10px;"
-                :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
-                            'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
-              <span>{{ item.subFiles.length > 0
-                      ? (item.subFiles[0].title || item.subFiles[0].url)
-                      : (list[index+1].title || list[index+1].url) }}</span>
-            </template>
-          </div> -->
-          <div
-            class="sub-title"
+                            )
+                          ))"
             :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }"
-              v-html="item.count == undefined || item.count == 1
-                    ? highlightMap[index].url
-                    : highlightMap[index].domain+' | '+item.count">
-          </div>
-          <!-- <div
-            class="sub-title"
+              color:config.list_focus_font_color}"></i>
+          <i
+            class="el-icon-close"
+            style="font-size: 20px;cursor:pointer;margin-right: 2px;"
+            @click.stop="deleteHistory"
             :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">
-              <template v-if="item.count == undefined || item.count == 1">
-                {{ item.count == undefined
-                  ? item.url
-                  : item.subFiles[0].url }}
-              </template>
-              <template v-else>
-                {{ ( item.subFiles.length > 0
-                    ? getDomain(item.subFiles[0].url)
-                    : getDomain(list[index+1].url))
-                  + ' | '+item.count }}
-              </template>
-          </div> -->
+              color:config.list_focus_font_color}"></i>
         </div>
-
-        <div class="right">
-          <div v-if="isActive">
-            <i
-              v-if="storageKeyword != getDomain(item.count == undefined
-                                              ? item.url
-                                              : (
-                                                  item.subFiles.length > 0
-                                                ? item.subFiles[0].url
-                                                : list[index+1].url
-                                              ))"
-              class="el-icon-more"
-              style="font-size: 20px;cursor:pointer;margin-right: 11px;padding: 5px;"
-              @click.stop="input(
-                            getDomain(
-                              item.count == undefined
-                              ? item.url
-                              : (
-                                  item.subFiles.length > 0
-                                ? item.subFiles[0].url
-                                : list[index+1].url
-                              )
-                            ))"
-              :style="{
-                color:config.list_focus_font_color}"></i>
-            <i
-              class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;margin-right: 2px;"
-              @click.stop="deleteHistory"
-              :style="{
-                color:config.list_focus_font_color}"></i>
-          </div>
-          <div v-if=" ! isActive">
-            <span
-              :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                  ? config.list_focus_state_color
-                  : config.list_state_color,
-              }">{{
-                timeShow(
-                  item.count == undefined
-                ? item.lastVisitTime
-                : (
-                    item.subFiles.length > 0
-                  ? item.subFiles[0].lastVisitTime
-                  : list[index+1].lastVisitTime
-                ))
+        <div v-if=" ! isActive">
+          <span
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                ? config.list_focus_state_color
+                : config.list_state_color,
+            }">{{
+              timeShow(
+                item.count == undefined
+              ? item.lastVisitTime
+              : (
+                  item.subFiles.length > 0
+                ? item.subFiles[0].lastVisitTime
+                : list[index+1].lastVisitTime
+              ))
+            }}</span>
+        </div>
+        <div v-if=" ! isActive">
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+          <span
+            v-else-if="_device.platform != ''
+              && (index-$refs.list.scrollLines+1) <= 9"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color,
+            }">{{
+                (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+              + ( 1 > index-$refs.list.scrollLines+1
+                ? 1
+                : (index-$refs.list.scrollLines+1 > config.item_show_count
+                  ? config.item_show_count
+                  : index-$refs.list.scrollLines+1)
+                )
               }}</span>
-          </div>
-          <div v-if=" ! isActive">
-            <span
-              v-if="isSelected"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_focus_keymap_color,
-              }">↩</span>
-            <span
-              v-else-if="_device.platform != ''
-                && (index-$refs.list.scrollLines+1) <= config.item_show_count
-                && (index-$refs.list.scrollLines+1) >= 1
-                && (index-$refs.list.scrollLines+1) <= 9"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_keymap_color,
-              }">{{
-                  _device.platform == 'Win'
-                ?  'Alt+'+(index-$refs.list.scrollLines+1)
-                : '⌘'+(index-$refs.list.scrollLines+1)
-                }}</span>
-          </div>
         </div>
-
       </div>
     </template>
   </list>
@@ -326,6 +303,24 @@ export default {
     },
   },
   computed: {
+    iconMap() {
+      console.log('getIcon:iconMap');
+      let a = new Date().getTime();
+
+      let ss = this.list.map((item, index) => {
+        return this.getIcon('', item.count == undefined
+                              ? item.url
+                              : (
+                                  item.subFiles.length > 0
+                                ? item.subFiles[0].url
+                                : this.list[index+1].url
+                              ), this.config.item_height-20);
+      })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
+    },
     highlightMap() {
       console.log('===========================hh')
 
@@ -333,7 +328,7 @@ export default {
 
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-      let highlightMap = {};
+      let highlightMap = new Array(this.list.length);
       this.list.forEach((item, index) => {
         let url = item.count == undefined
                 ? item.url
@@ -404,6 +399,25 @@ export default {
     }
   },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(isSelected) {
+        return {
+          'background-color': this.config.list_focus_background_color,
+          'color': this.config.list_focus_font_color,
+          '--list-highlight-color': this.config.list_focus_highlight_color,
+          '--list-highlight-weight': this.config.list_focus_highlight_weight,
+        }
+      } else {
+        return {
+          'background-color': this.config.list_background_color,
+          'color': this.config.list_font_color,
+          '--list-highlight-color': this.config.list_highlight_color,
+          '--list-highlight-weight': this.config.list_highlight_weight,
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -605,7 +619,6 @@ console.log('load3', this.list.length)
                 : this.currentHistory.subFiles[0].url
 console.log('_openWindow', url)
         this.$open(url, event);
-        this.focus();
         return;
       }
 
@@ -634,8 +647,6 @@ console.log('_openWindow', url)
         this.cacheList.splice(this.currentIndex+1, this.currentHistory.count);
         this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
       }
-
-      this.focus();
     },
     deleteHistory() {
       // 删除单独一条历史记录
@@ -808,7 +819,7 @@ console.warn('mounted')
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -823,11 +834,11 @@ console.warn('mounted')
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 10px;
   text-align: center;
 }
-.item .main {
+.list >>> .list-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -839,18 +850,18 @@ console.warn('mounted')
   /* justify-content: space-evenly; */
   justify-content: center;
 }
-.item .title {
+.list >>> .list-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
+.list >>> .list-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

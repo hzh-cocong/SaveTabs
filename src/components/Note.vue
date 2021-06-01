@@ -29,201 +29,168 @@
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="config.list_scrollbar_color"
     :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: item.url == currentTab.url
-                          ? ( isSelected
-                              ? config.list_current_focus_background_color
-                              : config.list_current_background_color)
-                          : ( isSelected
-                              ? config.list_focus_background_color
-                              : config.list_background_color),
-          color: item.url == currentTab.url
-              ? ( isSelected
-                  ? config.list_current_focus_font_color
-                  : config.list_current_font_color)
-              : ( isSelected
-                  ? config.list_focus_font_color
-                  : config.list_font_color),
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+        <el-image
+          v-if="isLoad"
+          :src="iconMap[index]"
+          style="width:100%; height: 100%;"
+          fit="cover"
+          lazy>
+          <div slot="error" class="image-slot">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div slot="placeholder" class="image-slot">
+            <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+          </div>
+        </el-image>
+      </span>
 
-          '--list-highlight-color': item.url == currentTab.url
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_color
-                                      : config.list_current_highlight_color)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_color
-                                      : config.list_highlight_color),
-          '--list-highlight-weight': item.url == currentTab.url
-                                  ? ( isSelected
-                                      ? config.list_current_focus_highlight_weight
-                                      : config.list_current_highlight_weight)
-                                  : ( isSelected
-                                      ? config.list_focus_highlight_weight
-                                      : config.list_highlight_weight),
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow($event)">
-
-        <span
-          class="left"
+      <div class="main">
+        <!-- <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">{{
+              item.title
+          }}</div> -->
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlightMap[index].title"></div>
+        <!-- <div
+          v-if="storageKeyword != ''"
+          class="sub-title"
           :style="{
-            width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px' }">
-          <el-image
-            v-if="isLoad"
-            :src="getIcon(item.icon, item.url, config.item_height-20)"
-            style="width:100%; height: 100%;"
-            fit="cover"
-            :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-            <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-          </el-image>
-        </span>
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
+        <div
+          v-if="storageKeyword != ''"
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }"
+          v-html="highlightMap[index].url"></div>
+        <div
+          v-else
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }"
+          v-text="isSelected ? item.url : getDomain(item.url)"></div>
+      </div>
 
-        <div class="main">
-          <!-- <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title
-            }}</div> -->
-          <div
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }"
-            v-html="highlightMap[item.id].title"></div>
-          <!-- <div
-            v-if="storageKeyword != ''"
-            class="sub-title"
-            :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
-          <div
-            v-if="storageKeyword != ''"
-            class="sub-title"
-            :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              direction: isSelected ? 'rtl' : 'ltr' }"
-            v-html="highlightMap[item.id].url"></div>
-          <div
-            v-else
-            class="sub-title"
-            :style="{
-              fontSize: config.list_explain_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }"
-            v-text="isSelected ? item.url : getDomain(item.url)"></div>
-        </div>
-
-        <div class="right">
-          <div v-if="isActive
-                  || activeTabs[item.url]
-                  || (storageKeyword != '' && item.lastVisitTime != undefined)">
-            <div v-if="isActive">
-              <div
-                v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
-                class="number-button"
-                @click.stop="deleteNote"
-                :style="{
-                  color:config.list_focus_font_color,
-                  borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
-              <i
-                v-if="activeTabs[item.url]
-                  && (activeTabs[item.url].count > 1
-                    || isRepeat(index))"
-                class="el-icon-close close-without-tab"
-                @click.stop="deleteNote"
-                :style="{
-                  color:config.list_focus_font_color,
-                  borderColor:config.list_focus_font_color }"></i>
-              <i
-                v-else
-                class="el-icon-close"
-                style="font-size: 20px;cursor:pointer;margin-right: 2px;"
-                @click.stop="deleteNote"
-                :style="{
-                  color:config.list_focus_font_color,
-                  borderColor:config.list_focus_font_color}"></i>
-            </div>
+      <div class="right">
+        <div v-if="isActive
+                || activeTabs[item.url]
+                || (storageKeyword != '' && item.lastVisitTime != undefined)">
+          <div v-if="isActive">
             <div
-              v-else-if="item.url == currentTab.url"
+              v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
+              class="number-button"
+              @click.stop="deleteNote"
               :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                      ? config.list_current_focus_state_color
-                      : config.list_current_state_color,
-                borderColor: isSelected
-                      ? config.list_current_focus_state_color
-                      : config.list_current_state_color }">
-                {{ lang('currentNote') +( activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
-                <!-- <span>{{ lang('currentNote') }}</span> -->
-            </div>
-            <div
-              v-else-if="activeTabs[item.url]"
+                color:config.list_focus_font_color,
+                borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
+            <i
+              v-if="activeTabs[item.url]
+                && (activeTabs[item.url].count > 1
+                  || isRepeat(index))"
+              class="el-icon-close close-without-tab"
+              @click.stop="deleteNote"
               :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_state_color }">
-              <!-- {{ lang('opened') }} -->
-              <!-- {{ lang('opened') + (activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }} -->
-              {{ lang('opened') + (isSelected && activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
-            </div>
-            <div
-              v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+                color:config.list_focus_font_color,
+                borderColor:config.list_focus_font_color }"></i>
+            <i
+              v-else
+              class="el-icon-close"
+              style="font-size: 20px;cursor:pointer;margin-right: 2px;"
+              @click.stop="deleteNote"
               :style="{
-                fontSize: config.list_state_size+'px',
-                color: isSelected
-                    ? config.list_focus_state_color
-                    : config.list_keymap_color }">
-              {{ timeShow(item.lastVisitTime) }}
-            </div>
+                color:config.list_focus_font_color,
+                borderColor:config.list_focus_font_color}"></i>
           </div>
           <div
-            v-show=" ! isActive && item.url != currentTab.url">
-            <span
-              v-if="isSelected"
-              :style="{
-                fontSize: isSelected
-                    ? config.list_state_size
-                    : config.list_keymap_size+'px',
-                color: isSelected
-                    ? config.list_focus_keymap_color
-                    : config.list_focus_keymap_color }">↩</span>
-            <span
-              v-else-if="_device.platform != ''
-                      && (index-$refs.list.scrollLines+1) <= config.item_show_count
-                      && (index-$refs.list.scrollLines+1) >= 1
-                      && (index-$refs.list.scrollLines+1) <= 9"
-              :style="{
-                fontSize: activeTabs[item.url]
-                        || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                    ? config.list_state_size+'px'
-                    : config.list_keymap_size+'px',
-                color: activeTabs[item.url]
-                    ? config.list_state_color
-                    : config.list_keymap_color }">{{
-                      _device.platform == 'Win'
-                      ?  'Alt+'+(index-$refs.list.scrollLines+1)
-                      : '⌘'+(index-$refs.list.scrollLines+1)
-                      }}</span>
+            v-else-if="item.url == currentTab.url"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color,
+              borderColor: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color }">
+              {{ lang('currentNote') +( activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
+              <!-- <span>{{ lang('currentNote') }}</span> -->
+          </div>
+          <div
+            v-else-if="activeTabs[item.url]"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                  ? config.list_focus_state_color
+                  : config.list_state_color }">
+            <!-- {{ lang('opened') }} -->
+            <!-- {{ lang('opened') + (activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }} -->
+            {{ lang('opened') + (isSelected && activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
+          </div>
+          <div
+            v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+            :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                  ? config.list_focus_state_color
+                  : config.list_keymap_color }">
+            {{ timeShow(item.lastVisitTime) }}
           </div>
         </div>
-
+        <div
+          v-show=" ! isActive && item.url != currentTab.url">
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: isSelected
+                  ? config.list_state_size
+                  : config.list_keymap_size+'px',
+              color: isSelected
+                  ? config.list_focus_keymap_color
+                  : config.list_focus_keymap_color }">↩</span>
+          <span
+            v-else-if="_device.platform != ''
+                    && (index-$refs.list.scrollLines+1) <= 9"
+            :style="{
+              fontSize: activeTabs[item.url]
+                      || (storageKeyword != ''  && item.lastVisitTime != undefined)
+                  ? config.list_state_size+'px'
+                  : config.list_keymap_size+'px',
+              color: activeTabs[item.url]
+                  ? config.list_state_color
+                  : config.list_keymap_color }">{{
+                      (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+                    + ( 1 > index-$refs.list.scrollLines+1
+                      ? 1
+                      : (index-$refs.list.scrollLines+1 > config.item_show_count
+                        ? config.item_show_count
+                        : index-$refs.list.scrollLines+1)
+                      )
+                    }}</span>
+        </div>
       </div>
     </template>
   </list>
@@ -271,6 +238,18 @@ export default {
     List,
   },
   computed: {
+    iconMap() {
+      console.log('getIcon:iconMap');
+      let a = new Date().getTime();
+
+      let ss = this.list.map((item, index) => {
+        return this.getIcon(item.icon, item.url, this.config.item_height-20);
+      })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
+    },
     highlightMap() {
       console.log('===========================hh')
 
@@ -278,9 +257,9 @@ export default {
 
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-      let highlightMap = {};
-      this.list.forEach(item => {
-        highlightMap[ item.id ] = {
+      let highlightMap = new Array(this.list.length);
+      this.list.forEach((item, index) => {
+        highlightMap[ index ] = {
           title: this.highlight(item.title, this.storageKeyword, '<strong>', '</strong>'),
           url: this.highlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
         }
@@ -324,6 +303,43 @@ export default {
     }
   },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(item.url == this.currentTab.url) {
+        if(isSelected) {
+          return {
+            'background-color': this.config.list_current_focus_background_color,
+            'color': this.config.list_current_focus_font_color,
+            '--list-highlight-color': this.config.list_current_focus_highlight_color,
+            '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
+          }
+        } else {
+          return {
+            'background-color': this.config.list_current_background_color,
+            'color': this.config.list_current_font_color,
+            '--list-highlight-color': this.config.list_current_highlight_color,
+            '--list-highlight-weight': this.config.list_current_highlight_weight,
+          }
+        }
+      } else {
+        if(isSelected) {
+          return {
+            'background-color': this.config.list_focus_background_color,
+            'color': this.config.list_focus_font_color,
+            '--list-highlight-color': this.config.list_focus_highlight_color,
+            '--list-highlight-weight': this.config.list_focus_highlight_weight,
+          }
+        } else {
+          return {
+            'background-color': this.config.list_background_color,
+            'color': this.config.list_font_color,
+            '--list-highlight-color': this.config.list_highlight_color,
+            '--list-highlight-weight': this.config.list_highlight_weight,
+          }
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -520,12 +536,10 @@ console.log('add =====h')
         return;
       }
 
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
 
-      this.currentIndex = currentIndex;
       this._openWindow(event);
     },
     _openWindow(event) {
@@ -575,8 +589,6 @@ console.log('add =====h')
             let origin = this.storageKeyword;
             this.storageKeyword = ' ';
             this.search(origin);
-
-            this.focus();
           }
         });
       });
@@ -774,7 +786,7 @@ console.warn('finish', b, (b-a)/1000)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -789,11 +801,11 @@ console.warn('finish', b, (b-a)/1000)
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 10px;
   text-align: center;
 }
-.item .main {
+.list >>> .list-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -805,18 +817,18 @@ console.warn('finish', b, (b-a)/1000)
   /* justify-content: space-evenly; */
   justify-content: center;
 }
-.item .title {
+.list >>> .list-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
+.list >>> .list-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

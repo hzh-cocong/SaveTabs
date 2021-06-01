@@ -146,7 +146,7 @@
               color: config.list_focus_keymap_color }">↩</span>
           <span
             v-else-if="_device.platform != ''
-                    &&  (index-$refs.list.scrollLines+1) <= 9"
+                    && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
               fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
                   ? config.list_state_size+'px'

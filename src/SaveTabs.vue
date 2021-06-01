@@ -216,28 +216,21 @@
             ></i>
         </template> -->
         <template slot="prefix">
-          <template v-if="currentWorkspace == undefined
-                        ||currentWorkspace.type == 'window'">
-            <i
-              class="el-icon-search"
-              style="padding-left: 4px;"
-              :style="{ 'line-height': config.toolbar_height+'px',
-                        color: config.toolbar_icon_color }"></i>
-          </template>
-          <template v-else>
+          <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">
             <el-popover
               v-model="history.visible"
               placement="top-start"
               trigger="manual"
               transition=""
-              @after-enter="history.date == null ? $refs.date.focus() : ''">
+              @after-enter="history.date == null ? $refs.date.focus() : focus()"
+              @after-leave="focus">
               <el-date-picker
                 type="date"
                 v-model="history.date"
                 placeholder="选择日期"
                 :picker-options="history.pickerOptions"
-                @blur="focus();"
-                @change="history.date == null ? history.visible = false : '';focus();"
+                @blur="focus"
+                @change="focus"
                 ref="date">
               </el-date-picker>
               <i
@@ -247,12 +240,38 @@
                           cursor: keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
                 @click="keyword.trim() != '' ? '' : history.isDel = true"></i>
               <i
+                class="el-icon-close"
+                style="margin-left: 10px; cursor: pointer;"
+                @click="history.visible = false;"></i>
+              <i
                 class="el-icon-date"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
                           color: history.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
-                @click="history.visible = ! history.visible;history.visible ? '' : focus()"></i>
+                @click="history.visible = ! history.visible"></i>
+            </el-popover>
+          </template>
+          <template v-else>
+            <el-popover
+              v-model="other.visible"
+              placement="top-start"
+              trigger="manual"
+              transition=""
+              @after-leave="focus"
+              @after-enter="focus">
+              <span>暂无其它功能</span>
+              <i
+                class="el-icon-close"
+                style="float: right;margin-top: 3px;cursor: pointer;"
+                @click="other.visible = false;"></i>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': config.toolbar_height+'px',
+                          color: other.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @click="other.visible = ! other.visible"></i>
             </el-popover>
           </template>
         </template>
@@ -357,6 +376,9 @@ export default {
             return time.getTime() > Date.now();
           },
         }
+      },
+      other: {
+        visible: false,
       }
     }
   },
@@ -597,15 +619,19 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       if(this.currentWorkspace.type == 'history') {
         if(this.history.lastVisible) {
-          this.history.visible = this.history.lastVisible;
-          this.history.lastVisible = false;
-          this.history.isActive = true;
+          this.$nextTick(() => {
+            this.history.visible = this.history.lastVisible;
+            this.history.lastVisible = false;
+            this.history.isActive = true;
+          })
         }
       } else if(this.history.visible) {
         this.history.lastVisible = this.history.date != null && this.history.visible;
         this.history.visible = false;
         this.history.isActive = false;
       }
+
+      this.other.visible = false;
 
       this.search();
 
@@ -839,8 +865,10 @@ img {
   line-height: var(--toolbar_height);
   color: var(--toolbar-icon-color);
 }
-.toolbar .el-input__suffix .el-icon-circle-close:hover {
-  color: var(--toolbar-icon-focus-color);
+.toolbar .el-input__suffix .el-icon-circle-close:hover,
+.toolbar .el-input__prefix .el-icon-search:hover,
+.toolbar .el-input__prefix .el-icon-date:hover {
+  color: var(--toolbar-icon-focus-color) !important;
 }
 .toolbar .el-button-group .el-button {
   height: 100%;

@@ -820,8 +820,8 @@ console.warn('finish', b, (b-a)/1000)
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-evenly; */
-  justify-content: center;
+  justify-content: space-evenly;
+  /* justify-content: center; */
 }
 .list >>> .list-item .title {
   overflow: hidden;

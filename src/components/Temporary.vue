@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="temporary">
 
   <el-alert
     type="info"
@@ -61,48 +61,17 @@
         :style="{
           height: config.item_height+'px',
 
-          'flex-direction': ! isSelected ? 'column' : 'row',
+          'flex-direction': ! isSelected ? 'column' : 'column',
           'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
           'align-content': ! isSelected ? 'normal' : 'flex-start',
-          'justify-content': ! isSelected ? 'center' : 'flex-start',
+          'justify-content': ! isSelected ? 'space-evenly' : 'flex-start',
+
           }">
         <template v-if="isSelected">
-          <!-- <div
-            v-for="(tab, i) in item.tabs"
-            :key="i"
-            style="display: flex; align-items: center; border: 1px solid red; overflow: hidden; white-space: nowrap; cursor: default;"
-            :style="{ height: tagConfig.tag_font_size+'px',
-                      width: 'calc(100% / '+tagConfig.tag_line_count+' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
-                      margin: tagConfig.tag_margin_top+'px '
-                            + tagConfig.tag_margin_right+'px 0px 0px',
-                      padding: tagConfig.tag_padding_top+'px '
-                              +tagConfig.tag_padding_left+'px' }">
-            <el-image
-              v-if="isLoad"
-              :src="getIcon(tab.icon, tab.url, 12)"
-              style="flex: none;"
-              :style="{ width: tagConfig.tag_font_size+'px',
-                        height: tagConfig.tag_font_size+'px',
-                        marginRight: tagConfig.tag_padding_left+'px' }"
-              fit="cover"
-              :lazy="index >= config.item_show_count">
-              <div slot="error" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-              <div slot="placeholder" class="image-slot">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-              </div>
-            </el-image>
-            <span
-              :style="{ fontSize: tagConfig.tag_font_size+'px' }">{{ tab.title || tab.url }}</span>
-          </div> -->
-
-
-
           <el-tag
             v-for="(tab, i) in item.tabs"
             :key="i"
-            style="box-sizing: content-box;cursor: default;"
+            :title="tab.title+'\r\n'+tab.url"
             :style="{ height: tagConfig.tag_font_size+'px',
                       width: 'calc(100% / '+(storageKeyword == '' || item.tabs.length > tagConfig.tag_line_count ? tagConfig.tag_line_count : item.tabs.length)
                                             +' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',
@@ -110,11 +79,15 @@
                             + tagConfig.tag_margin_right+'px 0px 0px',
                       padding: tagConfig.tag_padding_top+'px '
                               +tagConfig.tag_padding_left+'px' }"
-            type="info"
+            :type="tabFocus[index+'|'+i] ? 'primary' : 'info'"
             :effect="'light'"
-            :closable="false"
+            :closable="isActive"
             :disable-transitions="true"
-            :hit="false">
+            :hit="false"
+            @mouseover.native="$set(tabFocus, index+'|'+i, true)"
+            @mouseout.native="$set(tabFocus, index+'|'+i, false)"
+            @click.stop="openTab(i, $event)"
+            @close.stop="deleteTab(i)">
             <el-image
               v-if="isLoad"
               :src="getIcon(tab.icon, tab.url, tagConfig.tag_font_size)"
@@ -133,7 +106,10 @@
             <span
               class="tab-title"
               :style="{ fontSize: tagConfig.tag_font_size+'px',
-                        width: 'calc(100% - '+(tagConfig.tag_font_size+tagConfig.tag_padding_left*1)+'px' }">{{ tab.title || tab.url }}</span>
+                        width: 'calc(100% - '
+                              +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
+                                + (isActive ? 20 : 0) )
+                              +'px' }">{{ tab.title || tab.url }}</span>
           </el-tag>
         </template>
         <template v-else>
@@ -170,21 +146,19 @@
         </template>
       </div>
 
-      <div class="right">
-
-          <el-popover
-            v-show="isActive"
-            placement="left"
-            title="标题"
-            width="200"
-            trigger="hover"
-            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-            <el-button slot="reference" circle size="small" >3</el-button>
-          </el-popover>
+      <div
+        class="right"
+        :style="{ marginLeft: isActive ? '5px' : '10px' }">
         <div v-if="isActive">
           <i
+            class="el-icon-copy-document"
+            style="font-size: 20px;cursor:pointer;margin-right: 5px;padding: 5px;"
+            :style="{
+              color:config.list_focus_font_color,
+              borderColor:config.list_focus_font_color}"></i>
+          <i
             class="el-icon-close"
-            style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
+            style="font-size: 20px;cursor:pointer;margin-right: 2px;"
             @click.stop="deleteTemporary"
             :style="{
               color:config.list_focus_font_color,
@@ -264,6 +238,8 @@ export default {
       currentIndex: -1,
 
       isSearched: false,
+
+      tabFocus: {},
     }
   },
   components: {
@@ -861,6 +837,34 @@ alert('空间不够')
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
+      const h = this.$createElement;
+      this.$msgbox({
+        title: '注意：标签页保存后将被自动关闭',
+        message: h('p', {style: {'text-align': 'center'}}, [
+          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
+          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('only', callback)}}, '仅保存此标签页'),
+          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
+          h('div', {style: {margin: '10px 0'}}, null),
+          h('el-button', {attrs: {size: 'mini', type: 'primary', plain: true}, on: {click: () => this._add('except', callback)}}, '保存除此标签页以外的标签页'),
+          h('div', {style: {margin: '10px 0'}}, null),
+          h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+        ]),
+        dangerouslyUseHTMLString: true,
+        showConfirmButton: false,
+        showCancelButton: false,
+        closeOnClickModal: true,
+        customClass: 'window-message-box',
+        center: false,
+        callback: (action, instance, done) => {
+          console.log('callback', action, instance, done);
+          // 其实只有取消会调到这里，
+          if(action == 'cancel') {
+            callback(false);
+          }
+        }
+      });
+    },
+    _add(type, callback) {
       let currentWindowId = -1;
 
       new Promise((resolve) => {
@@ -868,41 +872,64 @@ alert('空间不够')
         chrome.tabs.query({
           currentWindow: true
         }, tabs => {
+          currentWindowId = tabs[0].windowId;
           resolve(tabs)
         })
       }).then((tabs) => {
-        let ts = [];
-        tabs.forEach(tab => {
-          ts.push({
-            icon: tab.favIconUrl,
-            url: tab.url,
-            title: tab.title,
-          });
-        })
-        let id = nanoid();
-        currentWindowId = tabs[0].windowId;
-        this.storageList.unshift({
-          id: id,
-          windowId: currentWindowId,
-          lastVisitTime: new Date().getTime(),
-          tabs: ts,
-        });
-      }).then(() => {
-        // 保存数据
-        new Promise((resolve) => {
-          chrome.storage.local.set({temporary: this.storageList}, () => {
-            resolve();
-          });
-        })
-      }).then(() => {
-        // 关闭当前窗口
-        chrome.windows.remove(currentWindowId);
+        // 提取需要保存的标签
+        if(type == 'all') return tabs;
+        if(type == 'only') return [ tabs.find((tab) => { return tab.active; }) ];
+        if(type == 'except') return tabs.filter((tab) => { return ! tab.active; });
+        if(type == 'left') return tabs.slice(0, tabs.findIndex((tab) => { return tab.active; }));
+        if(type == 'right') return tabs.slice(tabs.findIndex((tab) => { return tab.active; })+1);
 
-        // 虽然没什么用
-        callback(true)
+        return [];
+      }).then((tabs) => {
+        if(tabs.length <= 0) return tabs;
+
+        // 新增数据
+        this.storageList.unshift({
+          id: nanoid(),
+          lastVisitTime: new Date().getTime(),
+          tabs: tabs.map(tab => {
+            return {
+              icon: tab.favIconUrl,
+              url: tab.url,
+              title: tab.title,
+            }
+          }),
+        });
+
+        // 保存数据
+        return new Promise((resolve) => {
+          chrome.storage.local.set({temporary: this.storageList}, () => {
+            resolve(tabs);
+          });
+        })
+      }).then((tabs) => {
+        if(type == 'all') {
+          // 关闭当前窗口（这样恢复时才不会出现一个标签一个标签关闭的情况）
+          chrome.windows.remove(currentWindowId);
+        } else if(tabs.length > 0){
+          // 关闭保存的标签
+          chrome.tabs.remove(tabs.map(tab => {
+            return tab.id;
+          }))
+        }
+
+        // 不知道为啥
+        setTimeout(() => {
+          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          // 不能放外面，否则会闪烁
+          this.storageKeyword = ' ';
+
+          callback(true);
+        }, 100)
+
+        this.$msgbox.close();
       })
     },
-    openWindow(index) {
+    openWindow(index, event) {
       if(index == undefined) {
         this._openWindow(event);
         return;
@@ -914,7 +941,7 @@ alert('空间不够')
 
       this._openWindow(event);
     },
-    _openWindow() {
+    _openWindow(event) {
       let temporary = this.list[ this.currentIndex ];
       let urls = temporary.tabs.map(tab => tab.url);
       let index = this.getStorageIndex();
@@ -922,59 +949,90 @@ alert('空间不够')
 
       // 打开新窗口
       new Promise(resolve => {
-        // // 获取当前窗口信息
-        // chrome.windows.getCurrent({populate: true}, window => {
-        //   currentWindowId = window.id;
-        //   resolve()
-        // })
         // 获取当前标签信息
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          // 关闭空白标签
+          // 记录空白标签
           if(tabs[0].url == "chrome://newtab/") {
             blankTabId = tabs[0].id;
           }
           resolve();
         })
       }).then(() => {
-        // 新建新窗口（先不激活，否则无法存储数据）
-        return new Promise(resolve => {
-          chrome.windows.create({ url: urls, focused: false }, window => {
-            resolve(window)
-          })
-        })
-      }).then((window) => {
         // 更新数据（移除该临时窗口）
         this.storageList.splice(index , 1);
+        this.cacheList.splice(this.currentIndex, 1);
+        this.list.splice(this.currentIndex, 1);
         return new Promise(resolve => {
           chrome.storage.local.set({temporary: this.storageList}, () => {
-            resolve(window);
+            resolve();
           });
         })
+      }).then(() => {
+        // 当前窗口打开，且不关闭
+        // 不自动关闭空白标签页，有隔离作用
+        if((this._device.platform == 'Mac' && event.metaKey == true)
+        || (this._device.platform != '' && event.ctrlKey == true)) {
+          blankTabId = -1;
+          return Promise.all(urls.map((url) => {
+            return new Promise((resolve) => {
+              chrome.tabs.create({url: url, active: false}, (tab) => {
+                resolve(tab.index);
+              });
+            });
+          }))
+        } else if(this._device.platform != '' && event.altKey == true) {
+          // 当前窗口打开，且不关闭，也不进行存储更新
+          // 会高亮标签
+          blankTabId = -1;
+          return new Promise((resolve) => {
+            Promise.all(urls.map((url) => {
+              return new Promise((resolve2) => {
+                chrome.tabs.create({url: url, active: false}, (tab) => {
+                  resolve2(tab.index);
+                });
+              });
+            })).then((indexs) => {
+              chrome.tabs.highlight({tabs: indexs})
+              resolve(indexs);
+            })
+          })
+        } else {
+          // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
+          //let type = this._device.platform != '' && event.shiftKey ? 'panel' : 'normal';
+          let type = 'normal';
+          return new Promise(resolve => {
+            // 新建新窗口（先不激活，否则无法存储数据）
+            chrome.windows.create({ url: urls, focused: true, type: type }, window => {
+              resolve(window)
+            })
+          })
+        }
       }).then((window) => {
-        // 激活新窗口
-        chrome.windows.update(window.id, { focused: true});
-        // // 关闭当前窗口
-        // chrome.windows.remove(currentWindowId);
-
         // 关闭空白标签
         if(blankTabId != -1) {
           chrome.tabs.remove(blankTabId);
         }
       })
     },
-    openTab(i) {
+    openTab(i, event) {
       // 先删除标签
       let url = this.list[ this.currentIndex ].tabs[i].url;
       let index = this.getStorageIndex();
       if(this.storageList[index].tabs.length == 1) {
+        console.warn('aaaaaaaaaaaaaaaaaaaaaaaaaaa', index);
         this.storageList.splice(index, 1);
+        this.cacheList.splice(this.currentIndex, 1);
+        this.list.splice(this.currentIndex, 1);
       } else {
+        console.warn('aaaaaaaaaaaaaaaaaaaaaaaaaaa2');
         this.storageList[index].tabs.splice(i , 1);
       }
       chrome.storage.local.set({temporary: this.storageList}, () => {
         // 再打开
-        this.$open(url);
+        this.$open(url, event);
       });
+
+      this.focus();
     },
     deleteTab(i) {
       if(this.list[ this.currentIndex ].tabs.length == 1) {
@@ -1076,7 +1134,9 @@ alert('空间不够')
 .list >>> .list-item .main {
   flex: 1;
   text-align: left;
-  overflow: auto;
+  /* overflow: auto; */
+  overflow-x: overlay;
+  overflow-y: hidden;
   cursor: default;
 
   display: flex;
@@ -1088,6 +1148,12 @@ alert('空间不够')
   justify-content: center; */
 
   /* flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-start; */
+
+/*
+  flex-direction: column;
   flex-wrap: wrap;
   align-content: flex-start;
   justify-content: flex-start; */
@@ -1143,6 +1209,10 @@ alert('空间不够')
 .el-tag {
   line-height: 1;
   overflow: hidden;
+  box-sizing: content-box;
+  cursor: pointer;
+  display:flex;
+  align-items: center;
 }
 .el-tag .el-image{
   /* vertical-align: middle; */
@@ -1159,5 +1229,10 @@ alert('空间不够')
   overflow: hidden; */
   /* text-overflow: ellipsis;
   white-space: nowrap; */
+}
+</style>
+<style>
+.temporary .el-tag .el-icon-close {
+  top: 1px;
 }
 </style>

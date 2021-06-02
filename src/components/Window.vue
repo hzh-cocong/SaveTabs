@@ -601,6 +601,7 @@ console.warn('isSearched2');
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPlaceholder: '请输入窗口名',
+        customClass: 'window-message-box',
         inputValue: keyword.trim() == '' ? null : keyword.trim(),
         inputValidator: ( value ) => {
           value = value == null ? '' : value.trim();
@@ -725,7 +726,7 @@ console.warn('isSearched2');
         return;
       }
 
-      // 当前窗口打开，且不关闭，也不进行存储更新（高亮会自动也没办法，不过感觉还不错）
+      // 当前窗口打开，且不关闭，也不进行存储更新
       // 不自动关闭空白标签页，有隔离作用
       if((this._device.platform == 'Mac' && event.metaKey == true)
       || (this._device.platform != '' && event.ctrlKey == true)) {
@@ -741,6 +742,8 @@ console.warn('isSearched2');
         return;
       }
 
+      // 当前窗口打开，且不关闭，也不进行存储更新
+      // 会高亮标签
       if(this._device.platform != '' && event.altKey == true) {
         Promise.all(urls.map((url) => {
           return new Promise((resolve) => {
@@ -779,7 +782,7 @@ console.warn('isSearched2');
         // 激活窗口
         chrome.windows.update(window.id, { focused: true});
 
-        // 获取空白标签页
+        // 关闭空白标签页（是工作窗口则不关闭）
         if( ! this.isInCurrentWindow
         && this.currentTab.url == 'chrome://newtab/') {
           chrome.tabs.remove(this.currentTab.id);

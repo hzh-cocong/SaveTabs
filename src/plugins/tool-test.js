@@ -307,6 +307,9 @@ const tool = {
           remove: function(windowId, callback) {
             callback != undefined && callback();
           },
+          create: function(createData, callback) {
+            callback != undefined && callback(currentWindow);
+          },
         }
         chrome.tabs = {
           query: function(options, callback) {
@@ -323,6 +326,9 @@ const tool = {
             callback != undefined && callback(tabs[0]);
           },
           remove: function(keys, callback) {
+            callback != undefined && callback();
+          },
+          highlight: function(highlightInfo, callback) {
             callback != undefined && callback();
           },
         }

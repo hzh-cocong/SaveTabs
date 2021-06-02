@@ -851,8 +851,8 @@ console.warn('mounted')
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-evenly; */
-  justify-content: center;
+  justify-content: space-evenly;
+  /* justify-content: center; */
 }
 .list >>> .list-item .title {
   overflow: hidden;

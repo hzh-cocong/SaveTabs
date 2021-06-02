@@ -24,6 +24,7 @@
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
@@ -466,24 +467,26 @@ console.warn('isSearched2');
         this.cacheList = [];
         this.mergeHistory(this.cacheList, historys);
 
-        // 只有一条时自动展开
-        if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
-          let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
+        // 搜索结果只有一条时自动展开
+        // if(this.storageKeyword.length > 0 && this.cacheList.length == 1 && this.cacheList[0].count > 1) {
+        //   let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
 
-          this.cacheList.push(...historys);
-          // this.cacheList.splice(1, 0, ...historys);
+        //   this.cacheList.push(...historys);
+        //   // this.cacheList.splice(1, 0, ...historys);
 
-          this.currentIndex = 1;
+        //   this.currentIndex = 1;
 
-          // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
-        } else {
-          this.currentIndex = 0;
-        }
+        //   // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
+        //   this.$nextTick(() => {
+        //     this.$refs.list.currentTo(1);
+        //   });
+        // } else {
+        //   this.currentIndex = 0;
+        // }
 
         this.list = this.cacheList.slice(0, this.config.list_page_count);
+
+        this.currentIndex = 0;
 
         // query 并不精确，有可能这次只返回一条，下次却返回10条
         this.scrollDisabled = false;
@@ -494,20 +497,13 @@ console.warn('isSearched2');
       }, lastVisitTime, 27)
     },
     load() {
-console.log('load', this.cacheList.length, this.list.length+this.config.list_page_count)
-      let isPrepare = false;
       if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
         // 性能最高
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-
-        // 预加载，即下次翻页需要调用接口时，那么这次就先调用接口
-        console.log('load2', this.cacheList.length, this.list.length+this.config.list_page_count)
-        if(this.cacheList.length >= this.list.length+this.config.list_page_count) return;
-        isPrepare = true;
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
+        return;
       }
-console.log('load3', this.list.length)
 
-      if(this.queryDisabled && ! isPrepare) {
+      if(this.queryDisabled) {
         this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
         this.scrollDisabled = true;
         return;
@@ -515,27 +511,35 @@ console.log('load3', this.list.length)
 
       // 查找历史
       this.query((historys) => {
-        console.log('history.load', historys);
-
         if(historys.length == 0) {
-          if( ! isPrepare) {
-            console.log('0000000000000000000000', this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-            this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-            this.scrollDisabled = true;
+          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+
+          this.scrollDisabled = true;
+          this.queryDisabled = true;
+
+          // 结果只有一条时自动展开
+          if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
+            let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
+
+            this.cacheList.push(...historys);
+            this.list.push(...historys);
+
+            this.currentIndex = 1;
+
+            // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
+            this.$nextTick(() => {
+              this.$refs.list.currentTo(1);
+            });
           }
 
-          this.queryDisabled = true;
           return;
         }
 
         this.mergeHistory(this.cacheList, historys);
-        console.log('history.load2', this.cacheList);
-
-        if( ! isPrepare) {
-          console.warn('pppppppppppppppppppppppppppppppp================')
-          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-        }
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
       })
+
+      // 不使用预加载，因为预加载过快，dom 反而会因此等待
     },
     query(callback, lastVisitTime, max) {
       max = max == undefined ? 55 : max;

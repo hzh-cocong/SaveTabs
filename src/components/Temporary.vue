@@ -24,9 +24,12 @@
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="config.list_scrollbar_color"
+    :scrollbarFocusColor="config.list_scrollbar_focus_color"
     :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
@@ -255,7 +258,6 @@ export default {
       cacheList: [],
       storageList: [],
 
-      page: 0,
       scrollDisabled: true,
       storageKeyword: null,
 
@@ -847,7 +849,6 @@ alert('空间不够')
       // 列表赋值
       this.cacheList = filterList;
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.page = 1;
       this.currentIndex = 0;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
 
@@ -855,14 +856,8 @@ alert('空间不够')
       this.isSearched = true;
     },
     load() {
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
-
-      this.list.push(...data);
-      this.page++;
+      // 加载数据
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
@@ -998,11 +993,8 @@ alert('空间不够')
       let index = this.getStorageIndex();
       this.storageList.splice(index , 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
+        this.cacheList.splice(this.currentIndex, 1);
         this.list.splice(this.currentIndex, 1);
-        if(this.list.length < this.config.list_page_count
-        && this.scrollDisabled == false) {
-          this.load();
-        }
       });
 
       this.focus();

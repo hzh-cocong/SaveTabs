@@ -118,9 +118,10 @@
         ref="input">
         <template slot="prepend">
           <el-dropdown
-            :hide-on-click="false"
+            :show-timeout="0"
             trigger="hover"
             placement="bottom"
+            :hide-on-click="false"
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
                     && (activeWorkspaceIndex=arguments[0],

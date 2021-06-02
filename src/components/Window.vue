@@ -850,12 +850,8 @@ console.warn('isSearched2');
           // if(group.windowId == this.currentWindowId) {
           //   this.isInCurrentWindow = false;
           // }
-          this.list.splice(this.currentIndex, 1);
           this.cacheList.splice(this.currentIndex, 1);
-          // if(this.list.length < this.config.list_page_count
-          // && this.scrollDisabled == false) {
-          //   this.load();
-          // }
+          this.list.splice(this.currentIndex, 1);
         });
         this.focus();
       }).catch(() => {

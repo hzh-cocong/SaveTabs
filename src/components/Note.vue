@@ -24,6 +24,7 @@
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
@@ -613,10 +614,6 @@ console.log('bb')
         // 移除，不重新search，体验不好
         this.list.splice(this.currentIndex, 1);
         this.cacheList.splice(this.currentIndex, 1);
-        // if(this.list.length < this.config.list_page_count
-        //   && this.scrollDisabled == false) {
-        //   this.load();
-        // }
 
         // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         // let origin = this.storageKeyword;

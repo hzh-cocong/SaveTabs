@@ -16,9 +16,9 @@
         <div>{{ lang('historyNoResult') }}</div>
         <div>{{ lang('historyCountTip') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
@@ -132,7 +132,7 @@
                                               ? item.subFiles[0].url
                                               : list[index+1].url
                                             ))"
-            class="el-icon-more"
+            class="el-icon-more hover"
             @click.stop="input(
                           getDomain(
                             item.count == undefined
@@ -146,7 +146,7 @@
             :style="{
               color:config.list_focus_font_color}"></i>
           <i
-            class="el-icon-close"
+            class="el-icon-close hover"
             @click.stop="deleteHistory"
             :style="{
               color:config.list_focus_font_color}"></i>
@@ -274,7 +274,6 @@ export default {
     List,
   },
   watch: {
-    // todo
     "history.date": function(newVal, oldVal) {
       console.log('history.date', this.history.date, newVal, oldVal);
       this.search();
@@ -876,20 +875,15 @@ console.warn('mounted')
 }
 
 .list >>> .list-item .right .el-icon-more {
-  margin-right: 11px;padding: 5px;
+  margin-right: 11px;
+  padding: 5px;
+  font-size: 20px;
+  cursor:pointer;
 }
 .list >>> .list-item .right .el-icon-close {
   margin-right: 2px;
-}
-.list >>> .list-item .right .el-icon-close,
-.list >>> .list-item .right .el-icon-more {
   font-size: 20px;
   cursor:pointer;
-  opacity: 0.8;
-}
-.list >>> .list-item .right .el-icon-close:hover,
-.list >>> .list-item .right .el-icon-more:hover {
-  opacity: 1;
 }
 
 .el-badge {

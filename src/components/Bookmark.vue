@@ -16,9 +16,9 @@
         <div>{{ lang('bookmarkNoResult') }}</div>
         <div>{{ lang('bookmarkCountTip')+tree.bookmarkCount[rootId]+lang('bookmarkCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
@@ -149,6 +149,13 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    bookmark: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {}
+      },
     }
   },
   data() {
@@ -186,7 +193,21 @@ export default {
         // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
         this.positionRecord(newVal, newVal-this.$refs.list.scrollLines);
       }
-    }
+    },
+    "bookmark.fold": function(newVal, oldVal) {
+      console.log('bookmark.fold', newVal, oldVal);
+      if( ! this.bookmark.fold) return;
+
+      this.fold(0);
+      this.bookmark.fold = false;
+    },
+    "bookmark.unfold": function(newVal, oldVal) {
+      console.log('bookmark.unfold', newVal, oldVal);
+      if( ! this.bookmark.unfold) return;
+
+      this.unfold();
+      this.bookmark.unfold = false;
+    },
   },
   computed: {
     iconMap() {
@@ -394,7 +415,9 @@ let b = new Date().getTime();
       if( ! this.isSearched) {
         // 避免第一次加载页面时重复 getTree
 console.log('chrome.bookmarks.getTree.first')
-        this.expand(this.originList, 0, false);
+          // 倒着打开
+        for(let i = this.originList.length-1; i >= 0; i--)
+          this.expand(this.originList, i, false);
         this.list = this.originList;
 
         // 回到记住滚动的位置
@@ -428,7 +451,9 @@ console.log('chrome.bookmarks.getTree.first')
           console.log('getTree', bookmarks);
 
           this.originList = bookmarks;
-          this.expand(this.originList, 0, false);
+          // 倒着打开
+          for(let i = this.originList.length-1; i >= 0; i--)
+            this.expand(this.originList, i, false);
           this.list = this.originList;
 
           // 回到记住滚动的位置
@@ -704,6 +729,53 @@ console.log('chrome.bookmarks.getTree.second')
       console.log('收起', list.length, index+1, lastIndex, count)
     },
 
+    fold() {
+      // 全部收起（包括子目录）
+
+      // todo 暂时用最简单的方法
+      this.getTree((bookmarks) => {
+        console.log('getTree', bookmarks);
+
+        this.originList = bookmarks;
+        this.list = this.originList;
+
+        this.currentIndex = 0;
+
+        this.state = {};
+        this.position.currentIndex = 0;
+        this.position.visiualIndex = 0;
+        chrome.storage.local.set({'bookmark': { state: this.state, position: this.position }});
+      })
+    },
+    unfold() {
+      // 全部展开（包括子目录）
+
+      console.log('unfold');
+      this.state = {};
+      let parentId = this.originList.length <= 0 ? -1 : this.originList[0].parentId;
+      for(let currentIndex = 0; currentIndex < this.originList.length; currentIndex++) {
+        console.log('unfold', currentIndex)
+        let bookmark = this.originList[currentIndex];
+
+        // 不是目录，跳过
+        if( ! bookmark.children) continue;
+
+        this.state[ bookmark.id ] = true;
+
+        // 目录已展开，跳过
+        if(bookmark.children.length <= 0) continue;
+
+        // 展开目录
+        this.originList.splice(currentIndex+1, 0, ...bookmark.children);
+        bookmark.children = [];
+      }
+      this.list = this.originList;
+
+      chrome.storage.local.set({'bookmark': { state: this.state, position: this.position }});
+
+      console.log('unfold', this.state);
+    },
+
     scrollEnd() {
       if( ! this.isSearching) {
         // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
@@ -744,7 +816,7 @@ console.log('chrome.bookmarks.getTree.second')
           console.log('positionRecord21', currentIndex, visiualIndex);
         });
       }, 200);
-    }
+    },
   },
   beforeUpdate() {
     console.warn('beforeUpdate');

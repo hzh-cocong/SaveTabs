@@ -22,7 +22,7 @@
         <i
           class="el-icon-s-tools"
           style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-          @click="$open('./options.html?type=themes')"></i>选择主题
+          @click="$open('./options.html?type=themes', $event)"></i>选择主题
       </div>
       <SelectX
         v-if="themeDialogVisible"
@@ -175,7 +175,7 @@
                 :command="-1"
                 style="cursor: default"
                 class="other">
-                <span @click="$open('./options.html?type=workspace')">
+                <span @click="$open('./options.html?type=workspace', $event)">
                   <svg-icon
                     name="cog-solid"
                     style="cursor:pointer;height: 20px;color: #c0c4cc; position: relative; top: 6px;"
@@ -253,6 +253,41 @@
                 @click="history.visible = ! history.visible"></i>
             </el-popover>
           </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'bookmark'">
+            <el-popover
+              v-model="bookmark.visible"
+              placement="top-start"
+              trigger="manual"
+              transition=""
+              @after-leave="focus"
+              @after-enter="focus">
+              <el-button
+                size="mini"
+                icon="el-icon-s-fold"
+                :disabled="keyword.trim() != ''"
+                @click="bookmark.fold = true;focus();">全部收起</el-button>
+              <el-button
+                size="mini"
+                icon="el-icon-s-unfold"
+                :disabled="keyword.trim() != ''"
+                @click="bookmark.unfold = true;focus();">全部展开</el-button>
+              <i
+                class="el-icon-close hover"
+                style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                @click="bookmark.visible = false;"></i>
+              <i
+                class="el-icon-setting hover"
+                style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                @click="$open('chrome://bookmarks', $event);focus();"></i>
+              <i
+                class="el-icon-s-operation"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': config.toolbar_height+'px',
+                          color: bookmark.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @click="bookmark.visible = ! bookmark.visible"></i>
+            </el-popover>
+          </template>
           <template v-else>
             <el-popover
               v-model="other.visible"
@@ -263,7 +298,7 @@
               @after-enter="focus">
               <span>暂无其它功能</span>
               <i
-                class="el-icon-close"
+                class="el-icon-close hover"
                 style="float: right;margin-top: 3px;cursor: pointer;"
                 @click="other.visible = false;"></i>
               <i
@@ -315,6 +350,7 @@
           :isLoad="isLoad"
 
           :history="history"
+          :bookmark="bookmark"
 
           @finish="finish"
           ref="workspaces"></component>
@@ -377,6 +413,11 @@ export default {
             return time.getTime() > Date.now();
           },
         }
+      },
+      bookmark: {
+        visible: false,
+        fold: false,
+        unfold: false,
       },
       other: {
         visible: false,
@@ -632,6 +673,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         this.history.isActive = false;
       }
 
+      this.bookmark.visible = false;
       this.other.visible = false;
 
       this.search();
@@ -862,13 +904,14 @@ img {
 .toolbar .search-input input::placeholder {
   color: var(--toolbar-icon-color);
 }
-.toolbar .el-input__suffix .el-icon-circle-close {
+/* .toolbar .el-input__suffix .el-icon-circle-close {
   line-height: var(--toolbar_height);
   color: var(--toolbar-icon-color);
-}
-.toolbar .el-input__suffix .el-icon-circle-close:hover,
+} */
+/* .toolbar .el-input__suffix .el-icon-circle-close:hover, */
 .toolbar .el-input__prefix .el-icon-search:hover,
-.toolbar .el-input__prefix .el-icon-date:hover {
+.toolbar .el-input__prefix .el-icon-date:hover,
+.toolbar .el-input__prefix .el-icon-s-operation:hover {
   color: var(--toolbar-icon-focus-color) !important;
 }
 .toolbar .el-button-group .el-button {
@@ -934,5 +977,13 @@ img {
 .window-message-box {
   min-width: 80% !important;
   max-width: 99% !important;
+}
+.hover {
+  /* color: red !important; */
+  opacity: 0.8;
+}
+.hover:hover {
+  /* color: blue !important; */
+  opacity: 1;
 }
 </style>

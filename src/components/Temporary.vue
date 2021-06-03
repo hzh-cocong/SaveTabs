@@ -16,9 +16,9 @@
         <div v-if="storageList.length > 0">{{ lang('temporaryNoResult') }}</div>
         <div>{{ lang('temporaryCountTip')+storageList.length+lang('temporaryCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
@@ -171,12 +171,12 @@
         :style="{ marginLeft: isActive ? '5px' : '10px' }">
         <div v-if="isActive">
           <i
-            class="el-icon-copy-document"
+            class="el-icon-copy-document hover"
             :style="{
               color:config.list_focus_font_color,
               borderColor:config.list_focus_font_color}"></i>
           <i
-            class="el-icon-close"
+            class="el-icon-close hover"
             @click.stop="deleteTemporary"
             :style="{
               color:config.list_focus_font_color,
@@ -913,7 +913,7 @@ alert('空间不够')
           message = h('p', {style: {'text-align': 'center'}}, [
             h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, '保存非选中标签页'),
             h('el-button', {attrs: {size: 'mini', type: 'primary', plain: true}, on: {click: () => this._add('selected', callback)}}, '保存选中标签页'),
-            h('div', {style: {margin: '10px 0'}}, null),
+            h('div', {style: {margin: '10px 0 0 0'}}, null),
             h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
           ])
         } else {
@@ -923,7 +923,7 @@ alert('空间不够')
             h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
             h('div', {style: {margin: '10px 0'}}, null),
             h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, '保存除此标签页以外的标签页'),
-            h('div', {style: {margin: '10px 0'}}, null),
+            h('div', {style: {margin: '10px 0 0 0'}}, null),
             h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
           ])
         }
@@ -1221,9 +1221,7 @@ alert('空间不够')
 .list >>> .list-item .main {
   flex: 1;
   text-align: left;
-  /* overflow: auto; */
-  overflow-x: overlay;
-  overflow-y: hidden;
+  overflow: hidden;
   cursor: default;
 
   display: flex;
@@ -1286,20 +1284,15 @@ alert('空间不够')
 }
 
 .list >>> .list-item .right .el-icon-copy-document {
-  margin-right: 5px;padding: 5px;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 20px;
+  cursor:pointer;
 }
 .list >>> .list-item .right .el-icon-close {
   margin-right: 2px;
-}
-.list >>> .list-item .right .el-icon-close,
-.list >>> .list-item .right .el-icon-copy-document {
   font-size: 20px;
   cursor:pointer;
-  opacity: 0.8;
-}
-.list >>> .list-item .right .el-icon-close:hover,
-.list >>> .list-item .right .el-icon-copy-document:hover {
-  opacity: 1;
 }
 
 .el-badge {

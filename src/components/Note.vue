@@ -104,7 +104,7 @@
           <div v-if="isActive">
             <div
               v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
-              class="number-button"
+              class="number-button hover"
               @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
@@ -113,14 +113,14 @@
               v-if="activeTabs[item.url]
                 && (activeTabs[item.url].count > 1
                   || isRepeat(index))"
-              class="el-icon-close close-without-tab"
+              class="el-icon-close close-without-tab hover"
               @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }"></i>
             <i
               v-else
-              class="el-icon-close"
+              class="el-icon-close hover"
               @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
@@ -840,7 +840,7 @@ console.warn('finish', b, (b-a)/1000)
   min-width: 10px;
   height: 20px;
   padding: 2px 7px;
-  font-size: 18px !important;
+  font-size: 18px;
   line-height: 20px;
   border: 2px solid white;
   border-radius: 20px;
@@ -848,6 +848,7 @@ console.warn('finish', b, (b-a)/1000)
   text-align: center;
   white-space: nowrap;
   display: inline-block;
+  cursor: pointer;
 }
 .list >>> .list-item .right .close-without-tab {
   min-width: 20px;
@@ -858,6 +859,7 @@ console.warn('finish', b, (b-a)/1000)
   border:2px solid white;
   border-radius: 20px;
   text-align: center;
+  cursor: pointer;
 }
 .list >>> .list-item .right .close-without-tab:before {
   position: relative;
@@ -865,18 +867,8 @@ console.warn('finish', b, (b-a)/1000)
 }
 .list >>> .list-item .right .el-icon-close {
   margin-right: 2px;
-}
-.list >>> .list-item .right .el-icon-close,
-.list >>> .list-item .right .close-without-tab,
-.list >>> .list-item .right .number-button {
   font-size: 20px;
   cursor: pointer;
-  opacity: 0.8;
-}
-.list >>> .list-item .right .el-icon-close:hover,
-.list >>> .list-item .right .close-without-tab:hover,
-.list >>> .list-item .right .number-button:hover {
-  opacity: 1;
 }
 
 .el-badge {

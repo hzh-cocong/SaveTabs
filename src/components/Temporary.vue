@@ -103,13 +103,21 @@
                 <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
-            <span
+            <div
+              class="title"
+              :style="{ fontSize: tagConfig.tag_font_size+'px',
+                        width: 'calc(100% - '
+                              +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
+                                + (isActive ? 20 : 0) )
+                              +'px' }"
+              v-html="highlightMap[index][i].title || highlightMap[index][i].url"></div>
+            <!-- <span
               class="tab-title"
               :style="{ fontSize: tagConfig.tag_font_size+'px',
                         width: 'calc(100% - '
                               +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
                                 + (isActive ? 20 : 0) )
-                              +'px' }">{{ tab.title || tab.url }}</span>
+                              +'px' }">{{ tab.title || tab.url }}</span> -->
           </el-tag>
         </template>
         <template v-else>
@@ -131,7 +139,10 @@
                 <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
-            <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span>
+            <span
+              style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
+              v-html="highlightMap[index][0].title || highlightMap[index][0].url"></span>
+            <!-- <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span> -->
           </div>
           <div
             class="sub-title"
@@ -140,9 +151,18 @@
               color: isSelected
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
+              marginLeft: (config.list_font_size+5)+'px' }"
+              v-html="highlightMap[index][0].domain"></div>
+          <!-- <div
+            class="sub-title"
+            :style="{
+              fontSize: config.list_explain_font_size+'px',
+              color: isSelected
+                    ? config.list_explain_focus_font_color
+                    : config.list_explain_font_color,
               marginLeft: (config.list_font_size+5)+'px' }">
               {{ getDomain(item.tabs[0].url) }}
-          </div>
+          </div> -->
         </template>
       </div>
 
@@ -255,6 +275,44 @@ export default {
       console.log('getIcon:iconMap', (b-a)/1000);
 
       return ss;
+    },
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 速度其实差不多
+      // let highlightMap = new Array(this.list.length);
+      // this.list.forEach((item, index) => {
+      //   let highlightMap2 = new Array(item.tabs.length);
+      //   item.tabs.map((tab, i) => {
+      //     highlightMap2[i] = {
+      //       title: this.highlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
+      //       url: this.highlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
+      //       domain: this.highlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
+      //     }
+      //   })
+
+      //   highlightMap[index] = highlightMap2;
+      // });
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = this.list.map(item => {
+        return item.tabs.map(tab => {
+          return {
+            title: this.highlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
+            url: this.highlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
+            domain: this.highlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
+          }
+        })
+      })
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
     },
 
     // 行数尽可能多，字体尽可能大
@@ -1280,5 +1338,10 @@ alert('空间不够')
 <style>
 .temporary .el-tag .el-icon-close {
   top: 1px;
+}
+
+.temporary strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
 }
 </style>

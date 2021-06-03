@@ -99,8 +99,7 @@
             direction: isSelected ? 'rtl' : 'ltr' }"
             v-html="item.count == undefined || item.count == 1
                   ? highlightMap[index].url
-                  : highlightMap[index].domain+' | '+item.count">
-        </div>
+                  : highlightMap[index].domain+' | '+item.count"></div>
         <!-- <div
           class="sub-title"
           :style="{

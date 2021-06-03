@@ -684,7 +684,7 @@ console.warn('mounted', a);
       new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           // 去除末尾 /
-          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"")
+          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"");
           this.currentTab = tabs[0];
           resolve()
         })

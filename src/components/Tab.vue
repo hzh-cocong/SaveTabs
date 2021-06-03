@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tab">
 
   <el-alert
     type="info"
@@ -16,110 +16,108 @@
         <div>{{ lang('tabNoResult') }}</div>
         <div>{{ lang('tabCountTip')+originList.length+lang('tabCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise')"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews')"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other')"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
     </div>
   </el-alert>
 
   <list
     :list="list"
+    :listLength="list.length"
     :itemHeight="config.item_height"
     :itemShowCount="config.item_show_count"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="config.list_scrollbar_color"
+    :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus">
+    @click.native="focus"
+    @itemClick="_openWindow">
     <template #default="{ index, item, isActive, isSelected }">
-      <div
-        class="item"
+      <span
+        class="left"
         :style="{
-          backgroundColor: isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color,
-          color: isSelected
-                ? config.list_focus_font_color
-                : config.list_font_color
-        }"
-        @click="$event.stopPropagation();currentIndex=index;_openWindow()">
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+        <el-image
+          v-if="isLoad"
+          :src="iconMap[index]"
+          style="width:100%; height: 100%;"
+          fit="cover"
+          lazy>
+          <div slot="error" class="image-slot">
+            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div slot="placeholder" class="image-slot">
+            <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+          </div>
+        </el-image>
+      </span>
 
-        <span
-          class="left"
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlightMap[index].title"></div>
+        <!-- <span
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">{{
+              item.title
+          }}</span> -->
+        <div
+          v-if="storageKeyword != ''"
+          class="sub-title"
           :style="{
-            width: (config.item_height-20)+'px',
-            height: (config.item_height-20)+'px' }">
-          <el-image
-            v-if="isLoad"
-            :src="getIcon(item.favIconUrl, item.url, config.item_height-20)"
-            style="width:100%; height: 100%;"
-            fit="cover"
-            :lazy="index >= config.item_show_count">
-            <div slot="error" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-            <div slot="placeholder" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
-            </div>
-            <!-- 首屏还是会有很大概率出现图片加载很慢的情况 -->
-            <!-- <div slot="placeholder" class="image-slot">
-              <img
-                v-if="index >= config.item_show_count"
-                src="../assets/fallback.png"
-                style="width:100%; height: 100%;" />
-            </div> -->
-          </el-image>
-        </span>
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color,
+            direction: isSelected ? 'rtl' : 'ltr' }"
+          v-html="highlightMap[index].url"></div>
+        <div
+          v-else
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }"
+          v-text="isSelected ? item.url : getDomain(item.url)"></div>
+      </div>
 
-        <div class="main">
-          <span
-            class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
-                item.title
-            }}</span>
-          <span
-            v-show=" ! isSelected"
-            class="sub-title"
+      <div class="right">
+        <template v-if="isActive">
+          <i
+            class="el-icon-close hover"
+            @click.stop="closeTab(index)"
             :style="{
-              fontSize: config.list_font_size+'px',
-              color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color }">{{ getDomain(item.url) }}</span>
-        </div>
-
-        <div class="right">
-          <div v-if="isActive">
-            <i
-              class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;border:2px solid white;border-radius:2px"
-              @click.stop="closeTab(index)"
-              :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
-          </div>
-          <div v-else>
-            <span
-              v-if="isSelected"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_focus_keymap_color,
-              }">↩</span>
-            <span
-              v-else-if="platform != ''
-                && (index-$refs.list.scrollLines+1) <= config.item_show_count
-                && (index-$refs.list.scrollLines+1) >= 1
-                && (index-$refs.list.scrollLines+1) <= 9"
-              :style="{
-                fontSize: config.list_keymap_size+'px',
-                color: config.list_keymap_color,
-              }">{{
-                  platform == 'Win'
-                ?  'Alt+'+(index-$refs.list.scrollLines+1)
-                : '⌘'+(index-$refs.list.scrollLines+1)
-                }}</span>
-          </div>
-        </div>
-
+              color:config.list_focus_font_color,
+              borderColor:config.list_focus_font_color}"></i>
+        </template>
+        <template v-else>
+          <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+          <span
+            v-else-if="platform != ''
+              && (index-$refs.list.scrollLines+1) <= config.item_show_count
+              && (index-$refs.list.scrollLines+1) >= 1
+              && (index-$refs.list.scrollLines+1) <= 9"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color,
+            }">{{
+                platform == 'Win'
+              ?  'Alt+'+(index-$refs.list.scrollLines+1)
+              : '⌘'+(index-$refs.list.scrollLines+1)
+              }}</span>
+        </template>
       </div>
     </template>
   </list>
@@ -167,7 +165,62 @@ export default {
   components: {
     List,
   },
+  computed: {
+    iconMap() {
+      console.log('getIcon:iconMap');
+      let a = new Date().getTime();
+
+      let ss = this.list.map((item, index) => {
+        // return this.getIcon(item.favIconUrl, item.url, this.config.item_height-20);
+        return this.getIcon('', item.url, this.config.item_height-20);
+      })
+      let b = new Date().getTime();
+      console.log('getIcon:iconMap', (b-a)/1000);
+
+      return ss;
+    },
+    highlightMap() {
+      console.log('===========================hh')
+
+      let a = new Date().getTime();
+
+      // 速度非常非常快，无需再缓存优化
+      // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      let highlightMap = new Array(this.list.length);
+      this.list.forEach((item, index) => {
+        highlightMap[ index ] = {
+          title: this.highlight(item.title, this.storageKeyword, '<strong>', '</strong>'),
+          url: this.highlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
+        }
+      });
+
+      let b = new Date().getTime();
+
+      console.log('===h', (b-a)/1000);
+
+      return highlightMap;
+    },
+  },
   methods: {
+    itemStyle({ index, item, isActive, isSelected }) {
+      // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
+      if(isSelected) {
+        return {
+          'background-color': this.config.list_focus_background_color,
+          'color': this.config.list_focus_font_color,
+          '--list-highlight-color': this.config.list_focus_highlight_color,
+          '--list-highlight-weight': this.config.list_focus_highlight_weight,
+        }
+      } else {
+        return {
+          'background-color': this.config.list_background_color,
+          'color': this.config.list_font_color,
+          '--list-highlight-color': this.config.list_highlight_color,
+          '--list-highlight-weight': this.config.list_highlight_weight,
+        }
+      }
+    },
+
     up() {
       this.currentIndex--;
     },
@@ -214,21 +267,19 @@ export default {
       this.page++;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
-    openWindow(index) {
+    openWindow(index, event) {
       if(index == undefined) {
-        this._openWindow();
+        this._openWindow(event);
         return;
       }
 
-      let currentIndex = index+this.$refs.list.scrollLines-1;
-      if(currentIndex >= this.list.length || index > this.config.item_show_count) {
+      if( ! this.$refs.list.choice(index)) {
         return;
       }
 
-      this.currentIndex = currentIndex;
-      this._openWindow();
+      this._openWindow(event);
     },
-    _openWindow() {
+    _openWindow(event) {
       let tab = this.list[ this.currentIndex ];
       chrome.tabs.update(tab.id, { active: true }, () => {
         chrome.windows.update(tab.windowId, { focused: true});
@@ -250,7 +301,11 @@ export default {
   mounted() {
     // 查找
     chrome.tabs.query({}, (tabs)=>{
-      this.originList = tabs;
+      this.originList = tabs.map((tab) => {
+        // 去除末尾 /
+        tab.url = tab.url.replace(/(\/*$)/g,"");
+        return tab;
+      });
 
       this.$emit('finish');
 
@@ -263,7 +318,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.item {
+.list >>> .list-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -278,27 +333,34 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.list >>> .list-item .left {
   padding: 10px;
   text-align: center;
 }
-.item .main {
+.list >>> .list-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
   cursor: default;
+
+  height: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* justify-content: center; */
 }
-.item .title {
+.list >>> .list-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
-  margin: 0 10px;
+.list >>> .list-item .sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 5px;
 }
-.item .right {
+.list >>> .list-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -310,6 +372,11 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
+.list >>> .list-item .right .el-icon-close {
+  margin-right: 2px;
+  font-size: 20px;
+  cursor:pointer;
+}
 
 .el-badge {
     /* margin-right: 5px; */
@@ -318,6 +385,10 @@ export default {
 .el-badge.refresh {
     margin-left: 10px;
 }
-
-
+</style>
+<style>
+.tab strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
 </style>

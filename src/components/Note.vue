@@ -271,25 +271,15 @@ export default {
       return highlightMap;
     },
     isInCurrentTab() {
-      // return this.storageList.some((tab) => {
-      //   // 兼容旧版（旧版没有自动去除末尾 /
-      //   if(tab.url == this.currentTab.url) {
-      //     return true;
-      //   }
-      // })
-      // console.log('isInCurrentTab');
-      // let count = 0;
-      // this.list.forEach((tab) => {
-      //   if(tab.url == this.currentTab.url) {
-      //     count++;
-      //   } else {
-      //     return count;
-      //   }
-      // })
-      // return count;
+      return this.storageList.some((tab) => {
+        if(tab.url == this.currentTab.url) {
+          return true;
+        }
+      })
 
       // 由于当前窗口会被排在最前面，所以并不需要遍历 storageList
-      return this.list.length > 0 && this.list[0].url == this.currentTab.url;
+      // 这种观点在一开始是错的，因为此时还没有调用 search，这时会导致重复添加
+      // return this.list.length > 0 && this.list[0].url == this.currentTab.url;
     },
     currentNote() {
       if(this.list.length == 0) return null;

@@ -799,12 +799,12 @@ console.log('clearRange', this.range, startTime, endTime, this.timeShow(startTim
       }).catch(callback);
     }
   },
-  beforeUpdate() {
-    console.warn('beforeUpdate');
-  },
-  updated() {
-    console.warn('updated');
-  },
+  // beforeUpdate() {
+  //   console.warn('beforeUpdate');
+  // },
+  // updated() {
+  //   console.warn('updated');
+  // },
   mounted() {
     // todo
     window.h = this;

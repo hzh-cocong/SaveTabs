@@ -399,7 +399,7 @@ console.log('currentIndex', newVal, oldVal)
       // 防溢出
       // 无限滚动会出现浮点数的情况
       // 根据滚动方向判断是进位还是退位
-      let scrollLines = this.$el.scrollTop/this.itemHeight;
+      // let scrollLines = this.$el.scrollTop/this.itemHeight;
       // let scrollLines = 0;
       // if(this.w.flag) { // 向上滚动
       //   scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
@@ -419,7 +419,7 @@ console.log('currentIndex', newVal, oldVal)
 
       this.mouseIndex = index;
 
-      console.log('mouseSelect2', this.mouseIndex, scrollLines, this.$el.scrollTop);
+      console.log('mouseSelect2', this.mouseIndex, this.scrollLines, this.$el.scrollTop);
 
       // 列表滚动时就不选择了，这样体验更好
       if(this.w.isScrolling) {
@@ -595,22 +595,26 @@ console.log('a')
 
       // 恰好，一开始 this.visiualIndex = -1，index 无论取何值都不会错过
       // 虽然如此，但一开始是不会调用这个的，因为很多依赖还未更新
-      // 还是以最后的 $el.scrollTop 值为准备
+      // 还是以最后的 $el.scrollTop 值为准
       // if(index == this.visiualIndex) return;
 
       console.log('currentTo', index, this.visiualIndex, this.scrollLines);
 
+      let scrollLines;
       if(index < this.visiualIndex) {
         // 往上滚动（一开始会得出负值）
         scrollLines = this.scrollLines+(this.visiualIndex-index);
       } else {
+        // 往下滚动
         scrollLines = this.scrollLines-(index-this.visiualIndex);
       }
 
       console.log('currentTo2', scrollLines, this.scrollLines);
 
-      let scrollLines;
+      // 不得超出可视区域
       if(scrollLines < 0) {
+        scrollLines = 0;
+      } else if(this.list.length < this.itemShowCount) {
         scrollLines = 0;
       } else if(scrollLines > this.list.length-this.itemShowCount) {
         scrollLines = this.list.length-this.itemShowCount;
@@ -652,12 +656,12 @@ console.log('a')
       // }, 0)
     },
   },
-  beforeUpdate() {
-    console.warn('list:beforeUpdate', this.$el.scrollTop);
-  },
-  updated() {
-    console.warn('list:updated', this.$el.scrollTop);
-  },
+  // beforeUpdate() {
+  //   console.warn('list:beforeUpdate', this.$el.scrollTop);
+  // },
+  // updated() {
+  //   console.warn('list:updated', this.$el.scrollTop);
+  // },
   mounted() {
     // todo
     window.list = this;

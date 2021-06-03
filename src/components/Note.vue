@@ -98,7 +98,7 @@
       </div>
 
       <div class="right">
-        <div v-if="isActive
+        <template v-if="isActive
                 || activeTabs[item.url]
                 || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
@@ -121,7 +121,6 @@
             <i
               v-else
               class="el-icon-close"
-              style="font-size: 20px;cursor:pointer;margin-right: 2px;"
               @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
@@ -160,9 +159,8 @@
                   : config.list_keymap_color }">
             {{ timeShow(item.lastVisitTime) }}
           </div>
-        </div>
-        <div
-          v-show=" ! isActive && item.url != currentTab.url">
+        </template>
+        <template v-if=" ! isActive && item.url != currentTab.url">
           <span
             v-if="isSelected"
             :style="{
@@ -191,7 +189,7 @@
                         : index-$refs.list.scrollLines+1)
                       )
                     }}</span>
-        </div>
+        </template>
       </div>
     </template>
   </list>
@@ -838,19 +836,11 @@ console.warn('finish', b, (b-a)/1000)
   justify-content: space-evenly;
 }
 
-.el-badge {
-    /* margin-right: 5px; */
-    border-color: inherit !important;
-}
-.el-badge.refresh {
-    margin-left: 10px;
-}
-
-.number-button {
+.list >>> .list-item .right .number-button {
   min-width: 10px;
   height: 20px;
   padding: 2px 7px;
-  font-size: 18px;
+  font-size: 18px !important;
   line-height: 20px;
   border: 2px solid white;
   border-radius: 20px;
@@ -858,22 +848,43 @@ console.warn('finish', b, (b-a)/1000)
   text-align: center;
   white-space: nowrap;
   display: inline-block;
-  cursor:pointer;
 }
-.close-without-tab {
+.list >>> .list-item .right .close-without-tab {
   min-width: 20px;
   height: 20px;
+  font-size: 18px !important;
+  font-weight: 800;
   padding: 2px;
-  font-size: 20px;
   border:2px solid white;
-  font-size: 18px;
   border-radius: 20px;
   text-align: center;
-  cursor:pointer;
 }
-.close-without-tab:before {
+.list >>> .list-item .right .close-without-tab:before {
   position: relative;
   top: 1px;
+}
+.list >>> .list-item .right .el-icon-close {
+  margin-right: 2px;
+}
+.list >>> .list-item .right .el-icon-close,
+.list >>> .list-item .right .close-without-tab,
+.list >>> .list-item .right .number-button {
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.list >>> .list-item .right .el-icon-close:hover,
+.list >>> .list-item .right .close-without-tab:hover,
+.list >>> .list-item .right .number-button:hover {
+  opacity: 1;
+}
+
+.el-badge {
+    /* margin-right: 5px; */
+    border-color: inherit !important;
+}
+.el-badge.refresh {
+    margin-left: 10px;
 }
 </style>
 

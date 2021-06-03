@@ -134,7 +134,6 @@
                                               : list[index+1].url
                                             ))"
             class="el-icon-more"
-            style="font-size: 20px;cursor:pointer;margin-right: 11px;padding: 5px;"
             @click.stop="input(
                           getDomain(
                             item.count == undefined
@@ -149,12 +148,11 @@
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close"
-            style="font-size: 20px;cursor:pointer;margin-right: 2px;"
             @click.stop="deleteHistory"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
-        <div v-if=" ! isActive">
+        <template v-if=" ! isActive">
           <span
             :style="{
               fontSize: config.list_state_size+'px',
@@ -171,8 +169,8 @@
                 : list[index+1].lastVisitTime
               ))
             }}</span>
-        </div>
-        <div v-if=" ! isActive">
+        </template>
+        <template v-if=" ! isActive">
           <span
             v-if="isSelected"
             :style="{
@@ -194,7 +192,7 @@
                   : index-$refs.list.scrollLines+1)
                 )
               }}</span>
-        </div>
+        </template>
       </div>
     </template>
   </list>
@@ -876,6 +874,23 @@ console.warn('mounted')
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.list >>> .list-item .right .el-icon-more {
+  margin-right: 11px;padding: 5px;
+}
+.list >>> .list-item .right .el-icon-close {
+  margin-right: 2px;
+}
+.list >>> .list-item .right .el-icon-close,
+.list >>> .list-item .right .el-icon-more {
+  font-size: 20px;
+  cursor:pointer;
+  opacity: 0.8;
+}
+.list >>> .list-item .right .el-icon-close:hover,
+.list >>> .list-item .right .el-icon-more:hover {
+  opacity: 1;
 }
 
 .el-badge {

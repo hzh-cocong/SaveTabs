@@ -152,19 +152,17 @@
         <div v-if="isActive">
           <i
             class="el-icon-copy-document"
-            style="font-size: 20px;cursor:pointer;margin-right: 5px;padding: 5px;"
             :style="{
               color:config.list_focus_font_color,
               borderColor:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close"
-            style="font-size: 20px;cursor:pointer;margin-right: 2px;"
             @click.stop="deleteTemporary"
             :style="{
               color:config.list_focus_font_color,
               borderColor:config.list_focus_font_color}"></i>
         </div>
-        <div v-if=" ! isActive">
+        <template v-if=" ! isActive">
           <span
             :style="{
               fontSize: config.list_state_size+'px',
@@ -172,8 +170,8 @@
                 ? config.list_focus_state_color
                 : config.list_state_color,
             }">{{ timeShow(item.lastVisitTime) }}</span>
-        </div>
-        <div v-if=" ! isActive">
+        </template>
+        <template v-if=" ! isActive">
           <span
             v-if="isSelected"
             :style="{
@@ -195,7 +193,7 @@
                   : index-$refs.list.scrollLines+1)
                 )
               }}</span>
-        </div>
+        </template>
       </div>
     </template>
   </list>
@@ -837,32 +835,59 @@ alert('空间不够')
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
-      const h = this.$createElement;
-      this.$msgbox({
-        title: '注意：标签页保存后将被自动关闭',
-        message: h('p', {style: {'text-align': 'center'}}, [
-          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
-          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('only', callback)}}, '仅保存此标签页'),
-          h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
-          h('div', {style: {margin: '10px 0'}}, null),
-          h('el-button', {attrs: {size: 'mini', type: 'primary', plain: true}, on: {click: () => this._add('except', callback)}}, '保存除此标签页以外的标签页'),
-          h('div', {style: {margin: '10px 0'}}, null),
-          h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
-        ]),
-        dangerouslyUseHTMLString: true,
-        showConfirmButton: false,
-        showCancelButton: false,
-        closeOnClickModal: true,
-        customClass: 'window-message-box',
-        center: false,
-        callback: (action, instance, done) => {
-          console.log('callback', action, instance, done);
-          // 其实只有取消会调到这里，
-          if(action == 'cancel') {
-            callback(false);
-          }
+      new Promise((resolve) => {
+        // 获取当前窗口的所有标签
+        chrome.tabs.query({
+          currentWindow: true
+        }, tabs => {
+          let highlightCount = tabs.reduce((accumulator, tab) => {
+            return accumulator+( ! tab.active && tab.highlighted ? 1 : 0);
+          }, 0)
+
+          resolve(highlightCount)
+        })
+      }).then((highlightCount) => {
+        console.log({highlightCount})
+
+        const h = this.$createElement;
+        let message = null;
+        if(highlightCount > 0) {
+          message = h('p', {style: {'text-align': 'center'}}, [
+            h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, '保存非选中标签页'),
+            h('el-button', {attrs: {size: 'mini', type: 'primary', plain: true}, on: {click: () => this._add('selected', callback)}}, '保存选中标签页'),
+            h('div', {style: {margin: '10px 0'}}, null),
+            h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+          ])
+        } else {
+          message = h('p', {style: {'text-align': 'center'}}, [
+            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
+            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('only-this', callback)}}, '仅保存此标签页'),
+            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
+            h('div', {style: {margin: '10px 0'}}, null),
+            h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, '保存除此标签页以外的标签页'),
+            h('div', {style: {margin: '10px 0'}}, null),
+            h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+          ])
         }
-      });
+
+        this.$msgbox({
+          title: '注意：标签页保存后将被自动关闭',
+          message: message,
+          dangerouslyUseHTMLString: true,
+          showConfirmButton: false,
+          showCancelButton: false,
+          closeOnClickModal: true,
+          customClass: 'window-message-box',
+          center: false,
+          callback: (action, instance, done) => {
+            console.log('callback', action, instance, done);
+            // 其实只有取消会调到这里，
+            if(action == 'cancel') {
+              callback(false);
+            }
+          }
+        });
+      })
     },
     _add(type, callback) {
       let currentWindowId = -1;
@@ -878,10 +903,14 @@ alert('空间不够')
       }).then((tabs) => {
         // 提取需要保存的标签
         if(type == 'all') return tabs;
-        if(type == 'only') return [ tabs.find((tab) => { return tab.active; }) ];
-        if(type == 'except') return tabs.filter((tab) => { return ! tab.active; });
+
+        if(type == 'only-this') return [ tabs.find((tab) => { return tab.active; }) ];
+        if(type == 'except-this') return tabs.filter((tab) => { return ! tab.active; });
         if(type == 'left') return tabs.slice(0, tabs.findIndex((tab) => { return tab.active; }));
         if(type == 'right') return tabs.slice(tabs.findIndex((tab) => { return tab.active; })+1);
+
+        if(type == 'selected') return tabs.filter((tab) => { return tab.highlighted; });
+        if(type == 'not-selected') return tabs.filter((tab) => { return ! tab.highlighted; });
 
         return [];
       }).then((tabs) => {
@@ -1196,6 +1225,23 @@ alert('空间不够')
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+.list >>> .list-item .right .el-icon-copy-document {
+  margin-right: 5px;padding: 5px;
+}
+.list >>> .list-item .right .el-icon-close {
+  margin-right: 2px;
+}
+.list >>> .list-item .right .el-icon-close,
+.list >>> .list-item .right .el-icon-copy-document {
+  font-size: 20px;
+  cursor:pointer;
+  opacity: 0.8;
+}
+.list >>> .list-item .right .el-icon-close:hover,
+.list >>> .list-item .right .el-icon-copy-document:hover {
+  opacity: 1;
 }
 
 .el-badge {

@@ -105,7 +105,7 @@
             <div
               v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
               class="number-button hover"
-              @click.stop="deleteNote"
+              @click.stop="input(item.url, 'tab')"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
@@ -123,8 +123,7 @@
               class="el-icon-close hover"
               @click.stop="deleteNote"
               :style="{
-                color:config.list_focus_font_color,
-                borderColor:config.list_focus_font_color}"></i>
+                color:config.list_focus_font_color}"></i>
           </div>
           <div
             v-else-if="item.url == currentTab.url"
@@ -203,7 +202,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Note',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -292,6 +291,9 @@ export default {
     }
   },
   methods: {
+    test() {
+      console.log('ttttttttt', this.currentNote.url);
+    },
     itemStyle({ index, item, isActive, isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.url == this.currentTab.url) {
@@ -336,7 +338,7 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('search===h', typeof this.storageKeyword, this.storageKeyword==undefined||this.storageKeyword.length);
+      console.log('note:search===h', typeof this.storageKeyword, this.storageKeyword==undefined||this.storageKeyword.length);
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
 console.log('search2===h');

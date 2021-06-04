@@ -173,14 +173,12 @@
           <i
             class="el-icon-copy-document hover"
             :style="{
-              color:config.list_focus_font_color,
-              borderColor:config.list_focus_font_color}"></i>
+              color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
             @click.stop="deleteTemporary"
             :style="{
-              color:config.list_focus_font_color,
-              borderColor:config.list_focus_font_color}"></i>
+              color:config.list_focus_font_color}"></i>
         </div>
         <template v-if=" ! isActive">
           <span

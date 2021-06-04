@@ -461,9 +461,15 @@ export default {
       // 输入框聚焦
       this.$refs['input'].focus();
     },
-    input(value) {
-      this.keyword = value;
-      this.search();
+    input(value, type) {
+      if(type == undefined) {
+        this.keyword = value;
+        this.search();
+      } else {
+        this.keyword = value;
+        let index = this.getTypeIndex(type);
+        this.$refs.carousel.setActiveItem(index);
+      }
     },
 
     getTypeIndex(type) {

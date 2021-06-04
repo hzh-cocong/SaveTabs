@@ -61,7 +61,7 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlightMap[index].title"></div>
+          v-html="highlightMap[index].title+'|'+item.id+'|'+item.windowId"></div>
         <!-- <span
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">{{
@@ -89,14 +89,19 @@
       </div>
 
       <div class="right">
-        <template v-if="isActive">
+        <div v-if="isActive">
+          <i
+            v-if="storageKeyword != getDomain(item.url)"
+            class="el-icon-more hover"
+            @click.stop="input( getDomain(item.url) )"
+            :style="{
+              color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
             @click.stop="closeTab(index)"
             :style="{
-              color:config.list_focus_font_color,
-              borderColor:config.list_focus_font_color}"></i>
-        </template>
+              color:config.list_focus_font_color}"></i>
+        </div>
         <template v-else>
           <span
             v-if="isSelected"
@@ -105,17 +110,19 @@
               color: config.list_focus_keymap_color,
             }">↩</span>
           <span
-            v-else-if="platform != ''
-              && (index-$refs.list.scrollLines+1) <= config.item_show_count
-              && (index-$refs.list.scrollLines+1) >= 1
+            v-else-if="_device.platform != ''
               && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
               fontSize: config.list_keymap_size+'px',
               color: config.list_keymap_color,
             }">{{
-                platform == 'Win'
-              ?  'Alt+'+(index-$refs.list.scrollLines+1)
-              : '⌘'+(index-$refs.list.scrollLines+1)
+                (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+              + ( 1 > index-$refs.list.scrollLines+1
+                ? 1
+                : (index-$refs.list.scrollLines+1 > config.item_show_count
+                  ? config.item_show_count
+                  : index-$refs.list.scrollLines+1)
+                )
               }}</span>
         </template>
       </div>
@@ -130,7 +137,7 @@ import List from './List.vue'
 
 export default {
   name: 'Tab',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -152,14 +159,17 @@ export default {
       list: [],
       cacheList: [],
       originList: [],
+      currentWindowList: [],
+      focusList: [],
 
       scrollDisabled: true,
       storageKeyword: null,
 
-      page: 0,
       currentIndex: -1,
 
       isSearched: false,
+
+      currentWindowId: -1,
     }
   },
   components: {
@@ -200,6 +210,34 @@ export default {
 
       return highlightMap;
     },
+
+    selectedTabId() {
+      return this.selectedTab.id;
+    },
+    selectedTab() {
+      if(this.list.length == 0) return null;
+      return this.list[ this.currentIndex ];
+    },
+    activeTabId() {
+      return this.activeTab.id;
+    },
+    activeTab() {
+      return this.originList.find(tab => {
+        return tab.active && tab.windowId == this.currentWindowId;
+      });
+    },
+
+    currentTabCount() {
+      return this.originList.reduce((accumulator, tab) => {
+        return accumulator+(tab.windowId == this.currentWindowId ? 1 : 0);
+      }, 0)
+    }
+
+    // currentTabList() {
+    //   return this.originList.filter((tab) => {
+    //     return tab.windowId == this.currentWindowId;
+    //   })
+    // }
   },
   methods: {
     itemStyle({ index, item, isActive, isSelected }) {
@@ -233,22 +271,21 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      // 查找
-      let filterList = this.originList.filter(tab => {
+      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+      // 注意这里关键词为空就不会去循环，所以优化效果可能不大
+      let filterList = this.storageKeyword == '' ? this.focusList : this.focusList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
-        for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
-          if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
-            return false;
-          }
-        }
-        return true;
+        // 找出不匹配的过滤掉
+        return ! keywords.some((keyword) => {
+          // 不匹配则为 -1
+          return title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1 ;
+        });
       })
 
       // 列表赋值
       this.cacheList = filterList;
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.page = 1;
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       this.currentIndex = 0;
@@ -257,14 +294,8 @@ export default {
       this.isSearched = true;
     },
     load() {
-      let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
-      if(data.length <= 0) {
-        this.scrollDisabled = true;
-        return;
-      }
-
-      this.list.push(...data);
-      this.page++;
+      // 加载数据
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     openWindow(index, event) {
@@ -280,10 +311,124 @@ export default {
       this._openWindow(event);
     },
     _openWindow(event) {
-      let tab = this.list[ this.currentIndex ];
-      chrome.tabs.update(tab.id, { active: true }, () => {
-        chrome.windows.update(tab.windowId, { focused: true});
-      })
+      if(event != undefined
+      &&((this._device.platform == 'Mac' && event.metaKey == true)
+        || (this._device.platform != '' && event.ctrlKey == true))) {
+        // 移动到当前标签的下一个位置，但不激活
+        chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1});
+      } else if(event != undefined
+              && this._device.platform != ''
+              && event.shiftKey == true) {
+        // 移动到新窗口（新建窗口）
+        chrome.windows.create({tabId: this.selectedTabId, focused: true});
+      } else if(event != undefined
+              && this._device.platform != ''
+              && event.altKey == true) {
+        // 交换两个标签的位置，激活被选中的标签
+        console.log('exchangeTab');
+
+        // 让后台帮忙交换，因为这个极有可能导致弹框关闭，进而导致操作突然终止
+        chrome.runtime.sendMessage({
+            type: 'exchangeTab',
+            target: this.activeTab,
+            targetTabCount: this.currentTabCount,
+            destination: this.selectedTab
+        })
+
+        // if(this.selectedTab.windowId == this.currentWindowId) {
+        //   // 当前窗口内切换
+        //   chrome.tabs.move(this.selectedTabId, {index: this.activeTab.index}, () => {
+        //     chrome.tabs.move(this.activeTabId, {index: this.selectedTab.index}, () => {
+        //       chrome.tabs.update(this.selectedTabId, {active: true});
+        //     });
+        //   });
+        // } else {
+        //   // 多个窗口间的切换
+
+        //   // 先查询被选中的标签的窗口信息
+        //   chrome.windows.get(this.selectedTab.windowId, {populate: true}, (window) => {
+        //     console.log('jjjjj', window)
+        //     if(window.tabs.length > 1) {
+        //       // 直接交换
+        //       chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, () => {
+        //         chrome.tabs.move(this.activeTabId, {windowId: this.selectedTab.windowId, index: this.selectedTab.index}, () => {
+        //           // 如果被选中的标签以前是活跃的，则要激活当前标签
+        //           if(this.selectedTab.active) {
+        //             // // 让后台激活标签
+        //             // console.log('aaaaaaaaaaaaaaaaaaaa');
+        //             // chrome.runtime.sendMessage({
+        //             //     type: 'activeTab',
+        //             //     tabId: this.activeTabId,
+        //             //     windowId: this.activeTab.windowId,
+        //             // }, (gggggggggg) => {
+        //             //   console.log('gggggg', gggggggggg);
+        //             // })
+        //             // 当前窗口已关闭，无法激活
+        //             // chrome.tabs.update(this.activeTabId, {active: true});
+        //           }
+        //         });
+        //       });
+        //     } else if(window.tabs.length == 1 && this.currentTabCount == 1) {
+        //       // 无需交换，直接切换过去就行了
+        //       console.log('jjjjjjjjjjjjjjjjjjjj', this.selectedTab.windowId, this.currentWindowId);
+        //       chrome.windows.update(this.selectedTab.windowId, { focused: true});
+        //     } else {
+        //       // 先创建空白页，否则可能会引起浏览器崩溃
+        //       chrome.tabs.create({windowId: this.selectedTab.windowId}, (tab) => {
+        //         // 再进行交换
+        //         chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, () => {
+        //           chrome.tabs.move(this.activeTabId, {windowId: this.selectedTab.windowId, index: this.selectedTab.index}, () => {
+        //             // 如果被选中的标签以前是活跃的，则要激活当前标签
+        //             if(this.selectedTab.active) {
+        //               // // 让后台激活标签
+        //               // console.log('aaaaaaaaaaaaaaaaaaaa');
+        //               // chrome.runtime.sendMessage({
+        //               //     type: 'activeTab',
+        //               //     tabId: this.activeTabId,
+        //               //     windowId: this.activeTab.windowId,
+        //               // }, (gggggggggg) => {
+        //               //   console.log('gggggg', gggggggggg);
+        //               // })
+        //               // 当前窗口已关闭，无法激活
+        //               // chrome.tabs.update(this.activeTabId, {active: true});
+        //             }
+        //           });
+        //         })
+        //       })
+        //     }
+        //   })
+        // }
+
+        // // 交换两个标签的位置，激活被选中的标签
+        // chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index}, (tab) => {
+        //   chrome.tabs.move(this.activeTabId, {windowId: this.selectedTab.windowId, index: this.selectedTab.index});
+        // });
+
+        // // 交换两个标签的位置（只有一个窗口时会引起闪退）
+        // chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index}, (tab) => {
+        //   chrome.tabs.move(this.activeTabId, {windowId: this.selectedTab.windowId, index: this.selectedTab.index});
+        // });
+
+        // 移动到当前标签的下一个位置，并且激活
+        // chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, (tab) => {
+        //   chrome.tabs.update(tab.id, {active: true});
+        // });
+
+        // // 覆盖当前标签
+        // chrome.tabs.update(this.activeTabId, {url: this.selectedTab.url}, () => {
+        //   chrome.tabs.remove(this.selectedTabId);
+        // });
+
+        // // 替换当前标签
+        // chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index}, (tab) => {
+        //   chrome.tabs.remove(this.activeTabId);
+        // });
+      } else {
+        // 切换到对应的标签，不做任何移动（默认方式）
+        chrome.tabs.update(this.selectedTabId, { active: true }, () => {
+          chrome.windows.update(this.selectedTab.windowId, { focused: true});
+        })
+      }
     },
     closeTab(index) {
       let id = this.list[index].id;
@@ -299,13 +444,70 @@ export default {
     }
   },
   mounted() {
+    // todo
+    window.tab = this;
+console.log('ttttttttttttt')
     // 查找
-    chrome.tabs.query({}, (tabs)=>{
-      this.originList = tabs.map((tab) => {
-        // 去除末尾 /
-        tab.url = tab.url.replace(/(\/*$)/g,"");
-        return tab;
-      });
+    Promise.all([
+      new Promise((resolve) => {
+        // 获取标签顺序
+        chrome.runtime.sendMessage({
+            type: 'getActiveTabs'
+        }, (tabIds) => {
+          console.log('tabIds', tabIds)
+          console.log('gggggggggg3');
+          resolve(tabIds);
+        })
+      }),
+      new Promise(resolve => {
+        // 获取所有标签
+        chrome.tabs.query({}, (tabs)=>{
+          let t = tabs.map((tab) => {
+            // 去除末尾 /
+            tab.url = tab.url.replace(/(\/*$)/g,"");
+            return tab;
+          });
+          console.log('gggggggggg');
+          resolve(t);
+        })
+      }),
+      new Promise(resolve => {
+        // 获取当前窗口id
+        chrome.windows.getCurrent({populate: false}, window =>{
+          this.currentWindowId = window.id;
+          console.log('gggggggggg2');
+          resolve();
+        })
+      })
+    ]).then(([tabIds, tabs]) => {
+      console.log('ssssss', tabIds, tabs);
+
+      // 建立索引，方便快速获取 tab 位置
+      let map = new Map();
+      tabIds.forEach((tabId, index) => {
+        map.set(tabId, index)
+      })
+
+      // 当前窗口排最前面
+      // map.set(this.activeTabId, -1);
+
+      // 按标签顺序排序，没有记录的排最后
+      this.originList = tabs.sort((tab1, tab2) => {
+        // // 当前窗口排最前面
+        // if(tab1.id == this.activeTabId) return -1;
+        // if(tab2.id == this.activeTabId) return 1;
+
+        let index1 = map.get(tab1.id);
+        let index2 = map.get(tab2.id);
+
+        if(index1 == undefined && index2 == undefined) return 0;
+        if(index1 == undefined) return 1;
+        if(index2 == undefined) return -1;
+
+        return index2 - index1;
+      })
+
+      this.focusList = this.originList;
 
       this.$emit('finish');
 
@@ -371,6 +573,12 @@ export default {
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+.list >>> .list-item .right .el-icon-more {
+  margin-right: 11px;
+  padding: 5px;
+  font-size: 20px;
+  cursor:pointer;
 }
 .list >>> .list-item .right .el-icon-close {
   margin-right: 2px;

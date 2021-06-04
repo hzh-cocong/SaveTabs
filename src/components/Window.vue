@@ -1063,8 +1063,9 @@ console.warn('isSearched2');
       }
 
       chrome.runtime.sendMessage({
-          filename: filename,
-          tabs: this.currentGroup.tabs,
+        type: 'download',
+        filename: filename,
+        tabs: this.currentGroup.tabs,
       });
     },
   },

@@ -361,7 +361,6 @@
 </template>
 
 <script>
-import List from './components/List.vue'
 import SelectX from './components/SelectX.vue'
 import Window from './components/Window.vue'
 import History from './components/History.vue'
@@ -369,10 +368,11 @@ import Tab from './components/Tab.vue'
 import Bookmark from './components/Bookmark.vue'
 import Note from './components/Note.vue'
 import Temporary from './components/Temporary.vue'
+import All from './components/All.vue'
+
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
 import userTheme from './config/user_theme.json'
-import Test from './components/Test.vue'
 
 export default {
   name: 'app',
@@ -446,7 +446,6 @@ export default {
     }
   },
   components: {
-    List,
     SelectX,
     Window,
     History,
@@ -454,7 +453,7 @@ export default {
     Bookmark,
     Note,
     Temporary,
-    Test,
+    All,
   },
   methods: {
     focus() {
@@ -739,6 +738,12 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // });
       });
     },
+  },
+  beforeUpdate() {
+    console.warn('savetabs:beforeUpdate');
+  },
+  updated() {
+    console.warn('savetabs:updated');
   },
   mounted() {
     // todo

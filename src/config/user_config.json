@@ -28,7 +28,7 @@
     "list_current_font_color": "#ffffff",
     "list_current_highlight_color": "#f73131",
     "list_current_highlight_weight": "400",
-    "list_current_explain_font_color": "#e4e7ed",
+    "list_current_explain_font_color": "#ffffff",
     "list_current_explain_highlight_color": "#f73131",
     "list_current_explain_highlight_weight": "400",
     "list_current_state_color": "#ffffff",
@@ -37,7 +37,7 @@
     "list_current_focus_font_color": "#ffffff",
     "list_current_focus_highlight_color": "#f73131",
     "list_current_focus_highlight_weight": "400",
-    "list_current_explain_focus_font_color": "#e4e7ed",
+    "list_current_explain_focus_font_color": "#ffffff",
     "list_current_explain_focus_highlight_color": "#f73131",
     "list_current_focus_state_color": "#ffffff",
 
@@ -86,9 +86,9 @@
         "window",
         "bookmark",
         "tab",
-        "test"
+        "all"
     ],
-    "active_workspace_type": "tab",
+    "active_workspace_type": "all",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

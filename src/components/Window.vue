@@ -537,11 +537,11 @@ console.log('get_currentWindowStorageIndex3', index);
       // alert(keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-
+let a = new Date().getTime();
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();
-console.warn('isSearched');
+console.warn('isSearched', this.storageList.length, a);
       // 查找
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
@@ -576,7 +576,8 @@ console.warn('isSearched');
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
-console.warn('isSearched2');
+      let b = new Date().getTime();
+console.warn('isSearched2', b, (b-a)/1000);
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
@@ -1070,10 +1071,10 @@ console.warn('isSearched2');
     },
   },
   beforeUpdate() {
-    console.warn('beforeUpdate');
+    console.warn('window:beforeUpdate');
   },
   updated() {
-    console.warn('updated');
+    console.warn('window:updated');
   },
   mounted() {
     // todo（删除该段代码）

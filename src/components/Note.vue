@@ -77,6 +77,21 @@
                   : config.list_explain_font_color,
             direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
         <div
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: item.url == currentTab.url
+                ? ( isSelected
+                  ? config.list_current_explain_focus_font_color
+                  : config.list_current_explain_font_color)
+                : ( isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color),
+            direction: isSelected ? 'rtl' : 'ltr' }"
+          v-html="storageKeyword != ''
+                ? highlightMap[index].url
+                : (isSelected ? item.url : getDomain(item.url))"></div>
+        <!-- <div
           v-if="storageKeyword != ''"
           class="sub-title"
           :style="{
@@ -94,7 +109,7 @@
             color: isSelected
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color }"
-          v-text="isSelected ? item.url : getDomain(item.url)"></div>
+          v-text="isSelected ? item.url : getDomain(item.url)"></div> -->
       </div>
 
       <div class="right">

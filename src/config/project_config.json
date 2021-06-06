@@ -54,13 +54,13 @@
             "placeholder": "bookmarkPlaceholder",
             "isEnabled": true
         },
-        "test": {
-            "type": "test",
-            "title": "test",
-            "icon": ["fab", "windows"],
-            "icon_simple": "el-icon-download",
-            "svg": "windows-brands",
-            "placeholder": "windowPlaceholder",
+        "all": {
+            "type": "all",
+            "title": "all",
+            "icon": ["fab", "search"],
+            "icon_simple": "",
+            "svg": "search-solid",
+            "placeholder": "allPlaceholder",
             "isEnabled": true
         }
     },

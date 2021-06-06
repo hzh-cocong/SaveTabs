@@ -196,7 +196,9 @@ export default {
     itemStyle: {
       type: [Object, Function],
       require: false,
-      default: {},
+      default: function() {
+        return {};
+      },
     }
   },
   data() {
@@ -656,12 +658,12 @@ console.log('a')
       // }, 0)
     },
   },
-  // beforeUpdate() {
-  //   console.warn('list:beforeUpdate', this.$el.scrollTop);
-  // },
-  // updated() {
-  //   console.warn('list:updated', this.$el.scrollTop);
-  // },
+  beforeUpdate() {
+    console.warn('list:beforeUpdate', this.$el.scrollTop);
+  },
+  updated() {
+    console.warn('list:updated', this.$el.scrollTop);
+  },
   mounted() {
     // todo
     window.list = this;

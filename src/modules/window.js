@@ -50,7 +50,8 @@ let window = {
       this.storageList.forEach(group => {
         group.isCurrent = group.windowId == this.currentWindowId;
         group.isOpened = this.activeWindows[group.windowId] == true;
-        group.type = 'WindowItem';
+        group.type = 'window';
+        // group.type = 'WindowItem';
       });
 
       let b = new Date().getTime();
@@ -87,7 +88,12 @@ let window = {
         return ! group.isOpened;
       });
 
-      this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
+      // this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
+      let cacheList = currentList; cacheList.push(...openedList, ...closeList);
+      this.cacheList = cacheList.map((group, index) => {
+        group.index = index;
+        return group;
+      });
 
       return this.cacheList.slice(0, length);
     })

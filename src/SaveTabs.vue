@@ -749,6 +749,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // todo
     window.s = this;
 
+    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //   alert('收到了2')
+    // })
+
+
     // this.config = config;
     // this.config = userConfig+projectConfig
     // this.config = userConfig;

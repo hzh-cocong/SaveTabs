@@ -37,7 +37,7 @@
     @itemClick="_openWindow">
     <template #default="{ index, item, isActive, isSelected }">
       <component
-        :is="item.type"
+        :is="item.type+'Item'"
 
         :item="item"
         :index="index"
@@ -97,6 +97,8 @@ export default {
       scrollDisabled: false,
 
       isSearched: false,
+
+      length: {}
     }
   },
   components: {
@@ -113,7 +115,6 @@ export default {
     },
 
     search(keyword) {
-      console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk2')
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
 
@@ -123,99 +124,147 @@ export default {
 
       let keywords = this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/);
 
-      Promise.all(this.config.all_include.map((workspace) => {
-        let type = '';
-        switch(workspace.type) {
-          case 'temporary': type = Temporary; break;
-          case 'window': type = Window; break;
-        }
+      this.length = {};
 
-        return type.search({
+      Promise.all(this.config.all_include.filter(workspace => {
+        return workspace.is_top;
+      }).map((workspace) => {
+        console.log('lists.isTop.workspace', workspace);
+        let module = this.getModule(workspace.type);
+        return module.search({
           keywords: keywords,
           length: workspace.count,
         })
       })).then(lists => {
         console.log('lists', lists);
+        if(lists.length <= 0) return true;
 
-        this.list = lists.reduce(function (a, b) { return a.concat(b)} );
+        let list = [];
+        lists.forEach((workspaceList) => {
+          if(workspaceList.length <= 0) return;
 
-        this.currentIndex = 0;
+          this.length[workspaceList[0].type] = workspaceList.length;
+          list.push(...workspaceList);
+        })
+        if(list.length <= 0) return true;
+        this.list = list;
 
-        // this.scrollDisabled = this.list.length <= 0;
-        // if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
-        //   this.currentIndex = 1;
-        // } else {
-        //   this.currentIndex = this.list.length > 0 ? 0 : -1;
-        // }
+        this.scrollDisabled = false;
+        if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
+          this.currentIndex = 1;
+        } else {
+          this.currentIndex = this.list.length > 0 ? 0 : -1;
+        }
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
+
+        return false;
+      }).then((isContinue) => {
+        console.log('isContinue', isContinue)
+        if( ! isContinue) return;
+
+        Promise.all(this.config.all_include.filter((workspace) => {
+          return ! workspace.is_top;
+        }).map((workspace) => {
+          let module = this.getModule(workspace.type);
+          return module.search({
+            keywords: keywords,
+            length: workspace.count,
+          })
+        })).then(lists => {
+          console.log('lists', lists);
+
+          let list = [];
+          lists.forEach((workspaceList) => {
+            if(workspaceList.length <= 0) return;
+
+            this.length[workspaceList[0].type] = workspaceList.length;
+            list.push(...workspaceList);
+          })
+          this.list = list;
+
+          this.scrollDisabled = this.list.length <= 0;
+          if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
+            this.currentIndex = 1;
+          } else {
+            this.currentIndex = this.list.length > 0 ? 0 : -1;
+          }
+
+          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
+          this.isSearched = true;
+        })
       })
-
-      // Temporary.search({
-      //   keywords: keywords,
-      //   length: this.config.list_page_count
-      // }).then((list) => {
-      //   this.list = list;
-      //   console.log('all', list);
-
-      //   this.scrollDisabled = this.list.length <= 0;
-      //   if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
-      //     this.currentIndex = 1;
-      //   } else {
-      //     this.currentIndex = this.list.length > 0 ? 0 : -1;
-      //   }
-
-      //   // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-      //   this.isSearched = true;
-      // })
-
-
-      // Window.search({
-      //   keywords: keywords,
-      //   length: this.config.list_page_count
-      // }).then((list) => {
-      //   this.list = list;
-      //   console.log('all', list);
-
-      //   // this.list[0].isCurrent = true;
-
-      //   this.scrollDisabled = this.list.length <= 0;
-      //   if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
-      //     this.currentIndex = 1;
-      //   } else {
-      //     this.currentIndex = this.list.length > 0 ? 0 : -1;
-      //   }
-
-      //   // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-      //   this.isSearched = true;
-      // })
     },
     load() {
-      // console.log('llllllllllllllllllllllllll')
-      // Temporary.load({
-      //   start: this.list.length,
-      //   length: this.config.list_page_count
-      // }).then((list) => {
-      //   if(list.length <= 0) {
-      //     this.scrollDisabled = true;
-      //     return;
-      //   }
+      Promise.all(this.config.all_include.filter(workspace => {
+        return workspace.is_top;
+      }).map((workspace) => {
+        let module = this.getModule(workspace.type);
+        return module.load({
+          start: this.length[workspace.type],
+          length: workspace.count,
+        })
+      })).then(lists => {
+        console.log('load:lists', lists);
 
-      //   this.list.push(...list);
-      // })
+        if(lists.length <= 0) return true;
 
-      // Window.load({
-      //   start: this.list.length,
-      //   length: this.config.list_page_count
-      // }).then((list) => {
-      //   if(list.length <= 0) {
-      //     this.scrollDisabled = true;
-      //     return;
-      //   }
+        let count = 0;
+        lists.forEach((list) => {
+          if(list.length <= 0) return;
 
-      //   this.list.push(...list);
-      // })
+          this.length[list[0].type] += list.length;
+          this.list.push(...list);
+
+          count += list.length;
+        })
+
+        if(count <= 0) return true;
+
+        return false;
+      }).then((isContinue) => {
+        console.log('load', isContinue);
+        if( ! isContinue) return;
+
+        Promise.all(this.config.all_include.filter(workspace => {
+          return ! workspace.is_top;
+        }).map((workspace) => {
+          let module = this.getModule(workspace.type);
+
+          if(this.length[workspace.type] == undefined) {
+            let keywords = this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/);
+
+            this.length[workspace.type] = 0;
+
+            return module.search({
+              keywords: keywords,
+              length: workspace.count,
+            })
+          } else {
+            return module.load({
+              start: this.length[workspace.type],
+              length: workspace.count,
+            })
+          }
+        })).then(lists => {
+          console.log('load2:lists', lists);
+
+          let count = 0;
+          lists.forEach((list) => {
+            if(list.length <= 0) return;
+
+            this.length[list[0].type] += list.length;
+            this.list.push(...list);
+
+            count += list.length;
+          })
+
+          this.scrollDisabled = count <= 0;
+
+          return false;
+        })
+      })
     },
 
     openWindow(index, event) {
@@ -232,19 +281,24 @@ export default {
     },
     _openWindow(event) {
       console.log('openWindow', event)
-      // this.$refs.list.children[this.currentIndex].openWindow(event);
 
-      Temporary.openWindow(this.currentIndex, event).then((isDel) => {
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      module.openWindow(item.index, event).then((isDel) => {
         console.warn('all.finish', isDel);
         if(isDel) {
           this.list.splice(this.currentIndex, 1);
         }
       });
+    },
 
-      // Window.openWindow(this.currentIndex, event).then(() => {
-      //   console.warn('all.finish', arguments);
-      // });
-    }
+    getModule(type) {
+      switch(type) {
+        case 'temporary': return Temporary;
+        case 'window': return Window;
+      }
+    },
   },
   mounted() {
     window.all = this;

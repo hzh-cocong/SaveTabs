@@ -103,12 +103,13 @@
         {
             "type": "temporary",
             "count": 3,
-            "isTop": false
+            "is_top": true
         },
         {
             "type": "window",
             "count": 3,
-            "isTop": false
+            "is_top": true
         }
-    ]
+    ],
+    "all_sort_auto": false
 }

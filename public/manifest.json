@@ -18,22 +18,34 @@
   },
   "options_page": "options.html",
   "offline_enabled": true,
-	"content_scripts": [
-		{
-			"matches": ["<all_urls>"],
-			"js": ["js/test.js"],
-			"run_at": "document_end"
-		}
-	],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y",
+        "chromeos": "Ctrl+Shift+U",
+        "linux": "Ctrl+Shift+J"
+      }
+    },
+    "test": {
+      "description": "test",
+      "suggested_key": {
+          "mac": "Command+Shift+G"
+      }
+    }
+  },
   "permissions": [
+    "activeTab",
     "tabs",
     "storage",
     "unlimitedStorage",
     "chrome://favicon/",
     "downloads",
     "history",
-    "bookmarks",
-    "sessions"
+    "bookmarks"
   ],
-  "content_security_policy": "script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkOInieXK1NUMBmQI='; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkOInieXK1NUMBmQI='; object-src 'self'",
+  "web_accessible_resources": [
+    "savetabs.html"
+  ]
 }

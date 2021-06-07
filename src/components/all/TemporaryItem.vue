@@ -176,12 +176,8 @@
         <span
           v-else-if="showIndex > 0"
           :style="{
-            fontSize: item.isOpened || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                ? config.list_state_size+'px'
-                : config.list_keymap_size+'px',
-            color: item.isOpened
-                ? config.list_state_color
-                : config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
       </template>
     </div>
   </li>

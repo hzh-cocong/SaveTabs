@@ -90,7 +90,7 @@
       v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
 
     <div class="right">
-      <template v-if="isActive || item.isOpened || (storageKeyword != '' && item.lastVisitTime != undefined)">
+      <template v-if="isActive || item.isOpened || item.lastVisitTime != undefined">
         <div
           v-if="item.isCurrent"
           :style="{
@@ -113,12 +113,12 @@
           {{ lang('opened') }}
         </div>
         <div
-          v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+          v-else-if="item.lastVisitTime != undefined"
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
                 ? config.list_focus_state_color
-                : config.list_keymap_color }">
+                : config.list_state_color }">
           {{ timeShow(item.lastVisitTime) }}
         </div>
       </template>
@@ -131,12 +131,8 @@
         <span
           v-else-if="showIndex > 0"
           :style="{
-            fontSize: item.isOpened || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                ? config.list_state_size+'px'
-                : config.list_keymap_size+'px',
-            color: item.isOpened
-                ? config.list_state_color
-                : config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
       </template>
     </div>
   </div>

@@ -12,7 +12,8 @@ let temporary = {
 
         // 加标签（速度很快）(存在污染问题)
         this.storageList.forEach(group => {
-          group.type = 'TemporaryItem';
+          group.type = 'temporary';
+          // group.type = 'TemporaryItem';
         });
 
         resolve();
@@ -47,7 +48,11 @@ let temporary = {
         return false;
       })
 
-      this.cacheList = filterList;
+      // this.cacheList = filterList;
+      this.cacheList = filterList.map((temporary, index) => {
+        temporary.index = index;
+        return temporary;
+      });
 
       return this.cacheList.slice(0, length);
     })

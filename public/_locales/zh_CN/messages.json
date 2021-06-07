@@ -27,6 +27,7 @@
     "temporaryPlaceholder": {"message": "请输入标题或地址"},
     "historyPlaceholder": {"message": "请输入标题或地址"},
     "bookmarkPlaceholder": {"message": "请输入标题或地址"},
+    "allPlaceholder": {"message": "请输入标题或地址"},
 
 
     "updateGroupName": {"message": "窗口名修改"},

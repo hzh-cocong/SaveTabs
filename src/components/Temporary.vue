@@ -857,19 +857,19 @@ alert('空间不够')
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       let filterList = this.storageList.filter(temporary => {
         for(let tab of temporary.tabs) {
-          let isMath = true;
+          let isMatch = true;
           for(let keyword of keywords) {
             // 关键词需全部匹配
             let title = tab.title.toUpperCase();
             let url = tab.url.toUpperCase();
             if(title.indexOf(keyword) == -1
             && url.indexOf(keyword) == -1) {
-              isMath = false;
+              isMatch = false;
               break;
             }
           }
           // 只要有一个搜到就成功
-          if(isMath) {
+          if(isMatch) {
             return true;
           }
         }
@@ -1291,14 +1291,6 @@ alert('空间不够')
   margin-right: 2px;
   font-size: 20px;
   cursor:pointer;
-}
-
-.el-badge {
-    /* margin-right: 5px; */
-    border-color: inherit !important;
-}
-.el-badge.refresh {
-    margin-left: 10px;
 }
 
 .el-tag {

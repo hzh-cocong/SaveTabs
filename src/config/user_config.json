@@ -8,6 +8,7 @@
     "list_background_color": "#ffffff",
     "list_state_color": "#339966",
     "list_keymap_color": "#0066CC",
+    "list_icon_color": "rgb(193, 196, 203)",
     "list_font_size": 20,
     "list_explain_font_size": 12,
     "list_state_size": 12,
@@ -23,6 +24,7 @@
     "list_explain_focus_highlight_weight": "400",
     "list_focus_state_color": "#33FF66",
     "list_focus_keymap_color": "#33FF66",
+    "list_focus_icon_color": "#e4e7ed",
 
     "list_current_background_color": "#c0c4cc",
     "list_current_font_color": "#ffffff",
@@ -32,6 +34,7 @@
     "list_current_explain_highlight_color": "#f73131",
     "list_current_explain_highlight_weight": "400",
     "list_current_state_color": "#ffffff",
+    "list_current_icon_color": "#ffffff",
 
     "list_current_focus_background_color": "#909399",
     "list_current_focus_font_color": "#ffffff",
@@ -40,6 +43,7 @@
     "list_current_explain_focus_font_color": "#ffffff",
     "list_current_explain_focus_highlight_color": "#f73131",
     "list_current_focus_state_color": "#ffffff",
+    "list_current_focus_icon_color": "#ffffff",
 
     "list_scrollbar_color": "blue",
     "list_scrollbar_focus_color": "red",
@@ -93,5 +97,18 @@
     "button_follow_workspace": false,
     "theme_mode": "light",
     "show_workspace_name": true,
-    "theme_id": "11"
+    "theme_id": "11",
+
+    "all_include": [
+        {
+            "type": "temporary",
+            "count": 3,
+            "isTop": false
+        },
+        {
+            "type": "window",
+            "count": 3,
+            "isTop": false
+        }
+    ]
 }

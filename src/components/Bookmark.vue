@@ -917,28 +917,10 @@ console.warn('finish', b, (b-a)/1000)
   flex-direction: column;
   justify-content: space-evenly;
 }
-
-.el-badge {
-    /* margin-right: 5px; */
-    border-color: inherit !important;
-}
-.el-badge.refresh {
-    margin-left: 10px;
-}
 </style>
 <style>
 .bookmark strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }
-
-.bookmark .el-badge {
-  margin-right: 10px;
-  vertical-align: inherit;
-}
-.bookmark .el-badge__content {
-    background-color: inherit !important;
-    border-color: inherit !important;
-}
-
 </style>

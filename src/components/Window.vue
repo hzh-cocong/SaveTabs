@@ -1184,16 +1184,6 @@ console.warn('finish', b, (b-a)/1000)
   flex-direction: column;
   justify-content: space-evenly;
 }
-
-.el-badge {
-    /* margin-right: 5px; */
-    border-color: inherit !important;
-}
-.el-badge.refresh {
-    margin-left: 10px;
-}
-
-
 </style>
 
 <style>

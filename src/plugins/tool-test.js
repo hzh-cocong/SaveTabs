@@ -385,8 +385,163 @@ const tool = {
       }//*/
     })
 
+
+    // 兼容火狐浏览器
+    // if(typeof chrome == "undefined") {
+    window.chrome = {};
+    // }
+    chrome.storage = {
+      sync: {
+        get: function(options, callback) {
+          callback != undefined && callback({temporary: temporary, config: {}});
+        },
+        set: function(options, callback) {
+          callback != undefined && callback();
+        },
+      },
+      local: {
+        get: function(options, callback) {
+          if(options.list != undefined) {
+            callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+          } else if(options.tabs != undefined) {
+            callback != undefined && callback({tabs: notes});
+          } else if(options.temporary != undefined) {
+            callback != undefined && callback({temporary: temporary});
+          } else if(options.bookmark != undefined) {
+            callback != undefined && callback({
+              bookmark: {
+                state: {
+                  "1": true,
+                  "21": true,
+                  "735": true,
+                  "117": true,
+                  "119": true,
+                  "635": true,
+                  "125": true,
+                  "128": true,
+                  "130": true,
+                  "148": true,
+                  "2": true,
+                  "106": true,
+                  "108": true,
+                  "22": true,
+                },
+                position: {
+                  currentIndex: 12,
+                  visiualIndex: 2,
+                }
+              }
+            });
+          } else {
+            callback != undefined && callback({});
+          }
+        },
+        set: function(options, callback) {
+          callback != undefined && callback();
+        },
+        remove: function(keys, callback) {
+          callback != undefined && callback();
+        },
+      }
+    }
+    chrome.windows = {
+      getCurrent: function(options, callback) {
+        callback != undefined && callback(currentWindow);
+      },
+      getAll: function(options, callback) {
+        callback != undefined && callback([{
+          id: 33
+        },{
+          id: 34
+        }]);
+      },
+      update: function(id, options, callback) {
+        callback != undefined && callback({
+          id: id,
+          tabs: [],
+        });
+      },
+      remove: function(windowId, callback) {
+        callback != undefined && callback();
+      },
+      create: function(createData, callback) {
+        callback != undefined && callback(currentWindow);
+      },
+    }
+    chrome.tabs = {
+      query: function(options, callback) {
+        if(Object.keys(options).length == 0) {
+          callback(tabs);
+        } else {
+          callback != undefined && callback(JSON.parse(test));
+        }
+      },
+      create: function(options, callback) {
+        callback != undefined && callback(tabs[0]);
+      },
+      update: function(id, options, callback) {
+        callback != undefined && callback(tabs[0]);
+      },
+      remove: function(keys, callback) {
+        callback != undefined && callback();
+      },
+      highlight: function(highlightInfo, callback) {
+        callback != undefined && callback();
+      },
+      move: function(tabIds, moveProperties, callback) {
+        callback != undefined && callback(tabs[0]);
+      },
+    }
+    chrome.history = {
+      deleteUrl: function(options, callback) {
+        callback != undefined && callback();
+      },
+      search: function(options, callback) {
+        if(options.text == '') {
+          callback != undefined && callback(history.slice(0, options.maxResults));
+        } else {
+          callback != undefined && callback(history.slice(0, 3));
+        }
+      },
+      deleteRange: function(options, callback) {
+        callback != undefined && callback();
+      },
+      deleteAll: function(callback) {
+        callback != undefined && callback();
+      }
+    }
+    chrome.bookmarks = {
+      getTree: function(callback) {
+        setTimeout(() => {
+          callback != undefined && callback(JSON.parse(bookmarkTree));
+        }, 1)
+      },
+      search: function(options, callback) {
+        setTimeout(() => {
+          callback != undefined && callback(JSON.parse(bookmarks));
+        }, 0)
+      },
+      remove: function(options, callback) {
+        callback != undefined && callback();
+      },
+      getSubTree: function(options, callback) {
+        callback != undefined && callback(JSON.parse(bookmarkSubTree));
+      },
+      move: function(id, destination, callback) {
+        callback != undefined && callback(JSON.parse(bookmarkSubTree));
+      },
+    }
+
+    chrome.runtime = {
+      sendMessage: function(options, callback) {
+        setTimeout(() => {
+          callback != undefined && callback([21, 20, 19, 18]);
+        }, 1)
+      },
+    }
+
     // 添加实例方法
-    Vue.prototype.$open = function (url, event, callback) {
+    window.$open = Vue.prototype.$open = function (url, event, callback) {
       // 不管空白页
       // platform = '' 空的设备暂不支持其它方式打开
       if(event != undefined
@@ -443,12 +598,12 @@ const tool = {
         })
       }
     }
-    Vue.prototype.$active = function (tabId) {
+    window.$active = Vue.prototype.$active = function (tabId) {
       chrome.tabs.update(tabId, {
         active: true
       });
     }
-    Vue.prototype._device = (function() {
+    window._device = Vue.prototype._device = (function() {
       let platform = '';
       let isPC = true;
       let u = navigator.userAgent;
@@ -496,159 +651,3 @@ const tool = {
 }
 
 Vue.use(tool)
-
-// 兼容火狐浏览器
-// if(typeof chrome == "undefined") {
-  window.chrome = {};
-// }
-chrome.storage = {
-  sync: {
-    get: function(options, callback) {
-      callback != undefined && callback({temporary: temporary, config: {}});
-    },
-    set: function(options, callback) {
-      callback != undefined && callback();
-    },
-  },
-  local: {
-    get: function(options, callback) {
-      if(options.list != undefined) {
-        callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
-      } else if(options.tabs != undefined) {
-        callback != undefined && callback({tabs: notes});
-      } else if(options.temporary != undefined) {
-        callback != undefined && callback({temporary: temporary});
-      } else if(options.bookmark != undefined) {
-        callback != undefined && callback({
-          bookmark: {
-            state: {
-              "1": true,
-              "21": true,
-              "735": true,
-              "117": true,
-              "119": true,
-              "635": true,
-              "125": true,
-              "128": true,
-              "130": true,
-              "148": true,
-              "2": true,
-              "106": true,
-              "108": true,
-              "22": true,
-            },
-            position: {
-              currentIndex: 12,
-              visiualIndex: 2,
-            }
-          }
-        });
-      } else {
-        callback != undefined && callback({});
-      }
-    },
-    set: function(options, callback) {
-      callback != undefined && callback();
-    },
-    remove: function(keys, callback) {
-      callback != undefined && callback();
-    },
-  }
-}
-chrome.windows = {
-  getCurrent: function(options, callback) {
-    callback != undefined && callback(currentWindow);
-  },
-  getAll: function(options, callback) {
-    callback != undefined && callback([{
-      id: 33
-    },{
-      id: 34
-    }]);
-  },
-  update: function(id, options, callback) {
-    callback != undefined && callback({
-      id: id,
-      tabs: [],
-    });
-  },
-  remove: function(windowId, callback) {
-    callback != undefined && callback();
-  },
-  create: function(createData, callback) {
-    callback != undefined && callback(currentWindow);
-  },
-}
-chrome.tabs = {
-  query: function(options, callback) {
-    if(Object.keys(options).length == 0) {
-      callback(tabs);
-    } else {
-      callback != undefined && callback(JSON.parse(test));
-    }
-  },
-  create: function(options, callback) {
-    callback != undefined && callback(tabs[0]);
-  },
-  update: function(id, options, callback) {
-    callback != undefined && callback(tabs[0]);
-  },
-  remove: function(keys, callback) {
-    callback != undefined && callback();
-  },
-  highlight: function(highlightInfo, callback) {
-    callback != undefined && callback();
-  },
-  move: function(tabIds, moveProperties, callback) {
-    callback != undefined && callback(tabs[0]);
-  },
-}
-chrome.history = {
-  deleteUrl: function(options, callback) {
-    callback != undefined && callback();
-  },
-  search: function(options, callback) {
-    if(options.text == '') {
-      callback != undefined && callback(history.slice(0, options.maxResults));
-    } else {
-      callback != undefined && callback(history.slice(0, 3));
-    }
-  },
-  deleteRange: function(options, callback) {
-    callback != undefined && callback();
-  },
-  deleteAll: function(callback) {
-    callback != undefined && callback();
-  }
-}
-chrome.bookmarks = {
-  getTree: function(callback) {
-    setTimeout(() => {
-      callback != undefined && callback(JSON.parse(bookmarkTree));
-    }, 1)
-  },
-  search: function(options, callback) {
-    setTimeout(() => {
-      callback != undefined && callback(JSON.parse(bookmarks));
-    }, 0)
-  },
-  remove: function(options, callback) {
-    callback != undefined && callback();
-  },
-  getSubTree: function(options, callback) {
-    callback != undefined && callback(JSON.parse(bookmarkSubTree));
-  },
-  move: function(id, destination, callback) {
-    callback != undefined && callback(JSON.parse(bookmarkSubTree));
-  },
-}
-
-chrome.runtime = {
-  sendMessage: function(options, callback) {
-    setTimeout(() => {
-      callback != undefined && callback([21, 20, 19, 18]);
-    }, 1)
-  },
-}
-
-console.log('tool-test.js', window.chrome)

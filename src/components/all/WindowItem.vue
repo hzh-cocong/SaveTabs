@@ -38,7 +38,6 @@
       :style="{
         width: (config.item_height-20)+'px',
         height: (config.item_height-20)+'px' }">
-        <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)" -->
       <el-image
         v-if="isLoad"
         :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)"
@@ -52,23 +51,37 @@
       </el-image>
       <svg-icon
         name="windows-brands"
-        style=" height: 13px;
-                width: 13px;
-                color: rgb(193, 196, 203);
-                position: absolute;
+        style=" position: absolute;
                 right: 0;
                 bottom: 0;
-                border: 2px solid white;
-                border-bottom: 0;
-                border-right: 0;
                 padding: 2px;
+                border-width: 2px 0px 0px 2px;
+                border-style: solid;
                 border-radius: 2px 0 0 0;
-                margin-right: 2px;
-                background-color: white;"
-        :style="{ backgroundColor: isSelected ? 'rgb(116, 151, 222)' : 'white',
-                  borderColor: isSelected ? 'rgb(116, 151, 222)' : 'white',
-                  color: isSelected ? '#e4e7ed' : 'rgb(193, 196, 203)',
-                  }"></svg-icon>
+                margin-right: 2px;"
+        :style="{ backgroundColor: item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_background_color
+                          : config.list_current_background_color)
+                        : ( isSelected
+                          ? config.list_focus_background_color
+                          : config.list_background_color),
+                  borderColor: item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_background_color
+                          : config.list_current_background_color)
+                        : ( isSelected
+                          ? config.list_focus_background_color
+                          : config.list_background_color),
+                  color: item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_icon_color
+                          : config.list_current_icon_color)
+                        : ( isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color),
+                  width: config.item_height/4+'px',
+                  height: config.item_height/4+'px', }"></svg-icon>
     </span>
 
     <span
@@ -115,24 +128,15 @@
           :style="{
             fontSize: config.list_keymap_size+'px',
             color: config.list_focus_keymap_color }">↩</span>
-        <!-- <span
-          v-else-if="_device.platform != ''
-                  && (index-$refs.list.scrollLines+1) <= 9"
+        <span
+          v-else-if="showIndex > 0"
           :style="{
             fontSize: item.isOpened || (storageKeyword != ''  && item.lastVisitTime != undefined)
                 ? config.list_state_size+'px'
                 : config.list_keymap_size+'px',
             color: item.isOpened
                 ? config.list_state_color
-                : config.list_keymap_color }">{{
-                    (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-                  + ( 1 > index-$refs.list.scrollLines+1
-                    ? 1
-                    : (index-$refs.list.scrollLines+1 > config.item_show_count
-                      ? config.item_show_count
-                      : index-$refs.list.scrollLines+1)
-                    )
-                  }}</span> -->
+                : config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
       </template>
     </div>
   </div>
@@ -155,7 +159,7 @@ export default {
       type: Object,
       required: require,
     },
-    index: {
+    showIndex: {
       type: Number,
       required: require,
     },
@@ -176,8 +180,6 @@ export default {
   data() {
     return {
     }
-  },
-  methods: {
   }
 }
 </script>
@@ -225,7 +227,7 @@ export default {
 }
 </style>
 <style>
-.window strong {
+.all .item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

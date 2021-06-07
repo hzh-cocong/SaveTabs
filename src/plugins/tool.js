@@ -144,7 +144,7 @@ const tool = {
     })
 
     // 添加实例方法
-    Vue.prototype.$open = function (url, event, callback) {
+    window.$open = Vue.prototype.$open = function (url, event, callback) {
       // 不管空白页
       // platform = '' 空的设备暂不支持其它方式打开
       if(event != undefined
@@ -201,12 +201,12 @@ const tool = {
         })
       }
     }
-    Vue.prototype.$active = function (tabId) {
+    window.$active = Vue.prototype.$active = function (tabId) {
       chrome.tabs.update(tabId, {
         active: true
       });
     }
-    Vue.prototype._device = (function() {
+    window._device = Vue.prototype._device = (function() {
       let platform = '';
       let isPC = true;
       let u = navigator.userAgent;

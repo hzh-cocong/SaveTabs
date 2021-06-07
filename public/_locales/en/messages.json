@@ -26,7 +26,7 @@
     "windowPlaceholder": {"message": "Please enter the window name"},
     "temporaryPlaceholder": {"message": "Please enter title or address"},
     "historyPlaceholder": {"message": "Please enter title or address"},
-    "bookmarkPlaceholder": {"message": "Please enter title or address"},
+    "allPlaceholder": {"message": "Please enter title or address"},
 
 
     "updateGroupName": {"message": "Window name modification"},

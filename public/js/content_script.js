@@ -6,6 +6,30 @@
     document.body.style.overflow = 'auto';
   } else {
     console.log('ffff')
+
+    let shadow = '0 10px 50px 0 rgb(0 0 0 / 88%)';
+
+    container = document.createElement('div');
+    let iframe = document.createElement('iframe');
+
+    container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: transparent;overflow:auto;transition: background-color 0.2s ease-out;`);
+    container.id = id;
+    container.onclick = function() {
+      container.remove();
+    }
+
+    // iframe.setAttribute('style', `display:block;margin:0px auto;width: 100px;height: 100px;border-radius: 4px; box-shadow: ${shadow};transition-property: width , height;transition-duration: 0.3s;transition-timing-function: ease-in;`);
+    // iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 4px; box-shadow: ${shadow};transition:all 0.3s ease-in;`);
+    // iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 4px; transition:all 0.3s ease-in;`);
+    //iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 4px; box-shadow: ${shadow};background-color: transparent;transition-property: width , height, margin, background-color;transition-duration: 0.3s;transition-timing-function: ease;`);
+    iframe.setAttribute('style', `display:block;margin:100px auto;width: 200px;height: 200px;border-radius: 4px; box-shadow: ${shadow};background-color: white;filter: blur(1px);transition:all 0.2s ease-in;`);
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('frameborder', '0');
+
+    container.append(iframe);
+    document.body.append(container);
+    document.body.style.overflow = 'hidden';
+
     chrome.storage.sync.get({'config': {}}, items => {
       console.log(items);
       let config = items.config;
@@ -20,24 +44,22 @@
       let shadow = '0 10px 50px 0 rgb(0 0 0 / 88%)';
       console.log(width, height, left, top, containerBackgroundColor);
 
-      container = document.createElement('div');
-      let iframe = document.createElement('iframe');
-
-      container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: ${containerBackgroundColor};overflow:auto;`);
-      container.id = id;
-      container.onclick = function() {
-        container.remove();
-      }
-
-      iframe.setAttribute('style', `display:block;margin:${top}px auto;width: ${width}px;height:${height}px;border-radius: 4px; box-shadow: ${shadow};background-color:${iframeBackgroundColor}`);
-      // iframe.setAttribute('style', `position:fixed;left:${left}px;top:${top}px;width: ${width}px;height:${height}px;border-radius: 2px; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);`);
-      // iframe.setAttribute('scrolling', 'no');
-      iframe.setAttribute('frameborder', '0');
+      container.style.backgroundColor = containerBackgroundColor;
+      iframe.style.width = width+'px';
+      iframe.style.height = height+'px';
+      iframe.style.marginTop = top+'px';
+      iframe.style.backgroundColor = iframeBackgroundColor;
+      // iframe.style.boxShadow = shadow;
+      iframe.style.filter = "blur(0px)";
       iframe.src = chrome.extension.getURL("savetabs.html");
 
-      container.append(iframe);
-      document.body.append(container);
-      document.body.style.overflow = 'hidden';
+      // container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: ${containerBackgroundColor};overflow:auto;`);
+
+      // iframe.setAttribute('style', `display:block;margin:${top}px auto;width: ${width}px;height:${height}px;border-radius: 4px; box-shadow: ${shadow};background-color:${iframeBackgroundColor}`);
+      // // iframe.setAttribute('style', `position:fixed;left:${left}px;top:${top}px;width: ${width}px;height:${height}px;border-radius: 2px; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);`);
+      // // iframe.setAttribute('scrolling', 'no');
+      // iframe.setAttribute('frameborder', '0');
+      // iframe.src = chrome.extension.getURL("savetabs.html");
     })
 
     // container = document.createElement('div');

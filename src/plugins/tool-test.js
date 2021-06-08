@@ -491,6 +491,9 @@ const tool = {
       move: function(tabIds, moveProperties, callback) {
         callback != undefined && callback(tabs[0]);
       },
+      getCurrent: function(callback) {
+        callback != undefined && callback();
+      },
     }
     chrome.history = {
       deleteUrl: function(options, callback) {

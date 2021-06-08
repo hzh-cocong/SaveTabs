@@ -54,7 +54,7 @@
     "width": 500,
     "border_width": 8,
     "padding_width": 0,
-    "border_color": "#ffffff",
+    "border_color": "red",
     "background_color": "#ffffff",
 
     "tag_line_count": 3,
@@ -92,7 +92,7 @@
         "tab",
         "all"
     ],
-    "active_workspace_type": "window",
+    "active_workspace_type": "note",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",

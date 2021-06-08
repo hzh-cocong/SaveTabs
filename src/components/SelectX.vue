@@ -153,7 +153,6 @@ export default {
 .box {
   display: inline-block;
   padding: 0;
-  height: 0;
   position: relative;
 }
 .box .list {

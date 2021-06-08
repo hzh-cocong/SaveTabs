@@ -140,8 +140,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // 弹出菜单会自己关闭，不用管它
     if(sender.tab == undefined) return;
 
-    // window.open 会有专门的事件来处理，不用管它
-    if(sender.frameId == 0) return;
+    // window.open 关闭整个窗口
+    if(sender.frameId == 0 && request.windowId) {
+      chrome.windows.remove(request.windowId);
+      return;
+    }
 
     if(sender.tab != undefined) {
       chrome.tabs.executeScript(sender.tab.id, { file: "js/content_script.js" }, () => {
@@ -149,7 +152,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const error = chrome.runtime.lastError;
         if( ! (error && error.message)) return;
 
-        // 不可能发生
+        // window.open 自己本身触发的切换回导致窗口关闭，加载本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
         console.log("that's impossible", error.message);
       })
     }

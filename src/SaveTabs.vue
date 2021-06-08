@@ -34,7 +34,7 @@
         v-model="currentThemeIndex">
         <template #default="{ index, item, isSelected }">
           <div
-          class="theme-item"
+            class="theme-item"
             :class="{ selected: isSelected }"
             @click="changeTheme(item, index)">
             <span
@@ -120,7 +120,7 @@
         <template slot="prepend">
           <el-dropdown
             :show-timeout="0"
-            trigger="hover"
+            trigger="click"
             placement="bottom"
             :hide-on-click="false"
             @visible-change="menuVisible = arguments[0]"
@@ -165,7 +165,6 @@
               <el-dropdown-item
                 divided
                 :command="-1"
-                class="other"
                 style="width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
                 @click.native="themeDialogVisible=true;"><!-- 顶部已甚至了 click focus -->
                 <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
@@ -176,47 +175,35 @@
                 :command="-1"
                 style="cursor: default"
                 class="other">
-                <span @click="$open('./options.html?type=workspace', $event)">
-                  <svg-icon
-                    name="cog-solid"
-                    style="cursor:pointer;height: 20px;color: #c0c4cc; position: relative; top: 6px;"
-                  ></svg-icon>
-                </span>
-                <span
+                <svg-icon
+                  name="cog-solid"
+                  class="hover"
+                  style="cursor:pointer;height: 20px;color: #c0c4cc;"
+                  @click.native="$open('./options.html?type=workspace', $event)"
+                ></svg-icon>
+                <svg-icon
+                  :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
+                  class="hover"
+                  style="cursor:pointer;height: 20px;margin: 0 10px;"
                   :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
-                  style="margin: 0 10px;"
-                  @click="changeThemeMode">
-                  <svg-icon
-                    :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
-                    style="cursor:pointer;height: 20px; position: relative; top: 6px;"></svg-icon>
-                </span>
-                <span
-                  :style="{
-                    color: config.pinned
-                  && currentWorkspace != undefined
-                  && config.active_workspace_type == currentWorkspace.type
-                  ? 'gray' : '#c0c4cc',}"
-                  @click="toPin">
-                  <svg-icon
-                    name="thumbtack-solid"
-                    :style="{ transform: config.pinned
-                                      && currentWorkspace != undefined
-                                      && config.active_workspace_type == currentWorkspace.type
-                                      ? 'rotate(0)' : 'rotate(90deg)' }"
-                    style="cursor:pointer;height: 20px; position: relative; top: 6px;"></svg-icon>
-                </span>
+                  @click.native="changeThemeMode"></svg-icon>
+                <svg-icon
+                  name="thumbtack-solid"
+                  class="hover"
+                  style="cursor:pointer;height: 20px;"
+                  :style="{ transform: config.pinned
+                                    && currentWorkspace != undefined
+                                    && config.active_workspace_type == currentWorkspace.type
+                                    ? 'rotate(0)' : 'rotate(90deg)',
+                            color: config.pinned
+                                && currentWorkspace != undefined
+                                && config.active_workspace_type == currentWorkspace.type
+                                ? 'gray' : '#c0c4cc', }"
+                  @click.native="toPin"></svg-icon>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
-        <!-- <template slot="suffix">
-          <i
-            v-if="keyword != ''"
-            class="el-icon-circle-close"
-            style="padding-right: 4px; cursor: pointer;"
-            :style="{ 'line-height': config.toolbar_height+'px' }"
-            ></i>
-        </template> -->
         <template slot="prefix">
           <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">
             <el-popover
@@ -357,6 +344,21 @@
           ref="workspaces"></component>
       </el-carousel-item>
     </el-carousel>
+
+    <!-- <div
+      style="border-top: 1px solid black; height: 30px; margin-top: 8px;"
+      :style="{ borderColor: config.toolbar_border_color,
+                backgroundColor: config.toolbar_background_color,}">
+
+    </div> -->
+
+    <!-- <div
+      style="border-top: 1px solid black; height: 30px; margin-top: 8px;
+            position:fixed;bottom: 0; left: 0; width: 100%;z-index: 2"
+      :style="{ borderColor: config.toolbar_border_color,
+                backgroundColor: config.toolbar_background_color,}">
+
+    </div>-->
 
   </div>
 </template>
@@ -758,12 +760,26 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // todo
     window.s = this;
 
-    // window.open 一旦失去焦点就会自己把自己给关了
-    chrome.windows.onFocusChanged.addListener((window) => {
-      chrome.runtime.sendMessage({
-        type: 'closeWindow',
-      })
+    chrome.tabs.getCurrent((tab) => {
+      // 弹出式菜单是获取不到当前活跃标签的
+      if(tab == undefined) return;
+
+      if(tab.url == chrome.extension.getURL("savetabs.html")) {
+        // window.open 打开的
+
+        // window.open 一旦失去焦点就会自己把自己给关了
+        chrome.windows.onFocusChanged.addListener(() => {
+          // 让 background.js 帮忙关闭，减轻负担
+          chrome.runtime.sendMessage({
+            type: 'closeExtension',
+            tabId: tab.id,
+            windowId: tab.windowId,
+          })
+        })
+      }
     })
+
+
 
     // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //   alert('收到了2')
@@ -874,6 +890,8 @@ img {
 .theme-item {
   margin: 4px 4px 6px 4px;
   padding: 0px 9px 0px 0px;
+
+  border-radius: 2px;
 
   background-color: #fff;
   cursor: pointer;

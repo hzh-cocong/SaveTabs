@@ -134,42 +134,59 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     return;
   }
-})
+  if(request.type == 'closeExtension') {
+    console.log('closeExtension', sender)
 
-chrome.commands.onCommand.addListener(command => {
-  if(command == 'test') {
-    chrome.browserAction.setPopup({popup: ''})
-    chrome.tabs.executeScript(null, { file: "js/content_script.js" }, () => {
-      // 捕获错误，这样插件就不会显示错误
-      const error = chrome.runtime.lastError;
-      if( ! (error && error.message)) return;
+    // 弹出菜单会自己关闭，不用管它
+    if(sender.tab == undefined) return;
 
-      chrome.storage.sync.get({'config': {}}, items => {
-        chrome.windows.getCurrent((w) => {
-          let config = items.config;
-          let width = config.width+config.border_width*2;
-          let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
-          let left = w.left+(w.width-width)/2;
-          let top = w.top+120;
+    // window.open 会有专门的事件来处理，不用管它
+    if(sender.frameId == 0) return;
 
-          height += 28; // 窗口标题栏
+    if(sender.tab != undefined) {
+      chrome.tabs.executeScript(sender.tab.id, { file: "js/content_script.js" }, () => {
+        // 捕获错误，这样插件就不会显示错误
+        const error = chrome.runtime.lastError;
+        if( ! (error && error.message)) return;
 
-          // alert(JSON.stringify(w))
-          // alert(`width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
-
-          window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
-        })
+        // 不可能发生
+        console.log("that's impossible", error.message);
       })
-    })
-    // alert(command)
-    // window.open(chrome.extension.getURL("savetabs.html"),"gc-popout-window","width =348,height=654")
-    // window.open("savetabs.html", "extension_popup", "width=300,height=400,status=no,scrollbars=yes,resizable=no");
-    // chrome.runtime.sendMessage({});
+    }
+    return;
   }
 })
 
 chrome.browserAction.onClicked.addListener(() => {
-  // alert('ss');
-  chrome.browserAction.setPopup({popup: 'savetabs.html'})
-  // alert('ff')
+  chrome.tabs.executeScript(null, { file: "js/content_script.js" }, () => {
+    // 捕获错误，这样插件就不会显示错误
+    const error = chrome.runtime.lastError;
+    if( ! (error && error.message)) return;
+
+    chrome.storage.sync.get({'config': {}}, items => {
+      chrome.windows.getCurrent((w) => {
+        let config = items.config;
+        let width = config.width+config.border_width*2;
+        let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
+        let left = w.left+(w.width-width)/2;
+        let top = w.top+120;
+
+        height += 28; // 窗口标题栏
+
+        window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
+      })
+    })
+  })
+})
+
+chrome.commands.onCommand.addListener(command => {
+  if(command == 'test') {
+    chrome.browserAction.getPopup({}, (url)=>{
+      if(url != '') {
+        chrome.browserAction.setPopup({popup: ''})
+      } else {
+        chrome.browserAction.setPopup({popup: 'savetabs.html'})
+      }
+    })
+  }
 })

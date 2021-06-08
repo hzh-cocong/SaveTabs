@@ -758,6 +758,13 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // todo
     window.s = this;
 
+    // window.open 一旦失去焦点就会自己把自己给关了
+    chrome.windows.onFocusChanged.addListener((window) => {
+      chrome.runtime.sendMessage({
+        type: 'closeWindow',
+      })
+    })
+
     // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //   alert('收到了2')
     // })

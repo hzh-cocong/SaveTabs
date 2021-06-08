@@ -403,7 +403,11 @@ export default {
       } else {
         // 切换到对应的标签，不做任何移动（默认方式）
         chrome.tabs.update(this.selectedTabId, { active: true }, () => {
-          chrome.windows.update(this.selectedTab.windowId, { focused: true});
+          chrome.windows.update(this.selectedTab.windowId, { focused: true}, () => {
+            chrome.runtime.sendMessage({
+              type: 'closeExtension',
+            })
+          });
         })
       }
     },

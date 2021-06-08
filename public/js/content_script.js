@@ -2,8 +2,9 @@
   let id = 'container-'+chrome.runtime.id;
   let container = document.getElementById(id);
   if(container != null) {
-    container.remove();
+    // document.body.style.position = 'inherit';
     document.body.style.overflow = 'auto';
+    container.remove();
   } else {
     console.log('ffff')
 
@@ -15,6 +16,8 @@
     container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: transparent;overflow:auto;transition: background-color 0.3s ease;`);
     container.id = id;
     container.onclick = function() {
+      // document.body.style.position = 'inherit';
+      document.body.style.overflow = 'auto';
       container.remove();
     }
 
@@ -33,7 +36,10 @@
 
     container.append(iframe);
     document.body.append(container);
+    // document.body.style.position = 'fixed';
+    // document.body.style.top = window.scrollY+'px';
     document.body.style.overflow = 'hidden';
+    // document.body.style.height = '100%';
 
     chrome.storage.sync.get({'config': {}}, items => {
       console.log(items);

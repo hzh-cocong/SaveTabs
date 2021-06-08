@@ -1,6 +1,7 @@
 <template>
   <div
     id="app"
+    v-loading="isLoading"
     style="border-style:solid;"
     :style="{
       width: config.width+'px',
@@ -380,10 +381,13 @@ export default {
     return {
       focus: this.focus,
       input: this.input,
+      loading: this.loading,
     }
   },
   data() {
     return {
+      isLoading: true,
+
       keyword: '',
       activeWorkspaceIndex: -1,//0,
       workspaces: [],
@@ -470,6 +474,9 @@ export default {
         this.$refs.carousel.setActiveItem(index);
       }
     },
+    loading(visibility) {
+      this.isLoading = visibility;
+    },
 
     getTypeIndex(type) {
       for(let index in this.workspaces) {
@@ -482,6 +489,8 @@ export default {
     },
 
     finish() {
+      this.loading(false);
+
       // 只有组件在一开始创建的时候才会调用到这里
       let things = this.things[ this.activeWorkspaceRefIndex ];
       if( ! things) {

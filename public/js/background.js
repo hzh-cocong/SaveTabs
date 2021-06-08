@@ -169,7 +169,7 @@ chrome.commands.onCommand.addListener(command => {
 })
 
 chrome.browserAction.onClicked.addListener(() => {
-  alert('ss');
+  // alert('ss');
   chrome.browserAction.setPopup({popup: 'savetabs.html'})
-  alert('ff')
+  // alert('ff')
 })

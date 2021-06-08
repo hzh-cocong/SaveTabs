@@ -92,12 +92,16 @@
         "tab",
         "all"
     ],
-    "active_workspace_type": "all",
+    "active_workspace_type": "window",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
     "show_workspace_name": true,
     "theme_id": "11",
+
+    "popup": {
+        "type": "inject"
+    },
 
     "all_include": [
         {

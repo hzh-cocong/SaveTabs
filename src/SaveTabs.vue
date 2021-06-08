@@ -8,6 +8,7 @@
       backgroundColor: config.background_color,
       borderWidth: config.border_width+'px',
       borderColor: config.border_color,
+      padding: config.padding_width+'px',
     }">
 
     <el-dialog
@@ -76,10 +77,7 @@
 
     <div
       class="toolbar"
-      :style="{ margin: config.padding_width+'px '
-                      +(config.padding_width+10)+'px '
-                      +'10px '
-                      +(config.padding_width+10)+'px',
+      :style="{ margin: '10px '+'10px '+'10px '+'10px',
                 height: config.toolbar_height+'px',
 
                 '--toolbar_height': config.toolbar_height+'px',
@@ -320,11 +318,7 @@
       :loop="true"
       :initial-index="activeWorkspaceIndex"
       :height="(config.item_height*config.item_show_count)+'px'"
-      :style="{ padding: '0 '
-                        +config.padding_width+'px '
-                        +config.padding_width+'px '
-                        +config.padding_width+'px',
-              }"
+      :style="{ padding: '0 '+'0px '+'px '+'px'}"
       trigger="click"
       @change="workspaceChange"
       ref="carousel">
@@ -858,9 +852,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#app {
+/* #app {
   padding: 10px 0 0px 0;
-}
+} */
 </style>
 
 <!-- 全局样式 -->

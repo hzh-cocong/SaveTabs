@@ -77,8 +77,7 @@
 
     <div
       class="toolbar"
-      :style="{ margin: '10px '+'10px '+'10px '+'10px',
-                height: config.toolbar_height+'px',
+      :style="{  height: config.toolbar_height+'px',
 
                 '--toolbar_height': config.toolbar_height+'px',
                 '--toolbar-background-color': config.toolbar_background_color,
@@ -318,7 +317,6 @@
       :loop="true"
       :initial-index="activeWorkspaceIndex"
       :height="(config.item_height*config.item_show_count)+'px'"
-      :style="{ padding: '0 '+'0px '+'px '+'px'}"
       trigger="click"
       @change="workspaceChange"
       ref="carousel">
@@ -917,6 +915,8 @@ img {
 }
 
 .toolbar {
+  margin: 10px;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;

@@ -30,7 +30,7 @@
     // iframe.setAttribute('style', `display:block;margin:100px auto;width: 200px;height: 200px;border-radius: 4px; box-shadow: ${shadow};background-color: white;filter: blur(1px);transition:all 0.2s ease-in;`);
     // iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 4px; background-color: white;ransparent;visibility:hidden;transition-property: visibility;transition-duration: 0.15s;transition-timing-function: linear;transition-delay: .15s;`);
     // iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 4px; background-color: white;ransparent;opacity:0;transition-property: opacity;transition-duration: 0.15s;transition-timing-function: ease-out;transition-delay: .15s;`);
-    iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 0px; background-color: white;ransparent;opacity:0;transition-property: opacity;transition-duration: 0.15s;transition-timing-function: ease-out;transition-delay: .15s;`);
+    iframe.setAttribute('style', `display:block;margin:100px auto;width: 100px;height: 100px;border-radius: 0 0 4px 4px; background-color: white;ransparent;opacity:0;transition-property: opacity;transition-duration: 0.15s;transition-timing-function: ease-out;transition-delay: .15s;`);
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');
 
@@ -54,6 +54,8 @@
       // let backgroundColor = "transparent";
       let shadow = '0 5px 20px 0 rgba(0, 0, 0, 0.25)';
       console.log(width, height, left, top, containerBackgroundColor);
+
+      height += 30; // 底部状态栏
 
       // container.style.backgroundColor = containerBackgroundColor;
       iframe.style.width = width+'px';

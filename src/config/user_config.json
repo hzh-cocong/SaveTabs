@@ -53,9 +53,9 @@
 
     "width": 500,
     "border_width": 8,
-    "padding_width": 10,
-    "border_color": "red",
-    "background_color": "yellow",
+    "padding_width": 0,
+    "border_color": "#ffffff",
+    "background_color": "#ffffff",
 
     "tag_line_count": 3,
 

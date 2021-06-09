@@ -1,6 +1,8 @@
 <template>
+<div
+  id="app">
+
   <div
-    id="app"
     v-loading="isLoading"
     style="border-style:solid;"
     :style="{
@@ -10,7 +12,6 @@
       borderColor: config.border_color,
       padding: config.padding_width+'px',
     }">
-
     <el-dialog
       :visible.sync="themeDialogVisible"
       :modal="false"
@@ -116,10 +117,11 @@
         ref="input">
         <template slot="prepend">
           <el-dropdown
-            :show-timeout="0"
-            trigger="click"
+            trigger="hover"
             placement="bottom"
+            style="height: 100%;"
             :hide-on-click="false"
+            :show-timeout="0"
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
                     && (activeWorkspaceIndex=arguments[0],
@@ -128,19 +130,17 @@
             <span class="el-dropdown-link" @click="focus"> <!-- 工作区标题 -->
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
-                style="width: 20px; height: 20px; position: relative; top: 2px;margin-right: 3px;"
+                style="width: 20px; height: 20px; margin-right: 3px;"
                 :style="{ color: config.pinned && currentWorkspace != undefined && config.active_workspace_type == currentWorkspace.type
                       ? config.toolbar_menu_icon_fixed_color : config.toolbar_menu_icon_color}"></svg-icon>
-              <span style="position: relative; top: -3px;">
-                <span
-                  v-if="config.show_workspace_name"
-                  style="display:inline-block;width: 70px;text-align:center;"
-                  :style="{ color: config.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
-                <i style="transition: transform .3s;"
-                  class="el-icon-arrow-down el-icon--right"
-                  :class="{ 'is-reverse': menuVisible}"
-                  :style="{ color: config.toolbar_icon_color }"></i>
-              </span>
+              <span
+                v-if="config.show_workspace_name"
+                style="display:inline-block;width: 70px;text-align:center;"
+                :style="{ color: config.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
+              <i style="transition: transform .3s;"
+                class="el-icon-arrow-down el-icon--right"
+                :class="{ 'is-reverse': menuVisible}"
+                :style="{ color: config.toolbar_icon_color }"></i>
             </span>
             <el-dropdown-menu slot="dropdown" class="toolbar-menu">
               <el-dropdown-item
@@ -170,12 +170,12 @@
                 divided
                 :value="activeWorkspaceIndex"
                 :command="-1"
-                style="cursor: default"
+                style="cursor: default;line-height: 0;"
                 class="other">
                 <svg-icon
                   name="cog-solid"
                   class="hover"
-                  style="cursor:pointer;height: 20px;color: #c0c4cc;"
+                  style="cursor:pointer;height: 20px;color: #c0c4cc;margin-top: 4px;"
                   @click.native="$open('./options.html?type=workspace', $event)"
                 ></svg-icon>
                 <svg-icon
@@ -337,7 +337,10 @@
       </el-carousel-item>
     </el-carousel>
 
-    <!-- <div
+  </div>
+
+  <!--
+    <div
       style="border-top: 1px solid black; height: 30px; margin-top: 8px;"
       :style="{ borderColor: config.toolbar_border_color,
                 backgroundColor: config.toolbar_background_color,}">
@@ -352,7 +355,59 @@
 
     </div>-->
 
+
+  <div
+    style=" height: 30px; border-top:1px solid #eee; background-color: white;display:flex;align-items: center;">
+
+  <!-- <div
+    style=" height: 30px; background-color: #f7f7f7;display:flex;align-items: center;"> -->
+
+    <!-- <i
+      class="el-icon-setting hover"
+      style="float: right;cursor: pointer;margin: 0 10px;"
+      @click="$open('chrome://bookmarks', $event);focus();"></i> -->
+
+    <svg-icon
+      name="cog-solid"
+      class="hover"
+      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
+      @click.native="$open('./options.html?type=workspace', $event)"
+    ></svg-icon>
+
+    <svg-icon
+      :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
+      class="hover"
+      style="cursor:pointer;height: 20px;margin-right: 10px;"
+      :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
+      @click.native="changeThemeMode"></svg-icon>
+
+    <svg-icon
+      name="thumbtack-solid"
+      class="hover"
+      style="cursor:pointer;height: 20px;margin-right: 10px;"
+      :style="{ transform: config.pinned
+                        && currentWorkspace != undefined
+                        && config.active_workspace_type == currentWorkspace.type
+                        ? 'rotate(0)' : 'rotate(90deg)',
+                color: config.pinned
+                    && currentWorkspace != undefined
+                    && config.active_workspace_type == currentWorkspace.type
+                    ? 'gray' : '#c0c4cc', }"
+      @click.native="toPin"></svg-icon>
+
+    <div style="flex: 1; text-align: center; color:#c0c4cc">买一送一啦</div>
+
+
+
+    <svg-icon
+      name="share-alt-solid"
+      class="hover"
+      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
+      @click.native="$open('./options.html?type=workspace', $event)"
+    ></svg-icon>
   </div>
+
+</div>
 </template>
 
 <script>
@@ -931,7 +986,7 @@ img {
 .toolbar .search-input .el-input-group__prepend {
   background-color: var(--toolbar-background-color);
   border-radius: 0;
-  padding: 0 10px;
+  padding: 0;
   border-color: var(--toolbar-border-color)
 }
 .toolbar .search-input input {
@@ -982,7 +1037,12 @@ img {
   transform: rotate(-180deg);
 }
 .toolbar .el-dropdown-link {
+  display: flex;
+  height: 100%;
+  padding: 0 10px;
   cursor: pointer;
+
+  align-items: center;
 }
 .toolbar-menu .el-dropdown-menu__item.selected {
   color: #409eff;
@@ -995,6 +1055,17 @@ img {
 .toolbar-menu .el-dropdown-menu__item.other:hover {
     background-color: #FFF;
     color: #606266;
+}
+.el-dropdown-menu.el-popper.toolbar-menu {
+  margin-top: 1px;
+  border-top: 0;
+  /* border-color: red; */
+  /* border-color: #dcdfe6; */
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 10px 0 rgb(0 0 0 / 10%);
+}
+.el-dropdown-menu.el-popper.toolbar-menu .popper__arrow {
+  display: none;
 }
 
 .toolbar .el-button-group .el-button:first-child {

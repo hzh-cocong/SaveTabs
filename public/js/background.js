@@ -175,6 +175,7 @@ chrome.browserAction.onClicked.addListener(() => {
         let top = w.top+120;
 
         height += 28; // 窗口标题栏
+        height += 30; // 底部状态栏
 
         window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
       })

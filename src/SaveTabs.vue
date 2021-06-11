@@ -1,80 +1,25 @@
 <template>
 <div
-  id="app">
+  id="app"
+  v-loading.fullscreen="isLoading"
+  :style="{
+    width: (config.width
+          + config.border_width*2
+          +config.padding_width*2)+'px',
+  }">
 
   <div
-    v-loading="isLoading"
-    style="border-style:solid;"
+    style="border-style:solid;overflow:hidden;"
     :style="{
-      width: config.width+'px',
+      height: (config.item_height*config.item_show_count
+          + config.toolbar_height
+          + 20
+          + 10)+'px',
       backgroundColor: config.background_color,
       borderWidth: config.border_width+'px',
       borderColor: config.border_color,
       padding: config.padding_width+'px',
     }">
-    <el-dialog
-      :visible.sync="themeDialogVisible"
-      :modal="false"
-      :append-to-body="true"
-      :close-on-click-modal="false"
-      :destroy-on-close="false"
-      width="200px"
-      class="theme"
-      @click.native="focus">
-      <div slot="title" style="font-size: 16px;">
-        <i
-          class="el-icon-s-tools"
-          style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-          @click="$open('./options.html?type=themes', $event)"></i>选择主题
-      </div>
-      <SelectX
-        v-if="themeDialogVisible"
-        :list="themes"
-        :itemHeight="65"
-        :itemShowCount="3"
-        style="width:200px"
-        v-model="currentThemeIndex">
-        <template #default="{ index, item, isSelected }">
-          <div
-            class="theme-item"
-            :class="{ selected: isSelected }"
-            @click="changeTheme(item, index)">
-            <span
-              style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
-              :style="{ borderColor: item.config.border_color,
-                        backgroundColor: item.config.background_color }"><span
-                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-                :style="{
-                  backgroundColor: item.config.list_background_color,
-                  color: item.config.list_background_color,
-                }">.</span><span
-                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-                :style="{
-                  backgroundColor: item.config.list_font_color,
-                  color: item.config.list_font_color,
-                }">.</span><span
-                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-                :style="{
-                  backgroundColor: item.config.list_focus_background_color,
-                  color: item.config.list_focus_background_color,
-                }">.</span><span
-                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-                :style="{
-                  backgroundColor: item.config.list_focus_font_color,
-                  color: item.config.list_focus_font_color,
-                }">.</span></span>
-            <span
-              class="title"
-              :style="{ color: item.id == config.theme_id ? config.list_focus_background_color : 'black' }">{{ item.name }}</span>
-            <i
-              v-show="isSelected"
-              class="el-icon-check"
-              style="font-weight: 700"
-              :style="{ color:  item.id == config.theme_id ? config.list_focus_background_color : 'black' }"></i>
-          </div>
-        </template>
-      </SelectX>
-    </el-dialog>
 
     <div
       class="toolbar"
@@ -343,169 +288,75 @@
 
   </div>
 
-  <!--
-    <div
-      style="border-top: 1px solid black; height: 30px; margin-top: 8px;"
-      :style="{ borderColor: config.toolbar_border_color,
-                backgroundColor: config.toolbar_background_color,}">
+  <Statusbar
+    :config="config"
+    :currentWorkspace="currentWorkspace"
+    @click.native="focus"
+    ref="statusbar"></Statusbar>
 
-    </div> -->
-
-    <!-- <div
-      style="border-top: 1px solid black; height: 30px; margin-top: 8px;
-            position:fixed;bottom: 0; left: 0; width: 100%;z-index: 2"
-      :style="{ borderColor: config.toolbar_border_color,
-                backgroundColor: config.toolbar_background_color,}">
-
-    </div>-->
-
-<!--
-  <div
-    style=" height: 30px; border-top:1px solid #eee; background-color: white;display:flex;align-items: center;"> -->
-
-  <div
-    v-if="isLoad"
-    style=" height: 30px; background-color: #f7f7f7;display:flex;align-items: center;"
-    :style="{ width: (config.width+config.border_width*2+config.padding_width*2)+'px' }"
-    @click="focus">
-
-    <svg-icon
-      :name="config.popup ? 'fly-brands' : 'ship-solid'"
-      class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
-      @click.native="popupChange"
-    ></svg-icon>
-
-    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
-
-    <svg-icon
-      name="cog-solid"
-      class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
-      @click.native="$open('./options.html?type=workspace', $event)"
-    ></svg-icon>
-
-    <svg-icon
-      :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
-      class="hover2"
-      style="cursor:pointer;height: 20px;margin-right: 10px;"
-      :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
-      @click.native="changeThemeMode"></svg-icon>
-
-    <svg-icon
-      name="thumbtack-solid"
-      class="hover2"
-      style="cursor:pointer;height: 20px;margin-right: 10px;"
-      :style="{ transform: config.pinned
-                        && currentWorkspace != undefined
-                        && config.active_workspace_type == currentWorkspace.type
-                        ? 'rotate(0)' : 'rotate(90deg)',
-                color: config.pinned
-                    && currentWorkspace != undefined
-                    && config.active_workspace_type == currentWorkspace.type
-                    ? 'gray' : '#c0c4cc', }"
-      @click.native="toPin"></svg-icon>
-
-
-    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
-
-    <span
-      v-if="tip == storageTip"
-      class="animate__animated animate__flipInX"
-      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;align-items:center;justify-content: center;">
-      <el-popover
-        placement="top"
-        title=""
-        width="300"
-        trigger="hover"
-        style="height: 30px;"
-        transition=""
-        popper-class="product-box"
-        :open-delay="450">
-        <div style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;">
-          <span>点击购买<span class="hover" style="cursor:pointer">（广告）</span></span>
+  <el-dialog
+    :visible.sync="themeDialogVisible"
+    :modal="false"
+    :append-to-body="true"
+    :close-on-click-modal="false"
+    :destroy-on-close="false"
+    width="200px"
+    class="theme"
+    @click.native="focus">
+    <div slot="title" style="font-size: 16px;">
+      <i
+        class="el-icon-s-tools"
+        style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
+        @click="$open('./options.html?type=themes', $event)"></i>选择主题
+    </div>
+    <SelectX
+      v-if="themeDialogVisible"
+      :list="themes"
+      :itemHeight="65"
+      :itemShowCount="3"
+      style="width:200px"
+      v-model="currentThemeIndex">
+      <template #default="{ index, item, isSelected }">
+        <div
+          class="theme-item"
+          :class="{ selected: isSelected }"
+          @click="changeTheme(item, index)">
+          <span
+            style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
+            :style="{ borderColor: item.config.border_color,
+                      backgroundColor: item.config.background_color }"><span
+              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+              :style="{
+                backgroundColor: item.config.list_background_color,
+                color: item.config.list_background_color,
+              }">.</span><span
+              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+              :style="{
+                backgroundColor: item.config.list_font_color,
+                color: item.config.list_font_color,
+              }">.</span><span
+              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+              :style="{
+                backgroundColor: item.config.list_focus_background_color,
+                color: item.config.list_focus_background_color,
+              }">.</span><span
+              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+              :style="{
+                backgroundColor: item.config.list_focus_font_color,
+                color: item.config.list_focus_font_color,
+              }">.</span></span>
+          <span
+            class="title"
+            :style="{ color: item.id == config.theme_id ? config.list_focus_background_color : 'black' }">{{ item.name }}</span>
           <i
-            title="换一换"
-            class="el-icon-refresh hover"
-            style="float:right; margin-right: 10px;cursor: pointer"></i>
+            v-show="isSelected"
+            class="el-icon-check"
+            style="font-weight: 700"
+            :style="{ color:  item.id == config.theme_id ? config.list_focus_background_color : 'black' }"></i>
         </div>
-        <div style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: pointer">
-          <span><img src="./assets/images/shops/product-1.png" style="width: 120px; height: 120px" /></span>
-          <span style="flex: 1;padding: 10px;">
-            <div>{{ storageTip }}</div>
-            <div style="color:red;margin-top: 5px;">￥199</div>
-          </span>
-        </div>
-        <img
-          slot="reference"
-          src="./assets/images/shops/product-1.png"
-          class="product-img" />
-      </el-popover>
-      <span style="display:inline-block;flex: 1;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 30px;">{{ storageTip }}</span>
-      <svg-icon
-        name="ad-solid"
-        class="animate__animated hover2"
-        style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 5px;vertical-align: middle;"
-        @click.native="$refs.carousel.prev()"
-      ></svg-icon>
-    </span>
-    <span
-      v-else
-      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-      >{{ tip }} </span>
-
-    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
-
-    <svg-icon
-      name="arrow-left-solid"
-      class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 10px;"
-      @click.native="$refs.carousel.prev()"
-    ></svg-icon>
-
-    <input
-      type="checkbox"
-      class="hover2"
-      style="margin: 0 8px"
-      v-model="config.keymap_left_and_right"
-      @change="keymapLeftAndRightChange" />
-
-    <svg-icon
-      name="arrow-right-solid"
-      class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-right: 10px;"
-      @click.native="$refs.carousel.next()"
-    ></svg-icon>
-
-    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
-
-    <el-popover
-      placement="top-end"
-      title="谢谢分享！"
-      width="200"
-      trigger="hover">
-      <img
-        src="./assets/images/logo/weibo_32x32.png"
-        width="32"
-        height="32"
-        style="cursor: pointer"
-        @click="$open('https://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.cocong.cn%2F&title=SaveTabs %E5%88%86%E4%BA%AB&pic=http%3A%2F%2Fwww.cocong.cn%2Fassets%2Fimages%2Fcocong-34.png&appkey=', $event)"/>
-      <svg-icon
-        slot="reference"
-        name="share-alt-solid"
-        class="hover2"
-        style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;margin-top: 3px;"
-        @click.native="$open('./options.html?type=workspace', $event)"
-      ></svg-icon>
-    </el-popover>
-<!--
-    <svg-icon
-      name="share-alt-solid"
-      class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
-      @click.native="$open('./options.html?type=workspace', $event)"
-    ></svg-icon> -->
-  </div>
+      </template>
+    </SelectX>
+  </el-dialog>
 
 </div>
 </template>
@@ -519,6 +370,7 @@ import Bookmark from './components/savetabs/Bookmark.vue'
 import Note from './components/savetabs/Note.vue'
 import Temporary from './components/savetabs/Temporary.vue'
 import All from './components/savetabs/All.vue'
+import Statusbar from './components/savetabs/Statusbar.vue'
 
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
@@ -531,6 +383,12 @@ export default {
       focus: this.focus,
       input: this.input,
       loading: this.loading,
+      selectDelay: this.selectDelay,
+
+      changeThemeMode: this.changeThemeMode,
+      toPin: this.toPin,
+      popupChange: this.popupChange,
+      keymapLeftAndRightChange: this.keymapLeftAndRightChange,
     }
   },
   data() {
@@ -576,13 +434,6 @@ export default {
       other: {
         visible: false,
       },
-
-      tip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
-      storageTip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
-
-      w: {
-        tipTimer: null,
-      }
     }
   },
   computed: {
@@ -615,6 +466,7 @@ export default {
     Note,
     Temporary,
     All,
+    Statusbar,
   },
   methods: {
     focus() {
@@ -937,15 +789,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // });
       });
     },
-    keymapLeftAndRightChange() {
-      chrome.storage.sync.set({'config': this.config}, () => {
-        this.$message({
-          type: this.config.keymap_left_and_right ? 'success' : 'info',
-          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用',
-          offset: 69,
-        });
-      });
-    },
     popupChange() {
       this.config.popup = ! this.config.popup;
       chrome.storage.sync.set({'config': this.config}, () => {
@@ -964,23 +807,15 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         }
       });
     },
-
-    showTip(tip) {
-      clearTimeout(this.w.tipTimer);
-
-      // if(this.storageTip == '') {
-      //   this.storageTip = this.tip;
-      // }
-
-      this.tip = tip;
+    keymapLeftAndRightChange() {
+      chrome.storage.sync.set({'config': this.config}, () => {
+        this.$message({
+          type: this.config.keymap_left_and_right ? 'success' : 'info',
+          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用',
+          offset: 69,
+        });
+      });
     },
-    finishTip() {
-      // 过一会再恢复，体验更好
-      this.w.tipTimer = setTimeout(() => {
-        this.tip = this.storageTip;
-        // this.storageTip = '';
-      }, 1000);
-    }
   },
   beforeUpdate() {
     console.warn('savetabs:beforeUpdate');
@@ -1081,10 +916,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 走马灯底部指示器提示
       document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
         el.onmouseenter = () => {
-          this.showTip(this.lang(this.workspaces[ index ].title));
+          this.$refs.statusbar.showTip(this.lang(this.workspaces[ index ].title));
         }
         el.onmouseleave = () => {
-          this.finishTip();
+          this.$refs.statusbar.finishTip();
         }
       })
     };
@@ -1100,61 +935,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* #app {
-  padding: 10px 0 0px 0;
-} */
-
-input[type=checkbox] {
-  width: 9px;
-  height: 9px;
-  margin: 0;
+#app {
   display: inline-block;
-  position: relative;
-  appearance: none;
-  cursor: pointer;
-}
-
-input[type=checkbox]:after {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  content: " ";
-  color: transparent;
-  display: inline-block;
-  padding: 1 3px 3px 1;
-  border-radius: 50%;
-  background:transparent;
-  border:1px solid #DDDDDD;
-  box-sizing: border-box;
-}
-
-input[type=checkbox]:checked:after {
-  content: "";
-  font-size: 12px;
-  font-weight:600;
-  background-color: #c0c4cc;
-}
-
-.product-img {
-  width: 20px;
-  height: 20px;
-  margin-top: 5px;
-  margin-right: 5px;
-  border-radius: 4px;
-  opacity: 0.2;
-  filter: grayscale(1);
-  transition-property: width, height, opacity, margin-top;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-}
-.product-img:hover {
-  filter: none;
-  opacity: 1;
-  width: 30px;
-  height: 30px;
-  margin-top: 0;
 }
 </style>
 

@@ -50,7 +50,7 @@ export default {
   display: inline-block;
   margin-left: 10px;
 
-  text-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  /* text-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); */
 }
 .jumbotron .sub-title {
   color: #0099CC;

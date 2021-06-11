@@ -14,7 +14,7 @@
           style="margin-bottom:0;"
           class="hover">
           <router-link
-            style="color: #408DDC;text-decoration: none;text-shadow: 0 2px 4px rgba(0, 0, 0, .12);"
+            style="color: #408DDC;text-decoration: none;"
             :to="{name: 'general'}">SaveTabs</router-link>
         </h3>
       </div>

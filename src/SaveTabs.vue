@@ -302,6 +302,8 @@
     :destroy-on-close="false"
     width="200px"
     class="theme"
+    @open="themeDialogVisible2=true"
+    @closed="themeDialogVisible2=false"
     @click.native="focus">
     <div slot="title" style="font-size: 16px;">
       <i
@@ -310,7 +312,7 @@
         @click="$open('./options.html?type=themes', $event)"></i>选择主题
     </div>
     <SelectX
-      v-if="themeDialogVisible"
+      v-if="themeDialogVisible2"
       :list="themes"
       :itemHeight="65"
       :itemShowCount="3"
@@ -411,6 +413,7 @@ export default {
 
       menuVisible: false,
       themeDialogVisible: false,
+      themeDialogVisible2: false,
       themeScrollPosition: 0,
       // currentThemeIndex: -1,
 

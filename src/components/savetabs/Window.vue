@@ -172,6 +172,8 @@
     :append-to-body="true"
     width="80%"
     class="window-group"
+    @open="groupVisible2=true"
+    @closed="groupVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
@@ -185,7 +187,7 @@
     </div>
     <!-- v-if="groupVisible" 减少不必要的调用 -->
     <ul
-      v-if="groupVisible"
+      v-if="groupVisible2"
       class="group-list"
       :style="{ height: (30*config.item_show_count)+'px' }">
       <li
@@ -225,6 +227,8 @@
     width="80%"
     class="window-difference"
     @opened="addCompareEvent"
+    @open="differenceVisible2=true"
+    @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
       <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
@@ -236,7 +240,7 @@
       </span>
     </div>
     <!-- v-if="differenceVisible" 减少不必要的更新，如 getIcon 会因为别的变化而多次调用-->
-    <div class="compare" v-if="differenceVisible">
+    <div class="compare" v-if="differenceVisible2">
       <div class="left">
         <div style="text-align: center;padding: 5px 0;">
           <span>旧</span>
@@ -361,11 +365,13 @@ export default {
       // isInCurrentWindow: false,
 
       groupVisible: false,
+      groupVisible2: false,
       group: {},
 
       isSearched: false,
 
       differenceVisible: false,
+      differenceVisible2: false,
       oldGroup: {},
       currentWindow: {},
       haveDifference: true,

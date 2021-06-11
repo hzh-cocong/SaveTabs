@@ -613,8 +613,24 @@ console.log('search', this.activeWorkspaceRefIndex )
     },
 
     keydown(event) {
+      console.log('fffffffffffffffff', event)
       // console.log('keydown', event)
       if(this._device.platform == '') return;
+
+      // tab 和 shift+tab 左右切换
+      if(event.keyCode == 9) {
+        // selectDelay 自己会屏蔽
+        event.stopPropagation();
+        event.preventDefault();
+
+        if(event.shiftKey == true) {
+          this.selectDelay('left', event);
+        } else {
+          this.selectDelay('right', event);
+        }
+
+        return;
+      }
 
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
 
@@ -652,8 +668,8 @@ console.log('search', this.activeWorkspaceRefIndex )
       // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
 
-      // 左右选择
-      if(type == 'left' || type == 'right') {
+      // 左右选择（tab切换无需该逻辑）
+      if(event.keyCode != 9 && (type == 'left' || type == 'right')) {
         // 左右切换快捷键未开启则无法切换
         if( ! this.config.keymap_left_and_right) return;
 
@@ -814,7 +830,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       chrome.storage.sync.set({'config': this.config}, () => {
         this.$message({
           type: this.config.keymap_left_and_right ? 'success' : 'info',
-          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用',
+          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用，但你仍然可以使用 tab 键 和 shift+tab 键进行左右切换',
           offset: 69,
         });
       });

@@ -1,0 +1,17 @@
+<template>
+  <div>WorkspaceGeneral</div>
+</template>
+
+<script>
+export default {
+  name: 'WorkspaceGeneral'
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
+
+<style>
+
+</style>

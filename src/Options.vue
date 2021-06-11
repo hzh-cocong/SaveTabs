@@ -7,20 +7,40 @@
       <div
         style="display: flex; flex-direction: column;justify-content: center;align-items: center;height: 120px;min-height: 120px;width: 100%;box-sizing: border-box;border-right:solid 1px #e6e6e6;text-align:center;">
         <img
-            src="@/assets/icon-128.png"
-            style="wdith:25px;height: 25px;" />
+          src="@/assets/icon-128.png"
+          style="wdith:32px;height: 32px;cursor: pointer;"
+          @click="$open('http://www.cocong.cn', $event)" />
         <h3
-          style="color: #408DDC;margin-bottom:0;cursor: pointer;"
-          class="hover"
-          @click="$open('http://www.cocong.cn', $event)">SaveTabs</h3>
+          style="margin-bottom:0;"
+          class="hover">
+          <router-link
+            style="color: #408DDC;text-decoration: none;text-shadow: 0 2px 4px rgba(0, 0, 0, .12);"
+            :to="{name: 'general'}">SaveTabs</router-link>
+        </h3>
       </div>
       <el-menu
         id="app"
-        default-active="2"
+        :default-active="$route.name"
         style="flex: 1;overflow: auto;"
         :unique-opened="true"
         router>
-        <el-submenu index="workspaces">
+        <el-submenu
+          v-for="menu in menus"
+          :index="menu.name"
+          :key="menu.name">
+          <template slot="title">
+            <i :class="menu.icon"></i>
+            <span>{{ menu.title }}</span>
+          </template>
+          <el-menu-item
+            v-for="submenu in menu.children"
+            :index="menu.name+'-'+submenu.name"
+            :key="submenu.name">
+            {{ submenu.title }}
+          </el-menu-item>
+        </el-submenu>
+
+        <!-- <el-submenu index="workspaces">
           <template slot="title">
             <i class="el-icon-location"></i>
             <span>工作区</span>
@@ -43,21 +63,32 @@
             <template slot="title">选项4</template>
             <el-menu-item index="2-1-1">选项1</el-menu-item>
           </el-submenu>
-        </el-submenu>
+        </el-submenu> -->
       </el-menu>
     </el-aside>
 
-    <el-main>
-      Main
-
+    <el-main style="padding: 0;">
+      <router-view></router-view>
     </el-main>
 
   </el-container>
 </template>
 
 <script>
+
+import menus from './components/options/menus.config.js'
+
 export default {
   name: 'app',
+  data() {
+    return {
+      menus: menus,
+    }
+  },
+  mounted: function() {
+    // todo
+    window.o = this;
+  }
 }
 </script>
 

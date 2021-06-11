@@ -8,11 +8,14 @@ import './plugins/tool.js'
 //*/
 import './plugins/svg-sprite.js'
 
+import routes from './components/options/routes.config.js'
+
 import VueRouter from 'vue-router'
-
-import router from './router.config.js'
-
 Vue.use(VueRouter)
+
+const router = new VueRouter({
+  routes: routes
+})
 
 Vue.config.productionTip = false
 

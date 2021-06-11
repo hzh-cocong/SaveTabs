@@ -45,7 +45,7 @@
         fit="cover"
         lazy>
         <div slot="error">
-          <img src="../../assets/fallback.png" style="width:100%; height: 100%;" />
+          <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
         <div slot="placeholder"></div>
       </el-image>

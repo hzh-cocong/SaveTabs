@@ -113,12 +113,16 @@
         @keydown.right.native="selectDelay('right', $event)"
         @keydown.enter.native="openWindow"
         @keydown.native="keydown"
+        @keyup.native="keyup"
         @input="search"
+        @compositionstart.native="isComposition=true"
+        @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search($event.data)"
+        @compositionend.native="isComposition=false"
         ref="input">
         <template slot="prepend">
           <el-dropdown
             trigger="hover"
-            placement="bottom"
+            placement="bottom-start"
             style="height: 100%;"
             :hide-on-click="false"
             :show-timeout="0"
@@ -355,35 +359,42 @@
 
     </div>-->
 
+<!--
+  <div
+    style=" height: 30px; border-top:1px solid #eee; background-color: white;display:flex;align-items: center;"> -->
 
   <div
-    style=" height: 30px; border-top:1px solid #eee; background-color: white;display:flex;align-items: center;">
+    v-if="isLoad"
+    style=" height: 30px; background-color: #f7f7f7;display:flex;align-items: center;"
+    :style="{ width: (config.width+config.border_width*2+config.padding_width*2)+'px' }"
+    @click="focus">
 
-  <!-- <div
-    style=" height: 30px; background-color: #f7f7f7;display:flex;align-items: center;"> -->
+    <svg-icon
+      :name="config.popup ? 'fly-brands' : 'ship-solid'"
+      class="hover2"
+      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
+      @click.native="popupChange"
+    ></svg-icon>
 
-    <!-- <i
-      class="el-icon-setting hover"
-      style="float: right;cursor: pointer;margin: 0 10px;"
-      @click="$open('chrome://bookmarks', $event);focus();"></i> -->
+    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
 
     <svg-icon
       name="cog-solid"
-      class="hover"
+      class="hover2"
       style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
       @click.native="$open('./options.html?type=workspace', $event)"
     ></svg-icon>
 
     <svg-icon
       :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
-      class="hover"
+      class="hover2"
       style="cursor:pointer;height: 20px;margin-right: 10px;"
       :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
       @click.native="changeThemeMode"></svg-icon>
 
     <svg-icon
       name="thumbtack-solid"
-      class="hover"
+      class="hover2"
       style="cursor:pointer;height: 20px;margin-right: 10px;"
       :style="{ transform: config.pinned
                         && currentWorkspace != undefined
@@ -395,30 +406,119 @@
                     ? 'gray' : '#c0c4cc', }"
       @click.native="toPin"></svg-icon>
 
-    <div style="flex: 1; text-align: center; color:#c0c4cc">买一送一啦</div>
 
+    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
 
+    <span
+      v-if="tip == storageTip"
+      class="animate__animated animate__flipInX"
+      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;align-items:center;justify-content: center;">
+      <el-popover
+        placement="top"
+        title=""
+        width="300"
+        trigger="hover"
+        style="height: 30px;"
+        transition=""
+        popper-class="product-box"
+        :open-delay="450">
+        <div style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;">
+          <span>点击购买<span class="hover" style="cursor:pointer">（广告）</span></span>
+          <i
+            title="换一换"
+            class="el-icon-refresh hover"
+            style="float:right; margin-right: 10px;cursor: pointer"></i>
+        </div>
+        <div style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: pointer">
+          <span><img src="./assets/images/shops/product-1.png" style="width: 120px; height: 120px" /></span>
+          <span style="flex: 1;padding: 10px;">
+            <div>{{ storageTip }}</div>
+            <div style="color:red;margin-top: 5px;">￥199</div>
+          </span>
+        </div>
+        <img
+          slot="reference"
+          src="./assets/images/shops/product-1.png"
+          class="product-img" />
+      </el-popover>
+      <span style="display:inline-block;flex: 1;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 30px;">{{ storageTip }}</span>
+      <svg-icon
+        name="ad-solid"
+        class="animate__animated hover2"
+        style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 5px;vertical-align: middle;"
+        @click.native="$refs.carousel.prev()"
+      ></svg-icon>
+    </span>
+    <span
+      v-else
+      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+      >{{ tip }} </span>
+
+    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
 
     <svg-icon
+      name="arrow-left-solid"
+      class="hover2"
+      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 10px;"
+      @click.native="$refs.carousel.prev()"
+    ></svg-icon>
+
+    <input
+      type="checkbox"
+      class="hover2"
+      style="margin: 0 8px"
+      v-model="config.keymap_left_and_right"
+      @change="keymapLeftAndRightChange" />
+
+    <svg-icon
+      name="arrow-right-solid"
+      class="hover2"
+      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-right: 10px;"
+      @click.native="$refs.carousel.next()"
+    ></svg-icon>
+
+    <span style="display:inline-block;border-right: 1px solid #c0c4cc;height: 20px;" ></span>
+
+    <el-popover
+      placement="top-end"
+      title="谢谢分享！"
+      width="200"
+      trigger="hover">
+      <img
+        src="./assets/images/logo/weibo_32x32.png"
+        width="32"
+        height="32"
+        style="cursor: pointer"
+        @click="$open('https://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.cocong.cn%2F&title=SaveTabs %E5%88%86%E4%BA%AB&pic=http%3A%2F%2Fwww.cocong.cn%2Fassets%2Fimages%2Fcocong-34.png&appkey=', $event)"/>
+      <svg-icon
+        slot="reference"
+        name="share-alt-solid"
+        class="hover2"
+        style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;margin-top: 3px;"
+        @click.native="$open('./options.html?type=workspace', $event)"
+      ></svg-icon>
+    </el-popover>
+<!--
+    <svg-icon
       name="share-alt-solid"
-      class="hover"
+      class="hover2"
       style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
       @click.native="$open('./options.html?type=workspace', $event)"
-    ></svg-icon>
+    ></svg-icon> -->
   </div>
 
 </div>
 </template>
 
 <script>
-import SelectX from './components/SelectX.vue'
-import Window from './components/Window.vue'
-import History from './components/History.vue'
-import Tab from './components/Tab.vue'
-import Bookmark from './components/Bookmark.vue'
-import Note from './components/Note.vue'
-import Temporary from './components/Temporary.vue'
-import All from './components/All.vue'
+import SelectX from './components/common/SelectX.vue'
+import Window from './components/savetabs/Window.vue'
+import History from './components/savetabs/History.vue'
+import Tab from './components/savetabs/Tab.vue'
+import Bookmark from './components/savetabs/Bookmark.vue'
+import Note from './components/savetabs/Note.vue'
+import Temporary from './components/savetabs/Temporary.vue'
+import All from './components/savetabs/All.vue'
 
 import userConfig from './config/user_config.json'
 import projectConfig from './config/project_config.json'
@@ -436,6 +536,7 @@ export default {
   data() {
     return {
       isLoading: true,
+      isComposition: false,
 
       keyword: '',
       activeWorkspaceIndex: -1,//0,
@@ -474,6 +575,13 @@ export default {
       },
       other: {
         visible: false,
+      },
+
+      tip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
+      storageTip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
+
+      w: {
+        tipTimer: null,
       }
     }
   },
@@ -590,6 +698,8 @@ console.log('search', this.activeWorkspaceRefIndex )
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow(event) {
+      if(this.isComposition) return;
+
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, event);
     },
     // down() {
@@ -651,6 +761,16 @@ console.log('search', this.activeWorkspaceRefIndex )
       // console.log('keydown', event)
       if(this._device.platform == '') return;
 
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
+
+      // if(this._device.platform == 'Mac') {
+      //   if(event.metaKey == true) {
+
+      //   }
+      // } else {
+
+      // }
+
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
 
@@ -668,11 +788,32 @@ console.log('search', this.activeWorkspaceRefIndex )
         this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});
       }
     },
+    keyup(event) {
+      if(this._device.platform == '') return;
+
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
+    },
     selectDelay(type, event) {
-      // 只有一个工作区可用时，输入框回复左右选择能力
-      if(this.workspaces.length > 1) {
-        event.preventDefault();
+      // 中文输入法时禁用，避免冲突
+      if(this.isComposition) return;
+
+      // 左右选择
+      if(type == 'left' || type == 'right') {
+        // 左右切换快捷键未开启则无法切换
+        if( ! this.config.keymap_left_and_right) return;
+
+        // 只有一个工作区可用时，输入框恢复左右选择能力
+        if(this.workspaces.length <= 1) return;
+
+        // cmd、alt、shift、ctrl 按下时不屏蔽事件
+        if(event.metaKey == true
+        || event.altKey == true
+        || event.shiftKey == true
+        || event.ctrlKey == true) return;
       }
+
+      // 屏蔽事件
+      event.preventDefault();
 
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       if(this.lock == true) return;
@@ -749,7 +890,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
 
     changeThemeMode() {
-      this.focus();
+      // this.focus();
 
       this.config.theme_mode = this.config.theme_mode == 'light' ? 'dark' : 'light';
 
@@ -766,7 +907,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       });
     },
     toPin() {
-      this.focus();
+      // this.focus();
 
       if(this.config.active_workspace_type == this.currentWorkspace.type) {
         this.config.pinned = ! this.config.pinned;
@@ -796,6 +937,50 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // });
       });
     },
+    keymapLeftAndRightChange() {
+      chrome.storage.sync.set({'config': this.config}, () => {
+        this.$message({
+          type: this.config.keymap_left_and_right ? 'success' : 'info',
+          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用',
+          offset: 69,
+        });
+      });
+    },
+    popupChange() {
+      this.config.popup = ! this.config.popup;
+      chrome.storage.sync.set({'config': this.config}, () => {
+        chrome.browserAction.setPopup({ popup: this.config.popup ? chrome.extension.getURL("savetabs.html") : ''})
+
+        if( ! this.config.popup) {
+          chrome.runtime.sendMessage({
+            type: 'inject',
+          });
+
+          window.close();
+        } else {
+          chrome.runtime.sendMessage({
+            type: 'closeExtension',
+          })
+        }
+      });
+    },
+
+    showTip(tip) {
+      clearTimeout(this.w.tipTimer);
+
+      // if(this.storageTip == '') {
+      //   this.storageTip = this.tip;
+      // }
+
+      this.tip = tip;
+    },
+    finishTip() {
+      // 过一会再恢复，体验更好
+      this.w.tipTimer = setTimeout(() => {
+        this.tip = this.storageTip;
+        // this.storageTip = '';
+      }, 1000);
+    }
   },
   beforeUpdate() {
     console.warn('savetabs:beforeUpdate');
@@ -817,16 +1002,16 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // window.open 一旦失去焦点就会自己把自己给关了
         chrome.windows.onFocusChanged.addListener(() => {
           // 让 background.js 帮忙关闭，减轻负担
-          chrome.runtime.sendMessage({
-            type: 'closeExtension',
-            tabId: tab.id,
-            windowId: tab.windowId,
-          })
+          // chrome.runtime.sendMessage({
+          //   type: 'closeExtension',
+          //   tabId: tab.id,
+          //   windowId: tab.windowId,
+          // })
+
+          window.close();
         })
       }
     })
-
-
 
     // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //   alert('收到了2')
@@ -892,6 +1077,16 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     document.body.onload=() => {
       console.warn('isLoad');
       this.isLoad = true;
+
+      // 走马灯底部指示器提示
+      document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
+        el.onmouseenter = () => {
+          this.showTip(this.lang(this.workspaces[ index ].title));
+        }
+        el.onmouseleave = () => {
+          this.finishTip();
+        }
+      })
     };
 
     // window.oncontextmenu = function(e){
@@ -908,10 +1103,68 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 /* #app {
   padding: 10px 0 0px 0;
 } */
+
+input[type=checkbox] {
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  appearance: none;
+  cursor: pointer;
+}
+
+input[type=checkbox]:after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  content: " ";
+  color: transparent;
+  display: inline-block;
+  padding: 1 3px 3px 1;
+  border-radius: 50%;
+  background:transparent;
+  border:1px solid #DDDDDD;
+  box-sizing: border-box;
+}
+
+input[type=checkbox]:checked:after {
+  content: "";
+  font-size: 12px;
+  font-weight:600;
+  background-color: #c0c4cc;
+}
+
+.product-img {
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  margin-right: 5px;
+  border-radius: 4px;
+  opacity: 0.2;
+  filter: grayscale(1);
+  transition-property: width, height, opacity, margin-top;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+.product-img:hover {
+  filter: none;
+  opacity: 1;
+  width: 30px;
+  height: 30px;
+  margin-top: 0;
+}
 </style>
 
 <!-- 全局样式 -->
 <style>
+:root {
+  --animate-duration: 1.5s;
+  /* --animate-delay: 0s; 没有用 */
+}
+
 body {
   margin: 0;
 }
@@ -1058,6 +1311,7 @@ img {
 }
 .el-dropdown-menu.el-popper.toolbar-menu {
   margin-top: 1px;
+  margin-left: -1px;
   border-top: 0;
   /* border-color: red; */
   /* border-color: #dcdfe6; */
@@ -1088,6 +1342,10 @@ img {
   padding-bottom: 0px !important;
 }
 
+.product-box {
+  margin-bottom: 5px !important;
+}
+
 /* 组件共享样式 */
 .window-message-box {
   min-width: 80% !important;
@@ -1097,7 +1355,14 @@ img {
   /* color: red !important; */
   opacity: 0.8;
 }
-.hover:hover {
+.hover2 {
+  /* color: red !important; */
+  opacity: 0.6;
+}
+.hover, .hover2 {
+  cursor: pointer;
+}
+.hover:hover, .hover2:hover {
   /* color: blue !important; */
   opacity: 1;
 }

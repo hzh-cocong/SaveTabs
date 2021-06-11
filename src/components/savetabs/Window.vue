@@ -50,10 +50,10 @@
           fit="cover"
           lazy>
           <div slot="error">
-            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder">
-            <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
       </span>
@@ -199,10 +199,10 @@
           fit="cover"
           lazy>
           <div slot="error">
-            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder">
-            <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
 
@@ -259,10 +259,10 @@
               scroll-container=".group-list"
               lazy>
               <div slot="error">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+                <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -299,10 +299,10 @@
               fit="cover"
               lazy>
               <div slot="error">
-                <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+                <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <!-- <img v-if="index >= config.item_show_count" src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+                <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -328,7 +328,7 @@
 </template>
 
 <script>
-import List from './List.vue'
+import List from '../common/List.vue'
 import { nanoid } from 'nanoid'
 
 export default {

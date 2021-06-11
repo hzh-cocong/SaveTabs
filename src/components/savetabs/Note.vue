@@ -49,10 +49,10 @@
           fit="cover"
           lazy>
           <div slot="error" class="image-slot">
-            <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+            <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder" class="image-slot">
-            <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            <!-- <img src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
       </span>
@@ -88,9 +88,11 @@
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color),
             direction: isSelected ? 'rtl' : 'ltr' }"
-          v-html="storageKeyword != ''
-                ? highlightMap[index].url
-                : (isSelected ? item.url : getDomain(item.url))"></div>
+          v-html="isSelected && tip != ''
+                ? tip
+                : ( storageKeyword != ''
+                  ? highlightMap[index].url
+                  : (isSelected ? item.url : getDomain(item.url)) )"></div>
         <!-- <div
           v-if="storageKeyword != ''"
           class="sub-title"
@@ -212,7 +214,7 @@
 </template>
 
 <script>
-import List from './List.vue'
+import List from '../common/List.vue'
 import { nanoid } from 'nanoid'
 
 export default {
@@ -245,6 +247,8 @@ export default {
       // isInCurrentTab: false,
 
       isSearched: false,
+
+      tip: '',
     }
   },
   components: {
@@ -306,9 +310,6 @@ export default {
     }
   },
   methods: {
-    test() {
-      console.log('ttttttttt', this.currentNote.url);
-    },
     itemStyle({ index, item, isActive, isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.url == this.currentTab.url) {
@@ -668,6 +669,20 @@ console.log('bb')
       return this.cacheList.reduce((accumulator, tab) => {
         return accumulator+(tab.url == url ? 1 : 0);
       }, 0)
+    },
+
+    showTip(event) {
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+      || (this._device.platform != '' && event.ctrlKey == true)) {
+        this.tip = '打开新标签但不获取焦点';
+      } else if(this._device.platform != '' && event.shiftKey == true) {
+        this.tip = '新窗口打开';
+      } else if(this._device.platform != '' && event.altKey == true) {
+        this.tip = '覆盖当前标签';
+      }
+    },
+    finishTip() {
+      this.tip = '';
     }
   },
   beforeUpdate() {

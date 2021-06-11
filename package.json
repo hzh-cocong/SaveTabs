@@ -14,12 +14,14 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.0",
     "@fortawesome/vue-fontawesome": "^2.0.0",
+    "animate.css": "^4.1.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.4.5",
     "nanoid": "^3.1.22",
     "sortablejs": "^1.13.0",
     "validate.js": "^0.13.1",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-router": "^3.5.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

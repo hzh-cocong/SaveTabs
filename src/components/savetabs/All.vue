@@ -64,10 +64,10 @@
 </template>
 
 <script>
-import List from './List.vue'
+import List from '../common/List.vue'
 
-import Window from '../modules/window.js'
-import Temporary from '../modules/temporary.js'
+import Window from '../../modules/window.js'
+import Temporary from '../../modules/temporary.js'
 
 import WindowItem from './all/WindowItem.vue'
 import TemporaryItem from './all/TemporaryItem.vue'

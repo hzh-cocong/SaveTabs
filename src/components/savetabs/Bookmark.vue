@@ -47,11 +47,11 @@
         <template v-if="isLoad">
           <img
             v-if="item.children && item.children.length > 0"
-            src="../assets/folder.png"
+            src="@/assets/folder.png"
             style="width:100%; height: 100%;" />
           <img
             v-else-if="item.children && item.children.length <= 0"
-            src="../assets/folder-opened.png"
+            src="@/assets/folder-opened.png"
             style="width:100%; height: 100%;" />
           <el-image
             v-else
@@ -60,10 +60,10 @@
             fit="cover"
             :lazy="index >= config.item_show_count">
             <div slot="error" class="image-slot">
-              <img src="../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot">
-              <!-- <img src="../assets/fallback.png" style="width:100%; height: 100%;" /> -->
+              <!-- <img src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
             </div>
           </el-image>
         </template>
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import List from './List.vue'
+import List from '../common/List.vue'
 
 export default {
   name: 'Bookmark',

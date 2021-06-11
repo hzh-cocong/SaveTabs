@@ -1,15 +1,22 @@
 import Vue from 'vue'
 import Options from './Options.vue'
 import './plugins/element3.js'
-/*
+//*
 import './plugins/tool-test.js'
 /*/
 import './plugins/tool.js'
 //*/
 import './plugins/svg-sprite.js'
 
+import VueRouter from 'vue-router'
+
+import router from './router.config.js'
+
+Vue.use(VueRouter)
+
 Vue.config.productionTip = false
 
 new Vue({
   render: h => h(Options),
+  router,
 }).$mount('#app')

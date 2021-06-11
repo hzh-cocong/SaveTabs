@@ -5,6 +5,8 @@ module.exports = {
     options: {
       // 入口js的路径
       entry: 'src/options.js',
+      // 模板来源
+      template: 'public/options.html',
       // 在 dist/index.html 的输出
       filename: 'options.html',
       // 当使用 title 选项时，

@@ -543,6 +543,14 @@ const tool = {
       },
     }
 
+    chrome.browserAction = {
+      setPopup: function(options, callback) {
+        setTimeout(() => {
+          callback != undefined && callback();
+        }, 1)
+      },
+    }
+
     // 添加实例方法
     window.$open = Vue.prototype.$open = function (url, event, callback) {
       // 不管空白页

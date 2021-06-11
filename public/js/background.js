@@ -45,6 +45,35 @@ function download(filename, data, path)
   });
 }
 
+function executeScript() {
+  chrome.tabs.executeScript(null, { file: "js/content_script.js" }, () => {
+    // 捕获错误，这样插件就不会显示错误
+    const error = chrome.runtime.lastError;
+    if( ! (error && error.message)) return;
+
+    chrome.storage.sync.get({'config': {}}, items => {
+      chrome.windows.getCurrent((w) => {
+        let config = items.config;
+        let width = config.width+config.border_width*2;
+        let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
+        let left = w.left+(w.width-width)/2;
+        let top = w.top+120;
+
+        height += 28; // 窗口标题栏
+        height += 30; // 底部状态栏
+
+        window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
+      })
+    })
+  })
+}
+
+chrome.storage.sync.get({'config': {}}, items => {
+  if(items.config.popup == false) {
+    chrome.browserAction.setPopup({ popup: ''})
+  }
+})
+
 let activeTabs = new Set();
 let activeWindows = new Map();
 
@@ -141,8 +170,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(sender.tab == undefined) return;
 
     // window.open 关闭整个窗口
-    if(sender.frameId == 0 && request.windowId) {
-      chrome.windows.remove(request.windowId);
+    // if(sender.frameId == 0 && request.windowId) {
+    //   chrome.windows.remove(request.windowId);
+    //   return;
+    // }
+    if(sender.frameId == 0 ) {
+      chrome.windows.remove(sender.tab.windowId);
       return;
     }
 
@@ -158,39 +191,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     return;
   }
+  if(request.type == 'inject') {
+    executeScript();
+  }
 })
 
 chrome.browserAction.onClicked.addListener(() => {
-  chrome.tabs.executeScript(null, { file: "js/content_script.js" }, () => {
-    // 捕获错误，这样插件就不会显示错误
-    const error = chrome.runtime.lastError;
-    if( ! (error && error.message)) return;
-
-    chrome.storage.sync.get({'config': {}}, items => {
-      chrome.windows.getCurrent((w) => {
-        let config = items.config;
-        let width = config.width+config.border_width*2;
-        let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
-        let left = w.left+(w.width-width)/2;
-        let top = w.top+120;
-
-        height += 28; // 窗口标题栏
-        height += 30; // 底部状态栏
-
-        window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
-      })
-    })
-  })
+  executeScript();
 })
 
 chrome.commands.onCommand.addListener(command => {
   if(command == 'test') {
-    chrome.browserAction.getPopup({}, (url)=>{
-      if(url != '') {
-        chrome.browserAction.setPopup({popup: ''})
-      } else {
-        chrome.browserAction.setPopup({popup: 'savetabs.html'})
-      }
-    })
+    // chrome.browserAction.getPopup({}, (url)=>{
+    //   if(url != '') {
+    //     chrome.browserAction.setPopup({popup: ''})
+    //   } else {
+    //     chrome.browserAction.setPopup({popup: 'savetabs.html'})
+    //   }
+    // })
   }
 })

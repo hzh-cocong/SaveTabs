@@ -94,7 +94,7 @@
             fit="cover"
             :lazy="false">
             <div slot="error" class="image-slot">
-              <img src="../../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot"></div>
           </el-image>
@@ -122,7 +122,7 @@
                       height: config.list_font_size+'px' }"
             lazy>
             <div slot="error" class="image-slot">
-              <img src="../../assets/fallback.png" style="width:100%; height: 100%;" />
+              <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
             <div slot="placeholder" class="image-slot"></div>
           </el-image>

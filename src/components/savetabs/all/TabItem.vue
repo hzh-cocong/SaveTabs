@@ -1,6 +1,6 @@
 <template>
   <div
-    class="window-item"
+    class="tab-item"
     :style="{
       backgroundColor: index == 0 && item.isCurrent
                       ? ( isSelected
@@ -40,17 +40,17 @@
         height: (config.item_height-20)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)"
+        :src="getIcon('', item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
         lazy>
-        <div slot="error">
+        <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
-        <div slot="placeholder"></div>
+        <div slot="placeholder" class="image-slot"></div>
       </el-image>
       <svg-icon
-        name="windows-brands"
+        name="window-maximize-solid"
         style=" position: absolute;
                 right: 0;
                 bottom: 0;
@@ -84,50 +84,57 @@
                   height: config.item_height/4+'px', }"></svg-icon>
     </span>
 
-    <span
-      class="title"
-      :style="{fontSize: config.list_font_size+'px'}"
-      v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
+    <div class="main">
+      <div
+        class="title"
+        :style="{ fontSize: config.list_font_size+'px' }"
+        v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')"></div>
+      <div
+        class="sub-title"
+        :style="{
+          fontSize: config.list_explain_font_size+'px',
+          color: index == 0 && item.isCurrent
+              ? ( isSelected
+                ? config.list_current_explain_focus_font_color
+                : config.list_current_explain_font_color)
+              : ( isSelected
+                ? config.list_explain_focus_font_color
+                : config.list_explain_font_color),
+          direction: isSelected ? 'rtl' : 'ltr' }"
+        v-html="storageKeyword != ''
+              ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
+              : (isSelected ? item.url : getDomain(item.url))"></div>
+    </div>
 
     <div class="right">
-      <template v-if="isActive || item.isOpened || item.lastVisitTime != undefined">
-        <div
-          v-if="index == 0 && item.isCurrent"
+      <div v-if="isActive">
+      </div>
+      <template v-else-if="index == 0 && item.isCurrent">
+        <span
+          :style="{
+              fontSize: config.list_state_size+'px',
+              color: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color,
+              borderColor: isSelected
+                    ? config.list_current_focus_state_color
+                    : config.list_current_state_color }">Current</span>
+      </template>
+      <template v-else>
+        <span
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
-                  ? config.list_current_focus_state_color
-                  : config.list_current_state_color,
-            borderColor: isSelected
-                  ? config.list_current_focus_state_color
-                  : config.list_current_state_color }">
-          <span>{{ lang('currentWindow') }}</span>
-        </div>
-        <div
-          v-else-if="item.isOpened"
-          :style="{
-            fontSize: config.list_state_size+'px',
-            color: isSelected
-                ? config.list_focus_state_color
-                : config.list_state_color }">
-          {{ item.isCurrent ? lang('currentWindow') : lang('opened') }}
-        </div>
-        <div
-          v-else-if="item.lastVisitTime != undefined"
-          :style="{
-            fontSize: config.list_state_size+'px',
-            color: isSelected
-                ? config.list_focus_state_color
-                : config.list_state_color }">
-          {{ timeShow(item.lastVisitTime) }}
-        </div>
+              ? config.list_focus_state_color
+              : config.list_state_color }">{{ item.isCurrent ? 'Current' : 'Opened' }}</span>
       </template>
       <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)">
         <span
           v-if="isSelected"
           :style="{
             fontSize: config.list_keymap_size+'px',
-            color: config.list_focus_keymap_color }">↩</span>
+            color: config.list_focus_keymap_color,
+          }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{
@@ -140,7 +147,7 @@
 
 <script>
 export default {
-  name: 'WindowItem',
+  name: 'TabItem',
   props: {
     config: {
       type: Object,
@@ -181,7 +188,7 @@ export default {
 </script>
 
 <style scoped>
-.window-item {
+.tab-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -196,20 +203,34 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.window-item .left {
+.tab-item .left {
   padding: 10px;
   text-align: center;
 }
-.window-item .title {
-  /* border: 1px solid blue; */
-  text-align: left;
-  cursor: default;
+.tab-item .main {
   flex: 1;
+  text-align: left;
+  overflow: hidden;
+  cursor: default;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* justify-content: center; */
+}
+.tab-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.window-item .right {
+.tab-item .sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
+}
+.tab-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -221,9 +242,20 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
+.tab-item .right .el-icon-more {
+  margin-right: 11px;
+  padding: 5px;
+  font-size: 20px;
+  cursor:pointer;
+}
+.tab-item .right .el-icon-close {
+  margin-right: 2px;
+  font-size: 20px;
+  cursor:pointer;
+}
 </style>
 <style>
-.all .window-item strong {
+.all .tab-item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

@@ -84,26 +84,35 @@
     "toolbar_button_active_background_color": "#ecf5ff",
 
     "workspaces": [
+        "all",
+        "note",
         "temporary",
         "history",
-        "note",
         "window",
         "bookmark",
-        "tab",
-        "all"
+        "tab"
     ],
-    "active_workspace_type": "note",
+    "active_workspace_type": "all",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
     "show_workspace_name": true,
-    "theme_id": "11",
-
+    "theme_id": "14",
 
     "keymap_left_and_right": true,
     "popup": true,
 
     "all_include": [
+        {
+            "type": "tab",
+            "count": 3,
+            "is_top": true
+        },
+        {
+            "type": "note",
+            "count": 3,
+            "is_top": true
+        },
         {
             "type": "temporary",
             "count": 3,

@@ -54,7 +54,7 @@ function executeScript() {
     chrome.storage.sync.get({'config': {}}, items => {
       chrome.windows.getCurrent((w) => {
         let config = items.config;
-        let width = config.width+config.border_width*2;
+        let width = config.width+config.border_width*2+config.padding_width*2;
         let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
         let left = w.left+(w.width-width)/2;
         let top = w.top+120;
@@ -138,13 +138,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       // 先查询被选中的标签的窗口信息
       chrome.windows.get(destination.windowId, {populate: true}, (window) => {
-        // if(window.tabs.length == 1 && request.targetTabCount == 1) {
-        //   // 无需交换，直接切换过去就行了
-        //   console.log('exchangeTab', '无需交换，直接切换过去就行了');
-        //   chrome.windows.update(destination.windowId, { focused: true});
-        //   return;
-        // }
-
         // 新增标签，防止在交换过程中因为焦点变化而导致顺序混乱
         console.log('exchangeTab', '新增标签，防止在交换过程中因为焦点变化而导致顺序混乱');
 

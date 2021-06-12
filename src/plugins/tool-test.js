@@ -553,11 +553,13 @@ const tool = {
 
     // 添加实例方法
     window.$open = Vue.prototype.$open = function (url, event, callback) {
+      let device = this == undefined ? window._device : this._device;
+
       // 不管空白页
       // platform = '' 空的设备暂不支持其它方式打开
       if(event != undefined
-      &&((this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != '' && event.ctrlKey == true))) {
+      &&((device.platform == 'Mac' && event.metaKey == true)
+        || (device.platform != '' && event.ctrlKey == true))) {
         // 下个位置打开，但不激活
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
@@ -571,14 +573,14 @@ const tool = {
           }
         })
       } else if(event != undefined
-              && this._device.platform != ''
+              && device.platform != ''
               && event.shiftKey == true) {
         // 新窗口打开
         chrome.windows.create({ url: [ url ], focused: true, type: 'normal' }, (window) => {
           callback != undefined && callback(window.tabs[0], 'window');
         });
       } else if(event != undefined
-              && this._device.platform != ''
+              && device.platform != ''
               && event.altKey == true) {
         // 覆盖当前窗口
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {

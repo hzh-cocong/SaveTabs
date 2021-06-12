@@ -91,7 +91,14 @@
                 :class="{ 'is-reverse': menuVisible}"
                 :style="{ color: config.toolbar_icon_color }"></i>
             </span>
-            <el-dropdown-menu slot="dropdown" class="toolbar-menu">
+            <el-dropdown-menu
+              slot="dropdown"
+              class="toolbar-menu"
+              :style="{ maxHeight: (config.item_height*config.item_show_count
+                                  + config.border_width
+                                  + config.padding_width
+                                  + statusbarHeight
+                                  - 10)+'px' }">
               <el-dropdown-item
                 v-for="(workspace, index) in workspaces"
                 :label="lang(workspace.title)"
@@ -290,7 +297,8 @@
 
   <Statusbar
     :config="config"
-    :currentWorkspace="currentWorkspace"
+    :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
+    :statusbarHeight="statusbarHeight"
     @click.native="focus"
     ref="statusbar"></Statusbar>
 
@@ -437,6 +445,8 @@ export default {
       other: {
         visible: false,
       },
+
+      statusbarHeight: 30,
     }
   },
   computed: {
@@ -632,7 +642,7 @@ console.log('search', this.activeWorkspaceRefIndex )
         return;
       }
 
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
+      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
 
       // if(this._device.platform == 'Mac') {
       //   if(event.metaKey == true) {
@@ -662,7 +672,7 @@ console.log('search', this.activeWorkspaceRefIndex )
     keyup(event) {
       if(this._device.platform == '') return;
 
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
+      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
     },
     selectDelay(type, event) {
       // 中文输入法时禁用，避免冲突
@@ -1097,6 +1107,9 @@ img {
   cursor: pointer;
 
   align-items: center;
+}
+.toolbar-menu {
+  overflow:auto;
 }
 .toolbar-menu .el-dropdown-menu__item.selected {
   color: #409eff;

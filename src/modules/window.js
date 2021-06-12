@@ -78,17 +78,11 @@ let window = {
       })
 
       // 重新排序
-      let currentList = filterList.filter(group => {
-        return group.isCurrent;
-      });
-      let openedList = filterList.filter(group => {
-        return group.isOpened && ! group.isCurrent;
-      });
-      let closeList = filterList.filter(group => {
-        return ! group.isOpened;
-      });
+      let currentList = filterList.filter(group => group.isCurrent);
+      let openedList = filterList.filter(group => group.isOpened && ! group.isCurrent);
+      let closeList = filterList.filter(group => ! group.isOpened);
 
-      // this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
+      // 合并结果
       let cacheList = currentList; cacheList.push(...openedList, ...closeList);
       this.cacheList = cacheList.map((group, index) => {
         group.index = index;

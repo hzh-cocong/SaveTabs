@@ -1,6 +1,6 @@
 <template>
   <div
-    class="window-item"
+    class="note-item"
     :style="{
       backgroundColor: index == 0 && item.isCurrent
                       ? ( isSelected
@@ -40,17 +40,17 @@
         height: (config.item_height-20)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)"
+        :src="this.getIcon(item.icon, item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
         lazy>
-        <div slot="error">
+        <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
-        <div slot="placeholder"></div>
+        <div slot="placeholder" class="image-slot"></div>
       </el-image>
       <svg-icon
-        name="windows-brands"
+        name="bookmark-regular"
         style=" position: absolute;
                 right: 0;
                 bottom: 0;
@@ -84,13 +84,34 @@
                   height: config.item_height/4+'px', }"></svg-icon>
     </span>
 
-    <span
-      class="title"
-      :style="{fontSize: config.list_font_size+'px'}"
-      v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
+    <div class="main">
+      <div
+        class="title"
+        :style="{ fontSize: config.list_font_size+'px' }"
+        v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')"></div>
+      <div
+        class="sub-title"
+        :style="{
+          fontSize: config.list_explain_font_size+'px',
+          color: index == 0 && item.isCurrent
+              ? ( isSelected
+                ? config.list_current_explain_focus_font_color
+                : config.list_current_explain_font_color)
+              : ( isSelected
+                ? config.list_explain_focus_font_color
+                : config.list_explain_font_color),
+          direction: isSelected ? 'rtl' : 'ltr' }"
+        v-html="isSelected && tip != ''
+              ? tip
+              : ( storageKeyword != ''
+                ? this.highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                : (isSelected ? item.url : getDomain(item.url)) )"></div>
+    </div>
 
     <div class="right">
-      <template v-if="isActive || item.isOpened || item.lastVisitTime != undefined">
+      <template v-if="isActive
+              || item.isOpened
+              || (storageKeyword != '' && item.lastVisitTime != undefined)">
         <div
           v-if="index == 0 && item.isCurrent"
           :style="{
@@ -101,7 +122,7 @@
             borderColor: isSelected
                   ? config.list_current_focus_state_color
                   : config.list_current_state_color }">
-          <span>{{ lang('currentWindow') }}</span>
+            {{ lang('currentNote') +( item.count > 1 ? ' ('+item.count+')' : '') }}
         </div>
         <div
           v-else-if="item.isOpened"
@@ -110,15 +131,16 @@
             color: isSelected
                 ? config.list_focus_state_color
                 : config.list_state_color }">
-          {{ item.isCurrent ? lang('currentWindow') : lang('opened') }}
+          {{  (item.isCurrent ? lang('currentNote') : lang('opened'))
+            + (isSelected && item.count > 1 ? ' ('+item.count+')' : '') }}
         </div>
         <div
-          v-else-if="item.lastVisitTime != undefined"
+          v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
                 ? config.list_focus_state_color
-                : config.list_state_color }">
+                : config.list_keymap_color }">
           {{ timeShow(item.lastVisitTime) }}
         </div>
       </template>
@@ -126,8 +148,12 @@
         <span
           v-if="isSelected"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_focus_keymap_color }">↩</span>
+            fontSize: isSelected
+                ? config.list_state_size
+                : config.list_keymap_size+'px',
+            color: isSelected
+                ? config.list_focus_keymap_color
+                : config.list_focus_keymap_color }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{
@@ -140,7 +166,7 @@
 
 <script>
 export default {
-  name: 'WindowItem',
+  name: 'NoteItem',
   props: {
     config: {
       type: Object,
@@ -175,13 +201,18 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    tip: {
+      type: String,
+      required: false,
+      default: '',
     }
   },
 }
 </script>
 
 <style scoped>
-.window-item {
+.note-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -196,20 +227,34 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.window-item .left {
+.note-item .left {
   padding: 10px;
   text-align: center;
 }
-.window-item .title {
-  /* border: 1px solid blue; */
-  text-align: left;
-  cursor: default;
+.note-item .main {
   flex: 1;
+  text-align: left;
+  overflow: hidden;
+  cursor: default;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* justify-content: center; */
+}
+.note-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.window-item .right {
+.note-item .sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
+}
+.note-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -221,9 +266,44 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
+
+.note-item .right .number-button {
+  min-width: 10px;
+  height: 20px;
+  padding: 2px 7px;
+  font-size: 18px;
+  line-height: 20px;
+  border: 2px solid white;
+  border-radius: 20px;
+  margin-right: 15px;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  cursor: pointer;
+}
+.note-item .right .close-without-tab {
+  min-width: 20px;
+  height: 20px;
+  font-size: 18px !important;
+  font-weight: 800;
+  padding: 2px;
+  border:2px solid white;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+.note-item .right .close-without-tab:before {
+  position: relative;
+  top: 1px;
+}
+.note-item .right .el-icon-close {
+  margin-right: 2px;
+  font-size: 20px;
+  cursor: pointer;
+}
 </style>
 <style>
-.all .window-item strong {
+.all .note-item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

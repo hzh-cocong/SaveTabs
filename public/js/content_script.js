@@ -44,7 +44,7 @@
     chrome.storage.sync.get({'config': {}}, items => {
       console.log(items);
       let config = items.config;
-      let width = config.width+config.border_width*2;
+      let width = config.width+config.border_width*2+config.padding_width*2;
       let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
       let left = (window.outerWidth-width)/2;
       let top = 50;

@@ -1,6 +1,6 @@
 <template>
-  <li
-    class="item"
+  <div
+    class="temporary-item"
     :style="{
       backgroundColor: isSelected
                       ? config.list_focus_background_color
@@ -180,7 +180,7 @@
             color: config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
       </template>
     </div>
-  </li>
+  </div>
 </template>
 
 <script>
@@ -216,10 +216,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
-  },
-  data() {
-    return {
     }
   },
   computed: {
@@ -327,7 +323,7 @@ export default {
 </script>
 
 <style scoped>
-.item {
+.temporary-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -342,12 +338,12 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.item .left {
+.temporary-item .left {
   padding: 5px;
   text-align: center;
   cursor: default;
 }
-.item .image {
+.temporary-item .image {
   /* background-color: #c0c4cb; */
   border-radius: 5px;
   border: 2px solid #c0c4cb;
@@ -372,7 +368,7 @@ export default {
   font-size: 12px;
   /* transform : scale(0.5,0.5); */
 }
-.item .main {
+.temporary-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -382,33 +378,33 @@ export default {
   align-items: flex-start; /* flex-wrap = wrap 才有效 */
 }
 
-.item .main.scroll{
+.temporary-item .main.scroll{
   overflow-x: overlay;
 }
 /*定义滚动条高宽及背景高宽分别对应横竖滚动条的尺寸*/
-.item .main.scroll::-webkit-scrollbar {
+.temporary-item .main.scroll::-webkit-scrollbar {
   height: 10px;
   background: transparent;
 }
 /*定义滑块圆角*/
-.item .main.scroll::-webkit-scrollbar-thumb {
+.temporary-item .main.scroll::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: rgb(115 115 115 / 50%);
 }
 
-.item .title {
+.temporary-item .title {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item .sub-title {
+.temporary-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.item .right {
+.temporary-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -436,7 +432,7 @@ export default {
 }
 </style>
 <style>
-.all .item strong {
+.all .temporary-item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

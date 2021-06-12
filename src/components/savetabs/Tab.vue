@@ -202,7 +202,6 @@ export default {
       list: [],
       cacheList: [],
       originList: [],
-      currentWindowList: [],
       focusList: [],
 
       scrollDisabled: true,
@@ -268,12 +267,6 @@ export default {
     currentWindowId() {
       return this.activeTab.windowId;
     },
-
-    currentTabCount() {
-      return this.originList.reduce((accumulator, tab) => {
-        return accumulator+(tab.windowId == this.currentWindowId ? 1 : 0);
-      }, 0)
-    }
 
     // currentTabList() {
     //   return this.originList.filter((tab) => {
@@ -397,7 +390,6 @@ export default {
         chrome.runtime.sendMessage({
             type: 'exchangeTab',
             target: this.activeTab,
-            targetTabCount: this.currentTabCount,
             destination: this.selectedTab
         })
       } else {
@@ -566,7 +558,6 @@ console.log('ttttttttttttt')
   font-size: 20px;
   cursor:pointer;
 }
-
 </style>
 <style>
 .tab strong {

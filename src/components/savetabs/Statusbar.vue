@@ -1,6 +1,7 @@
 <template>
   <div
-    style=" height: 30px; background-color: white;display:flex;align-items: center;">
+    style=" background-color: red;display:flex;align-items: center;"
+    :style="{ height: statusbarHeight+'px' }">
 
     <svg-icon
       :name="config.popup ? 'fly-brands' : 'ship-solid'"
@@ -49,8 +50,8 @@
         placement="top"
         title=""
         width="300"
-        trigger="hover"
         style="height: 30px;"
+        trigger="hover"
         transition=""
         popper-class="product-box"
         :open-delay="450"
@@ -74,7 +75,7 @@
           src="@/assets/images/shops/product-1.png"
           class="product-img" />
       </el-popover>
-      <span style="display:inline-block;flex: 1;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 30px;">{{ storageTip }}</span>
+      <span style="display:inline-block;flex: 1;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 1;">{{ storageTip }}</span>
       <svg-icon
         name="ad-solid"
         class="animate__animated hover2"
@@ -147,6 +148,10 @@ export default {
     currentWorkspace: {
       type: Object,
       required: require,
+    },
+    statusbarHeight: {
+      type: Number,
+      require: true,
     },
   },
   data() {

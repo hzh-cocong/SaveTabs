@@ -66,11 +66,15 @@
 <script>
 import List from '../common/List.vue'
 
-import Window from '../../modules/window.js'
-import Temporary from '../../modules/temporary.js'
-
 import WindowItem from './all/WindowItem.vue'
 import TemporaryItem from './all/TemporaryItem.vue'
+import NoteItem from './all/NoteItem.vue'
+import TabItem from './all/TabItem.vue'
+
+import Window from '../../modules/window.js'
+import Temporary from '../../modules/temporary.js'
+import Note from '../../modules/note.js'
+import Tab from '../../modules/tab.js'
 
 export default {
   name: 'All',
@@ -105,6 +109,8 @@ export default {
     List,
     WindowItem,
     TemporaryItem,
+    NoteItem,
+    TabItem,
   },
   methods: {
     up() {
@@ -148,6 +154,10 @@ export default {
         })
         if(list.length <= 0) return true;
         this.list = list;
+
+        // test
+        // this.list[0].isCurrent = true;
+        // this.list[0].count = 3;
 
         this.scrollDisabled = false;
         if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
@@ -297,13 +307,17 @@ export default {
       switch(type) {
         case 'temporary': return Temporary;
         case 'window': return Window;
+        case 'note': return Note;
+        case 'tab': return Tab;
       }
     },
   },
   mounted() {
     window.all = this;
     window.ww = Window;
-    window.tt = Temporary
+    window.tte = Temporary;
+    window.nn = Note;
+    window.tta = Tab;
 
     this.$emit('finish');
   }

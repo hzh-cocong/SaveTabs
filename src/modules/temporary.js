@@ -48,7 +48,6 @@ let temporary = {
         return false;
       })
 
-      // this.cacheList = filterList;
       this.cacheList = filterList.map((temporary, index) => {
         temporary.index = index;
         return temporary;

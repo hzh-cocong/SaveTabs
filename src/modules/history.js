@@ -2,6 +2,10 @@ let history = {
   storageList: [],
   cacheList: [],
 
+  storageKeyword: '',
+  list_page_count: 0,
+  queryDisabled: false,
+
   isInit: false,
 
   init: function() {
@@ -13,125 +17,111 @@ let history = {
       if(this.isInit) resolve();
       else resolve(this.init())
     }).then(() => {
-      // 无参数时则强制刷新
-      if(keyword != undefined) {
-        if(this.storageKeyword == keyword.trim()) return;
-        this.storageKeyword = keyword.trim();
-      }
-console.warn('isSearched');
-      console.log('search', this.storageKeyword, keyword,  this.endTime, new Date().getTime());
+      return new Promise(resolve2 => {
+        this.storageKeyword = keywords.join(' ');
+        this.list_page_count = length;
+        let lastVisitTime = new Date().getTime();
 
-      if(keyword == undefined && this.lastEndTime == this.endTime) return;
+        // 查找历史
+        this.query((historys) => {
+          if(historys.length == 0) {
+            this.cacheList = [];
 
-      console.log('search2', this.storageKeyword, this.lastEndTime, this.endTime);
+            this.queryDisabled = true;
 
-      this.lastEndTime = this.endTime;
-      let lastVisitTime = this.endTime;
+            return [];
+          }
 
-      // 默认只展示 24 小时内的数据（体验不好）
-      // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
-
-      // 反正历史记录就不太对，不如将错就错
-      // this.startTime = 0;
-console.warn('isSearched2');
-      // 查找历史
-      this.query((historys) => {console.warn('isSearched3');
-        console.log('history.search', historys);
-        if(historys.length == 0) {
           this.cacheList = [];
-          this.list = [];
+          this.mergeHistory(this.cacheList, historys);
+          this.cacheList = this.cacheList.map((history, index) => {
+            history.type = 'history';
+            history.title = history.count == undefined
+                          ? history.title
+                          : (
+                              history.subFiles.length > 0
+                            ? history.subFiles[0].title
+                            : this.cacheList[index+1].title
+                          );
+            history.url = history.count == undefined
+                        ? history.url
+                        : (
+                            history.subFiles.length > 0
+                          ? history.subFiles[0].url
+                          : this.cacheList[index+1].url
+                        );
+            history.lastVisitTime = history.subFiles.length > 0
+                                  ? history.subFiles[0].lastVisitTime
+                                  : this.cacheList[index+1].lastVisitTime;
+            history.index = index;
+            return history;
+          });
 
-          this.currentIndex = -1;
-          this.scrollDisabled = true;
+          this.queryDisabled = false;
+
+          resolve2(this.cacheList.slice(0, length));
+        }, lastVisitTime, 27)
+      })
+    })
+  },
+  load({start, length}) {
+    if(this.cacheList.length >= start+length) {
+      return new Promise(resolve => {
+        resolve(this.cacheList.slice(start, start+length));
+      });
+    }
+
+    if(this.queryDisabled) {
+      return new Promise(resolve => {
+        resolve(this.cacheList.slice(start, start+length));
+      });
+    }
+
+    return new Promise(resolve => {
+      // 查找历史
+      this.query((historys) => {
+        if(historys.length == 0) {
           this.queryDisabled = true;
 
-          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-          this.isSearched = true;
+          resolve(this.cacheList.slice(start, start+length));
 
           return;
         }
 
-        this.cacheList = [];
         this.mergeHistory(this.cacheList, historys);
-
-        // 搜索结果只有一条时自动展开
-        // if(this.storageKeyword.length > 0 && this.cacheList.length == 1 && this.cacheList[0].count > 1) {
-        //   let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
-
-        //   this.cacheList.push(...historys);
-        //   // this.cacheList.splice(1, 0, ...historys);
-
-        //   this.currentIndex = 1;
-
-        //   // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
-        //   this.$nextTick(() => {
-        //     this.$refs.list.currentTo(1);
-        //   });
-        // } else {
-        //   this.currentIndex = 0;
-        // }
-
-        this.list = this.cacheList.slice(0, this.config.list_page_count);
-
-        this.currentIndex = 0;
-
-        // query 并不精确，有可能这次只返回一条，下次却返回10条
-        this.scrollDisabled = false;
-        this.queryDisabled = false;
-
-        // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-        this.isSearched = true;
-      }, lastVisitTime, 27)
+        resolve(this.cacheList.slice(start).map((history, index) => {
+          history.type = 'history';
+          history.title = history.count == undefined
+                        ? history.title
+                        : (
+                            history.subFiles.length > 0
+                          ? history.subFiles[0].title
+                          : this.cacheList[index+1].title
+                        );
+          history.url = history.count == undefined
+                      ? history.url
+                      : (
+                          history.subFiles.length > 0
+                        ? history.subFiles[0].url
+                        : this.cacheList[index+1].url
+                      );
+          history.lastVisitTime = history.count == undefined
+                                ? history.lastVisitTime
+                                : (
+                                  history.subFiles.length > 0
+                                  ? history.subFiles[0].lastVisitTime
+                                  : this.cacheList[index+1].lastVisitTime
+                                );
+          history.index = start+index;
+          // history.index = start+index;
+          return history;
+        }).slice(0, length));
+      })
     })
-  },
-  load({start, length}) {
-    if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
-      // 性能最高
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
-      return;
-    }
-
-    if(this.queryDisabled) {
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-      this.scrollDisabled = true;
-      return;
-    }
-
-    // 查找历史
-    this.query((historys) => {
-      if(historys.length == 0) {
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
-
-        this.scrollDisabled = true;
-        this.queryDisabled = true;
-
-        // 结果只有一条时自动展开
-        if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
-          let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
-
-          this.cacheList.push(...historys);
-          this.list.push(...historys);
-
-          this.currentIndex = 1;
-
-          // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
-        }
-
-        return;
-      }
-
-      this.mergeHistory(this.cacheList, historys);
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
-    })
-
-    // 不使用预加载，因为预加载过快，dom 反而会因此等待
   },
   query(callback, lastVisitTime, max) {
     max = max == undefined ? 55 : max;
-    max = max < this.config.list_page_count ? this.config.list_page_count : max;
+    max = max < this.list_page_count ? this.list_page_count : max;
 
     // 防止并发问题
     lastVisitTime = lastVisitTime == undefined ? this.lastVisitTime : lastVisitTime;
@@ -141,15 +131,8 @@ console.warn('isSearched2');
         text: this.storageKeyword,
         startTime: this.startTime,
         endTime: lastVisitTime,
-        maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+        maxResults: max, // this.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
       }, (historys)=>{
-      console.log('chrome.history.query', {
-        text: this.storageKeyword,
-        startTime: this.startTime,
-        endTime: lastVisitTime,
-        maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
-      }, historys)
-
       // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
       historys = historys.sort((a, b)=>{
         return b.lastVisitTime-a.lastVisitTime;
@@ -176,9 +159,6 @@ console.warn('isSearched2');
       // 过滤
       if(historys.length == 0) {
         // 糟糕，被过滤完了
-        console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
-        // this.lastVisitTime = this.lastVisitTime-1000*1;
-        console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
         callback([]);
         return;
       }
@@ -188,46 +168,88 @@ console.warn('isSearched2');
       callback(historys);
     })
   },
+  mergeHistory(list, historys) {
+    let k = list.length-1;
+    for(let history of historys) {
+      let domain = this.getDomain(history.url);
+      let lastDomain = k >= 0
+                    ? ( list[k].count == undefined
+                      ? this.getDomain(list[k].url)
+                      : this.getDomain(list[k].subFiles[0].url))
+                    : '';
+      if(domain == lastDomain && list[k].count == undefined) {
+        // 文件夹展开的情况（一般不会遇到）
+        let l = k;
+        while(list[ l ].count == undefined) l--;
+
+        list[l].count++;
+        list[++k] = history;
+      } else if(domain == lastDomain && list[k].count != undefined) {
+        // 文件夹未展开
+        list[k].subFiles.push(history);
+        list[k].count++;
+      } else {
+        // 新文件夹
+        list[++k] = {
+          count: 1,
+          subFiles: [ history ],
+        }
+      }
+    }
+  },
 
   openWindow(index, event) {
-    if(this.currentHistory == null) return;
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa', index);
+    index = this.getRealIndex(index);
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa2', index);
+    let currentHistory = this.cacheList[ index ];
 
-    if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
+    if(currentHistory.count == undefined || currentHistory.count == 1) {
       // 打开新标签
-      let url = this.currentHistory.count == undefined
-              ? this.currentHistory.url
-              : this.currentHistory.subFiles[0].url
-console.log('_openWindow', url)
-      this.$open(url, event);
-      return;
+      return new Promise(resolve => {
+        $open(currentHistory.url, event, () => {
+          resolve();
+        });
+      })
     }
 
     // 展开或收起目录
-    if(this.currentHistory.subFiles.length > 0) {
-      // 展开
-      // let historys = this.currentHistory.subFiles.splice(0, this.currentHistory.count);
-      let historys = this.currentHistory.subFiles;
-      this.cacheList.splice(this.currentIndex+1, 0, ...historys);
-      this.list.splice(this.currentIndex+1, 0, ...historys);
-      this.currentHistory.subFiles = [];
-      console.log('展开', this.list.length, this.cacheList.length)
+    if(currentHistory.subFiles.length > 0) {
+      return new Promise(resolve => {
+        // 展开
+        let historys = currentHistory.subFiles.map((history, index) => {
+          history.type = 'history';
+          history.index = currentHistory.index+'-'+index;
+          return history;
+        });
 
-      // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
-      this.$nextTick(() => {
-        if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
-          let index = this.config.item_show_count-this.currentHistory.count-1;
-          // index = index < 0 ? 0 : index;
-          console.warn('kkkk2')
-          this.$refs.list.currentTo(index);
-        }
-        // this.$refs.list.currentToTop();
-      })
+        this.cacheList.splice(index+1, 0, ...historys);
+        currentHistory.subFiles = [];
+        resolve({ type: 'spread', list: historys });
+      });
     } else {
-      // 收起
-      this.cacheList.splice(this.currentIndex+1, this.currentHistory.count);
-      this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
+      return new Promise(resolve => {
+        // 收起
+        currentHistory.subFiles = this.cacheList.splice(index+1, currentHistory.count);
+        resolve({ type: 'collapse', length: currentHistory.count})
+      });
     }
-  }
+  },
+
+  getRealIndex(i) {
+    return this.cacheList.findIndex((history, index) => {
+      return history.index == i;
+    })
+  },
+
+  getDomain(url) {
+    let res = url.match(/[a-zA-z-]+:\/\/([^/]+)/);
+    if(res != null) {
+      return res[1];
+    } else {
+      return '';
+    }
+  },
 }
 
 export default history;

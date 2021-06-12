@@ -872,7 +872,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           //   windowId: tab.windowId,
           // })
 
-          window.close();
+          // window.close();todo
         })
       }
     })

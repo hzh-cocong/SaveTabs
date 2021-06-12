@@ -140,7 +140,7 @@ let temporary = {
       if(blankTabId != -1) {
         chrome.tabs.remove(blankTabId);
       }
-      return true;
+      return { type: 'delete' };
     })
   },
 

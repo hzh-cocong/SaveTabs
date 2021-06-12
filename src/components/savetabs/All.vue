@@ -70,11 +70,13 @@ import WindowItem from './all/WindowItem.vue'
 import TemporaryItem from './all/TemporaryItem.vue'
 import NoteItem from './all/NoteItem.vue'
 import TabItem from './all/TabItem.vue'
+import HistoryItem from './all/HistoryItem.vue'
 
 import Window from '../../modules/window.js'
 import Temporary from '../../modules/temporary.js'
 import Note from '../../modules/note.js'
 import Tab from '../../modules/tab.js'
+import History from '../../modules/history.js'
 
 export default {
   name: 'All',
@@ -98,7 +100,7 @@ export default {
 
       storageKeyword: undefined,
 
-      scrollDisabled: false,
+      scrollDisabled: true, // 一定要为 true，否则会再一开始就触发 load，而此时 search 可能还未执行完，就会导致冲突
 
       isSearched: false,
 
@@ -111,6 +113,7 @@ export default {
     TemporaryItem,
     NoteItem,
     TabItem,
+    HistoryItem,
   },
   methods: {
     up() {
@@ -142,7 +145,7 @@ export default {
           length: workspace.count,
         })
       })).then(lists => {
-        console.log('lists', lists);
+        console.log('lists88888888888', JSON.parse(JSON.stringify(lists)));
         if(lists.length <= 0) return true;
 
         let list = [];
@@ -295,10 +298,18 @@ export default {
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 
-      module.openWindow(item.index, event).then((isDel) => {
-        console.warn('all.finish', isDel);
-        if(isDel) {
+      module.openWindow(item.index, event).then((result) => {
+        console.warn('all.finish', result);
+        if(result == undefined) return;
+
+        if(result.type == 'delete') {
           this.list.splice(this.currentIndex, 1);
+        } else if(result.type == 'spread') {
+          this.list.splice(this.currentIndex+1, 0, ...result.list);
+          this.length[item.type] += result.list.length;
+        } else if(result.type == 'collapse') {
+          this.list.splice(this.currentIndex+1, result.length);
+          this.length[item.type] -= result.length;
         }
       });
     },
@@ -309,6 +320,7 @@ export default {
         case 'window': return Window;
         case 'note': return Note;
         case 'tab': return Tab;
+        case 'history': return History;
       }
     },
   },
@@ -318,6 +330,7 @@ export default {
     window.tte = Temporary;
     window.nn = Note;
     window.tta = Tab;
+    window.hh = History;
 
     this.$emit('finish');
   }

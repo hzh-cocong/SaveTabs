@@ -18,6 +18,7 @@
     }">
     <span
       class="left"
+      style="position: relative"
       :style="{
         width: (config.item_height-20)+'px',
         height: (config.item_height-20)+'px',
@@ -26,7 +27,7 @@
                   : 0 }">
       <el-image
         v-if="isLoad"
-        :src="iconMap[index]"
+        :src="getIcon('', item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
         lazy>
@@ -35,6 +36,39 @@
         </div>
         <div slot="placeholder" class="image-slot"></div>
       </el-image>
+      <svg-icon
+        name="history-solid"
+        style=" position: absolute;
+                right: 0;
+                bottom: 0;
+                padding: 2px;
+                border-width: 2px 0px 0px 2px;
+                border-style: solid;
+                border-radius: 2px 0 0 0;
+                margin-right: 2px;"
+        :style="{ backgroundColor: index == 0 && item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_background_color
+                          : config.list_current_background_color)
+                        : ( isSelected
+                          ? config.list_focus_background_color
+                          : config.list_background_color),
+                  borderColor: index == 0 && item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_background_color
+                          : config.list_current_background_color)
+                        : ( isSelected
+                          ? config.list_focus_background_color
+                          : config.list_background_color),
+                  color: index == 0 && item.isCurrent
+                        ? ( isSelected
+                          ? config.list_current_focus_icon_color
+                          : config.list_current_icon_color)
+                        : ( isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color),
+                  width: config.item_height/4+'px',
+                  height: config.item_height/4+'px', }"></svg-icon>
     </span>
 
     <div class="main">
@@ -45,8 +79,9 @@
           v-if="item.count != undefined && item.count > 1"
           style="margin-right: 10px;"
           :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
-                      'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
-        <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
+                    'el-icon-remove-outline' : item.subFiles.length <= 0, }"></i>
+        <span v-html="index+' | '+item.index+' | '+(highlight(item.title, storageKeyword, '<strong>', '</strong>')
+                    || highlight(item.url, storageKeyword, '<strong>', '</strong>'))"></span>
       </div>
       <div
         class="sub-title"
@@ -57,8 +92,8 @@
                 : config.list_explain_font_color,
           direction: isSelected ? 'rtl' : 'ltr' }"
           v-html="item.count == undefined || item.count == 1
-                ? highlightMap[index].url
-                : highlightMap[index].domain+' | '+item.count"></div>
+                ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                : highlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count"></div>
     </div>
 
     <div class="right">
@@ -69,16 +104,7 @@
             color: isSelected
               ? config.list_focus_state_color
               : config.list_state_color,
-          }">{{
-            timeShow(
-              item.count == undefined
-            ? item.lastVisitTime
-            : (
-                item.subFiles.length > 0
-              ? item.subFiles[0].lastVisitTime
-              : list[index+1].lastVisitTime
-            ))
-          }}</span>
+          }">{{ timeShow(item.lastVisitTime) }}</span>
       </template>
       <template v-if=" ! isActive">
         <span
@@ -114,6 +140,10 @@ export default {
       type: Object,
       required: require,
     },
+    index: {
+      type: Number,
+      required: require,
+    },
     showIndex: {
       type: Number,
       required: require,
@@ -137,7 +167,7 @@ export default {
 </script>
 
 <style scoped>
-.history-item{
+.history-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -152,11 +182,11 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.history-item.left {
+.history-item .left {
   padding: 10px;
   text-align: center;
 }
-.history-item.main {
+.history-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -168,18 +198,18 @@ export default {
   justify-content: space-evenly;
   /* justify-content: center; */
 }
-.history-item.title {
+.history-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.history-item.sub-title {
+.history-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.history-item.right {
+.history-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -192,13 +222,13 @@ export default {
   justify-content: space-evenly;
 }
 
-.history-item.right .el-icon-more {
+.history-item .right .el-icon-more {
   margin-right: 11px;
   padding: 5px;
   font-size: 20px;
   cursor:pointer;
 }
-.history-item.right .el-icon-close {
+.history-item .right .el-icon-close {
   margin-right: 2px;
   font-size: 20px;
   cursor:pointer;

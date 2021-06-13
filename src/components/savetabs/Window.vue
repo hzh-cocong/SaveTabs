@@ -688,6 +688,15 @@ console.log('get_currentWindowStorageIndex3', index);
         });
       })
 
+      // 工作区切换时，搜不到工作区则展示全部
+      if(this.workspaceSwitch && filterList.length == 0) {
+        let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
+        filterList = this.storageList.map((item) => {
+          item.title = `search for '${keyword}'`;
+          return item;
+        });
+      }
+
       // 重新排序
       let currentList = filterList.filter(group => {
         return group.windowId == this.currentWindowId;

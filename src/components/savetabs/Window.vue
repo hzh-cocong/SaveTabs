@@ -650,6 +650,8 @@ console.log('get_currentWindowStorageIndex3', index);
 
       this.storageKeyword = keyword.trim();
 
+      let keywords = '';
+
       // 搜索工作区
       if(this.workspaceSwitch) {
         if(this.workspaceSwitchStorageList == null)
@@ -669,15 +671,31 @@ console.log('get_currentWindowStorageIndex3', index);
             svg: this.project_config.allWorkspaces[ workspace ].svg,
           }
         })
-      } else if(this.workspaceSwitchStorageList != null){
-        this.storageList = this.workspaceSwitchStorageList;
-        this.workspaceSwitchStorageList = null;
+
+        keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1);
+
+        // 工作区切换时，搜不到工作区则展示全部
+        if( ! this.storageList.some(item => ! keywords.some(keyword => item.name.toUpperCase().indexOf(keyword) == -1))) {
+          keywords = ''.split(/\s+/); //[""];
+          this.storageList.forEach(item => {
+            let keyword =  this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
+            item.title = `search for '${keyword}'`;
+          })
+          // keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/);
+        }
+      } else {
+        if(this.workspaceSwitchStorageList != null) {
+          this.storageList = this.workspaceSwitchStorageList;
+          this.workspaceSwitchStorageList = null;
+        }
+
+        keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       }
 
       // 查找
-      let keywords =  this.workspaceSwitch
-                    ? this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1)
-                    : this.storageKeyword.toUpperCase().split(/\s+/);
+      // let keywords =  this.workspaceSwitch
+      //               ? this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1)
+      //               : this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
@@ -688,14 +706,14 @@ console.log('get_currentWindowStorageIndex3', index);
         });
       })
 
-      // 工作区切换时，搜不到工作区则展示全部
-      if(this.workspaceSwitch && filterList.length == 0) {
-        let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
-        filterList = this.storageList.map((item) => {
-          item.title = `search for '${keyword}'`;
-          return item;
-        });
-      }
+      // // 工作区切换时，搜不到工作区则展示全部
+      // if(this.workspaceSwitch && filterList.length == 0) {
+      //   let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
+      //   filterList = this.storageList.map((item) => {
+      //     item.title = `search for '${keyword}'`;
+      //     return item;
+      //   });
+      // }
 
       // 重新排序
       let currentList = filterList.filter(group => {
@@ -853,7 +871,13 @@ console.log('get_currentWindowStorageIndex3', index);
 
       // 切换到对应的工作区
       if(this.workspaceSwitch) {
-        let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
+        let keyword;
+        let keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1);
+        if(this.storageList.some(item => ! keywords.some(keyword => item.name.toUpperCase().indexOf(keyword) == -1))) {
+          keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
+        } else {
+          keyword =  this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
+        }
         this.input(keyword, this.currentGroup.type);
         return;
       }

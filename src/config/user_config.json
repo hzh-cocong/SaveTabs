@@ -92,7 +92,7 @@
         "bookmark",
         "tab"
     ],
-    "active_workspace_type": "all",
+    "active_workspace_type": "window",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
@@ -102,36 +102,36 @@
     "keymap_left_and_right": true,
     "popup": true,
 
+    "workspace_change_word": ">",
+
     "all_include": [
         {
-            "type": "bookmark",
+            "type": "temporary",
             "count": 3,
-            "is_top": true
-        },
-        {
-            "type": "history",
-            "count": 3,
-            "is_top": true
-        },
-        {
-            "type": "tab",
-            "count": 3,
-            "is_top": true
+            "is_top": 1,
+            "only_search": true
         },
         {
             "type": "note",
             "count": 3,
-            "is_top": true
+            "is_top": 1,
+            "only_search": false
         },
         {
-            "type": "temporary",
+            "type": "history",
             "count": 3,
-            "is_top": true
+            "is_top": 0,
+            "only_search": true
+        }
+    ],
+    "all_search_engine": [
+        {
+            "url": "https://www.google.com/search?q=aaaaaaaa",
+            "name": "Google"
         },
         {
-            "type": "window",
-            "count": 3,
-            "is_top": true
+            "url": "https://www.baidu.com/s?ie=utf-8&wd=sss",
+            "name": "Baidu"
         }
     ],
     "all_sort_auto": false

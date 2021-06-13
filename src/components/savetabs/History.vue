@@ -546,11 +546,11 @@ console.warn('isSearched2');
 
       // 查找
       chrome.history.search({
-          text: this.storageKeyword,
-          startTime: this.startTime,
-          endTime: lastVisitTime,
-          maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
-        }, (historys)=>{
+        text: this.storageKeyword,
+        startTime: this.startTime,
+        endTime: lastVisitTime,
+        maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+      }, (historys)=>{
         console.log('chrome.history.query', {
           text: this.storageKeyword,
           startTime: this.startTime,

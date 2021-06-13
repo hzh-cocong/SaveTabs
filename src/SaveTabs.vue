@@ -283,6 +283,7 @@
           v-if="isOpened[index]"
           :is="workspace.type"
           :config="config"
+          :project_config="project_config"
           :isLoad="isLoad"
 
           :history="history"
@@ -416,6 +417,7 @@ export default {
       lock: false,
 
       config: userConfig,
+      project_config: projectConfig,
       themes: userTheme,
       allWorkspaces: projectConfig.allWorkspaces,
 

@@ -36,7 +36,9 @@
     @load="load"
     @click.native="focus"
     @itemClick="_openWindow">
-    <template #default="{ index, item, isActive, isSelected }">
+    <template
+      v-if=" ! workspaceSwitch"
+      #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
         :style="{
@@ -58,10 +60,12 @@
         </el-image>
       </span>
 
-      <span
-        class="title"
-        :style="{fontSize: config.list_font_size+'px'}"
-        v-html="highlightMap[index]"></span>
+      <div class="main">
+        <span
+          class="title"
+          :style="{fontSize: config.list_font_size+'px'}"
+          v-html="highlightMap[index]"></span>
+      </div>
 
       <div class="right">
         <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
@@ -163,6 +167,95 @@
                       )
                     }}</span>
         </template>
+      </div>
+    </template>
+    <template
+      v-else
+      #default="{ index, item, isActive, isSelected }">
+      <span
+        class="left"
+        :style="{
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+        <svg-icon
+          :name="item.svg"
+          style="width:100%; height: 100%;"
+          :style="{ color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color, }"></svg-icon>
+        <!-- <el-image
+          v-if="isLoad"
+          :src="getIcon('', item.url, config.item_height-20)"
+          style="width:100%; height: 100%;"
+          fit="cover"
+          lazy>
+          <div slot="error" class="image-slot">
+            <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
+          </div>
+          <div slot="placeholder" class="image-slot"></div>
+        </el-image>
+        <svg-icon
+          name="history-solid"
+          style=" position: absolute;
+                  right: 0;
+                  bottom: 0;
+                  padding: 2px;
+                  border-width: 2px 0px 0px 2px;
+                  border-style: solid;
+                  border-radius: 2px 0 0 0;
+                  margin-right: 2px;"
+          :style="{ backgroundColor: isSelected
+                                    ? config.list_focus_background_color
+                                    : config.list_background_color,
+                    borderColor: isSelected
+                                ? config.list_focus_background_color
+                                : config.list_background_color,
+                    color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color,
+                    width: config.item_height/4+'px',
+                    height: config.item_height/4+'px', }"></svg-icon> -->
+      </span>
+
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">
+          <span v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></span>
+        </div>
+        <div
+          v-if="isSelected && item.title != ''"
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }"
+            v-text="item.title"></div>
+      </div>
+
+      <div class="right">
+        <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+        <span
+          v-else-if="_device.platform != ''
+            && (index-$refs.list.scrollLines+1) <= 9"
+          :style="{
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color,
+          }">{{
+              (_device.platform == 'Mac' ? '⌘' : 'Alt+')
+            + ( 1 > index-$refs.list.scrollLines+1
+              ? 1
+              : (index-$refs.list.scrollLines+1 > config.item_show_count
+                ? config.item_show_count
+                : index-$refs.list.scrollLines+1)
+              )
+            }}</span>
       </div>
     </template>
   </list>
@@ -337,9 +430,13 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -354,6 +451,7 @@ export default {
       list: [],
       cacheList: [],
       storageList: [],
+      workspaceSwitchStorageList: null,
 
       scrollDisabled: true,
       storageKeyword: undefined,
@@ -381,6 +479,11 @@ export default {
     List,
   },
   computed: {
+    workspaceSwitch() {
+      return ! ( this.storageKeyword == undefined
+              || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
+    },
+
     iconMap() {
       console.log('getIcon:iconMap');
       let a = new Date().getTime();
@@ -540,16 +643,41 @@ console.log('get_currentWindowStorageIndex3', index);
       this.currentIndex++;
     },
     search(keyword) {
-      // alert(keyword)
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-let a = new Date().getTime();
+
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();
-console.warn('isSearched', this.storageList.length, a);
+
+      // 搜索工作区
+      if(this.workspaceSwitch) {
+        if(this.workspaceSwitchStorageList == null)
+          this.workspaceSwitchStorageList = this.storageList;
+
+        this.storageList = this.config.workspaces.filter((workspace) => {
+          return workspace != 'window';
+        }).map((workspace) => {
+          let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
+          return {
+            type: workspace,
+            name: this.lang(workspace)
+                + ( this.lang(workspace) == workspace
+                  ? ''
+                  : ` (${workspace}) `),
+            title: keyword == '' ? '' : `search for '${keyword}'`,
+            svg: this.project_config.allWorkspaces[ workspace ].svg,
+          }
+        })
+      } else if(this.workspaceSwitchStorageList != null){
+        this.storageList = this.workspaceSwitchStorageList;
+        this.workspaceSwitchStorageList = null;
+      }
+
       // 查找
-      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+      let keywords =  this.workspaceSwitch
+                    ? this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1)
+                    : this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
@@ -573,7 +701,6 @@ console.warn('isSearched', this.storageList.length, a);
 
       // 列表赋值
       this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
-      // this.cacheList = currentList.concat(openedList).concat(closeList);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -583,7 +710,7 @@ console.warn('isSearched', this.storageList.length, a);
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
       let b = new Date().getTime();
-console.warn('isSearched2', b, (b-a)/1000);
+
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
@@ -714,6 +841,13 @@ console.warn('isSearched2', b, (b-a)/1000);
       console.log('openWindow', event)
 
       if(this.currentGroup == null) return;
+
+      // 切换到对应的工作区
+      if(this.workspaceSwitch) {
+        let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
+        this.input(keyword, this.currentGroup.type);
+        return;
+      }
 
       // let group = this.list[ this.currentIndex ];
       let urls = this.currentGroup.tabs.map(tab => tab['url']);
@@ -1169,11 +1303,19 @@ console.warn('finish', b, (b-a)/1000)
   padding: 10px;
   text-align: center;
 }
-.list >>> .list-item .title {
-  /* border: 1px solid blue; */
-  text-align: left;
-  cursor: default;
+.list >>> .list-item .main {
   flex: 1;
+  text-align: left;
+  overflow: hidden;
+  cursor: default;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* justify-content: center; */
+}
+.list >>> .list-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

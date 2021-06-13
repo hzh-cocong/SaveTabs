@@ -17,7 +17,7 @@ let history = {
       if(this.isInit) resolve();
       else resolve(this.init())
     }).then(() => {
-      return new Promise(resolve2 => {
+      return new Promise(resolve => {
         this.storageKeyword = keywords.join(' ');
         this.list_page_count = length;
         let lastVisitTime = new Date().getTime();
@@ -29,7 +29,8 @@ let history = {
 
             this.queryDisabled = true;
 
-            return [];
+            resolve([]);
+            return;
           }
 
           this.cacheList = [];
@@ -59,7 +60,7 @@ let history = {
 
           this.queryDisabled = false;
 
-          resolve2(this.cacheList.slice(0, length));
+          resolve(this.cacheList.slice(0, length));
         }, lastVisitTime, 27)
       })
     })
@@ -128,11 +129,18 @@ let history = {
 
     // 查找
     chrome.history.search({
+      text: this.storageKeyword,
+      startTime: 0,
+      endTime: lastVisitTime,
+      maxResults: max, // this.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+    }, (historys)=>{
+      console.log('chrome.history.query', {
         text: this.storageKeyword,
-        startTime: this.startTime,
+        startTime: 0,
         endTime: lastVisitTime,
-        maxResults: max, // this.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
-      }, (historys)=>{
+        maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+      }, historys)
+
       // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
       historys = historys.sort((a, b)=>{
         return b.lastVisitTime-a.lastVisitTime;

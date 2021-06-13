@@ -101,6 +101,7 @@ export default {
       currentIndex: 0,
 
       storageKeyword: undefined,
+      conditions: [],
 
       scrollDisabled: true, // 一定要为 true，否则会再一开始就触发 load，而此时 search 可能还未执行完，就会导致冲突
 
@@ -134,37 +135,28 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
-      let keywords = this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/);
-
       this.length = {};
 
-      Promise.all(this.config.all_include.filter(workspace => {
-        return workspace.is_top;
-      }).map((workspace) => {
-        console.log('lists.isTop.workspace', workspace);
-        let module = this.getModule(workspace.type);
-        return module.search({
-          keywords: keywords,
-          length: workspace.count,
-        })
-      })).then(lists => {
-        console.log('lists88888888888', JSON.parse(JSON.stringify(lists)));
-        if(lists.length <= 0) return true;
+      if(this.storageKeyword == '') {
+        this.conditions = [
+          {is_top: 1, only_search: false},
+          {is_top: 0, only_search: false},
+          {is_top: -1, only_search: false},
+        ];
+      } else {
+        this.conditions = [
+          {is_top: 1},
+          {is_top: 0},
+          {is_top: -1},
+        ];
+      }
 
-        let list = [];
-        lists.forEach((workspaceList) => {
-          if(workspaceList.length <= 0) return;
+      this.toSearch(0).then((list) => {
+        console.log('search:lists', list);
 
-          this.length[workspaceList[0].type] = workspaceList.length;
-          list.push(...workspaceList);
-        })
-        if(list.length <= 0) return true;
         this.list = list;
 
-        // test
-        // this.list[0].isCurrent = true;
-        // this.list[0].count = 3;
-
+        // 置顶只要有一个结果，就不会继续查，此时列表如果没有被填满也不用担心，load 会加载
         this.scrollDisabled = false;
         if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
           this.currentIndex = 1;
@@ -174,112 +166,94 @@ export default {
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
+      })
+    },
+    toSearch(index = 0) {
+      if(index >= this.conditions.length) {
+        return new Promise(resolve => resolve([]));
+      }
 
-        return false;
-      }).then((isContinue) => {
-        console.log('isContinue', isContinue)
-        if( ! isContinue) return;
+      let condition = this.conditions[index];
 
-        Promise.all(this.config.all_include.filter((workspace) => {
-          return ! workspace.is_top;
-        }).map((workspace) => {
-          let module = this.getModule(workspace.type);
-          return module.search({
-            keywords: keywords,
-            length: workspace.count,
-          })
-        })).then(lists => {
-          console.log('lists', lists);
-
-          let list = [];
-          lists.forEach((workspaceList) => {
-            if(workspaceList.length <= 0) return;
-
-            this.length[workspaceList[0].type] = workspaceList.length;
-            list.push(...workspaceList);
-          })
-          this.list = list;
-
-          this.scrollDisabled = this.list.length <= 0;
-          if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
-            this.currentIndex = 1;
-          } else {
-            this.currentIndex = this.list.length > 0 ? 0 : -1;
-          }
-
-          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
-          this.isSearched = true;
+      return Promise.all(this.config.all_include.filter(workspace => {
+        return Object.keys(condition).every((attr) => {
+          return workspace[attr] == condition[attr];
         })
+      }).map((workspace) => {
+        let module = this.getModule(workspace.type);
+        this.length[workspace.type] = 0;
+        return module.search({
+          keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
+          length: workspace.count,
+        })
+      })).then((lists) => {
+        console.log('toSearch:lists', lists);
+
+        let list = [];
+        lists.forEach((workspaceList) => {
+          if(workspaceList.length <= 0) return;
+
+          this.length[workspaceList[0].type] = workspaceList.length;
+          list.push(...workspaceList);
+        })
+
+        if(list.length > 0) {
+          return list;
+        } else {
+          return this.toSearch(index+1);
+        }
       })
     },
     load() {
-      Promise.all(this.config.all_include.filter(workspace => {
-        return workspace.is_top;
+      this.toLoad(0).then((list) => {
+        console.log('load:lists', list);
+
+        this.scrollDisabled = list.length <= 0;
+        this.list.push(...list);
+      })
+    },
+    toLoad(index = 0) {
+      if(index >= this.conditions.length) {
+        return new Promise(resolve => resolve([]));
+      }
+
+      let condition = this.conditions[index];
+
+      return Promise.all(this.config.all_include.filter(workspace => {
+        return Object.keys(condition).every((attr) => {
+          return workspace[attr] == condition[attr];
+        })
       }).map((workspace) => {
         let module = this.getModule(workspace.type);
-        return module.load({
-          start: this.length[workspace.type],
-          length: workspace.count,
-        })
-      })).then(lists => {
-        console.log('load:lists', lists);
-
-        if(lists.length <= 0) return true;
-
-        let count = 0;
-        lists.forEach((list) => {
-          if(list.length <= 0) return;
-
-          this.length[list[0].type] += list.length;
-          this.list.push(...list);
-
-          count += list.length;
-        })
-
-        if(count <= 0) return true;
-
-        return false;
-      }).then((isContinue) => {
-        console.log('load', isContinue);
-        if( ! isContinue) return;
-
-        Promise.all(this.config.all_include.filter(workspace => {
-          return ! workspace.is_top;
-        }).map((workspace) => {
-          let module = this.getModule(workspace.type);
-
-          if(this.length[workspace.type] == undefined) {
-            let keywords = this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/);
-
-            this.length[workspace.type] = 0;
-
-            return module.search({
-              keywords: keywords,
-              length: workspace.count,
-            })
-          } else {
-            return module.load({
-              start: this.length[workspace.type],
-              length: workspace.count,
-            })
-          }
-        })).then(lists => {
-          console.log('load2:lists', lists);
-
-          let count = 0;
-          lists.forEach((list) => {
-            if(list.length <= 0) return;
-
-            this.length[list[0].type] += list.length;
-            this.list.push(...list);
-
-            count += list.length;
+        if(this.length[workspace.type] == undefined) {
+          this.length[workspace.type] = 0;
+          return module.search({
+            keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
+            length: workspace.count,
           })
+        } else {
+          return module.load({
+            keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
+            start: this.length[workspace.type],
+            length: workspace.count,
+          })
+        }
+      })).then(lists => {
+        console.log('toLoad:lists', lists);
 
-          this.scrollDisabled = count <= 0;
+        let list = [];
+        lists.forEach((workspaceList) => {
+          if(workspaceList.length <= 0) return;
 
-          return false;
+          this.length[workspaceList[0].type] += workspaceList.length;
+          list.push(...workspaceList);
         })
+
+        if(list.length > 0) {
+          return list;
+        } else {
+          return this.toLoad(index+1);
+        }
       })
     },
 

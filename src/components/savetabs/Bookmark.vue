@@ -58,7 +58,7 @@
             :src="iconMap[index]"
             style="width:100%; height: 100%;"
             fit="cover"
-            :lazy="index >= config.item_show_count">
+            lazy>
             <div slot="error" class="image-slot">
               <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
@@ -604,7 +604,6 @@ console.log('chrome.bookmarks.getTree.second')
       // 搜索列表需要用别的方式打开文件夹
 
       // 展开（如果子目录需要展开也会自动展开）
-      let endIndex = index;
       let stack = [];
       for(let currentIndex = index, endIndex = index; currentIndex <= endIndex; currentIndex++) {
         let bookmark = this.list[currentIndex];

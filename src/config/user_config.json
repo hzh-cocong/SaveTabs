@@ -104,12 +104,7 @@
 
     "all_include": [
         {
-            "type": "history",
-            "count": 3,
-            "is_top": true
-        },
-        {
-            "type": "tab",
+            "type": "bookmark",
             "count": 3,
             "is_top": true
         }

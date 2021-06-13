@@ -46,27 +46,15 @@
                 border-style: solid;
                 border-radius: 2px 0 0 0;
                 margin-right: 2px;"
-        :style="{ backgroundColor: index == 0 && item.isCurrent
-                        ? ( isSelected
-                          ? config.list_current_focus_background_color
-                          : config.list_current_background_color)
-                        : ( isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color),
-                  borderColor: index == 0 && item.isCurrent
-                        ? ( isSelected
-                          ? config.list_current_focus_background_color
-                          : config.list_current_background_color)
-                        : ( isSelected
-                          ? config.list_focus_background_color
-                          : config.list_background_color),
-                  color: index == 0 && item.isCurrent
-                        ? ( isSelected
-                          ? config.list_current_focus_icon_color
-                          : config.list_current_icon_color)
-                        : ( isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color),
+        :style="{ backgroundColor: isSelected
+                                  ? config.list_focus_background_color
+                                  : config.list_background_color,
+                  borderColor: isSelected
+                              ? config.list_focus_background_color
+                              : config.list_background_color,
+                  color: isSelected
+                        ? config.list_focus_icon_color
+                        : config.list_icon_color,
                   width: config.item_height/4+'px',
                   height: config.item_height/4+'px', }"></svg-icon>
     </span>

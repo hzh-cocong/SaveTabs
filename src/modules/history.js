@@ -231,7 +231,7 @@ let history = {
       return new Promise(resolve => {
         // 收起
         currentHistory.subFiles = this.cacheList.splice(index+1, currentHistory.count);
-        resolve({ type: 'collapse', length: currentHistory.count})
+        resolve({ type: 'collapse', length: currentHistory.count })
       });
     }
   },

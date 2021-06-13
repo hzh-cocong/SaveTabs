@@ -71,12 +71,14 @@ import TemporaryItem from './all/TemporaryItem.vue'
 import NoteItem from './all/NoteItem.vue'
 import TabItem from './all/TabItem.vue'
 import HistoryItem from './all/HistoryItem.vue'
+import BookmarkItem from './all/BookmarkItem.vue'
 
 import Window from '../../modules/window.js'
 import Temporary from '../../modules/temporary.js'
 import Note from '../../modules/note.js'
 import Tab from '../../modules/tab.js'
 import History from '../../modules/history.js'
+import Bookmark from '../../modules/bookmark.js'
 
 export default {
   name: 'All',
@@ -114,6 +116,7 @@ export default {
     NoteItem,
     TabItem,
     HistoryItem,
+    BookmarkItem,
   },
   methods: {
     up() {
@@ -321,16 +324,19 @@ export default {
         case 'note': return Note;
         case 'tab': return Tab;
         case 'history': return History;
+        case 'bookmark': return Bookmark;
       }
     },
   },
   mounted() {
+    // todo
     window.all = this;
     window.ww = Window;
     window.tte = Temporary;
     window.nn = Note;
     window.tta = Tab;
     window.hh = History;
+    window.bb = Bookmark;
 
     this.$emit('finish');
   }

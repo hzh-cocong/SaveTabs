@@ -18,12 +18,11 @@
     }">
     <span
       class="left"
+      style="position: relative"
       :style="{
         width: (config.item_height-20)+'px',
         height: (config.item_height-20)+'px',
-        marginLeft: (storageKeyword == ''
-                  ? tree.marginLeft[item.id]
-                  : searchTree.marginLeft[index])+'px' }">
+        marginLeft: item.marginLeft+'px' }">
       <template v-if="isLoad">
         <img
           v-if="item.children && item.children.length > 0"
@@ -35,15 +34,36 @@
           style="width:100%; height: 100%;" />
         <el-image
           v-else
-          :src="iconMap[index]"
+          :src="getIcon('', item.url, config.item_height-20)"
           style="width:100%; height: 100%;"
           fit="cover"
-          :lazy="index >= config.item_show_count">
+          lazy>
           <div slot="error" class="image-slot">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder" class="image-slot"></div>
         </el-image>
+        <svg-icon
+          name="star-solid"
+          style=" position: absolute;
+                  right: 0;
+                  bottom: 0;
+                  padding: 2px;
+                  border-width: 2px 0px 0px 2px;
+                  border-style: solid;
+                  border-radius: 2px 0 0 0;
+                  margin-right: 2px;"
+          :style="{ backgroundColor: isSelected
+                                    ? config.list_focus_background_color
+                                    : config.list_background_color,
+                    borderColor: isSelected
+                                ? config.list_focus_background_color
+                                : config.list_background_color,
+                    color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color,
+                    width: config.item_height/4+'px',
+                    height: config.item_height/4+'px', }"></svg-icon>
       </template>
     </span>
 
@@ -52,29 +72,24 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">{{
-              item.title
-              + ( ! isSelected || tree.path[item.parentId]
-                ? ''
-                : ' (' +tree.bookmarkCount[item.id]+') ')
+              index+' | '+item.index+' | '+item.title
           }}</div>
       </template>
       <template v-else>
         <span
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlightMap[index]"></span>
+          v-html="index+' | '+item.index+' | '+highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
       </template>
 
       <div
-        v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')"
         class="sub-title"
         :style="{
           fontSize: config.list_explain_font_size+'px',
           color: isSelected
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color }">
-        {{  (tree.path[item.parentId] ? tree.path[item.parentId] : '')
-          + (item.children ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id] : '') }}
+        {{ item.subTitle }}
       </div>
     </div>
 
@@ -107,6 +122,10 @@ export default {
       required: false,
       default: true,
     },
+    index: {
+      type: Number,
+      required: require,
+    },
     item: {
       type: Object,
       required: require,
@@ -133,7 +152,7 @@ export default {
 </script>
 
 <style scoped>
-.bookmark-item{
+.bookmark-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -148,11 +167,11 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.bookmark-item.left {
+.bookmark-item .left {
   padding: 10px;
   text-align: center;
 }
-.bookmark-item.main {
+.bookmark-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -164,17 +183,17 @@ export default {
   justify-content: space-evenly;
   /* justify-content: center; */
 }
-.bookmark-item.title {
+.bookmark-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.bookmark-item.sub-title {
+.bookmark-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.bookmark-item.right {
+.bookmark-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;

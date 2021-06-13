@@ -107,6 +107,31 @@
             "type": "bookmark",
             "count": 3,
             "is_top": true
+        },
+        {
+            "type": "history",
+            "count": 3,
+            "is_top": true
+        },
+        {
+            "type": "tab",
+            "count": 3,
+            "is_top": true
+        },
+        {
+            "type": "note",
+            "count": 3,
+            "is_top": true
+        },
+        {
+            "type": "temporary",
+            "count": 3,
+            "is_top": true
+        },
+        {
+            "type": "window",
+            "count": 3,
+            "is_top": true
         }
     ],
     "all_sort_auto": false

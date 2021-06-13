@@ -117,45 +117,30 @@ let bookmark = {
       if(this.isInit) resolve();
       else resolve(this.init())
     }).then(() => {
-
-
-
-
-      if(keywords.length == 0) {
-        return new Promise(resolve => {
+      return new Promise(resolve => {
+        if(keywords.length == 0) {
           this.getTree((bookmarks) => {
-            this.cacheList = bookmarks;
-
-            this.cacheList.forEach((bookmark, index) => {
-              bookmark.type = 'bookmark';
-              bookmark.marginLeft = 0;
-              bookmark.subTitle = (this.tree.path[bookmark.parentId] ? this.tree.path[bookmark.parentId] : '')
-                                  + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
-                                    + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')
-              bookmark.index = index;
-            });
-
-            resolve(this.cacheList.slice(0, length));
+            resolve(bookmarks);
           })
-        })
-      } else {
-        return new Promise(resolve => {
+        } else {
           this.query(keywords.join(' '), (bookmarks) => {
-            this.cacheList = bookmarks;
-
-            this.cacheList.forEach((bookmark, index) => {
-              bookmark.type = 'bookmark';
-              bookmark.marginLeft = 0;
-              bookmark.subTitle = (this.tree.path[bookmark.parentId] ? this.tree.path[bookmark.parentId] : '')
-                                  + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
-                                    + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')
-              bookmark.index = index;
-            });
-
-            resolve(this.cacheList.slice(0, length));
+            resolve(bookmarks);
           })
-        })
-      }
+        }
+      }).then((bookmarks) => {
+        this.cacheList = bookmarks;
+
+        this.cacheList.forEach((bookmark, index) => {
+          bookmark.type = 'bookmark';
+          bookmark.marginLeft = 0;
+          bookmark.subTitle = (this.tree.path[bookmark.parentId] ? this.tree.path[bookmark.parentId] : '')
+                              + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
+                                + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')
+          bookmark.index = index;
+        });
+
+        return this.cacheList.slice(0, length);
+      })
     })
   },
   load({start, length}) {

@@ -224,14 +224,14 @@
           <span v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></span>
         </div>
         <div
-          v-if="isSelected && item.title != ''"
+          v-if="isSelected && item.tip != ''"
           class="sub-title"
           :style="{
             fontSize: config.list_explain_font_size+'px',
             color: isSelected
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color }"
-            v-text="item.title"></div>
+            v-text="item.tip"></div>
       </div>
 
       <div class="right">
@@ -481,7 +481,21 @@ export default {
   computed: {
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
+              || this.config.workspace_change_word == undefined
+              || this.config.workspace_change_word.length == 0
               || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
+    },
+    workspaceList() {
+      return this.config.workspaces.filter(
+        workspace => workspace != 'window'
+      ).map(workspace => ({
+        type: workspace,
+        name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
+        svg: this.project_config.allWorkspaces[ workspace ].svg,
+      }));
+    },
+    workspaceStorageKeyword() {
+      return this.storageKeyword.substr(this.config.workspace_change_word.length).trim();
     },
 
     iconMap() {
@@ -650,52 +664,30 @@ console.log('get_currentWindowStorageIndex3', index);
 
       this.storageKeyword = keyword.trim();
 
-      let keywords = '';
-
-      // 搜索工作区
+      // 展示工作区
       if(this.workspaceSwitch) {
-        if(this.workspaceSwitchStorageList == null)
-          this.workspaceSwitchStorageList = this.storageList;
+        let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+        let filterList =  this.workspaceList.filter( workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 );
 
-        this.storageList = this.config.workspaces.filter((workspace) => {
-          return workspace != 'window';
-        }).map((workspace) => {
-          let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
-          return {
-            type: workspace,
-            name: this.lang(workspace)
-                + ( this.lang(workspace) == workspace
-                  ? ''
-                  : ` (${workspace}) `),
-            title: keyword == '' ? '' : `search for '${keyword}'`,
-            svg: this.project_config.allWorkspaces[ workspace ].svg,
-          }
+        // 搜不到则展示全部工作区
+        let keywords = filterList.length > 0
+                      ? this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ')
+                      : this.workspaceStorageKeyword.split(/\s+/).join(' ');
+        filterList = filterList.length > 0 ? filterList : this.workspaceList
+
+        // 列表赋值
+        this.list = filterList.map((workspace) => {
+          workspace.tip = keywords == '' ? '' : `search for '${keywords}'`;
+          return workspace;
         })
+        this.scrollDisabled = true;
+        this.currentIndex = 0;
 
-        keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1);
-
-        // 工作区切换时，搜不到工作区则展示全部
-        if( ! this.storageList.some(item => ! keywords.some(keyword => item.name.toUpperCase().indexOf(keyword) == -1))) {
-          keywords = ''.split(/\s+/); //[""];
-          this.storageList.forEach(item => {
-            let keyword =  this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
-            item.title = `search for '${keyword}'`;
-          })
-          // keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/);
-        }
-      } else {
-        if(this.workspaceSwitchStorageList != null) {
-          this.storageList = this.workspaceSwitchStorageList;
-          this.workspaceSwitchStorageList = null;
-        }
-
-        keywords = this.storageKeyword.toUpperCase().split(/\s+/);
+        return;
       }
 
       // 查找
-      // let keywords =  this.workspaceSwitch
-      //               ? this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1)
-      //               : this.storageKeyword.toUpperCase().split(/\s+/);
+      let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
       let filterList = this.storageKeyword == '' ? this.storageList : this.storageList.filter(group => {
         let name = group.name.toUpperCase();
@@ -705,15 +697,6 @@ console.log('get_currentWindowStorageIndex3', index);
           return name.indexOf(keyword) == -1;
         });
       })
-
-      // // 工作区切换时，搜不到工作区则展示全部
-      // if(this.workspaceSwitch && filterList.length == 0) {
-      //   let keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
-      //   filterList = this.storageList.map((item) => {
-      //     item.title = `search for '${keyword}'`;
-      //     return item;
-      //   });
-      // }
 
       // 重新排序
       let currentList = filterList.filter(group => {
@@ -869,16 +852,16 @@ console.log('get_currentWindowStorageIndex3', index);
 
       if(this.currentGroup == null) return;
 
-      // 切换到对应的工作区
+      // 工作区切换
       if(this.workspaceSwitch) {
-        let keyword;
-        let keywords = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().toUpperCase().split(/\s+/).slice(0, 1);
-        if(this.storageList.some(item => ! keywords.some(keyword => item.name.toUpperCase().indexOf(keyword) == -1))) {
-          keyword = this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).slice(1).join(' ');
+        let keywords;
+        let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+        if(this.workspaceList.some(workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 )) {
+          keywords = this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ');
         } else {
-          keyword =  this.storageKeyword.substr(this.config.workspace_change_word.length).trim().split(/\s+/).join(' ');
+          keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
         }
-        this.input(keyword, this.currentGroup.type);
+        this.input(keywords, this.currentGroup.type);
         return;
       }
 

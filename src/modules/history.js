@@ -6,19 +6,23 @@ let history = {
   list_page_count: 0,
   queryDisabled: false,
 
+  parent: {},
+
   isInit: false,
 
   init: function() {
     this.isInit = true;
   },
 
-  search({keywords, length}) {
+  search({keywords, length, originKeyword, parent}) {
+    this.parent = parent;
+
     return new Promise((resolve) => {
       if(this.isInit) resolve();
       else resolve(this.init())
     }).then(() => {
       return new Promise(resolve => {
-        this.storageKeyword = keywords.join(' ');
+        this.storageKeyword = originKeyword;
         this.list_page_count = length;
         let lastVisitTime = new Date().getTime();
 
@@ -179,11 +183,11 @@ let history = {
   mergeHistory(list, historys) {
     let k = list.length-1;
     for(let history of historys) {
-      let domain = this.getDomain(history.url);
+      let domain = this.parent.getDomain(history.url);
       let lastDomain = k >= 0
                     ? ( list[k].count == undefined
-                      ? this.getDomain(list[k].url)
-                      : this.getDomain(list[k].subFiles[0].url))
+                      ? this.parent.getDomain(list[k].url)
+                      : this.parent.getDomain(list[k].subFiles[0].url))
                     : '';
       if(domain == lastDomain && list[k].count == undefined) {
         // 文件夹展开的情况（一般不会遇到）
@@ -248,15 +252,6 @@ let history = {
     return this.cacheList.findIndex((history, index) => {
       return history.index == i;
     })
-  },
-
-  getDomain(url) {
-    let res = url.match(/[a-zA-z-]+:\/\/([^/]+)/);
-    if(res != null) {
-      return res[1];
-    } else {
-      return '';
-    }
   },
 }
 

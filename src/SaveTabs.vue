@@ -61,7 +61,7 @@
         @keyup.native="keyup"
         @input="search"
         @compositionstart.native="isComposition=true"
-        @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search($event.data)"
+        @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search(keyword+$event.data)"
         @compositionend.native="isComposition=false"
         ref="input">
         <template slot="prepend">

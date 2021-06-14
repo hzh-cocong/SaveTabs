@@ -45,6 +45,7 @@
         :isSelected="isSelected"
 
         :config="config"
+        :project_config="project_config"
         :isLoad="isLoad"
 
         :storageKeyword="storageKeyword"
@@ -72,6 +73,8 @@ import NoteItem from './all/NoteItem.vue'
 import TabItem from './all/TabItem.vue'
 import HistoryItem from './all/HistoryItem.vue'
 import BookmarkItem from './all/BookmarkItem.vue'
+import SearchItem from './all/SearchItem.vue'
+import ToggleItem from './all/ToggleItem.vue'
 
 import Window from '../../modules/window.js'
 import Temporary from '../../modules/temporary.js'
@@ -79,12 +82,18 @@ import Note from '../../modules/note.js'
 import Tab from '../../modules/tab.js'
 import History from '../../modules/history.js'
 import Bookmark from '../../modules/bookmark.js'
+import Search from '../../modules/search.js'
+import Toggle from '../../modules/toggle.js'
 
 export default {
   name: 'All',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -118,6 +127,16 @@ export default {
     TabItem,
     HistoryItem,
     BookmarkItem,
+    SearchItem,
+    ToggleItem,
+  },
+  computed: {
+    workspaceSwitch() {
+      return ! ( this.storageKeyword == undefined
+              || this.config.workspace_change_word == undefined
+              || this.config.workspace_change_word.length == 0
+              || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
+    },
   },
   methods: {
     up() {
@@ -135,6 +154,26 @@ export default {
 
       this.storageKeyword = keyword.trim();
 
+      // 展示工作区
+      if(this.workspaceSwitch) {
+        let module = this.getModule('toggle');
+        module.search({
+          keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
+          length: 100,
+          config: this.config,
+          originKeyword: this.storageKeyword,
+          parent: this,
+        }).then((list) => {
+          console.log(77777777777777777, list)
+          this.list = list;
+
+          this.scrollDisabled = true;
+          this.currentIndex = 0;
+        })
+
+        return;
+      }
+
       this.length = {};
 
       if(this.storageKeyword == '') {
@@ -142,12 +181,14 @@ export default {
           {is_top: 1, only_search: false},
           {is_top: 0, only_search: false},
           {is_top: -1, only_search: false},
+          {is_top: -2, only_search: false},
         ];
       } else {
         this.conditions = [
           {is_top: 1},
           {is_top: 0},
           {is_top: -1},
+          {is_top: -2},
         ];
       }
 
@@ -185,6 +226,9 @@ export default {
         return module.search({
           keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
           length: workspace.count,
+          config: this.config,
+          originKeyword: this.storageKeyword,
+          parent: this,
         })
       })).then((lists) => {
         console.log('toSearch:lists', lists);
@@ -230,12 +274,18 @@ export default {
           return module.search({
             keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
             length: workspace.count,
+            config: this.config,
+            originKeyword: this.storageKeyword,
+            parent: this,
           })
         } else {
           return module.load({
             keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
             start: this.length[workspace.type],
             length: workspace.count,
+            config: this.config,
+            originKeyword: this.storageKeyword,
+            parent: this,
           })
         }
       })).then(lists => {
@@ -287,6 +337,8 @@ export default {
         } else if(result.type == 'collapse') {
           this.list.splice(this.currentIndex+1, result.length);
           this.length[item.type] -= result.length;
+        } else if(result.type == 'input') {
+          this.input(result.keywords, result.workspace)
         }
       });
     },
@@ -299,6 +351,8 @@ export default {
         case 'tab': return Tab;
         case 'history': return History;
         case 'bookmark': return Bookmark;
+        case 'search': return Search;
+        case 'toggle': return Toggle;
       }
     },
   },
@@ -311,6 +365,8 @@ export default {
     window.tta = Tab;
     window.hh = History;
     window.bb = Bookmark;
+    window.ss = Search;
+    window.tto = Toggle;
 
     this.$emit('finish');
   }

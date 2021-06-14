@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-//*
+/*
 import Lang from '../../public/_locales/en/messages.json'/*/
 import Lang from '../../public/_locales/zh_CN/messages.json'
 //*/

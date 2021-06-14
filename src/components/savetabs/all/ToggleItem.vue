@@ -1,6 +1,6 @@
 <template>
   <div
-    class="search-item"
+    class="toggle-item"
     :style="{
       backgroundColor: isSelected
                       ? config.list_focus_background_color
@@ -22,59 +22,28 @@
       :style="{
         width: (config.item_height-20)+'px',
         height: (config.item_height-20)+'px' }">
-      <el-image
-        v-if="isLoad"
-        :src="getIcon('', item.formate, config.item_height-20)"
-        style="width:100%; height: 100%;"
-        fit="cover"
-        lazy>
-        <div slot="error" class="image-slot">
-          <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
-        </div>
-        <div slot="placeholder" class="image-slot"></div>
-      </el-image>
       <svg-icon
-        name="search-solid"
-        style=" position: absolute;
-                right: 0;
-                bottom: 0;
-                padding: 2px;
-                border-width: 2px 0px 0px 2px;
-                border-style: solid;
-                border-radius: 2px 0 0 0;
-                margin-right: 2px;"
-        :style="{ backgroundColor: isSelected
-                                  ? config.list_focus_background_color
-                                  : config.list_background_color,
-                  borderColor: isSelected
-                              ? config.list_focus_background_color
-                              : config.list_background_color,
-                  color: isSelected
-                        ? config.list_focus_icon_color
-                        : config.list_icon_color,
-                  width: config.item_height/4+'px',
-                  height: config.item_height/4+'px', }"></svg-icon>
+          :name="project_config.allWorkspaces[ item.workspace ].svg"
+          style="width:100%; height: 100%;"
+          :style="{ color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color, }"></svg-icon>
     </span>
 
     <div class="main">
-      <!-- 由于列表长度未发生变化，无法及时更新 -->
-      <!-- <div
-        class="title"
-        :style="{ fontSize: config.list_font_size+'px' }"
-        v-html="storageKeyword != undefined && isSelected ? item.title : item.name"></div> -->
       <div
-        class="title"
-        :style="{ fontSize: config.list_font_size+'px' }"
-        v-text="item.name"></div>
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
       <div
-        v-if="isSelected && storageKeyword != ''"
+        v-if="isSelected && item.tip != ''"
         class="sub-title"
         :style="{
           fontSize: config.list_explain_font_size+'px',
           color: isSelected
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color }"
-          v-html="'Search '+item.name+' for \'<strong>'+storageKeyword.escape()+'</strong>\''"></div>
+          v-html="item.tip"></div>
     </div>
 
     <div class="right">
@@ -100,6 +69,10 @@ export default {
   name: 'SearchItem',
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -139,7 +112,7 @@ export default {
 </script>
 
 <style scoped>
-.search-item {
+.toggle-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -154,11 +127,11 @@ export default {
   -khtml-user-select:none; /*早期浏览器*/
   user-select:none;
 }
-.search-item .left {
+.toggle-item .left {
   padding: 10px;
   text-align: center;
 }
-.search-item .main {
+.toggle-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -170,18 +143,18 @@ export default {
   justify-content: space-evenly;
   /* justify-content: center; */
 }
-.search-item .title {
+.toggle-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.search-item .sub-title {
+.toggle-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 5px;
 }
-.search-item .right {
+.toggle-item .right {
   /* border: 1px solid black; */
   margin-left: 10px;
   margin-right: 10px;
@@ -195,7 +168,7 @@ export default {
 }
 </style>
 <style>
-.all .search-item strong {
+.all .toggle-item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

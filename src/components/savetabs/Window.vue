@@ -220,9 +220,8 @@
       <div class="main">
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">
-          <span v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></span>
-        </div>
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
@@ -231,7 +230,7 @@
             color: isSelected
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color }"
-            v-text="item.tip"></div>
+            v-html="item.tip"></div>
       </div>
 
       <div class="right">
@@ -451,7 +450,6 @@ export default {
       list: [],
       cacheList: [],
       storageList: [],
-      workspaceSwitchStorageList: null,
 
       scrollDisabled: true,
       storageKeyword: undefined,
@@ -677,7 +675,7 @@ console.log('get_currentWindowStorageIndex3', index);
 
         // 列表赋值
         this.list = filterList.map((workspace) => {
-          workspace.tip = keywords == '' ? '' : `search for '${keywords}'`;
+          workspace.tip = keywords == '' ? '' : `Search ${workspace.type} for '<strong>${keywords.escape()}</strong>'`;
           return workspace;
         })
         this.scrollDisabled = true;

@@ -331,6 +331,7 @@ export default {
 
         if(result.type == 'delete') {
           this.list.splice(this.currentIndex, 1);
+          this.length[item.type]--;
         } else if(result.type == 'spread') {
           this.list.splice(this.currentIndex+1, 0, ...result.list);
           this.length[item.type] += result.list.length;

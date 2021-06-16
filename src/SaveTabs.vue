@@ -929,45 +929,57 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // }
 
     // 模拟 popup 行为
-    // chrome.tabs.getCurrent((tab) => {
-    //   // 弹出式菜单是获取不到当前活跃标签的
-    //   if(tab == undefined) return;
-    //   // window.open 打开的
-    //   // if(tab.url != chrome.extension.getURL("savetabs.html")) return;
+    chrome.tabs.getCurrent((tab) => {
+      // 弹出式菜单是获取不到当前活跃标签的
+      if(tab == undefined) return;
+      // window.open 打开的
+      // if(tab.url != chrome.extension.getURL("savetabs.html")) return;
 
-    //   // 一旦失去焦点就会自己把自己给关了
-    //   chrome.tabs.onActivated.addListener((activeInfo) => {
-    //     // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
-    //     // if(activeInfo.tabId == tab.id) return;
+      // window.open 打开部分功能会有异常，要提醒一下
+      if(tab.url == chrome.extension.getURL("savetabs.html")) {
+        document.title = 'SaveTabs（此为新窗口，部分功能可能无法使用）';
+        // this.$message({
+        //   type: 'info',
+        //   message: '此为新窗口，部分功能可能无法使用',
+        //   customClass: 'window-message-box',
+        //   offset: 69,
+        //   duration: 5000,
+        // });
+      }
 
-    //     // 让 background.js 帮忙关闭，减轻负担
-    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
-    //   })
+      // 一旦失去焦点就会自己把自己给关了
+      chrome.tabs.onActivated.addListener((activeInfo) => {
+        // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
+        // if(activeInfo.tabId == tab.id) return;
 
-    //   // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
-    //   chrome.windows.onFocusChanged.addListener((windowId) => {
-    //     // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
-    //     if(windowId == -1) return;
-    //     // 再切换过来
-    //     if(windowId == tab.windowId) return;
+        // 让 background.js 帮忙关闭，减轻负担
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      })
 
-    //     // 让 background.js 帮忙关闭，减轻负担
-    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
-    //   })
-    // })
+      // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
+      chrome.windows.onFocusChanged.addListener((windowId) => {
+        // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
+        if(windowId == -1) return;
+        // 再切换过来
+        if(windowId == tab.windowId) return;
 
-    // // 在使用 url 打开扩展的轻快下，再触发打开扩展
-    // // 这种情况下把触发这给关了
-    // chrome.runtime.sendMessage({ type: 'closeOther',})
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //   if(request.type != 'closeOther') return;
-    //   if(sender.tab == undefined) {
-    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
-    //   } else {
-    //     // 弹出式窗口得自己关
-    //     window.close()
-    //   }
-    // })
+        // 让 background.js 帮忙关闭，减轻负担
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      })
+    })
+
+    // 在使用 url 打开扩展的轻快下，再触发打开扩展
+    // 这种情况下把触发这给关了
+    chrome.runtime.sendMessage({ type: 'closeOther',})
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if(request.type != 'closeOther') return;
+      if(sender.tab == undefined) {
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      } else {
+        // 弹出式窗口得自己关
+        window.close()
+      }
+    })
 
     this.focus();
   }

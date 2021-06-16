@@ -27,8 +27,10 @@ let note = {
       // 获取当前标签
       new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          // 去除末尾 /
-          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"");
+          // 去除末尾 / （pendingUrl 有可能不存在）
+          tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
+                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
+                      : tabs[0].url.replace(/(\/*$)/g,"");
           this.currentTab = tabs[0];
           resolve()
         })
@@ -38,7 +40,9 @@ let note = {
         chrome.tabs.query({}, tabs => {
           for(let tab of tabs) {
             // 去除末尾 /
-            tab.url = tab.url.replace(/(\/*$)/g,"");
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
             if(this.activeTabs[ tab.url ] == undefined) {
               tab.count = 1;
               tab.other = [];

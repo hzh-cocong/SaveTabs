@@ -972,6 +972,10 @@ alert('空间不够')
       }).then((tabs) => {
         if(tabs.length <= 0) return tabs;
 
+        if(tabs.some(tab => ! tab.url && ! tab.pendingUrl)) {
+          return Promise.reject();
+        }
+
         // 新增数据
         this.storageList.unshift({
           id: nanoid(),
@@ -979,7 +983,7 @@ alert('空间不够')
           tabs: tabs.map(tab => {
             return {
               icon: tab.favIconUrl,
-              url: tab.url,
+              url: tab.url == "" ? tab.pendingUrl : tab.url,
               title: tab.title,
             }
           }),
@@ -1012,6 +1016,14 @@ alert('空间不够')
         }, 100)
 
         this.$msgbox.close();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '部分网页还未加载，请稍后重试',
+          customClass: 'window-message-box',
+          offset: 69,
+          duration: 5000,
+        });
       })
     },
     openWindow(index, event) {

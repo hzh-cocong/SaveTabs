@@ -304,7 +304,7 @@
           class="tab-name"
           type="default"
           :title="tab.url"
-          @click="$open(tab.url, $event)">{{ tab.title }}</span>
+          @click="$open(tab.url, $event)">{{ tab.title || tab.url }}</span>
 
       </li>
     </ul>
@@ -366,7 +366,7 @@
               class="tab-name"
               type="default"
               :title="'【icon】'+(tab.icon || '')+'\r\n'+'【url】'+tab.url"
-              @click="$open(tab.url, $event)">{{ tab.title }}</span>
+              @click="$open(tab.url, $event)">{{ tab.title || tab.url }}</span>
 
           </li>
         </ul>
@@ -390,7 +390,7 @@
               scroll-container=".group-list"，但是这里不生效，应该是联合滚动的原因，
               不过由于是当前窗口的图标，那缓存肯定有，直接拿缓存速度更快，也无所谓懒加载了 -->
             <el-image
-              :src="getIcon('', tab.url, 20)"
+              :src="getIcon('', tab.url || tab.pendingUrl, 20)"
               style="width:20px; height:20px;"
               fit="cover"
               lazy>
@@ -405,8 +405,8 @@
             <span
               class="tab-name"
               type="default"
-              :title="'【icon】'+(tab.favIconUrl || '')+'\r\n'+'【url】'+tab.url"
-              @click="$active(tab.id)">{{ tab.title }}</span>
+              :title="'icon: '+(tab.favIconUrl || '')+'\r\n'+'url: '+(tab.url || tab.pendingUrl)"
+              @click="$active(tab.id)">{{ tab.title || tab.url || tab.pendingUrl }}</span>
 
           </li>
         </ul>
@@ -765,9 +765,14 @@ console.log('get_currentWindowStorageIndex3', index);
       }).then(({ value }) => {
         value = value.trim();
 
-        new Promise((resolve) => {
+        new Promise((resolve, reject) => {
           // 获取当前窗口的所有标签
           chrome.windows.getCurrent({populate: true}, window => {
+            if(window.tabs.some(tab => ! tab.url && ! tab.pendingUrl)) {
+              reject();
+              return;
+            }
+
             // 重新获取，因为有些网页可能还未加载完
             resolve(window);
           })
@@ -790,7 +795,7 @@ console.log('get_currentWindowStorageIndex3', index);
             tabs: window.tabs.map((tab) => {
               return {
                 icon: tab.favIconUrl,
-                url: tab.url,
+                url: tab.url == "" ? tab.pendingUrl : tab.url,
                 title: tab.title,
               };
             }),
@@ -828,6 +833,14 @@ console.log('get_currentWindowStorageIndex3', index);
               duration: 5000,
             });
           }
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '部分网页还未加载，请稍后重试',
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 5000,
+          });
         })
       }).catch(() => {
         callback(false);
@@ -1060,7 +1073,7 @@ console.log('get_currentWindowStorageIndex3', index);
       this.storageList[this.currentStorageIndex].lastVisitTime = new Date().getTime();
       this.storageList[this.currentStorageIndex].tabs = this.currentWindow.tabs.map(tab => {
         return {
-          url: tab.url,
+          url: tab.url || tab.pendingUrl,
           title: tab.title,
           icon: tab.favIconUrl,
         };

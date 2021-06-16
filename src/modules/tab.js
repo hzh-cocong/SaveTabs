@@ -21,7 +21,9 @@ let tab = {
         chrome.tabs.query({}, (tabs)=>{
           let t = tabs.map((tab) => {
             // 去除末尾 /
-            tab.url = tab.url.replace(/(\/*$)/g,"");
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
             return tab;
           });
           resolve(t);

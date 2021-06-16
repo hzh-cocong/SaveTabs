@@ -55,9 +55,9 @@ module.exports = {
                       symbolId: 'icon-[name]'
                     })
                   .end()
-                  .use('svgo-loader') // 压缩svg
-                    .loader('svgo-loader')
-                  .end();
+                  // .use('svgo-loader') // 压缩svg
+                  //   .loader('svgo-loader')
+                  // .end();
 
     //todo
     // 压缩图片（貌似没什么效果）

@@ -61,7 +61,7 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlightMap[index].title"></div>
+          v-html="highlightMap[index].title || highlightMap[index].url"></div>
         <!-- <span
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">{{
@@ -437,7 +437,9 @@ console.log('ttttttttttttt')
         chrome.tabs.query({}, (tabs)=>{
           let t = tabs.map((tab) => {
             // 去除末尾 /
-            tab.url = tab.url.replace(/(\/*$)/g,"");
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
             return tab;
           });
           console.log('gggggggggg');

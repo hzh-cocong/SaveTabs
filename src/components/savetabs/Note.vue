@@ -66,7 +66,7 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlightMap[index].title"></div>
+          v-html="highlightMap[index].title || highlightMap[index].url"></div>
         <!-- <div
           v-if="storageKeyword != ''"
           class="sub-title"
@@ -293,6 +293,10 @@ export default {
         if(tab.url == this.currentTab.url) {
           return true;
         }
+        // if((this.currentTab.url != '' && tab.url == this.currentTab.url)
+        //   || (tab.url == this.currentTab.pendingUrl)) {
+        //   return true;
+        // }
       })
 
       // 由于当前窗口会被排在最前面，所以并不需要遍历 storageList
@@ -463,10 +467,17 @@ console.warn('isSearched2');
 
       // 获取当前标签
       // 重新获取，因为网页可能还未加载完
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          // 去除末尾 /
-          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"")
+          // 去除末尾 / （pendingUrl 有可能不存在）
+          tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
+                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
+                      : tabs[0].url.replace(/(\/*$)/g,"");
+
+          if(tabs[0].url == '') {
+            reject();
+            return;
+          }
 
           resolve(tabs[0])
         })
@@ -507,35 +518,15 @@ console.log('add =====h')
         //   callback(true)
         // }, 1)
         callback(true);
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '部分网页还未加载，请稍后重试',
+          customClass: 'window-message-box',
+          offset: 69,
+          duration: 5000,
+        });
       })
-
-      // let id = nanoid();
-      // this.storageList.unshift({
-      //   id: id,
-      //   title: this.currentTab.title,
-      //   url: this.currentTab.url,
-      //   icon: this.currentTab.favIconUrl,
-      //   // tabId: this.currentTab.id,
-      //   // windowId: this.currentTab.windowId,
-      //   lastVisitTime: new Date().getTime(),
-      // });
-
-      // // 保存数据
-      // chrome.storage.local.set({tabs: this.storageList}, () => {
-
-      //   // this.activeTabs[this.currentTab.id] = {
-      //   //   id: this.currentTab.id,
-      //   //   url: this.currentTab.url,
-      //   //   windowId: this.currentTab.windowId,
-      //   // }
-      //   // this.isInCurrentTab = true;
-
-      //   // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-      //   this.storageKeyword = ' ';
-
-      //   // this.search(this.storageKeyword);
-      //   callback(true);
-      // })
     },
     openWindow(index, event) {
       if(index == undefined) {
@@ -715,8 +706,10 @@ console.warn('mounted', a);
       // 获取当前标签
       new Promise((resolve) => {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          // 去除末尾 /
-          tabs[0].url = tabs[0].url.replace(/(\/*$)/g,"");
+          // 去除末尾 / （pendingUrl 有可能不存在）
+          tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
+                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
+                      : tabs[0].url.replace(/(\/*$)/g,"");
           this.currentTab = tabs[0];
           resolve()
         })
@@ -726,7 +719,9 @@ console.warn('mounted', a);
         chrome.tabs.query({}, tabs => {
           for(let tab of tabs) {
             // 去除末尾 /
-            tab.url = tab.url.replace(/(\/*$)/g,"");
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
             if(this.activeTabs[ tab.url ] == undefined) {
               tab.count = 1;
               tab.other = [];
@@ -746,57 +741,6 @@ console.warn('finish', b, (b-a)/1000)
 
       this.$emit('finish');
     })
-
-    // new Promise((resolve) => {
-    //   // 获取本地数据
-    //   chrome.storage.local.get({tabs: []}, items => {
-    //     this.storageList = items.tabs;
-    //     resolve()
-    //   });
-    // }).then(() => {
-    //   // 获取当前标签
-    //   return new Promise((resolve) => {
-    //     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-    //       this.currentTab = tabs[0];
-    //       resolve()
-    //     })
-    //   })
-    // }).then(() => {
-    //   // 处理当前标签数据
-
-    //   // 判断是否存在在当前标签
-    //   let index = -1;
-    //   for(let i in this.storageList) {
-    //     if(this.storageList[i].windowId == this.currentTab.windowId
-    //       && this.storageList[i].tabId == this.currentTab.id
-    //       && this.storageList[i].url == this.currentTab.url) {
-    //       index = i;
-    //       break;
-    //     }
-    //   }
-    //   if(index == -1) return;
-
-    //   // 标记
-    //   // if(this.storageList.length > 1) this.currentIndex = 1; // 列表还未赋值，会被改回去
-    //   this.isInCurrentTab = true;
-    // }).then(() => {
-    //   // 获取全部标签
-    //   return new Promise((resolve) => {
-    //     chrome.tabs.query({}, tabs => {
-    //       resolve(tabs)
-    //     })
-    //   })
-    // }).then((tabs) => {
-    //   // 保存活跃的窗口
-    //   for(let tab of tabs) {
-    //     this.activeTabs[ tab.id ] = tab;// tab.windowId;
-    //   }
-
-    //   this.$emit('finish');
-
-    //   // 更新列表
-    //   // this.search(this.storageKeyword);
-    // })
   }
 }
 </script>

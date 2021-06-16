@@ -65,21 +65,5 @@
       iframe.style.boxShadow = shadow;
       iframe.style.opacity = 1;
     })
-
-    // 貌似做不到，只能改成自己关自己了
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //   // if(request.type != 'test') return;
-    //   alert('收到了11111111111111')
-    // })
-
-    // window.addEventListener("message", (event) => {
-    //   // We only accept messages from ourselves
-    //   // if (event.source != window)
-    //   //   return;
-
-    //   alert('fffffffff')
-    //   alert(event.data);
-    // }, false);
-    // console.log('wwwwwwwwwwwwww', window);
   }
 }

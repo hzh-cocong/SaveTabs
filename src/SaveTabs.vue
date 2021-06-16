@@ -943,6 +943,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension',})
       })
+
       // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
       chrome.windows.onFocusChanged.addListener((windowId) => {
         // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
@@ -955,15 +956,18 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
     })
 
-    // chrome.runtime.sendMessage({ type: 'test',})
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //   if(request.type != 'test') return;
-    //   alert('收到了2')
-
-    //   window.postMessage({ type: "FROM_PAGE", text: "Hello from the webpage!" }, "*");
-    // })
-
-    // console.log('wwwwwwwwwwwwww2', window);
+    // 在使用 url 打开扩展的轻快下，再触发打开扩展
+    // 这种情况下把触发这给关了
+    chrome.runtime.sendMessage({ type: 'closeOther',})
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if(request.type != 'closeOther') return;
+      if(sender.tab == undefined) {
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      } else {
+        // 弹出式窗口得自己关
+        window.close()
+      }
+    })
 
     this.focus();
   }

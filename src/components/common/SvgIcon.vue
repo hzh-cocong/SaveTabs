@@ -1,44 +1,40 @@
 <template>
-  <svg :class="className" xmlns="http://www.w3.org/2000/svg">
-    <title v-if="title">{{ title }}</title>
-    <use :xlink:href="iconPath" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <svg class="svg-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <use :xlink:href="id"/>
   </svg>
 </template>
 
 <script>
+
+// 一次性加载全部
+// https://webpack.js.org/guides/dependency-management/#context-module-api
+// const requireAll = requireContext => requireContext.keys().map(requireContext)
+// const req = require.context('@/assets/icons', false, /\.svg$/)
+// requireAll(req)
+
 export default {
   name: 'svg-icon',
-
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
-
-    title: {
-      type: String,
-      default: null
-    }
   },
-
   computed: {
-    iconPath() {
+    id() {
+      // 异步加载
       let icon = require(`@/assets/icons/${this.name}.svg`);
-      if (Object.prototype.hasOwnProperty.call(icon, 'default')) {
-        icon = icon.default;
-      }
+      icon = icon.default;
+console.log('jjjjjjjjjjjjjjjjjjjjjj', icon)
+      return `#${icon.id}`;
 
-      return icon.url;
-    },
-
-    className() {
-      return 'svg-icon svg-icon--' + this.name;
+      // return `#icon-${this.name}`;
     }
   }
-};
+}
 </script>
 
-<style>
+<style scoped>
   .svg-icon {
     fill: currentColor;
     height: 24px;

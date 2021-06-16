@@ -903,11 +903,20 @@ console.log('get_currentWindowStorageIndex3', index);
         Promise.all(urls.map((url) => {
           return new Promise((resolve) => {
             chrome.tabs.create({url: url, active: false}, (tab) => {
-              resolve(tab.index);
+              resolve(tab);
+              // resolve(tab.index);
             });
           });
-        })).then((indexs) => {
-          chrome.tabs.highlight({tabs: indexs})
+        })).then((tab) => {
+          // chrome.tabs.highlight({tabs: indexs}) // window.open 不兼容
+          chrome.tabs.highlight({
+            windowId: tab[0].windowId,
+            tabs: tab.map(tab => tab.index)
+          }, window => {
+            chrome.windows.update(window.id, {
+              focused: true,
+            })
+          })
         })
         return;
       }

@@ -1,4 +1,9 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const path = require('path')
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
 
 module.exports = {
   pages: {
@@ -34,25 +39,38 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production', //
 
   chainWebpack: config => {
-    config.module
-      .rule('svg-sprite')
-      .use('svgo-loader')
-      .loader('svgo-loader')
-
     // 禁止代码分离
     config.optimization.delete("splitChunks");
 
-    // 压缩图片
-    // 和 svg-sprite 冲突，暂时不解决，而且压缩后反而变大了
+    // 处理 svg
+    config.module.rules.delete("svg"); // 删除默认配置中处理svg
+    config.module.rule('svg-sprite-loader')
+                    .test(/\.svg$/)
+                    .include
+                    .add(resolve('src/assets/icons')) //处理svg目录
+                  .end()
+                  .use('svg-sprite-loader')
+                    .loader('svg-sprite-loader')
+                    .options({
+                      symbolId: 'icon-[name]'
+                    })
+                  .end()
+                  .use('svgo-loader') // 压缩svg
+                    .loader('svgo-loader')
+                  .end();
+
+    //todo
+    // 压缩图片（貌似没什么效果）
     // config.module
     //     .rule('images')
-    //     .test(/\.(png|jpe?g|gif|svg|webp)(\?.*)?$/)
+    //     .test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
     //     .use('image-webpack-loader')
     //     .loader('image-webpack-loader')
     //     .options({ bypassOnDebug: true, disable: true, })
   },
 
   configureWebpack: {
+    // todo
     // plugins: [
     //   new UglifyJsPlugin({
     //     uglifyOptions: {

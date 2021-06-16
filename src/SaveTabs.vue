@@ -858,39 +858,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // todo
     window.s = this;
 
-    chrome.tabs.getCurrent((tab) => {
-      // 弹出式菜单是获取不到当前活跃标签的
-      if(tab == undefined) return;
-
-      if(tab.url == chrome.extension.getURL("savetabs.html")) {
-        // window.open 打开的
-
-        // window.open 一旦失去焦点就会自己把自己给关了
-        chrome.windows.onFocusChanged.addListener(() => {
-          // 让 background.js 帮忙关闭，减轻负担
-          // chrome.runtime.sendMessage({
-          //   type: 'closeExtension',
-          //   tabId: tab.id,
-          //   windowId: tab.windowId,
-          // })
-
-          // window.close();todo
-        })
-      }
-    })
-
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //   alert('收到了2')
-    // })
-
-
-    // this.config = config;
-    // this.config = userConfig+projectConfig
-    // this.config = userConfig;
-    // this.allWorkspaces = projectConfig.allWorkspaces;
-
-    this.focus();
-
     chrome.storage.sync.get({'config': {}}, items => {
       Object.assign(this.config, items.config);
 
@@ -960,6 +927,45 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     //   // 输入框也被屏蔽了
     //   e.preventDefault();
     // }
+
+    // 模拟 popup 行为
+    chrome.tabs.getCurrent((tab) => {
+      // 弹出式菜单是获取不到当前活跃标签的
+      if(tab == undefined) return;
+      // window.open 打开的
+      // if(tab.url != chrome.extension.getURL("savetabs.html")) return;
+
+      // 一旦失去焦点就会自己把自己给关了
+      chrome.tabs.onActivated.addListener((activeInfo) => {
+        // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
+        // if(activeInfo.tabId == tab.id) return;
+
+        // 让 background.js 帮忙关闭，减轻负担
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      })
+      // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
+      chrome.windows.onFocusChanged.addListener((windowId) => {
+        // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
+        if(windowId == -1) return;
+        // 再切换过来
+        if(windowId == tab.windowId) return;
+
+        // 让 background.js 帮忙关闭，减轻负担
+        chrome.runtime.sendMessage({ type: 'closeExtension',})
+      })
+    })
+
+    // chrome.runtime.sendMessage({ type: 'test',})
+    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //   if(request.type != 'test') return;
+    //   alert('收到了2')
+
+    //   window.postMessage({ type: "FROM_PAGE", text: "Hello from the webpage!" }, "*");
+    // })
+
+    // console.log('wwwwwwwwwwwwww2', window);
+
+    this.focus();
   }
 }
 </script>

@@ -64,47 +64,22 @@
       iframe.style.backgroundColor = iframeBackgroundColor;
       iframe.style.boxShadow = shadow;
       iframe.style.opacity = 1;
-      // iframe.style.visibility="visible";
-
-      // container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: ${containerBackgroundColor};overflow:auto;`);
-
-      // iframe.setAttribute('style', `display:block;margin:${top}px auto;width: ${width}px;height:${height}px;border-radius: 4px; box-shadow: ${shadow};background-color:${iframeBackgroundColor}`);
-      // // iframe.setAttribute('style', `position:fixed;left:${left}px;top:${top}px;width: ${width}px;height:${height}px;border-radius: 2px; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);`);
-      // // iframe.setAttribute('scrolling', 'no');
-      // iframe.setAttribute('frameborder', '0');
-      // iframe.src = chrome.extension.getURL("savetabs.html");
     })
 
-    // container = document.createElement('div');
-    // let iframe = document.createElement('iframe');
+    // 貌似做不到，只能改成自己关自己了
+    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //   // if(request.type != 'test') return;
+    //   alert('收到了11111111111111')
+    // })
 
-    // container.setAttribute('style', 'z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: transparent;');
-    // container.id = id;
+    // window.addEventListener("message", (event) => {
+    //   // We only accept messages from ourselves
+    //   // if (event.source != window)
+    //   //   return;
 
-    // iframe.setAttribute('style', 'margin: 100px; width: 531px;height:436px; border: 2px solid red;border-radius: 2px; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);');
-    // // iframe.setAttribute('scrolling', 'no');
-    // // iframe.setAttribute('frameborder', '0');
-    // iframe.src = chrome.extension.getURL("savetabs.html");
-    // iframe.onload=changeFrameHeight;
-
-    // container.append(iframe);
-    // document.body.append(container);
-
-    // window.onresize = function() {
-    //   // changeFrameHeight();
-    // }
-
-    // function changeFrameHeight(){
-    //   // iframe.height = 300;
-    //   console.log('jjjjjjjjjjjjjjjjjjjjjjjj', iframe.height, 'fffs')
-    //   // let iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-    //   // if (iframeWin.document.body) {
-    //   //     iframe.height = iframeWin.document.body.scrollHeight;
-    //   //     iframe.width = iframeWin.document.body.scrollWidth;
-    //   // }
-    //   // console.log('888888888888888', iframe.contentWindow);
-    //   // iframe.height = iframe.document.body.scrollHeight;
-    //   // console.log('ppppppppppppppp', iframe.document.body.scrollHeight)
-    // }
+    //   alert('fffffffff')
+    //   alert(event.data);
+    // }, false);
+    // console.log('wwwwwwwwwwwwww', window);
   }
 }

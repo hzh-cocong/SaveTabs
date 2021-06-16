@@ -157,35 +157,38 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return;
   }
   if(request.type == 'closeExtension') {
-    console.log('closeExtension', sender)
+    console.log('closeExtension', sender, sender.tab && sender.tab.id)
 
     // 弹出菜单会自己关闭，不用管它
     if(sender.tab == undefined) return;
 
     // window.open 关闭整个窗口
-    // if(sender.frameId == 0 && request.windowId) {
-    //   chrome.windows.remove(request.windowId);
-    //   return;
-    // }
-    if(sender.frameId == 0 ) {
-      chrome.windows.remove(sender.tab.windowId);
+    if(sender.frameId == 0) {
+      chrome.tabs.remove(sender.tab.id, () => {
+        // 用户可能不直接切换标签，而是多选，此时浏览器是不允许关闭标签的
+        // 捕获错误，这样插件就不会显示错误
+        chrome.runtime.lastError;
+      });
+      // chrome.windows.remove(sender.tab.windowId);
+
       return;
     }
 
-    if(sender.tab != undefined) {
-      chrome.tabs.executeScript(sender.tab.id, { file: "js/content_script.js" }, () => {
-        // 捕获错误，这样插件就不会显示错误
-        const error = chrome.runtime.lastError;
-        if( ! (error && error.message)) return;
+    // 关闭 inject-script 创建的窗口
+    chrome.tabs.executeScript(sender.tab.id, { file: "js/content_script.js" }, () => {
+      // 捕获错误，这样插件就不会显示错误
+      const error = chrome.runtime.lastError;
+      if( ! (error && error.message)) return;
 
-        // window.open 自己本身触发的切换回导致窗口关闭，加载本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
-        console.log("that's impossible", error.message);
-      })
-    }
+      // window.open 自己本身触发的切换回导致窗口关闭，加上本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
+      console.log("that's impossible", error.message);
+    })
+
     return;
   }
   if(request.type == 'inject') {
     executeScript();
+    return;
   }
 })
 

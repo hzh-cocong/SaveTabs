@@ -92,7 +92,7 @@
         "bookmark",
         "tab"
     ],
-    "active_workspace_type": "all",
+    "active_workspace_type": "window",
     "pinned": false,
     "button_follow_workspace": false,
     "theme_mode": "light",
@@ -106,7 +106,7 @@
 
     "all_include": [
         {
-            "type": "bookmark",
+            "type": "tab",
             "count": 3,
             "is_top": 0,
             "only_search": true

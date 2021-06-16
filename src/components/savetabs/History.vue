@@ -48,6 +48,7 @@
         <el-image
           v-if="isLoad"
           :src="iconMap[index]"
+          :scroll-container="$el.firstElementChild"
           style="width:100%; height: 100%;"
           fit="cover"
           lazy>

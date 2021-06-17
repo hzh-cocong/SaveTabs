@@ -16,8 +16,7 @@ module.exports = {
       filename: 'options.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      // title: 'SaveTabs',
-      title: 'SaveTabs（此为新窗口，部分功能可能无法使用）',
+      title: 'SaveTabs',
       // 提取出来的通用 chunk 和 vendor chunk。
       chunks: ['chunk-vendors', 'chunk-common', 'options']
     },
@@ -30,7 +29,8 @@ module.exports = {
       filename: 'savetabs.html',
       // 当使用 title 选项时，
       // template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-      title: 'SaveTabs',
+      // title: 'SaveTabs',
+      title: 'SaveTabs（此为新窗口，部分功能可能无法使用）',
       // 提取出来的通用 chunk 和 vendor chunk。
       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }

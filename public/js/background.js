@@ -276,6 +276,16 @@ chrome.commands.onCommand.addListener(command => {
         });
       })
     }
-    return;
+  } else if(command == 'add_window') {
+    if(chrome.extension.getViews({type: 'popup'}).length == 0
+    && chrome.extension.getViews({type: 'tab'}).length == 0
+    && ! isOpened) {
+      chrome.storage.sync.get({'config': {}}, items => {
+        items.config.active_workspace_type = 'window';
+        chrome.storage.sync.set({'config': items.config, 'info': {add_type: 'window'}}, () => {
+          executeScript({open: true});
+        });
+      })
+    }
   }
 })

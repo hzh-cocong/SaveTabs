@@ -398,6 +398,9 @@ const tool = {
         set: function(options, callback) {
           callback != undefined && callback();
         },
+        remove: function(options, callback) {
+          callback != undefined && callback();
+        },
       },
       local: {
         get: function(options, callback) {
@@ -467,6 +470,11 @@ const tool = {
       create: function(createData, callback) {
         callback != undefined && callback(currentWindow);
       },
+      onFocusChanged: {
+        addListener: function(callback) {
+
+        }
+      }
     }
     chrome.tabs = {
       query: function(options, callback) {
@@ -494,6 +502,11 @@ const tool = {
       getCurrent: function(callback) {
         callback != undefined && callback();
       },
+      onActivated: {
+        addListener: function(callback) {
+
+        }
+      }
     }
     chrome.history = {
       deleteUrl: function(options, callback) {
@@ -541,6 +554,22 @@ const tool = {
           callback != undefined && callback([21, 20, 19, 18]);
         }, 1)
       },
+      onMessage: {
+        addListener: function(callback) {
+          let request = {};
+          let sender = {};
+          let sendResponse = function(){};
+          callback != undefined && callback(request, sender, sendResponse);
+        }
+      }
+    }
+
+    chrome.commands = {
+      onCommand: {
+        addListener: function(callback) {
+
+        }
+      }
     }
 
     chrome.browserAction = {

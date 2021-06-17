@@ -16,22 +16,42 @@
       "js/background.js"
     ]
   },
+  "content_scripts": [ {
+    "js": [ "js/content_script.js" ],
+    "matches": [ "\u003Call_urls>" ]
+  }],
   "options_page": "options.html",
   "offline_enabled": true,
   "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "windows": "Ctrl+Shift+Y",
-        "mac": "Command+Shift+Y",
-        "chromeos": "Ctrl+Shift+U",
-        "linux": "Ctrl+Shift+J"
-      }
+    "open_workspace_all": {
+      "description": "open_workspace_all"
     },
-    "test": {
-      "description": "test",
-      "suggested_key": {
-          "mac": "Command+Shift+G"
-      }
+    "open_workspace_window": {
+      "description": "open_workspace_window"
+    },
+    "open_workspace_note": {
+      "description": "open_workspace_note"
+    },
+    "open_workspace_temporary": {
+      "description": "open_workspace_temporary"
+    },
+    "open_workspace_tab": {
+      "description": "open_workspace_tab"
+    },
+    "open_workspace_bookmark": {
+      "description": "open_workspace_bookmark"
+    },
+    "open_workspace_history": {
+      "description": "open_workspace_history"
+    },
+    "add_window": {
+      "description": "add_window"
+    },
+    "add_note": {
+      "description": "add_note"
+    },
+    "add_temporary": {
+      "description": "add_temporary"
     }
   },
   "permissions": [
@@ -42,7 +62,8 @@
     "chrome://favicon/",
     "downloads",
     "history",
-    "bookmarks"
+    "bookmarks",
+    "\u003Call_urls>"
   ],
   "content_security_policy": "script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkOInieXK1NUMBmQI='; object-src 'self'",
   "web_accessible_resources": [

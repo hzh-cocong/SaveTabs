@@ -101,6 +101,7 @@
 
     "keymap_left_and_right": true,
     "popup": true,
+    "show_tab_index": false,
 
     "workspace_change_word": ">",
 

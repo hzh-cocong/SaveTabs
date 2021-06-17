@@ -417,6 +417,7 @@ export default {
       lock: false,
 
       config: userConfig,
+      localConfig: {},
       project_config: projectConfig,
       themes: userTheme,
       allWorkspaces: projectConfig.allWorkspaces,
@@ -505,6 +506,7 @@ export default {
     getTypeIndex(type) {
       for(let index in this.workspaces) {
         if(this.workspaces[index].type == type) {
+          // index 是 string 类型，得转为 int
           return parseInt(index);
         }
       }
@@ -928,24 +930,35 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     //   e.preventDefault();
     // }
 
+//* todo
     // 模拟 popup 行为
-    chrome.tabs.getCurrent((tab) => {
-      // 弹出式菜单是获取不到当前活跃标签的
-      if(tab == undefined) return;
-      // window.open 打开的
-      // if(tab.url != chrome.extension.getURL("savetabs.html")) return;
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+      let tab = tabs[0];
 
-      // window.open 打开部分功能会有异常，要提醒一下
-      if(tab.url == chrome.extension.getURL("savetabs.html")) {
-        document.title = 'SaveTabs（此为新窗口，部分功能可能无法使用）';
-        // this.$message({
-        //   type: 'info',
-        //   message: '此为新窗口，部分功能可能无法使用',
-        //   customClass: 'window-message-box',
-        //   offset: 69,
-        //   duration: 5000,
-        // });
-      }
+      // 单点打开
+      chrome.runtime.sendMessage({ type: 'closeOther',})
+      chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if(request.type != 'closeOther') return;
+        if(tab.url == chrome.extension.getURL("savetabs.html")) {
+          // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
+          // 无法区分 window.open，这里关闭也什么问题
+          window.close()
+        } else {
+          chrome.runtime.sendMessage({ type: 'closeExtension',})
+        }
+      })
+
+      // // window.open 打开部分功能会有异常，要提醒一下
+      // if(tab.url == chrome.extension.getURL("savetabs.html")) {
+      //   document.title = 'SaveTabs（此为新窗口，部分功能可能无法使用）';
+      //   // this.$message({
+      //   //   type: 'info',
+      //   //   message: '此为新窗口，部分功能可能无法使用',
+      //   //   customClass: 'window-message-box',
+      //   //   offset: 69,
+      //   //   duration: 5000,
+      //   // });
+      // }
 
       // 一旦失去焦点就会自己把自己给关了
       chrome.tabs.onActivated.addListener((activeInfo) => {
@@ -968,16 +981,72 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
     })
 
-    // 在使用 url 打开扩展的轻快下，再触发打开扩展
-    // 这种情况下把触发这给关了
-    chrome.runtime.sendMessage({ type: 'closeOther',})
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      if(request.type != 'closeOther') return;
-      if(sender.tab == undefined) {
+    // // 模拟 popup 行为
+    // chrome.tabs.getCurrent((tab) => {
+    //   // 单点打开
+    //   chrome.runtime.sendMessage({ type: 'closeOther',})
+    //   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //     if(request.type != 'closeOther') return;
+    //     if(tab == undefined) {
+    //       // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
+    //       window.close()
+    //     } else {
+    //       chrome.runtime.sendMessage({ type: 'closeExtension',})
+    //     }
+    //   })
+
+    //   // 弹出式菜单是获取不到当前活跃标签的
+    //   if(tab == undefined) return;
+    //   // window.open 打开的
+    //   // if(tab.url != chrome.extension.getURL("savetabs.html")) return;
+
+    //   // window.open 打开部分功能会有异常，要提醒一下
+    //   if(tab.url == chrome.extension.getURL("savetabs.html")) {
+    //     document.title = 'SaveTabs（此为新窗口，部分功能可能无法使用）';
+    //     // this.$message({
+    //     //   type: 'info',
+    //     //   message: '此为新窗口，部分功能可能无法使用',
+    //     //   customClass: 'window-message-box',
+    //     //   offset: 69,
+    //     //   duration: 5000,
+    //     // });
+    //   }
+
+    //   // 一旦失去焦点就会自己把自己给关了
+    //   chrome.tabs.onActivated.addListener((activeInfo) => {
+    //     // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
+    //     // if(activeInfo.tabId == tab.id) return;
+
+    //     // 让 background.js 帮忙关闭，减轻负担
+    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
+    //   })
+
+    //   // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
+    //   chrome.windows.onFocusChanged.addListener((windowId) => {
+    //     // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
+    //     if(windowId == -1) return;
+    //     // 再切换过来
+    //     if(windowId == tab.windowId) return;
+
+    //     // 让 background.js 帮忙关闭，减轻负担
+    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
+    //   })
+    // })
+
+    // 快捷键操作
+    chrome.commands.onCommand.addListener(command => {
+      if(command == 'open_workspace_all') {
+        let index = this.getTypeIndex('all');
+        if(this.activeWorkspaceIndex == index) {
+          chrome.runtime.sendMessage({ type: 'closeExtension',})
+        } else {
+          this.$refs.carousel.setActiveItem(this.getTypeIndex('all'));
+        }
+      } else if(command == 'add_window') {
+        this.add('window');
+      } else if(command == '_execute_browser_action') {
+        // 貌似没用 todo
         chrome.runtime.sendMessage({ type: 'closeExtension',})
-      } else {
-        // 弹出式窗口得自己关
-        window.close()
       }
     })
 

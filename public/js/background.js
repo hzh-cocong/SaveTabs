@@ -45,11 +45,28 @@ function download(filename, data, path)
   });
 }
 
-function executeScript() {
-  chrome.tabs.executeScript(null, { file: "js/content_script.js" }, () => {
+let isOpened = false;
+function executeScript({open=null, tabId=null} = {}) {
+  // 已经打开过，无需再执行（只关心 inject-script）
+  if(open == true && isOpened) return;
+
+  console.log('executeScript', isOpened, open);
+  chrome.tabs.executeScript(tabId, { file: "js/injected_script.js" }, () => {
+    console.log('executeScript2', isOpened);
+
     // 捕获错误，这样插件就不会显示错误
     const error = chrome.runtime.lastError;
-    if( ! (error && error.message)) return;
+    if( ! (error && error.message)) {
+      isOpened = ! isOpened;
+      return;
+    }
+
+    // window.open toggle
+    let windows = chrome.extension.getViews({type: 'tab'});
+    if(windows.length > 0) {
+      windows.forEach(window => window.close());
+      return;
+    }
 
     chrome.storage.sync.get({'config': {}}, items => {
       chrome.windows.getCurrent((w) => {
@@ -68,9 +85,13 @@ function executeScript() {
   })
 }
 
+let showTabIndex = false;
 chrome.storage.sync.get({'config': {}}, items => {
   if(items.config.popup == false) {
     chrome.browserAction.setPopup({ popup: ''})
+  }
+  if(items.config.show_tab_index) {
+    showTabIndex = true;
   }
 })
 
@@ -109,6 +130,8 @@ chrome.windows.onRemoved.addListener((windowId)=>{
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('background.onMessage', request, sender)
+
   if(request.type == 'download') {
     var filename = request.filename;
     let tabs = request.tabs;
@@ -159,35 +182,77 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.type == 'closeExtension') {
     console.log('closeExtension', sender, sender.tab && sender.tab.id)
 
-    // 弹出菜单会自己关闭，不用管它
-    if(sender.tab == undefined) return;
+    // 弹出菜单没有tab
+    if(sender.tab == undefined) {
+      let windows = chrome.extension.getViews({type: 'popup'});
+      windows.forEach(window => window.close());
+      return;
+    }
 
     // window.open 关闭整个窗口
-    if(sender.frameId == 0) {
-      chrome.tabs.remove(sender.tab.id, () => {
-        // 用户可能不直接切换标签，而是多选，此时浏览器是不允许关闭标签的
-        // 捕获错误，这样插件就不会显示错误
-        chrome.runtime.lastError;
-      });
+    // if(sender.frameId == 0) { // 点击遮罩也是 frameId = 0，所以不能用这个做判断
+    if(sender.frameId == 0 && sender.url == chrome.extension.getURL("savetabs.html")) {
+      let windows = chrome.extension.getViews({type: 'tab'});
+      windows.forEach(window => window.close());
+      console.log('close:window.open')
+
+      // chrome.tabs.remove(sender.tab.id, () => {
+      //   // 用户可能不直接切换标签，而是多选，此时浏览器是不允许关闭标签的
+      //   // 捕获错误，这样插件就不会显示错误
+      //   chrome.runtime.lastError;
+      // });
       // chrome.windows.remove(sender.tab.windowId);
 
       return;
     }
 
     // 关闭 inject-script 创建的窗口
-    chrome.tabs.executeScript(sender.tab.id, { file: "js/content_script.js" }, () => {
-      // 捕获错误，这样插件就不会显示错误
-      const error = chrome.runtime.lastError;
-      if( ! (error && error.message)) return;
+    executeScript({tabId: sender.tab.id});
+    // chrome.tabs.executeScript(sender.tab.id, { file: "js/injected_script.js" }, () => {
+    //   // 捕获错误，这样插件就不会显示错误
+    //   const error = chrome.runtime.lastError;
+    //   if( ! (error && error.message)) return;
 
-      // window.open 自己本身触发的切换回导致窗口关闭，加上本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
-      console.log("that's impossible", error.message);
-    })
+    //   // window.open 自己本身触发的切换回导致窗口关闭，加上本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
+    //   console.log("that's impossible", error.message);
+    // })
 
     return;
   }
   if(request.type == 'inject') {
     executeScript();
+    return;
+  }
+  if(request.type == 'to-show-index') {
+    if( ! showTabIndex) return;
+    chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
+      let length = window.tabs.length;
+      window.tabs.filter(tab => {
+        return tab.status == 'complete'
+            && ( tab.index+1 <= 8
+                || tab.index+1 == length );
+      }).forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'show-index',
+          index: tab.index+1 > 9 ? 9 : tab.index+1,
+        })
+      })
+    })
+    return;
+  }if(request.type == 'to-hide-index') {
+    if( ! showTabIndex) return;
+    chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
+      let length = window.tabs.length;
+      window.tabs.filter(tab => {
+        return tab.status == 'complete'
+            && ( tab.index+1 <= 8
+                || tab.index+1 == length );
+      }).forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'hide-index'
+        })
+      })
+    })
     return;
   }
 })
@@ -197,13 +262,20 @@ chrome.browserAction.onClicked.addListener(() => {
 })
 
 chrome.commands.onCommand.addListener(command => {
-  if(command == 'test') {
-    // chrome.browserAction.getPopup({}, (url)=>{
-    //   if(url != '') {
-    //     chrome.browserAction.setPopup({popup: ''})
-    //   } else {
-    //     chrome.browserAction.setPopup({popup: 'savetabs.html'})
-    //   }
-    // })
+  console.log('command', command);
+
+  //todo
+  if(command == 'open_workspace_all') {
+    if(chrome.extension.getViews({type: 'popup'}).length == 0
+    && chrome.extension.getViews({type: 'tab'}).length == 0
+    && ! isOpened) {
+      chrome.storage.sync.get({'config': {}}, items => {
+        items.config.active_workspace_type = 'all';
+        chrome.storage.sync.set({'config': items.config}, () => {
+          executeScript({open: true});
+        });
+      })
+    }
+    return;
   }
 })

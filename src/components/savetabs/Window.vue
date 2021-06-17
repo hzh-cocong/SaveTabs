@@ -1217,14 +1217,14 @@ console.log('get_currentWindowStorageIndex3', index);
         return true;
       }
       for(let i in group.tabs) {
-        let tabs = group.tabs[i];
+        let tab = group.tabs[i];
         if(window.tabs[i].status == 'complete'
-          && ( tabs.url != window.tabs[i].url
-            || tabs.title != window.tabs[i].title
+          && ( tab.url != window.tabs[i].url
+            || tab.title != window.tabs[i].title
             || (window.tabs[i].favIconUrl != undefined
               // && window.tabs[i].favIconUrl != ''
-              && tabs.icon != window.tabs[i].favIconUrl))) {
-        console.log('difference 2', tabs, window.tabs[i])
+              && tab.icon != window.tabs[i].favIconUrl))) {
+        console.log('difference 2', tab, window.tabs[i])
           return true;
         }
       }

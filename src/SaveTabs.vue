@@ -5,7 +5,7 @@
   :style="{
     width: (config.width
           + config.border_width*2
-          +config.padding_width*2)+'px',
+          + config.padding_width*2)+'px',
   }">
 
   <div
@@ -80,7 +80,7 @@
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 style="width: 20px; height: 20px; margin-right: 3px;"
-                :style="{ color: config.pinned && currentWorkspace != undefined && config.active_workspace_type == currentWorkspace.type
+                :style="{ color: localConfig.pinned && currentWorkspace != undefined && localConfig.active_workspace_type == currentWorkspace.type
                       ? config.toolbar_menu_icon_fixed_color : config.toolbar_menu_icon_color}"></svg-icon>
               <span
                 v-if="config.show_workspace_name"
@@ -104,13 +104,16 @@
                 :label="lang(workspace.title)"
                 :command="index"
                 :class="{ selected: index == activeWorkspaceIndex }"
+                :title="keymap['open_workspace_'+workspace.type]
+                      ? '快捷键：'+keymap['open_workspace_'+workspace.type]
+                      : ''"
                 :key="index">
                 <svg-icon
                   :name="workspace.svg"
                   style="width:16px;margin-right: 10px;vertical-align: -0.50em"
                   :style="{
-                    color: config.pinned
-                  && config.active_workspace_type == workspace.type
+                    color: localConfig.pinned
+                  && localConfig.active_workspace_type == workspace.type
                   ? 'gray' : '#c0c4cc'}"
                   @click="toPin"
                 ></svg-icon><span>{{ lang(workspace.title) }}</span>
@@ -135,22 +138,22 @@
                   @click.native="$open('./options.html?type=workspace', $event)"
                 ></svg-icon>
                 <svg-icon
-                  :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
+                  :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
                   class="hover"
                   style="cursor:pointer;height: 20px;margin: 0 10px;"
-                  :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
+                  :style="{ color: localConfig.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
                   @click.native="changeThemeMode"></svg-icon>
                 <svg-icon
                   name="thumbtack-solid"
                   class="hover"
                   style="cursor:pointer;height: 20px;"
-                  :style="{ transform: config.pinned
+                  :style="{ transform: localConfig.pinned
                                     && currentWorkspace != undefined
-                                    && config.active_workspace_type == currentWorkspace.type
+                                    && localConfig.active_workspace_type == currentWorkspace.type
                                     ? 'rotate(0)' : 'rotate(90deg)',
-                            color: config.pinned
+                            color: localConfig.pinned
                                 && currentWorkspace != undefined
-                                && config.active_workspace_type == currentWorkspace.type
+                                && localConfig.active_workspace_type == currentWorkspace.type
                                 ? 'gray' : '#c0c4cc', }"
                   @click.native="toPin"></svg-icon>
               </el-dropdown-item>
@@ -261,6 +264,10 @@
           :key="i"
           type="default"
           :icon="allWorkspaces[type].icon_simple"
+          :title="limited
+                ? '功能受限'
+                : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
+          :disabled="limited"
           @click="add(type)"></el-button>
       </el-button-group>
     </div>
@@ -283,6 +290,7 @@
           v-if="isOpened[index]"
           :is="workspace.type"
           :config="config"
+          :localConfig="localConfig"
           :project_config="project_config"
           :isLoad="isLoad"
 
@@ -298,6 +306,7 @@
 
   <Statusbar
     :config="config"
+    :localConfig="localConfig"
     :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
     :statusbarHeight="statusbarHeight"
     @click.native="focus"
@@ -384,6 +393,7 @@ import All from './components/savetabs/All.vue'
 import Statusbar from './components/savetabs/Statusbar.vue'
 
 import userConfig from './config/user_config.json'
+import userLocalConfig from './config/user_local_config.json'
 import projectConfig from './config/project_config.json'
 import userTheme from './config/user_theme.json'
 
@@ -394,7 +404,9 @@ export default {
       focus: this.focus,
       input: this.input,
       loading: this.loading,
-      selectDelay: this.selectDelay,
+
+      prev: () => this.$refs.carousel.prev(),
+      next: () => this.$refs.carousel.next(),
 
       changeThemeMode: this.changeThemeMode,
       toPin: this.toPin,
@@ -417,16 +429,19 @@ export default {
       lock: false,
 
       config: userConfig,
-      localConfig: {},
+      localConfig: userLocalConfig,
       project_config: projectConfig,
       themes: userTheme,
       allWorkspaces: projectConfig.allWorkspaces,
+      commands: {},
 
       menuVisible: false,
       themeDialogVisible: false,
       themeDialogVisible2: false,
       themeScrollPosition: 0,
       // currentThemeIndex: -1,
+
+      limited: false,
 
       history: {
         date: null,
@@ -471,7 +486,18 @@ export default {
         }
       }
       return -1;
-    }
+    },
+
+    keymap() {
+      if( ! Array.isArray(this.commands)) return {};
+
+      let keymap = {};
+      this.commands.forEach((command) => {
+        keymap[command.name] = command.shortcut;
+      })
+
+      return keymap;
+    },
   },
   components: {
     SelectX,
@@ -523,7 +549,7 @@ export default {
         // 没有其它事情
         return;
       }
-
+console.log('mmmmmmmmmmffff', JSON.stringify(things))
       things.forEach((thing) => {
         if(typeof(thing) == 'string') {
           this[thing]();
@@ -555,15 +581,16 @@ export default {
       if(this.$refs.workspaces == undefined
       || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
 console.log('search', this.activeWorkspaceRefIndex )
+console.log('mmmmmmmmmmmm', JSON.stringify(this.things))
         this.things[ this.activeWorkspaceRefIndex ].push('search');
-
+console.log('mmmmmmmmmmmm2', JSON.stringify(this.things))
         // 如果在这之前已经有其它事情待处理（如添加），则不作查询，会有人帮忙处理
         // if(this.things[ this.activeWorkspaceRefIndex ] == undefined) {
         //   this.things[ this.activeWorkspaceRefIndex ] = 'search';
         // }
         return;
       }
-
+console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow(event) {
@@ -685,7 +712,7 @@ console.log('search', this.activeWorkspaceRefIndex )
       // 左右选择（tab切换无需该逻辑）
       if(event.keyCode != 9 && (type == 'left' || type == 'right')) {
         // 左右切换快捷键未开启则无法切换
-        if( ! this.config.keymap_left_and_right) return;
+        if( ! this.localConfig.keymap_left_and_right) return;
 
         // 只有一个工作区可用时，输入框恢复左右选择能力
         if(this.workspaces.length <= 1) return;
@@ -724,6 +751,7 @@ console.log('search', this.activeWorkspaceRefIndex )
       console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
+        this.loading(true);
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
 console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         console.log('99999999999999999999999999999999999', this.activeWorkspaceRefIndex)
@@ -733,14 +761,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         }
       }
 
-      if( ! this.config.pinned) {
-        this.config.active_workspace_type = this.currentWorkspace.type;
-        chrome.storage.sync.set({'config': this.config}, () => {
-          // this.$message({
-          //   type: 'success',
-          //   message: this.lang('saveSuccess')
-          // });
-        });
+      if( ! this.localConfig.pinned) {
+        this.localConfig.active_workspace_type = this.currentWorkspace.type;
+        chrome.storage.local.set({'config': this.localConfig});
       }
 
       // 切换后输入框自动获取聚焦
@@ -775,59 +798,39 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
 
     changeThemeMode() {
-      // this.focus();
-
-      this.config.theme_mode = this.config.theme_mode == 'light' ? 'dark' : 'light';
+      this.localConfig.theme_mode = this.localConfig.theme_mode == 'light' ? 'dark' : 'light';
 
       let htmlNode = document.querySelector('html');
-      htmlNode.style.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
-      htmlNode.style.setProperty("--filter", this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '');
-      // this.filter = this.config.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      htmlNode.style.filter = this.localConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
+      htmlNode.style.setProperty("--filter", this.localConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '');
 
-      chrome.storage.sync.set({'config': this.config}, () => {
-        // this.$message({
-        //   type: 'success',
-        //   message: this.lang('saveSuccess')
-        // });
-      });
+      chrome.storage.local.set({'config': this.localConfig});
     },
     toPin() {
       // this.focus();
 
-      if(this.config.active_workspace_type == this.currentWorkspace.type) {
-        this.config.pinned = ! this.config.pinned;
+      if(this.localConfig.active_workspace_type == this.currentWorkspace.type) {
+        this.localConfig.pinned = ! this.localConfig.pinned;
       } else {
-        this.config.active_workspace_type = this.currentWorkspace.type;
-        this.config.pinned = true;
+        this.localConfig.active_workspace_type = this.currentWorkspace.type;
+        this.localConfig.pinned = true;
       }
-      chrome.storage.sync.set({'config': this.config}, () => {
-        // this.$message({
-        //   type: 'success',
-        //   message: this.lang('saveSuccess')
-        // });
-      });
+      chrome.storage.local.set({'config': this.localConfig});
     },
     changeTheme(theme, index) {
       if(this.currentThemeIndex == index) return;
 
-      // this.currentThemeIndex = index;
       this.config.theme_id = theme.id;
       Object.assign(this.config, theme.config);
-      console.log(this.config, theme.config)
 
-      chrome.storage.sync.set({'config': this.config}, () => {
-        // this.$message({
-        //   type: 'success',
-        //   message: this.lang('saveSuccess')
-        // });
-      });
+      chrome.storage.sync.set({'config': this.config});
     },
     popupChange() {
-      this.config.popup = ! this.config.popup;
-      chrome.storage.sync.set({'config': this.config}, () => {
-        chrome.browserAction.setPopup({ popup: this.config.popup ? chrome.extension.getURL("savetabs.html") : ''})
+      this.localConfig.popup = ! this.localConfig.popup;
+      chrome.storage.local.set({'config': this.localConfig}, () => {
+        chrome.browserAction.setPopup({ popup: this.localConfig.popup ? chrome.extension.getURL("savetabs.html") : ''})
 
-        if( ! this.config.popup) {
+        if( ! this.localConfig.popup) {
           chrome.runtime.sendMessage({
             type: 'inject',
           });
@@ -841,10 +844,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       });
     },
     keymapLeftAndRightChange() {
-      chrome.storage.sync.set({'config': this.config}, () => {
+      chrome.storage.local.set({'config': this.localConfig}, () => {
         this.$message({
-          type: this.config.keymap_left_and_right ? 'success' : 'info',
-          message: this.config.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用，但你仍然可以使用 tab 键 和 shift+tab 键进行左右切换',
+          type: this.localConfig.keymap_left_and_right ? 'success' : 'info',
+          message: this.localConfig.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用，但你仍然可以使用 tab 键 和 shift+tab 键进行左右切换',
           offset: 69,
         });
       });
@@ -860,29 +863,44 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // todo
     window.s = this;
 
-    chrome.storage.sync.get({'config': {}, 'info': {}}, items => {
-      chrome.storage.sync.remove('info');
+    Promise.all([
+      new Promise((resolve) => {
+        chrome.storage.sync.get({'config': {}}, items => {
+          resolve(items);
+        })
+      }),
+      new Promise((resolve) => {
+        chrome.storage.local.get({'config': {}, 'info': {}}, items => {
+          resolve(items);
+        })
+      }),
+      new Promise((resolve) => {
+        chrome.commands.getAll(commands => {
+          resolve(commands)
+        })
+      })
+    ]).then(([syncItems, localItems, commands]) => {
+      console.log('savetabs:storage.get', syncItems, localItems)
 
-      Object.assign(this.config, items.config);
+      Object.assign(this.config, syncItems.config);
+      Object.assign(this.localConfig, localItems.config);
 
-      if(this.config.theme_mode == 'dark') {
+      if(Object.keys(localItems.info).length > 0) {
+        chrome.storage.local.remove('info');
+      }
+
+      this.commands = commands;
+
+      if(this.localConfig.theme_mode == 'dark') {
         let htmlNode = document.querySelector('html');
         htmlNode.style.filter = 'invert(1) hue-rotate(180deg)';
         htmlNode.style.setProperty("--filter", 'invert(1) hue-rotate(180deg)');
         // this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
-      // 貌似没效果
-      // let body = document.querySelector('body');
-      // body.style.width="500px";
-      // body.style.height="418px";
-
-      // for(let type of this.config.workspaces) {
-      //   this.workspaces.push(this.allWorkspaces[type]);
-      // }
       this.workspaces = this.config.workspaces.map((workspace) => {
         return this.allWorkspaces[workspace];
-      });//*/
+      });
 
       if(this.config.button_follow_workspace) {
         let operateOrder = [];
@@ -898,22 +916,25 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         })
       }
 
-      // 兼容老用户升级，依然打开 window （默认是 tab）
-      if(items.config.active_workspace_type == undefined
-      && Object.keys(items.config).length > 0) {
-        this.config.active_workspace_type = 'window';
-      }
-
-      this.activeWorkspaceIndex = this.getTypeIndex(this.config.active_workspace_type);
+      this.activeWorkspaceIndex = this.getTypeIndex(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       this.search();
 
-      if(items.info.add_type != undefined) {
-        this.$nextTick(() => {
-          this.add(items.info.add_type);
-        })
+      // this.things[ this.activeWorkspaceRefIndex ].push({
+      //   'method': 'add',
+      //   'params': ['note', this.keyword],
+      // });
+
+      if(localItems.info.add_type != undefined) {
+        let type = localItems.info.add_type;
+        // let index = this.getTypeIndex(type);
+
+        this.things[ this.activeWorkspaceRefIndex ].push({
+          'method': 'add',
+          'params': [type, this.keyword],
+        });
       }
-    });
+    })
 
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     // 这个才是最对的
@@ -924,7 +945,12 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 走马灯底部指示器提示
       document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
         el.onmouseenter = () => {
-          this.$refs.statusbar.showTip(this.lang(this.workspaces[ index ].title));
+          let workspace = this.workspaces[ index ];
+          let title = this.lang(workspace.title)
+          title += this.keymap['open_workspace_'+workspace.type]
+                  ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+                  : '';
+          this.$refs.statusbar.showTip(title);
         }
         el.onmouseleave = () => {
           this.$refs.statusbar.finishTip();
@@ -943,13 +969,18 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let tab = tabs[0];
 
+      // window.open 不允许添加
+      if(tab.url == chrome.extension.getURL("savetabs.html")) {
+        this.limited = true;
+      }
+
       // 单点打开
       chrome.runtime.sendMessage({ type: 'closeOther',})
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if(request.type != 'closeOther') return;
         if(tab.url == chrome.extension.getURL("savetabs.html")) {
           // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
-          // 无法区分 window.open，这里关闭也什么问题
+          // 无法区分 window.open，这里关闭也什么问题（有可能是 url 直接打开的，不会是 popup）
           window.close()
         } else {
           chrome.runtime.sendMessage({ type: 'closeExtension',})
@@ -979,15 +1010,17 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
     // 快捷键操作
     chrome.commands.onCommand.addListener(command => {
-      if(command == 'open_workspace_all') {
-        let index = this.getTypeIndex('all');
+      if(command.startsWith('open_workspace_')) {
+        let type = command.replace('open_workspace_', '');
+        let index = this.getTypeIndex(type);
         if(this.activeWorkspaceIndex == index) {
           chrome.runtime.sendMessage({ type: 'closeExtension',})
         } else {
-          this.$refs.carousel.setActiveItem(this.getTypeIndex('all'));
+          this.$refs.carousel.setActiveItem(index);
         }
-      } else if(command == 'add_window') {
-        this.add('window');
+      } else if(command.startsWith('add_')) {
+        let type = command.replace('add_', '');
+        this.add(type);
       } else if(command == '_execute_browser_action') {
         // 貌似没用 todo
         chrome.runtime.sendMessage({ type: 'closeExtension',})

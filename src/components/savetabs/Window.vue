@@ -465,12 +465,15 @@ export default {
       group: {},
 
       isSearched: false,
+      isFinish: false,
 
       differenceVisible: false,
       differenceVisible2: false,
       oldGroup: {},
       currentWindow: {},
       haveDifference: true,
+
+      isOperating: false,
     }
   },
   components: {
@@ -739,6 +742,10 @@ console.log('get_currentWindowStorageIndex3', index);
       // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
+      if( ! this.isFinish) return;
+      if(this.isOperating) return;
+      this.isOperating = true;
+
       this.$prompt('', '添加', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -822,6 +829,7 @@ console.log('get_currentWindowStorageIndex3', index);
           // 调用方会自动调用 search，不用我们处理
           // this.search();
           callback(true);
+          this.isOperating = false;
 
           // 虽然有了默认数据，但是用户有可能把数据全清了，这个依然有用
           if(this.storageList.length == 1) {
@@ -841,9 +849,11 @@ console.log('get_currentWindowStorageIndex3', index);
             offset: 69,
             duration: 5000,
           });
+          this.isOperating = false;
         })
       }).catch(() => {
         callback(false);
+        this.isOperating = false;
       });
     },
     openWindow(index, event) {
@@ -1309,6 +1319,7 @@ console.warn('mounted', a);
       let b = new Date().getTime();
 console.warn('finish', b, (b-a)/1000)
 
+      this.isFinish = true;
       this.$emit('finish');
 
       // 更新列表

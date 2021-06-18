@@ -93,6 +93,10 @@ export default {
       type: Object,
       required: require,
     },
+    localConfig: {
+      type: Object,
+      required: require,
+    },
     project_config: {
       type: Object,
       required: require,
@@ -161,6 +165,7 @@ export default {
           keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
           length: 100,
           config: this.config,
+          localConfig: this.localConfig,
           originKeyword: this.storageKeyword,
           parent: this,
         }).then((list) => {
@@ -216,7 +221,7 @@ export default {
 
       let condition = this.conditions[index];
 
-      return Promise.all(this.config.all_include.filter(workspace => {
+      return Promise.all(this.localConfig.all_include.filter(workspace => {
         return Object.keys(condition).every((attr) => {
           return workspace[attr] == condition[attr];
         })
@@ -227,6 +232,7 @@ export default {
           keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
           length: workspace.count,
           config: this.config,
+          localConfig: this.localConfig,
           originKeyword: this.storageKeyword,
           parent: this,
         })
@@ -263,7 +269,7 @@ export default {
 
       let condition = this.conditions[index];
 
-      return Promise.all(this.config.all_include.filter(workspace => {
+      return Promise.all(this.localConfig.all_include.filter(workspace => {
         return Object.keys(condition).every((attr) => {
           return workspace[attr] == condition[attr];
         })
@@ -275,6 +281,7 @@ export default {
             keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
             length: workspace.count,
             config: this.config,
+            localConfig: this.localConfig,
             originKeyword: this.storageKeyword,
             parent: this,
           })
@@ -284,6 +291,7 @@ export default {
             start: this.length[workspace.type],
             length: workspace.count,
             config: this.config,
+            localConfig: this.localConfig,
             originKeyword: this.storageKeyword,
             parent: this,
           })

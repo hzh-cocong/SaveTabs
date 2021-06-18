@@ -247,8 +247,11 @@ export default {
       // isInCurrentTab: false,
 
       isSearched: false,
+      isFinish: false,
 
       tip: '',
+
+      isOperating: false,
     }
   },
   components: {
@@ -450,6 +453,10 @@ console.warn('isSearched2');
       // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
+      if( ! this.isFinish) return;
+      if(this.isOperating) return;
+      this.isOperating = true;
+
       // 当前标签只能有一个
       if(this.isInCurrentTab) {
         this.$message({
@@ -461,6 +468,7 @@ console.warn('isSearched2');
         });
         // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
         callback(true);
+        this.isOperating = false;
 
         return;
       }
@@ -518,6 +526,7 @@ console.log('add =====h')
         //   callback(true)
         // }, 1)
         callback(true);
+        this.isOperating = false;
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -526,6 +535,7 @@ console.log('add =====h')
           offset: 69,
           duration: 5000,
         });
+        this.isOperating = false;
       })
     },
     openWindow(index, event) {
@@ -739,6 +749,7 @@ console.warn('mounted', a);
       let b = new Date().getTime();
 console.warn('finish', b, (b-a)/1000)
 
+      this.isFinish = true;
       this.$emit('finish');
     })
   }

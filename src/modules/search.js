@@ -4,9 +4,9 @@ let search = {
 
     isInit: false,
 
-    init: function(config) {
-      this.storageList = config.all_search_engine
-                        ? config.all_search_engine
+    init: function(localConfig) {
+      this.storageList = localConfig.all_search_engine
+                        ? localConfig.all_search_engine
                         : [];
 
       this.storageList.forEach((item, index) => {
@@ -17,10 +17,10 @@ let search = {
       this.isInit = true;
     },
 
-    search({keywords, length, config, originKeyword}) {
+    search({keywords, length, config, localConfig, originKeyword}) {
       return new Promise((resolve) => {
         if(this.isInit) resolve();
-        else resolve(this.init(config))
+        else resolve(this.init(localConfig))
       }).then(() => {
         this.cacheList = this.storageList.map((item, index) => {
           item.url = encodeURI(item.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));

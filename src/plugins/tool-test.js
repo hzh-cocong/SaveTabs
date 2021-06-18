@@ -26,8 +26,12 @@ let temporary = '[{"id":"tNzh8v3Dbz7IE4iw34gOJ","lastVisitTime":1622037936000,"t
 
 let currentWindow = '{"alwaysOnTop":false,"focused":true,"height":718,"id":17,"incognito":false,"left":0,"state":"normal","tabs":[{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8000/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":111,"incognito":false,"index":0,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"[Beta] serve - 任务 - Vue CLI","url":"http://localhost:8000/tasks/%2FUsers%2Fhzh%2F%E6%96%87%E4%BB%B6%2F%E5%A4%A7%E6%96%87%E4%BB%B6%2FExperience%2FWWW%2Fhtml%2FChrome%2Fsave_tabs2:serve","width":1150,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8080/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":138,"incognito":false,"index":1,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"http://localhost:8080/savetabs.html","width":515,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8080/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":152,"incognito":false,"index":2,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"http://localhost:8080/savetabs.html","width":1150,"windowId":99},{"active":true,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/favicon.ico","groupId":-1,"height":607,"highlighted":true,"id":149,"incognito":false,"index":3,"mutedInfo":{"muted":false},"pinned":false,"selected":true,"status":"complete","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html","width":482,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":150,"incognito":false,"index":4,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace","width":1150,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8000/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":111,"incognito":false,"index":0,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"[Beta] serve - 任务 - Vue CLI","url":"http://localhost:8000/tasks/%2FUsers%2Fhzh%2F%E6%96%87%E4%BB%B6%2F%E5%A4%A7%E6%96%87%E4%BB%B6%2FExperience%2FWWW%2Fhtml%2FChrome%2Fsave_tabs2:serve","width":1150,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8080/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":138,"incognito":false,"index":1,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"http://localhost:8080/savetabs.html","width":515,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"http://localhost:8080/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":152,"incognito":false,"index":2,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"http://localhost:8080/savetabs.html","width":1150,"windowId":99},{"active":true,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/favicon.ico","groupId":-1,"height":607,"highlighted":true,"id":149,"incognito":false,"index":3,"mutedInfo":{"muted":false},"pinned":false,"selected":true,"status":"complete","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html","width":482,"windowId":99},{"active":false,"audible":false,"autoDiscardable":true,"discarded":false,"favIconUrl":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/favicon.ico","groupId":-1,"height":607,"highlighted":false,"id":150,"incognito":false,"index":4,"mutedInfo":{"muted":false},"pinned":false,"selected":false,"status":"complete","title":"SaveTabs","url":"chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace","width":1150,"windowId":99}],"top":0,"type":"normal","width":1150}';
 
-currentWindow = JSON.parse(currentWindow);
+let commands = '[{"description":"","name":"_execute_browser_action","shortcut":"⌃⌘V"},{"description":"add_note","name":"add_note","shortcut":""},{"description":"add_temporary","name":"add_temporary","shortcut":"⌃⌘A"},{"description":"add_window","name":"add_window","shortcut":"⌃⌘W"},{"description":"open_workspace_all","name":"open_workspace_all","shortcut":""},{"description":"open_workspace_bookmark","name":"open_workspace_bookmark","shortcut":""},{"description":"open_workspace_history","name":"open_workspace_history","shortcut":"⌃⌘H"},{"description":"open_workspace_note","name":"open_workspace_note","shortcut":"⌃⌘N"},{"description":"open_workspace_tab","name":"open_workspace_tab","shortcut":""},{"description":"open_workspace_temporary","name":"open_workspace_temporary","shortcut":""},{"description":"open_workspace_window","name":"open_workspace_window","shortcut":""}]';
 
+commands = JSON.parse(commands);
+
+
+currentWindow = JSON.parse(currentWindow);
 
 temporary = JSON.parse(temporary);
 // temporary = temporary.slice(2, 3);
@@ -404,10 +408,14 @@ const tool = {
       },
       local: {
         get: function(options, callback) {
-          if(options.list != undefined) {
+          if(options.config) {
+            callback != undefined && callback({config: {}, info: {}});
+          } else if(options.list != undefined) {
             callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+            // callback != undefined && setTimeout(()=>{ callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88}); }, 1000);
           } else if(options.tabs != undefined) {
             callback != undefined && callback({tabs: notes});
+            // callback != undefined && setTimeout(()=>{ callback({tabs: notes}); }, 1000);
           } else if(options.temporary != undefined) {
             callback != undefined && callback({temporary: temporary});
           } else if(options.bookmark != undefined) {
@@ -565,6 +573,9 @@ const tool = {
     }
 
     chrome.commands = {
+      getAll: function(callback) {
+        callback != undefined && callback(commands);
+      },
       onCommand: {
         addListener: function(callback) {
 

@@ -46,7 +46,7 @@ function download(filename, data, path)
 }
 
 let isOpened = false;
-function executeScript({open=null, tabId=null} = {}) {
+function executeScript({open=null, tabId=null, onlyInjection=false} = {}) {
   // 已经打开过，无需再执行（只关心 inject-script）
   if(open == true && isOpened) return;
 
@@ -68,6 +68,8 @@ function executeScript({open=null, tabId=null} = {}) {
       return;
     }
 
+    if(onlyInjection) return;
+
     chrome.storage.sync.get({'config': {}}, items => {
       chrome.windows.getCurrent((w) => {
         let config = items.config;
@@ -85,11 +87,14 @@ function executeScript({open=null, tabId=null} = {}) {
   })
 }
 
-let showTabIndex = false;
-chrome.storage.sync.get({'config': {}}, items => {
+chrome.storage.local.get({'config': {}}, items => {
   if(items.config.popup == false) {
     chrome.browserAction.setPopup({ popup: ''})
   }
+})
+
+let showTabIndex = false;
+chrome.storage.sync.get({'config': {}}, items => {
   if(items.config.show_tab_index) {
     showTabIndex = true;
   }
@@ -110,14 +115,6 @@ chrome.tabs.onActivated.addListener(({tabId, windowId})=>{
 chrome.tabs.onRemoved.addListener((tabId)=>{
   activeTabs.delete(tabId);
 })
-// chrome.tabs.onMoved.addListener((tabId) => {
-//   activeTabs.delete(tabId);
-//   activeTabs.add(tabId);
-// })
-// chrome.tabs.onDetached.addListener((tabId) => {
-//   activeTabs.delete(tabId);
-//   activeTabs.add(tabId);
-// })
 chrome.windows.onFocusChanged.addListener((windowId)=>{
   let tabId = activeWindows.get(windowId);
   if(tabId != undefined) {
@@ -136,13 +133,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     var filename = request.filename;
     let tabs = request.tabs;
     generate(filename, tabs);
-    return;
-  }
-  if(request.type == 'getActiveTabs') {
+  } else if(request.type == 'getActiveTabs') {
     sendResponse([...activeTabs]);
-    return;
-  }
-  if(request.type == 'exchangeTab') {
+  } else if(request.type == 'exchangeTab') {
     let target = request.target;
     let destination = request.destination;
     console.log('exchangeTab', target, destination);
@@ -177,9 +170,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
       })
     }
-    return;
-  }
-  if(request.type == 'closeExtension') {
+  } else if(request.type == 'closeExtension') {
     console.log('closeExtension', sender, sender.tab && sender.tab.id)
 
     // 弹出菜单没有tab
@@ -195,35 +186,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let windows = chrome.extension.getViews({type: 'tab'});
       windows.forEach(window => window.close());
       console.log('close:window.open')
-
-      // chrome.tabs.remove(sender.tab.id, () => {
-      //   // 用户可能不直接切换标签，而是多选，此时浏览器是不允许关闭标签的
-      //   // 捕获错误，这样插件就不会显示错误
-      //   chrome.runtime.lastError;
-      // });
-      // chrome.windows.remove(sender.tab.windowId);
-
       return;
     }
 
     // 关闭 inject-script 创建的窗口
     executeScript({tabId: sender.tab.id});
-    // chrome.tabs.executeScript(sender.tab.id, { file: "js/injected_script.js" }, () => {
-    //   // 捕获错误，这样插件就不会显示错误
-    //   const error = chrome.runtime.lastError;
-    //   if( ! (error && error.message)) return;
-
-    //   // window.open 自己本身触发的切换回导致窗口关闭，加上本身触发，就有可能在窗口关闭的情况下执行，自然执行失败
-    //   console.log("that's impossible", error.message);
-    // })
-
-    return;
-  }
-  if(request.type == 'inject') {
+  } else if(request.type == 'inject') {
     executeScript();
-    return;
-  }
-  if(request.type == 'to-show-index') {
+  } else if(request.type == 'to-show-index') {
     if( ! showTabIndex) return;
     chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
       let length = window.tabs.length;
@@ -238,8 +208,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
       })
     })
-    return;
-  }if(request.type == 'to-hide-index') {
+  } else if(request.type == 'to-hide-index') {
     if( ! showTabIndex) return;
     chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
       let length = window.tabs.length;
@@ -253,7 +222,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
       })
     })
-    return;
   }
 })
 
@@ -264,28 +232,30 @@ chrome.browserAction.onClicked.addListener(() => {
 chrome.commands.onCommand.addListener(command => {
   console.log('command', command);
 
-  //todo
-  if(command == 'open_workspace_all') {
+  if(command.startsWith('open_workspace_')) {
     if(chrome.extension.getViews({type: 'popup'}).length == 0
     && chrome.extension.getViews({type: 'tab'}).length == 0
     && ! isOpened) {
-      chrome.storage.sync.get({'config': {}}, items => {
-        items.config.active_workspace_type = 'all';
-        chrome.storage.sync.set({'config': items.config}, () => {
-          executeScript({open: true});
-        });
-      })
+      let type = command.replace('open_workspace_', '');
+      chrome.storage.local.set({'info': {
+        active_workspace_type: type,
+      }}, () => {
+        executeScript({open: true});
+      });
     }
-  } else if(command == 'add_window') {
+  } else if(command.startsWith('add_')) {
     if(chrome.extension.getViews({type: 'popup'}).length == 0
     && chrome.extension.getViews({type: 'tab'}).length == 0
     && ! isOpened) {
-      chrome.storage.sync.get({'config': {}}, items => {
-        items.config.active_workspace_type = 'window';
-        chrome.storage.sync.set({'config': items.config, 'info': {add_type: 'window'}}, () => {
-          executeScript({open: true});
-        });
-      })
+      console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+      let type = command.replace('add_', '');
+      chrome.storage.local.set({'info': {
+        active_workspace_type: type,
+        add_type: type,
+      }}, () => {
+        executeScript({open: true, onlyInjection: true});
+        // executeScript({open: true});
+      });
     }
   }
 })

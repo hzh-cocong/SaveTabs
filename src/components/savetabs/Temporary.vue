@@ -254,8 +254,11 @@ export default {
       currentIndex: -1,
 
       isSearched: false,
+      isFinish: false,
 
       tabFocus: {},
+
+      isOperating: false,
     }
   },
   components: {
@@ -891,6 +894,10 @@ alert('空间不够')
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
+      if( ! this.isFinish) return;
+      if(this.isOperating) return;
+      this.isOperating = true;
+
       new Promise((resolve) => {
         // 获取当前窗口的所有标签
         chrome.tabs.query({
@@ -940,6 +947,7 @@ alert('空间不够')
             // 其实只有取消会调到这里，
             if(action == 'cancel') {
               callback(false);
+              this.isOperating = false;
             }
           }
         });
@@ -1016,6 +1024,7 @@ alert('空间不够')
         }, 100)
 
         this.$msgbox.close();
+        this.isOperating = false;
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -1024,6 +1033,7 @@ alert('空间不够')
           offset: 69,
           duration: 5000,
         });
+        this.isOperating = false;
       })
     },
     openWindow(index, event) {
@@ -1172,6 +1182,7 @@ alert('空间不够')
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
 
+      this.isFinish = true;
       this.$emit('finish');
 
       // 更新列表

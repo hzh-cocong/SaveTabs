@@ -1,4 +1,5 @@
-window._device = (function() {
+
+let _device = (function() {
   let platform = '';
   let isPC = true;
   let u = navigator.userAgent;
@@ -29,7 +30,11 @@ window._device = (function() {
   };
 })();
 
+let isKeyDown = false;
+let title = null;
 window.addEventListener('keydown', (event) => {
+  if(isKeyDown) return;
+  isKeyDown = true;
   console.log('keydown', event)
   if((_device.platform == 'Mac' && event.keyCode == 91)
   || (_device.platform != 'Mac' && event.keyCode == 17)) {
@@ -43,9 +48,10 @@ window.addEventListener('keydown', (event) => {
   }
 })
 window.addEventListener('keyup', (event) => {
-  console.log('keyup', event)
-  if((_device.platform == 'Mac' && event.keyCode == 91)
-  || (_device.platform != 'Mac' && event.keyCode == 17)) {
+  isKeyDown = false;
+  console.log('keyup', event, title)
+
+  if(title !== null) {
     try {
       chrome.runtime.sendMessage({
         type: 'to-hide-index',
@@ -54,15 +60,30 @@ window.addEventListener('keyup', (event) => {
       console.log(err)
     }
   }
+
+  // if((_device.platform == 'Mac' && event.keyCode == 91)
+  // || (_device.platform != 'Mac' && event.keyCode == 17)) {
+  //   try {
+  //     chrome.runtime.sendMessage({
+  //       type: 'to-hide-index',
+  //     })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 })
 
-let title = null;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if(request.type == 'show-index') {
     if(title !== null) return;
 
     title = document.title;
-    document.title = `⌘${request.index} ${title}`;
+
+    if(_device.platform == 'Mac') {
+      document.title = `⌘${request.index} ${title}`;
+    } else {
+      document.title = `Alt+${request.index} ${title}`;
+    }
   }
 })
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

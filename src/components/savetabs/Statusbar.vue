@@ -4,7 +4,7 @@
     :style="{ height: statusbarHeight+'px' }">
 
     <svg-icon
-      :name="config.popup ? 'fly-brands' : 'ship-solid'"
+      :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
       class="hover2"
       style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
       @click.native="popupChange"
@@ -20,23 +20,23 @@
     ></svg-icon>
 
     <svg-icon
-      :name="config.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
+      :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
       class="hover2"
       style="cursor:pointer;height: 20px;margin-right: 10px;"
-      :style="{ color: config.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
+      :style="{ color: localConfig.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
       @click.native="changeThemeMode"></svg-icon>
 
     <svg-icon
       name="thumbtack-solid"
       class="hover2"
       style="cursor:pointer;height: 20px;margin-right: 10px;"
-      :style="{ transform: config.pinned
+      :style="{ transform: localConfig.pinned
                         && currentWorkspace != undefined
-                        && config.active_workspace_type == currentWorkspace.type
+                        && localConfig.active_workspace_type == currentWorkspace.type
                         ? 'rotate(0)' : 'rotate(90deg)',
-                color: config.pinned
+                color: localConfig.pinned
                     && currentWorkspace != undefined
-                    && config.active_workspace_type == currentWorkspace.type
+                    && localConfig.active_workspace_type == currentWorkspace.type
                     ? 'gray' : '#c0c4cc', }"
       @click.native="toPin"></svg-icon>
 
@@ -94,21 +94,21 @@
       name="arrow-left-solid"
       class="hover2"
       style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 10px;"
-      @click.native="selectDelay('left', $event)"
+      @click.native="prev"
     ></svg-icon>
 
     <input
       type="checkbox"
       class="hover2"
       style="margin: 0 8px"
-      v-model="config.keymap_left_and_right"
+      v-model="localConfig.keymap_left_and_right"
       @change="keymapLeftAndRightChange" />
 
     <svg-icon
       name="arrow-right-solid"
       class="hover2"
       style="cursor:pointer;height: 20px;color: #c0c4cc;margin-right: 10px;"
-      @click.native="selectDelay('right', $event)"
+      @click.native="next"
     ></svg-icon>
 
     <span class="divider"></span>
@@ -139,9 +139,13 @@
 <script>
 export default {
   name: 'statusbar',
-  inject: ['focus', 'selectDelay', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
+  inject: ['focus', 'prev', 'next', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    localConfig: {
       type: Object,
       required: require,
     },

@@ -262,6 +262,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(showTabIndex) {
       toHideIndex(sender.tab.windowId, true);
     }
+  } else if(request.type == 'global_data_change') {
+    // sendMessage 应用本身是收不到的，所以要让 background.js 来实现广播
+    request.type = 'data_change';
+    chrome.runtime.sendMessage(request);
   }
 })
 
@@ -303,7 +307,9 @@ chrome.commands.onCommand.addListener(command => {
           active_workspace_type: type,
           add_type: type,
         }}, () => {
-          executeScript({onlyInjection: true});
+          executeScript();
+          // todo
+          // executeScript({onlyInjection: true});
         });
       } else if(result.isActive){
         chrome.runtime.sendMessage({ type: 'to_add', workspace: type})

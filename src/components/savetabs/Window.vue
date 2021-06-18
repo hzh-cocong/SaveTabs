@@ -841,6 +841,9 @@ console.log('get_currentWindowStorageIndex3', index);
               duration: 5000,
             });
           }
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'add'});
         }).catch(() => {
           this.$message({
             type: 'error',
@@ -1019,7 +1022,8 @@ console.log('get_currentWindowStorageIndex3', index);
         // 存储数据
         this.storageList[ this.currentStorageIndex ].name = value;
         chrome.storage.local.set({list: this.storageList}, () => {
-
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'change'});
         });
       }).catch(() => {
         this.focus();
@@ -1037,11 +1041,11 @@ console.log('get_currentWindowStorageIndex3', index);
         // let index = this.getStorageIndex();
         this.storageList.splice(this.currentStorageIndex , 1);
         chrome.storage.local.set({list: this.storageList}, () => {
-          // if(group.windowId == this.currentWindowId) {
-          //   this.isInCurrentWindow = false;
-          // }
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'delete'});
         });
         this.focus();
       }).catch(() => {
@@ -1107,6 +1111,9 @@ console.log('get_currentWindowStorageIndex3', index);
 
         // 关闭 dialog
         this.differenceVisible = false;
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'update'});
       })
     },
     bind() {
@@ -1123,8 +1130,9 @@ console.log('get_currentWindowStorageIndex3', index);
         // 判断当前分组是否需要更新
         // this.isCurrentWindowChange = this.isDifference(this.storageList[0], this.currentWindow);
 
-        // 更新结果（强制绑定需要这个，current update 可以不用）
-        this.activeWindows[this.currentWindowId] = true;
+        // 更新结果（强制绑定需要这个，current update 可以不用），
+        // 强制绑定其实也不需要
+        // this.activeWindows[this.currentWindowId] = true;
         // this.isInCurrentWindow = true;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
@@ -1134,6 +1142,9 @@ console.log('get_currentWindowStorageIndex3', index);
 
         // 关闭 dialog
         this.differenceVisible = false;
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'bind'});
       })
     },
     restore() {

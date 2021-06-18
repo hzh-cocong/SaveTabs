@@ -377,6 +377,33 @@ export default {
     window.ss = Search;
     window.tto = Toggle;
 
+    // 保持数据同步
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if(request.type == 'data_change') {
+        // 列表为空，没啥好更新的
+        if(this.list.length == 0) return;
+
+        // 还没有在列表中展示，无需刷新
+        if(this.localConfig.all_include.filter(workspace => {
+          return this.storageKeyword != '' || workspace.only_search == false;
+        }).every((workspace => {
+          return workspace.type != request.workspace;
+        }))) return;
+
+        // 刷新数据
+        let module = this.getModule(request.workspace);
+        module.refresh().then(() => {
+          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = ' ';
+          this.search(origin);
+
+          // 增删查改，还有反向操作，仅 temporary
+          console.log('all:reload', request);
+        })
+      }
+    })
+
     this.$emit('finish');
   }
 }

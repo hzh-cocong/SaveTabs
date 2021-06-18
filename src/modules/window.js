@@ -99,6 +99,23 @@ let window = {
     })
   },
 
+  refresh() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get({'list': []}, items => {
+        // 刷新数据
+        this.storageList = items.list.map(group => {
+          // 加标签（速度很快）(存在污染问题)
+          group.isCurrent = group.windowId == this.currentWindowId;
+          group.isOpened = this.activeWindows[group.windowId] == true;
+          group.type = 'window';
+
+          return group;
+        })
+        resolve();
+      });
+    })
+  },
+
   openWindow(index, event) {
     let currentGroup = this.cacheList[index];
     let storageIndex = this.getStorageIndex(currentGroup);

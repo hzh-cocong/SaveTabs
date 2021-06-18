@@ -268,8 +268,7 @@
           :title="limited
                 ? '功能受限'
                 : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
-          :disabled="limited"
-          @click="add(type)"></el-button>
+          @click="add(type)"></el-button><!-- todo  :disabled="limited" -->
       </el-button-group>
     </div>
 
@@ -970,7 +969,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     //   e.preventDefault();
     // }
 
-//* todo
     // 模拟 popup 行为
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let tab = tabs[0];

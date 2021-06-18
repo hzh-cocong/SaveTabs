@@ -78,16 +78,56 @@
 
 import menus from './components/options/menus.config.js'
 
+import userConfig from './config/user_config.json'
+import userLocalConfig from './config/user_local_config.json'
+import projectConfig from './config/project_config.json'
+
 export default {
   name: 'app',
   data() {
     return {
       menus: menus,
+
+      storageConfig: userConfig,
+      localConfig: userLocalConfig,
+
+      commands: [],
     }
   },
   mounted: function() {
     // todo
     window.o = this;
+
+
+    Promise.all([
+      new Promise((resolve) => {
+        chrome.storage.sync.get({'config': {}}, items => {
+          resolve(items);
+        })
+      }),
+      new Promise((resolve) => {
+        chrome.storage.local.get({'config': {}}, items => {
+          resolve(items);
+        })
+      }),
+      new Promise((resolve) => {
+        chrome.commands.getAll(commands => {
+          resolve(commands)
+        })
+      })
+    ]).then(([syncItems, localItems, commands]) => {
+      console.log('options:storage.get', syncItems, localItems)
+
+      Object.assign(this.storageConfig, syncItems.config);
+      Object.assign(this.localConfig, localItems.config);
+
+      if(Object.keys(syncItems.config).length == 0) {
+        chrome.storage.sync.set({'config': this.storageConfig});
+        alert(JSON.stringify(this.storageConfig));
+      }
+
+      this.commands = commands;
+    })
   }
 }
 </script>

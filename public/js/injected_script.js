@@ -1,11 +1,41 @@
 {
-  let id = 'container-'+chrome.runtime.id;
-  let container = document.getElementById(id);
-  if(container != null) {
-    // document.body.style.position = 'inherit';
-    document.body.style.overflow = 'auto';
-    container.remove();
-  } else {
+  console.log('bbbbbbbbbbbbbbbbbbbbbbbb0')
+  Promise.all([
+    new Promise((resolve) => {
+      chrome.storage.sync.get({'config': {}}, items => {
+        resolve(items.config);
+      })
+    }),
+    new Promise((resolve) => {
+      chrome.storage.local.get({'info': {}}, items => {
+        resolve(items.info);
+      })
+    })
+  ]).then(([config, info]) => {
+    console.log('inject:storage.get', config, info);
+
+    let id = 'container-'+chrome.runtime.id;
+    let container = document.getElementById(id);
+
+    console.log('bbbbbbbbbbbbbbb', info);
+    if(container != null) {
+console.log('bbbbbbbbbbbbbbb2', info);
+      // if(Object.keys(info).length > 0) chrome.storage.local.remove('info');
+
+      // if(info.keepOpen === true) return;
+
+      if(info.keepOpen === true) {
+        chrome.storage.local.remove('info', () => {console.log('bbbbbbbbbbbbbbbbbbbb3')});
+        return;
+      }
+
+      // document.body.style.position = 'inherit';
+      document.body.style.overflow = 'auto';
+      container.remove();
+
+      return;
+    }
+
     console.log('ffff')
 
     let shadow = '0 10px 50px 0 rgb(0 0 0 / 88%)';
@@ -44,29 +74,28 @@
     document.body.style.overflow = 'hidden';
     // document.body.style.height = '100%';
 
-    chrome.storage.sync.get({'config': {}}, items => {
-      console.log(items);
-      let config = items.config;
-      let width = config.width+config.border_width*2+config.padding_width*2;
-      let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
-      let left = (window.outerWidth-width)/2;
-      let top = 50;
-      let containerBackgroundColor = "rgba(0, 0, 0, 0.2)";
-      let iframeBackgroundColor = config.background_color;
-      // let backgroundColor = "rgba(0, 0, 0, 0.5)";
-      // let backgroundColor = "transparent";
-      let shadow = '0 5px 20px 0 rgba(0, 0, 0, 0.25)';
-      console.log(width, height, left, top, containerBackgroundColor);
 
-      height += 30; // 底部状态栏
 
-      // container.style.backgroundColor = containerBackgroundColor;
-      iframe.style.width = width+'px';
-      iframe.style.height = height+'px';
-      iframe.style.marginTop = top+'px';
-      iframe.style.backgroundColor = iframeBackgroundColor;
-      iframe.style.boxShadow = shadow;
-      iframe.style.opacity = 1;
-    })
-  }
+
+    let width = config.width+config.border_width*2+config.padding_width*2;
+    let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
+    let left = (window.outerWidth-width)/2;
+    let top = 50;
+    let containerBackgroundColor = "rgba(0, 0, 0, 0.2)";
+    let iframeBackgroundColor = config.background_color;
+    // let backgroundColor = "rgba(0, 0, 0, 0.5)";
+    // let backgroundColor = "transparent";
+    shadow = '0 5px 20px 0 rgba(0, 0, 0, 0.25)';
+    console.log(width, height, left, top, containerBackgroundColor);
+
+    height += 30; // 底部状态栏
+
+    // container.style.backgroundColor = containerBackgroundColor;
+    iframe.style.width = width+'px';
+    iframe.style.height = height+'px';
+    iframe.style.marginTop = top+'px';
+    iframe.style.backgroundColor = iframeBackgroundColor;
+    iframe.style.boxShadow = shadow;
+    iframe.style.opacity = 1;
+  })
 }

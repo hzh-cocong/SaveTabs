@@ -45,21 +45,11 @@ function download(filename, data, path)
   });
 }
 
-let isOpened = false;
-function executeScript({open=null, tabId=null, onlyInjection=false} = {}) {
-  // 已经打开过，无需再执行（只关心 inject-script）
-  if(open == true && isOpened) return;
-
-  console.log('executeScript', isOpened, open);
+function executeScript({tabId=null, onlyInjection=false} = {}) {
   chrome.tabs.executeScript(tabId, { file: "js/injected_script.js" }, () => {
-    console.log('executeScript2', isOpened);
-
     // 捕获错误，这样插件就不会显示错误
     const error = chrome.runtime.lastError;
-    if( ! (error && error.message)) {
-      isOpened = ! isOpened;
-      return;
-    }
+    if( ! (error && error.message)) return;
 
     // window.open toggle
     let windows = chrome.extension.getViews({type: 'tab'});
@@ -135,6 +125,7 @@ function toHideIndex(windowId, force=false) {
   })
 }
 
+let isFirstInstall = false;
 chrome.storage.local.get({'config': {}}, items => {
   if(items.config.popup == false) {
     chrome.browserAction.setPopup({ popup: ''})
@@ -144,6 +135,10 @@ chrome.storage.sync.get({'config': {}}, items => {
   if(items.config.show_tab_index) {
     showTabIndex = true;
   }
+
+  console.log('fff', items, Object.keys(items.config))
+  // 这个新版本的都弹出，往后的才不弹出
+  isFirstInstall = items.config.theme_id === undefined || Object.keys(items.config).length == 0;
 })
 
 let activeTabs = new Set();
@@ -247,8 +242,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return;
     }
 
-    // 关闭 inject-script 创建的窗口
     executeScript({tabId: sender.tab.id});
+
+    // 关闭 inject-script 创建的窗口
+    // chrome.storage.local.get({'info': {}}, items => {
+    //   if(items.info.keepOpen) return;
+    //   executeScript({tabId: sender.tab.id});
+    // });
+    // chrome.storage.local.remove('info', () => {
+    //   executeScript({tabId: sender.tab.id});
+    // });
   } else if(request.type == 'inject') {
     executeScript();
   } else if(request.type == 'to-show-index') {
@@ -271,28 +274,36 @@ chrome.commands.onCommand.addListener(command => {
 
   if(command.startsWith('open_workspace_')) {
     if(chrome.extension.getViews({type: 'popup'}).length == 0
-    && chrome.extension.getViews({type: 'tab'}).length == 0
-    && ! isOpened) {
+    && chrome.extension.getViews({type: 'tab'}).length == 0) {
       let type = command.replace('open_workspace_', '');
       chrome.storage.local.set({'info': {
         active_workspace_type: type,
+        keepOpen: true,
       }}, () => {
-        executeScript({open: true});
+        executeScript();
       });
     }
   } else if(command.startsWith('add_')) {
     if(chrome.extension.getViews({type: 'popup'}).length == 0
-    && chrome.extension.getViews({type: 'tab'}).length == 0
-    && ! isOpened) {
-      console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+    && chrome.extension.getViews({type: 'tab'}).length == 0) {
       let type = command.replace('add_', '');
       chrome.storage.local.set({'info': {
         active_workspace_type: type,
         add_type: type,
+        keepOpen: true,
       }}, () => {
-        executeScript({open: true, onlyInjection: true});
-        // executeScript({open: true});
+        executeScript({onlyInjection: true});
       });
     }
+  }
+})
+
+console.log('a',isFirstInstall);
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('b',isFirstInstall);
+  if(isFirstInstall) {
+    chrome.tabs.create({
+      url: chrome.extension.getURL("options.html"),
+  });
   }
 })

@@ -977,6 +977,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 单点打开
       chrome.runtime.sendMessage({ type: 'closeOther',})
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+
+
         if(request.type != 'closeOther') return;
         if(tab.url == chrome.extension.getURL("savetabs.html")) {
           // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
@@ -1008,24 +1011,24 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
     })
 
-    // 快捷键操作
-    chrome.commands.onCommand.addListener(command => {
-      if(command.startsWith('open_workspace_')) {
-        let type = command.replace('open_workspace_', '');
-        let index = this.getTypeIndex(type);
-        if(this.activeWorkspaceIndex == index) {
-          chrome.runtime.sendMessage({ type: 'closeExtension',})
-        } else {
-          this.$refs.carousel.setActiveItem(index);
-        }
-      } else if(command.startsWith('add_')) {
-        let type = command.replace('add_', '');
-        this.add(type);
-      } else if(command == '_execute_browser_action') {
-        // 貌似没用 todo
-        chrome.runtime.sendMessage({ type: 'closeExtension',})
-      }
-    })
+    // // 快捷键操作
+    // chrome.commands.onCommand.addListener(command => {
+    //   if(command.startsWith('open_workspace_')) {
+    //     let type = command.replace('open_workspace_', '');
+    //     let index = this.getTypeIndex(type);
+    //     if(this.activeWorkspaceIndex == index) {
+    //       chrome.runtime.sendMessage({ type: 'closeExtension',})
+    //     } else {
+    //       this.$refs.carousel.setActiveItem(index);
+    //     }
+    //   } else if(command.startsWith('add_')) {
+    //     let type = command.replace('add_', '');
+    //     this.add(type);
+    //   } else if(command == '_execute_browser_action') {
+    //     // 貌似没用 todo
+    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
+    //   }
+    // })
 
     this.focus();
   }

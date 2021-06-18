@@ -1005,9 +1005,15 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
 
       // 一旦失去焦点就会自己把自己给关了
+      // 新建窗口也会触发，并且新建多个标签将触发多个事件
       chrome.tabs.onActivated.addListener((activeInfo) => {
         // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
+        // 现在不可能了，因为使用了 window.close 后，就算是多选也会被关闭
         // if(activeInfo.tabId == tab.id) return;
+
+        // 非当前窗口的变化交给 onFocusChanged，以免重复执行导致混乱
+        // tab.create 但不 active 是不会触发本事件的，highlight 也不会
+        if(tab == undefined || activeInfo.windowId != tab.windowId) return;
 
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension',})

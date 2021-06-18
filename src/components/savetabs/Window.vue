@@ -323,7 +323,7 @@
     @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-refresh"></i></span>
+      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindow"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{oldGroup.name}}</span>
         <span
@@ -746,7 +746,7 @@ console.log('get_currentWindowStorageIndex3', index);
       if(this.isOperating) return;
       this.isOperating = true;
 
-      this.$prompt('', '添加', {
+      this.$prompt('', '添加'+(this.isInCurrentWindow ? '（重复）' : ''), {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPlaceholder: '请输入窗口名',
@@ -1031,7 +1031,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     deleteGroup() {
       // let group = this.list[this.currentIndex];
-      this.$confirm(this.lang('deleteConfirm')+' ('+this.currentGroup.name+') ?', this.lang('tip'), {
+      this.$confirm(' ('+this.currentGroup.name+') ', this.lang('deleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -1266,6 +1266,21 @@ console.log('get_currentWindowStorageIndex3', index);
         tabs: this.currentGroup.tabs,
       });
     },
+    refreshWindow() {
+      // 获取当前窗口
+      chrome.windows.getCurrent({populate: true}, window => {
+        this.currentWindow = window;
+        this.haveDifference = this.isDifference(this.oldGroup, window);
+
+        this.$message({
+          type: 'success',
+          message: '新窗口数据已更新',
+          customClass: 'window-message-box',
+          offset: 10,
+          duration: 2000,
+        });
+      })
+    }
   },
   beforeUpdate() {
     console.warn('window:beforeUpdate');

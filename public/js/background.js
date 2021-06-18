@@ -45,6 +45,7 @@ function download(filename, data, path)
   });
 }
 
+// 新建窗口，如果窗口存在，则关闭窗口
 function executeScript({tabId=null, onlyInjection=false} = {}) {
   chrome.tabs.executeScript(tabId, { file: "js/injected_script.js" }, () => {
     // 捕获错误，这样插件就不会显示错误
@@ -230,6 +231,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(sender.tab == undefined) {
       let windows = chrome.extension.getViews({type: 'popup'});
       windows.forEach(window => window.close());
+      console.log('close:popup', windows);
       return;
     }
 
@@ -242,6 +244,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return;
     }
 
+    console.log('close:inject')
     executeScript({tabId: sender.tab.id});
 
     // 关闭 inject-script 创建的窗口
@@ -272,6 +275,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 })
 
 chrome.browserAction.onClicked.addListener(() => {
+  console.log('9999999999999999999999999')
   executeScript();
 })
 

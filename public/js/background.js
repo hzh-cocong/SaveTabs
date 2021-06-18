@@ -77,53 +77,53 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
   })
 }
 
-let showTabIndex = false;
-let isShowIndex = false;
-function toShowIndex(windowId) {
-  // if( ! showTabIndex) return;
+// let showTabIndex = false;
+// let isShowIndex = false;
+// function toShowIndex(windowId) {
+//   // if( ! showTabIndex) return;
 
-  // if(windowId == -1) return;
-  if( ! (windowId >= 0)) return;
+//   // if(windowId == -1) return;
+//   if( ! (windowId >= 0)) return;
 
-  isShowIndex = true;
+//   isShowIndex = true;
 
-  chrome.windows.get(windowId, {populate: true}, (window) => {
-    let length = window.tabs.length;
-    window.tabs.filter(tab => {
-      return tab.status == 'complete'
-          && ( tab.index+1 <= 8
-              || tab.index+1 == length );
-    }).forEach((tab) => {
-      chrome.tabs.sendMessage(tab.id, {
-        type: 'show-index',
-        index: tab.index+1 > 9 ? 9 : tab.index+1,
-      })
-    })
-  })
-}
-function toHideIndex(windowId, force=false) {
-  // if( ! showTabIndex) return;
+//   chrome.windows.get(windowId, {populate: true}, (window) => {
+//     let length = window.tabs.length;
+//     window.tabs.filter(tab => {
+//       return tab.status == 'complete'
+//           && ( tab.index+1 <= 8
+//               || tab.index+1 == length );
+//     }).forEach((tab) => {
+//       chrome.tabs.sendMessage(tab.id, {
+//         type: 'show-index',
+//         index: tab.index+1 > 9 ? 9 : tab.index+1,
+//       })
+//     })
+//   })
+// }
+// function toHideIndex(windowId, force=false) {
+//   // if( ! showTabIndex) return;
 
-  if( ! isShowIndex && ! force) return;
+//   if( ! isShowIndex && ! force) return;
 
-  // if(windowId == -1) return;
-  if( ! (windowId >= 0)) return;
+//   // if(windowId == -1) return;
+//   if( ! (windowId >= 0)) return;
 
-  isShowIndex = false;
+//   isShowIndex = false;
 
-  chrome.windows.get(windowId, {populate: true}, (window) => {
-    let length = window.tabs.length;
-    window.tabs.filter(tab => {
-      return tab.status == 'complete'
-          && ( tab.index+1 <= 8
-              || tab.index+1 == length );
-    }).forEach((tab) => {
-      chrome.tabs.sendMessage(tab.id, {
-        type: 'hide-index'
-      })
-    })
-  })
-}
+//   chrome.windows.get(windowId, {populate: true}, (window) => {
+//     let length = window.tabs.length;
+//     window.tabs.filter(tab => {
+//       return tab.status == 'complete'
+//           && ( tab.index+1 <= 8
+//               || tab.index+1 == length );
+//     }).forEach((tab) => {
+//       chrome.tabs.sendMessage(tab.id, {
+//         type: 'hide-index'
+//       })
+//     })
+//   })
+// }
 
 let isFirstInstall = false;
 chrome.storage.local.get({'config': {}}, items => {
@@ -132,9 +132,9 @@ chrome.storage.local.get({'config': {}}, items => {
   }
 })
 chrome.storage.sync.get({'config': {}}, items => {
-  if(items.config.show_tab_index) {
-    showTabIndex = true;
-  }
+  // if(items.config.show_tab_index) {
+  //   showTabIndex = true;
+  // }
 
   console.log('fff', items, Object.keys(items.config))
   // 这个新版本的都弹出，往后的才不弹出
@@ -166,14 +166,14 @@ chrome.windows.onFocusChanged.addListener((windowId)=>{
     activeWindows.set(windowId, tabId);
   }
 
-  console.log('ffff', Array.from(activeWindows.keys()).reverse());
-  if(showTabIndex) {
-    toHideIndex(
-      windowId == -1 || activeWindows.size == 1
-    ? Array.from(activeWindows.keys()).reverse()[0]
-    : Array.from(activeWindows.keys()).reverse()[1]
-    );
-  }
+  // console.log('ffff', Array.from(activeWindows.keys()).reverse());
+  // if(showTabIndex) {
+  //   toHideIndex(
+  //     windowId == -1 || activeWindows.size == 1
+  //   ? Array.from(activeWindows.keys()).reverse()[0]
+  //   : Array.from(activeWindows.keys()).reverse()[1]
+  //   );
+  // }
 })
 chrome.windows.onRemoved.addListener((windowId)=>{
   activeWindows.delete(windowId);
@@ -254,15 +254,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // });
   } else if(request.type == 'inject') {
     executeScript();
-  } else if(request.type == 'to-show-index') {
-    if(showTabIndex) {
-      toShowIndex(sender.tab.windowId);
-    }
-  } else if(request.type == 'to-hide-index') {
-    if(showTabIndex) {
-      toHideIndex(sender.tab.windowId, true);
-    }
-  } else if(request.type == 'global_data_change') {
+  }
+  // else if(request.type == 'to-show-index') {
+  //   if(showTabIndex) {
+  //     toShowIndex(sender.tab.windowId);
+  //   }
+  // } else if(request.type == 'to-hide-index') {
+  //   if(showTabIndex) {
+  //     toHideIndex(sender.tab.windowId, true);
+  //   }
+  // }
+  else if(request.type == 'global_data_change') {
     // sendMessage 应用本身是收不到的，所以要让 background.js 来实现广播
     request.type = 'data_change';
     chrome.runtime.sendMessage(request);

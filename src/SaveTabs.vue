@@ -57,6 +57,7 @@
         @keydown.left.native="selectDelay('left', $event)"
         @keydown.right.native="selectDelay('right', $event)"
         @keydown.enter.native="openWindow"
+        @keydown.esc.native="close"
         @keydown.native="keydown"
         @keyup.native="keyup"
         @input="search"
@@ -705,6 +706,11 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
     },
+    close() {
+      chrome.runtime.sendMessage({
+        type: 'closeExtension',
+      })
+    },
     selectDelay(type, event) {
       // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
@@ -976,17 +982,27 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       // 单点打开
       chrome.runtime.sendMessage({ type: 'closeOther',})
+      // 监听特殊事件
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-
-
-
-        if(request.type != 'closeOther') return;
-        if(tab.url == chrome.extension.getURL("savetabs.html")) {
-          // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
-          // 无法区分 window.open，这里关闭也什么问题（有可能是 url 直接打开的，不会是 popup）
-          window.close()
-        } else {
-          chrome.runtime.sendMessage({ type: 'closeExtension',})
+        if(request.type == 'closeOther') {
+          if(tab.url == chrome.extension.getURL("savetabs.html")) {
+            // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
+            // 无法区分 window.open，这里关闭也什么问题（有可能是 url 直接打开的，不会是 popup）
+            window.close()
+          } else {
+            chrome.runtime.sendMessage({ type: 'closeExtension',})
+          }
+        } else if(request.type == 'isActive') {
+          sendResponse({isActive: true});
+        } else if(request.type == 'to_open_workspace') {
+          let index = this.getTypeIndex(request.workspace);
+          if(this.activeWorkspaceIndex == index) {
+            chrome.runtime.sendMessage({ type: 'closeExtension',})
+          } else {
+            this.$refs.carousel.setActiveItem(index);
+          }
+        } else if(request.type == 'to_add') {
+          this.add(request.workspace);
         }
       })
 

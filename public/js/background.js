@@ -273,28 +273,46 @@ chrome.commands.onCommand.addListener(command => {
   console.log('command', command);
 
   if(command.startsWith('open_workspace_')) {
-    if(chrome.extension.getViews({type: 'popup'}).length == 0
-    && chrome.extension.getViews({type: 'tab'}).length == 0) {
+    chrome.runtime.sendMessage({ type: 'isActive',}, (result) => {
+      // 捕获错误，这样插件就不会显示错误
+      chrome.runtime.lastError;
+
       let type = command.replace('open_workspace_', '');
-      chrome.storage.local.set({'info': {
-        active_workspace_type: type,
-        keepOpen: true,
-      }}, () => {
-        executeScript();
-      });
-    }
+      if(result == undefined) {
+        // 插件未打开
+        chrome.storage.local.set({'info': {
+          active_workspace_type: type,
+          keepOpen: true,
+        }}, () => {
+          executeScript();
+        });
+      } else if(result.isActive){
+        chrome.runtime.sendMessage({ type: 'to_open_workspace', workspace: type})
+      }
+
+      console.log('mmmmmmmmmmmm', result);
+    })
   } else if(command.startsWith('add_')) {
-    if(chrome.extension.getViews({type: 'popup'}).length == 0
-    && chrome.extension.getViews({type: 'tab'}).length == 0) {
+    chrome.runtime.sendMessage({ type: 'isActive',}, (result) => {
+      // 捕获错误，这样插件就不会显示错误
+      chrome.runtime.lastError;
+
       let type = command.replace('add_', '');
-      chrome.storage.local.set({'info': {
-        active_workspace_type: type,
-        add_type: type,
-        keepOpen: true,
-      }}, () => {
-        executeScript({onlyInjection: true});
-      });
-    }
+      if(result == undefined) {
+        // 插件未打开
+        chrome.storage.local.set({'info': {
+          active_workspace_type: type,
+          add_type: type,
+          keepOpen: true,
+        }}, () => {
+          executeScript({onlyInjection: true});
+        });
+      } else if(result.isActive){
+        chrome.runtime.sendMessage({ type: 'to_add', workspace: type})
+      }
+
+      console.log('mmmmmmmmmmmm2', result);
+    })
   }
 })
 

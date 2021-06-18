@@ -87,13 +87,59 @@ function executeScript({open=null, tabId=null, onlyInjection=false} = {}) {
   })
 }
 
+let showTabIndex = false;
+let isShowIndex = false;
+function toShowIndex(windowId) {
+  // if( ! showTabIndex) return;
+
+  // if(windowId == -1) return;
+  if( ! (windowId >= 0)) return;
+
+  isShowIndex = true;
+
+  chrome.windows.get(windowId, {populate: true}, (window) => {
+    let length = window.tabs.length;
+    window.tabs.filter(tab => {
+      return tab.status == 'complete'
+          && ( tab.index+1 <= 8
+              || tab.index+1 == length );
+    }).forEach((tab) => {
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'show-index',
+        index: tab.index+1 > 9 ? 9 : tab.index+1,
+      })
+    })
+  })
+}
+function toHideIndex(windowId, force=false) {
+  // if( ! showTabIndex) return;
+
+  if( ! isShowIndex && ! force) return;
+
+  // if(windowId == -1) return;
+  if( ! (windowId >= 0)) return;
+
+  isShowIndex = false;
+
+  chrome.windows.get(windowId, {populate: true}, (window) => {
+    let length = window.tabs.length;
+    window.tabs.filter(tab => {
+      return tab.status == 'complete'
+          && ( tab.index+1 <= 8
+              || tab.index+1 == length );
+    }).forEach((tab) => {
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'hide-index'
+      })
+    })
+  })
+}
+
 chrome.storage.local.get({'config': {}}, items => {
   if(items.config.popup == false) {
     chrome.browserAction.setPopup({ popup: ''})
   }
 })
-
-let showTabIndex = false;
 chrome.storage.sync.get({'config': {}}, items => {
   if(items.config.show_tab_index) {
     showTabIndex = true;
@@ -120,6 +166,18 @@ chrome.windows.onFocusChanged.addListener((windowId)=>{
   if(tabId != undefined) {
     activeTabs.delete(tabId);
     activeTabs.add(tabId);
+
+    activeWindows.delete(windowId);
+    activeWindows.set(windowId, tabId);
+  }
+
+  console.log('ffff', Array.from(activeWindows.keys()).reverse());
+  if(showTabIndex) {
+    toHideIndex(
+      windowId == -1 || activeWindows.size == 1
+    ? Array.from(activeWindows.keys()).reverse()[0]
+    : Array.from(activeWindows.keys()).reverse()[1]
+    );
   }
 })
 chrome.windows.onRemoved.addListener((windowId)=>{
@@ -194,34 +252,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type == 'inject') {
     executeScript();
   } else if(request.type == 'to-show-index') {
-    if( ! showTabIndex) return;
-    chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
-      let length = window.tabs.length;
-      window.tabs.filter(tab => {
-        return tab.status == 'complete'
-            && ( tab.index+1 <= 8
-                || tab.index+1 == length );
-      }).forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'show-index',
-          index: tab.index+1 > 9 ? 9 : tab.index+1,
-        })
-      })
-    })
+    if(showTabIndex) {
+      toShowIndex(sender.tab.windowId);
+    }
   } else if(request.type == 'to-hide-index') {
-    if( ! showTabIndex) return;
-    chrome.windows.get(sender.tab.windowId, {populate: true}, (window) => {
-      let length = window.tabs.length;
-      window.tabs.filter(tab => {
-        return tab.status == 'complete'
-            && ( tab.index+1 <= 8
-                || tab.index+1 == length );
-      }).forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'hide-index'
-        })
-      })
-    })
+    if(showTabIndex) {
+      toHideIndex(sender.tab.windowId, true);
+    }
   }
 })
 

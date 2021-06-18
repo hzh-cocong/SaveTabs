@@ -33,9 +33,11 @@ let _device = (function() {
 let isKeyDown = false;
 let title = null;
 window.addEventListener('keydown', (event) => {
+  console.log('keydown', event)
+
   if(isKeyDown) return;
   isKeyDown = true;
-  console.log('keydown', event)
+
   if((_device.platform == 'Mac' && event.keyCode == 91)
   || (_device.platform != 'Mac' && event.keyCode == 17)) {
     try {
@@ -48,8 +50,10 @@ window.addEventListener('keydown', (event) => {
   }
 })
 window.addEventListener('keyup', (event) => {
-  isKeyDown = false;
   console.log('keyup', event, title)
+
+  // 起到矫正作用，避免因为一些意想不到的流程而导致 isKeyDown 一直为true
+  isKeyDown = false;
 
   if(title !== null) {
     try {
@@ -60,17 +64,6 @@ window.addEventListener('keyup', (event) => {
       console.log(err)
     }
   }
-
-  // if((_device.platform == 'Mac' && event.keyCode == 91)
-  // || (_device.platform != 'Mac' && event.keyCode == 17)) {
-  //   try {
-  //     chrome.runtime.sendMessage({
-  //       type: 'to-hide-index',
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -92,5 +85,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     document.title = title;
     title = null;
+
+    isKeyDown = false;
   }
 })

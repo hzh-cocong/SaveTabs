@@ -35,17 +35,26 @@ let title = null;
 window.addEventListener('keydown', (event) => {
   console.log('keydown', event)
 
-  if(isKeyDown) return;
-  isKeyDown = true;
-
   if((_device.platform == 'Mac' && event.keyCode == 91)
   || (_device.platform != 'Mac' && event.keyCode == 17)) {
+    if(isKeyDown) return;
+    isKeyDown = true;
+
     try {
       chrome.runtime.sendMessage({
         type: 'to-show-index',
       })
     } catch (err) {
       console.log(err)
+    }
+  } else {
+    let index = event.keyCode-49+1;
+    if(index > 0 && index <= 9) return;
+
+    if(title !== null) {
+      chrome.runtime.sendMessage({
+        type: 'to-hide-index',
+      })
     }
   }
 })

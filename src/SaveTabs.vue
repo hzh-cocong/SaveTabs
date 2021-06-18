@@ -1027,25 +1027,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
     })
 
-    // // 快捷键操作
-    // chrome.commands.onCommand.addListener(command => {
-    //   if(command.startsWith('open_workspace_')) {
-    //     let type = command.replace('open_workspace_', '');
-    //     let index = this.getTypeIndex(type);
-    //     if(this.activeWorkspaceIndex == index) {
-    //       chrome.runtime.sendMessage({ type: 'closeExtension',})
-    //     } else {
-    //       this.$refs.carousel.setActiveItem(index);
-    //     }
-    //   } else if(command.startsWith('add_')) {
-    //     let type = command.replace('add_', '');
-    //     this.add(type);
-    //   } else if(command == '_execute_browser_action') {
-    //     // 貌似没用 todo
-    //     chrome.runtime.sendMessage({ type: 'closeExtension',})
-    //   }
-    // })
-
     this.focus();
   }
 }

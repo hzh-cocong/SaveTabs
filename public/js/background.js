@@ -282,7 +282,6 @@ chrome.commands.onCommand.addListener(command => {
         // 插件未打开
         chrome.storage.local.set({'info': {
           active_workspace_type: type,
-          keepOpen: true,
         }}, () => {
           executeScript();
         });
@@ -303,7 +302,6 @@ chrome.commands.onCommand.addListener(command => {
         chrome.storage.local.set({'info': {
           active_workspace_type: type,
           add_type: type,
-          keepOpen: true,
         }}, () => {
           executeScript({onlyInjection: true});
         });

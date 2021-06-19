@@ -940,6 +940,18 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       console.warn('isLoad');
       this.isLoad = true;
 
+      if( ! this.config.statusbar_show) {
+        document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
+          let workspace = this.workspaces[ index ];
+          let title = this.lang(workspace.title)
+          title += this.keymap['open_workspace_'+workspace.type]
+                  ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+                  : '';
+          el.setAttribute('title', title)
+        })
+        return;
+      }
+
       // 走马灯底部指示器提示
       document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
         el.onmouseenter = () => {

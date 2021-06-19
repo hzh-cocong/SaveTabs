@@ -57,7 +57,8 @@
                       ? config.item_show_count
                       : index-$refs.list.scrollLines+1)
                     )
-                  : -1"></component>
+                  : -1"
+        :tip="tip"></component>
     </template>
   </list>
 
@@ -120,7 +121,9 @@ export default {
 
       isSearched: false,
 
-      length: {}
+      length: {},
+
+      tip: '',
     }
   },
   components: {
@@ -350,6 +353,23 @@ export default {
           this.input(result.keywords, result.workspace)
         }
       });
+    },
+
+    showTip(event) {
+      console.log('showTip', event)
+
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      this.tip = module.showTip({event, index: item.index, _device: this._device});
+    },
+    finishTip(event) {
+      console.log('finishTip', event)
+
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      this.tip = module.finishTip({event, index: item.index, _device: this._device});
     },
 
     getModule(type) {

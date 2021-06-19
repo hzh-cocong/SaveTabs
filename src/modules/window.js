@@ -229,6 +229,20 @@ console.log('99999999999999999999999', isInCurrentWindow)
     return this.storageList.some((group) => {
       return group.windowId == this.currentWindowId;
     })
+  },
+
+  showTip({event, _device}) {
+    if((_device.platform == 'Mac' && event.metaKey == true)
+    || (_device.platform != '' && event.ctrlKey == true)) {
+      return '当前窗口打开但不选中';
+    } else if(_device.platform != '' && event.shiftKey == true) {
+      return '默认新窗口打开';
+    } else if(_device.platform != '' && event.altKey == true) {
+      return '当前窗口打开并选中';
+    }
+  },
+  finishTip() {
+    return '';
   }
 }
 

@@ -149,6 +149,11 @@ export default {
       type: Object,
       required: require,
     },
+    isLoad: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     currentWorkspace: {
       type: Object,
       required: require,

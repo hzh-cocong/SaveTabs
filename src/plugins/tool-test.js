@@ -591,6 +591,12 @@ const tool = {
       },
     }
 
+    chrome.extension = {
+      getURL: function() {
+        return 'chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html';
+      }
+    }
+
     // 添加实例方法
     window.$open = Vue.prototype.$open = function (url, event, callback) {
       let device = this == undefined ? window._device : this._device;

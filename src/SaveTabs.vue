@@ -308,6 +308,7 @@
   <Statusbar
     :config="config"
     :localConfig="localConfig"
+    :isLoad="isLoad"
     :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
     :statusbarHeight="statusbarHeight"
     @click.native="focus"

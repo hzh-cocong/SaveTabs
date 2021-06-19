@@ -84,10 +84,24 @@
                   height: config.item_height/4+'px', }"></svg-icon>
     </span>
 
-    <span
-      class="title"
-      :style="{fontSize: config.list_font_size+'px'}"
-      v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
+    <div class="main">
+      <span
+        class="title"
+        :style="{fontSize: config.list_font_size+'px'}"
+        v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
+      <div
+        class="sub-title"
+        v-if="isSelected && tip.length > 0"
+        :style="{
+          fontSize: config.list_explain_font_size+'px',
+          color: index == 0 && item.isCurrent
+              ? ( isSelected
+                ? config.list_current_explain_focus_font_color
+                : config.list_current_explain_font_color)
+              : ( isSelected
+                ? config.list_explain_focus_font_color
+                : config.list_explain_font_color) }">{{ tip }}</div>
+    </div>
 
     <div class="right">
       <template v-if="isActive || item.isOpened || item.lastVisitTime != undefined">
@@ -175,6 +189,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    tip: {
+      type: String,
+      required: false,
+      default: '',
     }
   },
 }
@@ -200,14 +219,28 @@ export default {
   padding: 10px;
   text-align: center;
 }
-.window-item .title {
-  /* border: 1px solid blue; */
-  text-align: left;
-  cursor: default;
+.window-item .main {
   flex: 1;
+  text-align: left;
+  overflow: hidden;
+  cursor: default;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* justify-content: center; */
+}
+.window-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.window-item .sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
 }
 .window-item .right {
   /* border: 1px solid black; */

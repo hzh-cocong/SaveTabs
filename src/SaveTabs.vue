@@ -680,15 +680,19 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
 
-      if(this._device.platform == 'Mac' && event.metaKey == true) {
+      // 数字快捷键，默认选中对应的行并点击，当 alt 也同时被按下则不点击
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+      || (this._device.platform != '' && event.altKey == true)) {
+        // shift 键被太多快捷键给包了，就不跟着起哄了
+        if(event.shiftKey == true) return;
+
         event.stopPropagation();
         event.preventDefault();
 
-        // this.openWindow(index);
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});
-      } else if(this._device.platform != '' && event.altKey == true) {
-        event.stopPropagation();
-        event.preventDefault();
+        if(event.altKey == true) {
+          this.$refs.workspaces[ this.activeWorkspaceRefIndex ].choice(index);
+          return;
+        }
 
         // this.openWindow(index);
         this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});

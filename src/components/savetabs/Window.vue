@@ -993,6 +993,9 @@ console.log('get_currentWindowStorageIndex3', index);
         }
       })
     },
+    choice(index) {
+      return this.$refs.list.choice(index);
+    },
     openGroup() {
       // 不直接使用 currentGroup 是因为 this.group 会绑定 dom 元素，那样就会频繁刷新 dom
       this.group = this.currentGroup; //this.list[this.currentIndex];

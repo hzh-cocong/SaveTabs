@@ -354,6 +354,9 @@ export default {
         }
       });
     },
+    choice(index) {
+      return this.$refs.list.choice(index);
+    },
 
     showTip(event) {
       console.log('showTip', event)

@@ -269,7 +269,7 @@
           :title="limited
                 ? '功能受限'
                 : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
-          @click="add(type)"></el-button><!-- todo  :disabled="limited" -->
+          @click="operate($event, type)"></el-button><!-- todo  :disabled="limited" -->
       </el-button-group>
     </div>
 
@@ -600,22 +600,21 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, event);
     },
-    // down() {
-    //   // if(this.$refs.workspaces == undefined
-    //   // || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-    //   //   this.things[ this.activeWorkspaceRefIndex ].push('down');
-    //   //   return;
-    //   // }
-    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
-    // },
-    // up() {
-    //   // if(this.$refs.workspaces == undefined
-    //   // || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-    //   //   this.things[ this.activeWorkspaceRefIndex ].push('up');
-    //   //   return;
-    //   // }
-    //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
-    // },
+
+    operate(event, type) {
+      // 其它快捷键不管，以免混乱
+      if(event.shiftKey == true || event.altKey == true) return;
+
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+      || (this._device.platform != 'Mac' && event.altKey == true)) {
+
+        let index = this.getTypeIndex(type);
+        this.$refs.carousel.setActiveItem(index);
+        return;
+      }
+
+      this.add(type);
+    },
     add(type) {
       // 先切换到对应的工作区
       let index = this.getTypeIndex(type);

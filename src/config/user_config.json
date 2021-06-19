@@ -94,6 +94,7 @@
     ],
     "operateOrder": [ "window", "note", "temporary" ],
     "show_workspace_name": true,
+    "show_menu": true,
 
     "theme_id": "14",
 

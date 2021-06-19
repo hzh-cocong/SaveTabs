@@ -68,9 +68,11 @@
         ref="input">
         <template slot="prepend">
           <el-dropdown
+            v-if="config.show_menu"
             trigger="hover"
             placement="bottom-start"
             style="height: 100%;"
+            :style="{ width: config.show_workspace_name ? '140px' : 'auto' }"
             :hide-on-click="false"
             :show-timeout="0"
             @visible-change="menuVisible = arguments[0]"
@@ -1168,9 +1170,9 @@ img {
 .toolbar .el-icon-arrow-down.is-reverse {
   transform: rotate(-180deg);
 }
-.toolbar .el-dropdown {
+/* .toolbar .el-dropdown {
   width: 140px;
-}
+} */
 .toolbar .el-dropdown-link {
   display: flex;
 

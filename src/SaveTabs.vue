@@ -86,7 +86,6 @@
                       ? config.toolbar_menu_icon_fixed_color : config.toolbar_menu_icon_color}"></svg-icon>
               <span
                 v-if="config.show_workspace_name"
-                style="display:inline-block;width: 70px;text-align:center;"
                 :style="{ color: config.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
               <i style="transition: transform .3s;"
                 class="el-icon-arrow-down el-icon--right"
@@ -123,15 +122,15 @@
               <el-dropdown-item
                 divided
                 :command="-1"
-                style="width: 92px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
-                @click.native="themeDialogVisible=true;"><!-- 顶部已甚至了 click focus -->
+                style="overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
+                @click.native="themeDialogVisible=true;"><!-- 顶部已继承了 click focus -->
                 <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
               </el-dropdown-item>
               <el-dropdown-item
                 divided
                 :value="activeWorkspaceIndex"
                 :command="-1"
-                style="cursor: default;line-height: 0;"
+                style="cursor: default;line-height: 0;text-align:center;"
                 class="other">
                 <svg-icon
                   name="cog-solid"
@@ -260,9 +259,9 @@
       </el-input>
       <el-button-group
         style="display: flex"
-        :style="{ width: (config.toolbar_height*3+45)+'px' }">
+        :style="{ width: ((config.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
         <el-button
-          v-for="(type, i) in operateOrder"
+          v-for="(type, i) in config.operateOrder"
           :key="i"
           type="default"
           :icon="allWorkspaces[type].icon_simple"
@@ -427,7 +426,6 @@ export default {
       isLoad: false,
       isOpened: {},
       things: { 0: []}, // 一开始没有切换事件
-      operateOrder: [ 'window', 'note', 'temporary' ],
       lock: false,
 
       config: userConfig,
@@ -753,7 +751,7 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
-        this.loading(true);
+        // this.loading(true); // 会和 dropmenu 冲突
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
 console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         console.log('99999999999999999999999999999999999', this.activeWorkspaceRefIndex)
@@ -904,19 +902,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         return this.allWorkspaces[workspace];
       });
 
-      if(this.config.button_follow_workspace) {
-        let operateOrder = [];
-        for(let type of this.config.workspaces) {
-          if(this.operateOrder.indexOf(type) != -1) {
-            operateOrder.push(type);
-          }
-        }
-        this.operateOrder = operateOrder;
-      } else {
-        this.operateOrder = this.operateOrder.filter(type => {
-          return this.config.workspaces.indexOf(type) != -1;
-        })
-      }
+      // 避免用户恶意修改
+      this.config.operateOrder = this.config.operateOrder.filter(type => {
+        return this.config.workspaces.indexOf(type) != -1;
+      })
 
       this.activeWorkspaceIndex = this.getTypeIndex(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
@@ -1179,16 +1168,22 @@ img {
 .toolbar .el-icon-arrow-down.is-reverse {
   transform: rotate(-180deg);
 }
+.toolbar .el-dropdown {
+  width: 140px;
+}
 .toolbar .el-dropdown-link {
   display: flex;
+
   height: 100%;
   padding: 0 10px;
   cursor: pointer;
 
+  justify-content: space-between;
   align-items: center;
 }
 .toolbar-menu {
   overflow:auto;
+  width: 140px;
 }
 .toolbar-menu .el-dropdown-menu__item.selected {
   color: #409eff;

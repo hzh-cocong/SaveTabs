@@ -70,10 +70,10 @@
     "toolbar_menu_icon_fixed_color": "gray",
     "toolbar_menu_font_color": "#909399",
 
-    "toolbar_input_font_size": 14,
+    "toolbar_input_font_size": 20,
     "toolbar_input_font_color": "#606266",
     "toolbar_input_focus_color": "#c0c4cc",
-    "toolbar_show_input_tip": true,
+    "toolbar_show_input_tip": false,
 
     "toolbar_button_font_color": "#606266",
     "toolbar_button_hover_font_color": "#409eff",
@@ -85,14 +85,14 @@
 
     "workspaces": [
         "all",
-        "note",
-        "temporary",
         "history",
-        "window",
         "bookmark",
-        "tab"
+        "tab",
+        "window",
+        "note",
+        "temporary"
     ],
-    "button_follow_workspace": false,
+    "operateOrder": [ "window", "note", "temporary" ],
     "show_workspace_name": true,
 
     "theme_id": "14",

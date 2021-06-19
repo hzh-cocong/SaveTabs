@@ -58,7 +58,8 @@
     "chrome://favicon/",
     "downloads",
     "history",
-    "bookmarks"
+    "bookmarks",
+    "\u003Call_urls>"
   ],
   "content_security_policy": "script-src 'self' 'sha256-4RS22DYeB7U14dra4KcQYxmwt5HkOInieXK1NUMBmQI='; object-src 'self'",
   "web_accessible_resources": [

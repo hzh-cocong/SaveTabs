@@ -382,42 +382,16 @@ console.warn('isSearched');
         });
       })
 
-      // // 查找
-      // let filterList = this.storageList.filter(tab => {
-      //   let title = tab.title.toUpperCase();
-      //   let url = tab.url.toUpperCase();
-      //   for(let keyword of this.storageKeyword.toUpperCase().split(/\s+/)) {
-      //     if(title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1) {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // })
-
       // 重新排序
       let currentList = filterList.filter(tab => {
         return tab.url == this.currentTab.url;
-
-        // 当前窗口需要三个条件同时满足
-        // return tab.tabId == this.currentTab.id
-        //     && tab.windowId == this.currentTab.windowId
-        //     && tab.url == this.currentTab.url;
       });
       let openedList = filterList.filter(tab => {
         return this.activeTabs[tab.url]
             && this.activeTabs[tab.url].url != this.currentTab.url;
-
-        // 需已打开，并且地址未变化，而且不是当前窗口
-        // return this.activeTabs[tab.tabId]
-        //     && this.activeTabs[tab.tabId].url == tab.url
-        //     && ! (tab.tabId == this.currentTab.id
-        //         && tab.windowId == this.currentTab.windowId);
       });
       let closeList = filterList.filter(tab => {
         return ! this.activeTabs[tab.url];
-
-        // return ! this.activeTabs[tab.tabId]
-        //       || this.activeTabs[tab.tabId].url != tab.url;
       });
 
       // 列表赋值
@@ -496,8 +470,6 @@ console.warn('isSearched2');
           title: tab.title,
           url: tab.url,
           icon: tab.favIconUrl,
-          // tabId: this.currentTab.id,
-          // windowId: this.currentTab.windowId,
           lastVisitTime: new Date().getTime(),
         });
         return tab;

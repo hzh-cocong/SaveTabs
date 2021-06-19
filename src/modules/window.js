@@ -240,6 +240,7 @@ console.log('99999999999999999999999', isInCurrentWindow)
     } else if(_device.platform != '' && event.altKey == true) {
       return '当前窗口打开并选中';
     }
+    return '';
   },
   finishTip() {
     return '';

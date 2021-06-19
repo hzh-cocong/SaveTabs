@@ -188,7 +188,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Note',
-  inject: ['focus', 'input'],
+  inject: ['focus', 'input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -261,14 +261,10 @@ export default {
       return highlightMap;
     },
     isInCurrentTab() {
-      return this.storageList.some((tab) => {
-        if(tab.url == this.currentTab.url) {
+      return this.storageList.some((note) => {
+        if(note.url == this.currentTab.url) {
           return true;
         }
-        // if((this.currentTab.url != '' && tab.url == this.currentTab.url)
-        //   || (tab.url == this.currentTab.pendingUrl)) {
-        //   return true;
-        // }
       })
 
       // 由于当前窗口会被排在最前面，所以并不需要遍历 storageList
@@ -400,21 +396,41 @@ console.warn('isSearched2');
       if(this.isOperating) return;
       this.isOperating = true;
 
-      // 当前标签只能有一个
+      // 保存过就 取消掉标签
       if(this.isInCurrentTab) {
-        this.$message({
-          type: 'warning',
-          message: this.lang('noteSaved'),
-          offset: 69,
-          duration: 2000,
-          customClass: 'window-message-box',
-        });
-        // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
-        callback(true);
-        this.isOperating = false;
+        // 移除数据
+        this.storageList.splice(this.storageList.findIndex(note => {
+          return note.url == this.currentTab.url;
+        }), 1);
+
+        chrome.storage.local.set({tabs: this.storageList}, () => {
+          this.statusTip('便签已被删除');
+
+          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          this.storageKeyword = ' ';
+
+          callback(true);
+          this.isOperating = false;
+        })
 
         return;
       }
+
+      // // 当前标签只能有一个
+      // if(this.isInCurrentTab) {
+      //   this.$message({
+      //     type: 'warning',
+      //     message: this.lang('noteSaved'),
+      //     offset: 69,
+      //     duration: 2000,
+      //     customClass: 'window-message-box',
+      //   });
+      //   // 返回 true，这样会清空输入框，避免用户的一些困惑更为重要
+      //   callback(true);
+      //   this.isOperating = false;
+
+      //   return;
+      // }
 
       // 获取当前标签
       // 重新获取，因为网页可能还未加载完
@@ -459,6 +475,8 @@ console.warn('isSearched2');
         this.storageKeyword = ' ';
 console.log('add =====h')
         // this.search(this.storageKeyword);
+
+        this.statusTip('便签添加成功');
 
         // 由于在添加的时候还顺带着切换，从而导致搜索，这两个是并行的，会有影响
         // 这里放到定时队列里，相当于排最后，避免冲突，会出现损坏的图片

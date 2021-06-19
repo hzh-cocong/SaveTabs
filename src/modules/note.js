@@ -159,6 +159,21 @@ let note = {
     })
   },
 
+  showTip({event, _device}) {
+    if((_device.platform == 'Mac' && event.metaKey == true)
+    || (_device.platform != '' && event.ctrlKey == true)) {
+      return '打开新标签但不获取焦点';
+    } else if(_device.platform != '' && event.shiftKey == true) {
+      return '新窗口打开';
+    } else if(_device.platform != '' && event.altKey == true) {
+      return '覆盖当前标签';
+    }
+    return '';
+  },
+  finishTip() {
+    return '';
+  },
+
   getStorageIndex(note) {
     return this.storageList.findIndex(n => {
       return n.id == note.id;

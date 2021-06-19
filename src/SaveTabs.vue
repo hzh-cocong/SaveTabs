@@ -416,6 +416,13 @@ export default {
       toPin: this.toPin,
       popupChange: this.popupChange,
       keymapLeftAndRightChange: this.keymapLeftAndRightChange,
+
+      statusTip: (tip) => {
+        if(this.config.statusbar_show) {
+          this.$refs.statusbar.showTip(tip);
+          this.$refs.statusbar.finishTip();
+        }
+      }
     }
   },
   data() {

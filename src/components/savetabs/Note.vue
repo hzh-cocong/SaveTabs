@@ -88,7 +88,7 @@
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color),
             direction: isSelected ? 'rtl' : 'ltr' }"
-          v-html="isSelected && tip != ''
+          v-html="isSelected && tip.length > 0
                 ? tip
                 : ( storageKeyword != ''
                   ? highlightMap[index].url

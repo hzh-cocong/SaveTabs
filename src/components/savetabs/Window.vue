@@ -50,7 +50,7 @@
           :src="iconMap[index]"
           style="width:100%; height: 100%;"
           fit="cover"
-          lazy>
+          :lazy="index >= config.item_show_count">
           <div slot="error">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
@@ -65,6 +65,18 @@
           class="title"
           :style="{fontSize: config.list_font_size+'px'}"
           v-html="highlightMap[index]"></span>
+        <div
+          class="sub-title"
+          v-if="isSelected && tip.length > 0"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: item.windowId == currentWindowId
+                ? ( isSelected
+                  ? config.list_current_explain_focus_font_color
+                  : config.list_current_explain_font_color)
+                : ( isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color) }">{{ tip }}</div>
       </div>
 
       <div class="right">
@@ -472,6 +484,8 @@ export default {
       oldGroup: {},
       currentWindow: {},
       haveDifference: true,
+
+      tip: '',
 
       isOperating: false,
     }
@@ -1280,6 +1294,20 @@ console.log('get_currentWindowStorageIndex3', index);
           duration: 2000,
         });
       })
+    },
+
+    showTip(event) {
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+      || (this._device.platform != '' && event.ctrlKey == true)) {
+        this.tip = '当前窗口打开但不选中';
+      } else if(this._device.platform != '' && event.shiftKey == true) {
+        this.tip = '默认新窗口打开';
+      } else if(this._device.platform != '' && event.altKey == true) {
+        this.tip = '当前窗口打开并选中';
+      }
+    },
+    finishTip() {
+      this.tip = '';
     }
   },
   beforeUpdate() {
@@ -1392,6 +1420,12 @@ console.warn('finish', b, (b-a)/1000)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.list >>> .list-item .sub-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 5px;
 }
 .list >>> .list-item .right {
   /* border: 1px solid black; */

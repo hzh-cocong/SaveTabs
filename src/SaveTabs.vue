@@ -47,6 +47,7 @@
                 }">
       <el-input
         class="search-input"
+        autofocus
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
@@ -673,15 +674,7 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         return;
       }
 
-      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
-
-      // if(this._device.platform == 'Mac') {
-      //   if(event.metaKey == true) {
-
-      //   }
-      // } else {
-
-      // }
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
@@ -703,7 +696,7 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
     keyup(event) {
       if(this._device.platform == '') return;
 
-      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
     },
     close() {
       chrome.runtime.sendMessage({

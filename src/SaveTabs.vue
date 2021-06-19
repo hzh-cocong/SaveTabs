@@ -1028,6 +1028,14 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       })
     })
 
+    // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉
+    window.addEventListener('keydown', (event)=>{
+      if(event.keyCode == 27) {
+        // event.stopPropagation();
+        event.preventDefault();
+      }
+    })
+
     this.focus();
   }
 }

@@ -169,15 +169,21 @@
                   : config.list_keymap_size+'px',
               color: activeWindows[item.windowId]
                   ? config.list_state_color
-                  : config.list_keymap_color }">{{
-                      (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-                    + ( 1 > index-$refs.list.scrollLines+1
-                      ? 1
-                      : (index-$refs.list.scrollLines+1 > config.item_show_count
-                        ? config.item_show_count
-                        : index-$refs.list.scrollLines+1)
-                      )
-                    }}</span>
+                  : config.list_keymap_color }">
+            <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+            <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+            <font
+              style="display:inline-block;text-align:left;"
+              :style="{ width: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
+                              ? (config.list_state_size/2)+'px'
+                              : (config.list_keymap_size/2)+'px' }">{{
+                1 > index-$refs.list.scrollLines+1
+              ? 1
+              : (index-$refs.list.scrollLines+1 > config.item_show_count
+                ? config.item_show_count
+                : index-$refs.list.scrollLines+1)
+            }}</font>
+          </span>
         </template>
       </div>
     </template>
@@ -195,38 +201,6 @@
           :style="{ color: isSelected
                           ? config.list_focus_icon_color
                           : config.list_icon_color, }"></svg-icon>
-        <!-- <el-image
-          v-if="isLoad"
-          :src="getIcon('', item.url, config.item_height-20)"
-          style="width:100%; height: 100%;"
-          fit="cover"
-          lazy>
-          <div slot="error" class="image-slot">
-            <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
-          </div>
-          <div slot="placeholder" class="image-slot"></div>
-        </el-image>
-        <svg-icon
-          name="history-solid"
-          style=" position: absolute;
-                  right: 0;
-                  bottom: 0;
-                  padding: 2px;
-                  border-width: 2px 0px 0px 2px;
-                  border-style: solid;
-                  border-radius: 2px 0 0 0;
-                  margin-right: 2px;"
-          :style="{ backgroundColor: isSelected
-                                    ? config.list_focus_background_color
-                                    : config.list_background_color,
-                    borderColor: isSelected
-                                ? config.list_focus_background_color
-                                : config.list_background_color,
-                    color: isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color,
-                    width: config.item_height/4+'px',
-                    height: config.item_height/4+'px', }"></svg-icon> -->
       </span>
 
       <div class="main">
@@ -258,15 +232,19 @@
           :style="{
             fontSize: config.list_keymap_size+'px',
             color: config.list_keymap_color,
-          }">{{
-              (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-            + ( 1 > index-$refs.list.scrollLines+1
-              ? 1
-              : (index-$refs.list.scrollLines+1 > config.item_show_count
-                ? config.item_show_count
-                : index-$refs.list.scrollLines+1)
-              )
-            }}</span>
+          }">
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+          <font
+            style="display:inline-block;text-align:left;"
+            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              1 > index-$refs.list.scrollLines+1
+            ? 1
+            : (index-$refs.list.scrollLines+1 > config.item_show_count
+              ? config.item_show_count
+              : index-$refs.list.scrollLines+1)
+          }}</font>
+        </span>
       </div>
     </template>
   </list>

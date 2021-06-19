@@ -468,6 +468,10 @@ export default {
       },
 
       statusbarHeight: 30,
+      w: {
+        statusbarTipTimer: null,
+        statusbarTipShowSpeed: 200,
+      }
     }
   },
   computed: {
@@ -939,15 +943,22 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 走马灯底部指示器提示
       document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
         el.onmouseenter = () => {
-          let workspace = this.workspaces[ index ];
-          let title = this.lang(workspace.title)
-          title += this.keymap['open_workspace_'+workspace.type]
-                  ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-                  : '';
-          this.$refs.statusbar.showTip(title);
+          clearTimeout(this.w.statusbarTipTimer);
+          this.w.statusbarTipTimer = setTimeout(() => {
+            let workspace = this.workspaces[ index ];
+            let title = this.lang(workspace.title)
+            title += this.keymap['open_workspace_'+workspace.type]
+                    ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+                    : '';
+            this.$refs.statusbar.showTip(title);
+            this.w.statusbarTipShowSpeed = 0;
+          }, this.w.statusbarTipShowSpeed)
         }
         el.onmouseleave = () => {
-          this.$refs.statusbar.finishTip();
+          clearTimeout(this.w.statusbarTipTimer);
+          this.$refs.statusbar.finishTip(() => {
+            this.w.statusbarTipShowSpeed = 200;
+          });
         }
       })
     };

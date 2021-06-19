@@ -182,11 +182,12 @@ export default {
 
       this.tip = tip;
     },
-    finishTip() {
+    finishTip(callback) {
       // 过一会再恢复，体验更好
       this.w.tipTimer = setTimeout(() => {
         this.tip = this.storageTip;
         // this.storageTip = '';
+        callback();
       }, 1000);
     }
   }

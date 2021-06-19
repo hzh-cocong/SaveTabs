@@ -1,12 +1,17 @@
 <template>
   <div
-    style=" background-color: red;display:flex;align-items: center;"
-    :style="{ height: statusbarHeight+'px' }">
+    class="statusbar"
+    :style="{ height: statusbarHeight+'px',
+              backgroundColor: config.statusbar_background_color,
+              color: config.statusbar_icon_color,
+
+              '--statusbar-icon-color': config.statusbar_icon_color,
+              '--statusbar-image-opacity': config.statusbar_image_opacity }">
 
     <svg-icon
       :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
       class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
+      style="margin: 0 10px;"
       @click.native="popupChange"
     ></svg-icon>
 
@@ -15,37 +20,31 @@
     <svg-icon
       name="cog-solid"
       class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;"
+      style="margin: 0 10px;"
       @click.native="$open('./options.html?type=workspace', $event)"
     ></svg-icon>
 
     <svg-icon
       :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
       class="hover2"
-      style="cursor:pointer;height: 20px;margin-right: 10px;"
-      :style="{ color: localConfig.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
+      style="margin-right: 10px;"
       @click.native="changeThemeMode"></svg-icon>
 
     <svg-icon
       name="thumbtack-solid"
       class="hover2"
-      style="cursor:pointer;height: 20px;margin-right: 10px;"
+      style="margin-right: 10px;"
       :style="{ transform: localConfig.pinned
                         && currentWorkspace != undefined
                         && localConfig.active_workspace_type == currentWorkspace.type
-                        ? 'rotate(0)' : 'rotate(90deg)',
-                color: localConfig.pinned
-                    && currentWorkspace != undefined
-                    && localConfig.active_workspace_type == currentWorkspace.type
-                    ? 'gray' : '#c0c4cc', }"
+                        ? 'rotate(0)' : 'rotate(90deg)', }"
       @click.native="toPin"></svg-icon>
 
     <span class="divider"></span>
 
     <span
       v-if="tip == storageTip"
-      class="animate__animated animate__flipInX"
-      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;align-items:center;justify-content: center;">
+      class="advertising animate__animated animate__flipInX">
       <el-popover
         placement="top"
         title=""
@@ -79,13 +78,13 @@
       <svg-icon
         name="ad-solid"
         class="animate__animated hover2"
-        style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 5px;vertical-align: middle;"
+        style="margin-left: 5px;vertical-align: middle;"
         @click.native="$refs.carousel.prev()"
       ></svg-icon>
     </span>
     <span
       v-else
-      style="display: inline-block; flex: 1; margin: 0 10px; text-align: center; color:#c0c4cc; cursor: default;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+      class="tip"
       >{{ tip }} </span>
 
     <span class="divider"></span>
@@ -93,7 +92,7 @@
     <svg-icon
       name="arrow-left-solid"
       class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-left: 10px;"
+      style="margin-left: 10px;"
       @click.native="prev"
     ></svg-icon>
 
@@ -107,7 +106,7 @@
     <svg-icon
       name="arrow-right-solid"
       class="hover2"
-      style="cursor:pointer;height: 20px;color: #c0c4cc;margin-right: 10px;"
+      style="margin-right: 10px;"
       @click.native="next"
     ></svg-icon>
 
@@ -129,7 +128,7 @@
         slot="reference"
         name="share-alt-solid"
         class="hover2"
-        style="cursor:pointer;height: 20px;color: #c0c4cc;margin: 0 10px;margin-top: 3px;"
+        style="margin: 0 10px;margin-top: 3px;"
         @click.native="$open('./options.html?type=workspace', $event)"
       ></svg-icon>
     </el-popover>
@@ -196,6 +195,40 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.statusbar {
+  display:flex;
+  align-items: center;
+}
+
+.statusbar >>> .svg-icon {
+  cursor:pointer;
+  height: 20px;
+}
+
+.advertising {
+  display: inline-block;
+  flex: 1;
+  margin: 0 10px;
+  text-align: center;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+}
+.tip {
+  display: inline-block;
+  flex: 1;
+  margin: 0 10px;
+  text-align: center;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 input[type=checkbox] {
   width: 9px;
   height: 9px;
@@ -218,7 +251,7 @@ input[type=checkbox]:after {
   padding: 1 3px 3px 1;
   border-radius: 50%;
   background:transparent;
-  border:1px solid #DDDDDD;
+  border:1px solid var(--statusbar-icon-color);
   box-sizing: border-box;
 }
 
@@ -226,7 +259,7 @@ input[type=checkbox]:checked:after {
   content: "";
   font-size: 12px;
   font-weight:600;
-  background-color: #c0c4cc;
+  background-color: var(--statusbar-icon-color);
 }
 
 .product-img {
@@ -235,7 +268,7 @@ input[type=checkbox]:checked:after {
   margin-top: 5px;
   margin-right: 5px;
   border-radius: 4px;
-  opacity: 0.2;
+  opacity: var(--statusbar-image-opacity);
   transition-property: width, height, opacity, margin-top;
   transition-duration: 0.3s;
   transition-timing-function: ease;
@@ -248,7 +281,7 @@ input[type=checkbox]:checked:after {
 }
 .divider {
   display:inline-block;
-  border-right: 1px solid #c0c4cc;
+  border-right: 1px solid var(--statusbar-icon-color);
   height: 20px;
   opacity: 0.6;
 }

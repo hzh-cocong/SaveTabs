@@ -45,8 +45,8 @@
     "list_current_focus_state_color": "#ffffff",
     "list_current_focus_icon_color": "#ffffff",
 
-    "list_scrollbar_color": "blue",
-    "list_scrollbar_focus_color": "red",
+    "list_scrollbar_color": "rgba(127, 127, 127, .6)",
+    "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
 
     "item_height": 50,
     "item_show_count": 7,
@@ -82,6 +82,12 @@
     "toolbar_button_active_border_color": "#3a8ee6",
     "toolbar_button_hover_background_color": "#ecf5ff",
     "toolbar_button_active_background_color": "#ecf5ff",
+
+    "statusbar_icon_color": "#c0c4cc",
+    "statusbar_background_color": "#fbfbfb",
+    "statusbar_image_opacity": 0.2,
+    "statusbar_show": true,
+
 
     "workspaces": [
         "all",

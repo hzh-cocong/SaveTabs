@@ -307,6 +307,7 @@
   </div>
 
   <Statusbar
+    v-if="config.statusbar_show"
     :config="config"
     :localConfig="localConfig"
     :isLoad="isLoad"

@@ -1,6 +1,6 @@
 {
     "pinned": false,
-    "active_workspace_type": "window",
+    "active_workspace_type": "all",
 
     "theme_mode": "light",
 
@@ -11,7 +11,7 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "window",
+            "type": "tab",
             "count": 3,
             "is_top": 1,
             "only_search": false

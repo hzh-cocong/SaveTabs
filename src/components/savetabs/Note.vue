@@ -58,24 +58,10 @@
       </span>
 
       <div class="main">
-        <!-- <div
-          class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">{{
-              item.title
-          }}</div> -->
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
           v-html="highlightMap[index].title || highlightMap[index].url"></div>
-        <!-- <div
-          v-if="storageKeyword != ''"
-          class="sub-title"
-          :style="{
-            fontSize: config.list_explain_font_size+'px',
-            color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color,
-            direction: isSelected ? 'rtl' : 'ltr' }">{{ item.url }}</div> -->
         <div
           class="sub-title"
           :style="{
@@ -87,31 +73,14 @@
                 : ( isSelected
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color),
-            direction: isSelected ? 'rtl' : 'ltr' }"
+            direction: storageKeyword == ''
+                      ? 'ltr'
+                      : (isSelected ? 'rtl' : 'ltr') }"
           v-html="isSelected && tip.length > 0
                 ? tip
                 : ( storageKeyword != ''
                   ? highlightMap[index].url
                   : (isSelected ? item.url : getDomain(item.url)) )"></div>
-        <!-- <div
-          v-if="storageKeyword != ''"
-          class="sub-title"
-          :style="{
-            fontSize: config.list_explain_font_size+'px',
-            color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color,
-            direction: isSelected ? 'rtl' : 'ltr' }"
-          v-html="highlightMap[index].url"></div>
-        <div
-          v-else
-          class="sub-title"
-          :style="{
-            fontSize: config.list_explain_font_size+'px',
-            color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color }"
-          v-text="isSelected ? item.url : getDomain(item.url)"></div> -->
       </div>
 
       <div class="right">

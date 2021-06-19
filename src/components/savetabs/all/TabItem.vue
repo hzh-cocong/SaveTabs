@@ -101,7 +101,9 @@
               : ( isSelected
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color),
-          direction: isSelected ? 'rtl' : 'ltr' }"
+          direction: storageKeyword == ''
+                    ? 'ltr'
+                    : (isSelected ? 'rtl' : 'ltr') }"
         v-html="storageKeyword != ''
               ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
               : (isSelected ? item.url : getDomain(item.url))"></div>

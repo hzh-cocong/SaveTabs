@@ -533,11 +533,23 @@ export default {
       if(type == undefined) {
         this.keyword = value;
         this.search();
-      } else {
-        this.keyword = value;
-        let index = this.getTypeIndex(type);
-        this.$refs.carousel.setActiveItem(index);
+        return;
       }
+
+      let index = this.getTypeIndex(type);
+      if(index == -1) {
+        this.$confirm('活跃标签已被禁用，是否前往 设置中心 开启？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$open('./options.html?type=workspace');
+        });
+        return;
+      }
+
+      this.keyword = value;
+      this.$refs.carousel.setActiveItem(index);
     },
     loading(visibility) {
       this.isLoading = visibility;
@@ -550,8 +562,10 @@ export default {
           return parseInt(index);
         }
       }
-      // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
-      return 0;
+      // 找不到则返回 -1
+      return -1;
+      // // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
+      // return 0;
     },
 
     finish() {

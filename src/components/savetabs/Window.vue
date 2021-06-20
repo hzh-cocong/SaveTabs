@@ -470,6 +470,10 @@ export default {
       // haveDifference: true,
 
       isOperating: false,
+
+      w: {
+        timer: null,
+      }
     }
   },
   components: {
@@ -1382,6 +1386,23 @@ console.warn('finish', b, (b-a)/1000)
       // 更新列表
       // this.search();
     })
+
+    // 自动保持窗口信息同步
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      if(changeInfo.status != 'complete') return;
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('window.refreshWindow')
+        this.refreshWindow();
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('window.refreshWindow')
+        this.refreshWindow();
+      }, 200);
+    })
   }
 }
 </script>
@@ -1450,10 +1471,6 @@ console.warn('finish', b, (b-a)/1000)
   font-weight: var(--list-highlight-weight);
 }
 
-.window .el-badge {
-  /* margin-right: 10px; */
-  vertical-align: inherit;
-}
 .window .el-badge__content {
     background-color: inherit !important;
     border-color: inherit !important;

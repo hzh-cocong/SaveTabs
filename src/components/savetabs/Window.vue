@@ -313,7 +313,7 @@
     @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindow"><i class="el-icon-refresh"></i></span>
+      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindow(true)"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{oldGroup.name}}</span>
         <span
@@ -461,7 +461,7 @@ export default {
       differenceVisible2: false,
       oldGroup: {},
       currentWindow: {},
-      haveDifference: true,
+      // haveDifference: true,
 
       tip: '',
 
@@ -570,6 +570,9 @@ console.log('get_currentWindowStorageIndex3', index);
         this.storageList[ this.currentWindowStorageIndex ],
         this.currentWindow
       );
+    },
+    haveDifference() {
+      return this.isDifference(this.oldGroup, this.currentWindow);
     },
     currentGroup() {
       console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
@@ -810,8 +813,10 @@ console.log('get_currentWindowStorageIndex3', index);
         }).then((window) => {
           // 更新结果
           this.currentWindow = window;
-          // 其实不写也没关系，只是要是 currentWindow 真的变了就不好了
-          this.activeWindows[ this.currentWindowId ] = true;
+          // // 其实不写也没关系，只是要是 currentWindow 真的变了就不好了
+          // 不可能发生，当标签从当前窗口中脱离出来会有这个问题，但是此时会触发 tab 和 window 两个事件，造成插件关闭后又打开，此时列表已完成了修复
+          // this.activeWindows[ this.currentWindowId ] = true;
+
           // this.isCurrentWindowChange = false;
           // this.isInCurrentWindow = true;
 
@@ -910,7 +915,10 @@ console.log('get_currentWindowStorageIndex3', index);
             });
           });
         })).then((/*indexs*/) => {
-          // chrome.tabs.highlight({tabs: indexs})
+          if( ! this.isInCurrentWindow) return;
+
+          // 刷新窗口
+          this.refreshWindow();
         })
         return;
       }
@@ -1066,12 +1074,13 @@ console.log('get_currentWindowStorageIndex3', index);
       this.oldGroup = this.currentGroup; // this.list[this.currentIndex];
 
       // 获取当前窗口
-      chrome.windows.getCurrent({populate: true}, window => {
-        console.log(window)
-        // 重新获取，因为有些网页可能还未加载完
-        this.currentWindow = window;
-        this.haveDifference = this.isDifference(this.oldGroup, window);
-      })
+      this.refreshWindow();
+      // chrome.windows.getCurrent({populate: true}, window => {
+      //   console.log(window)
+      //   // 重新获取，因为有些网页可能还未加载完
+      //   this.currentWindow = window;
+      //   // this.haveDifference = this.isDifference(this.oldGroup, window);
+      // })
 
       this.differenceVisible = true;
     },
@@ -1227,6 +1236,8 @@ console.log('get_currentWindowStorageIndex3', index);
     },
 
     isDifference(group, window) {
+      if(group.tabs == undefined || window.tabs == undefined) return true;
+
       // 判断当前分组是否需要更新
       if(group.tabs.length != window.tabs.length) {
         console.log('difference length')
@@ -1261,11 +1272,13 @@ console.log('get_currentWindowStorageIndex3', index);
         tabs: this.currentGroup.tabs,
       });
     },
-    refreshWindow() {
+    refreshWindow(showMessage = false) {
       // 获取当前窗口
       chrome.windows.getCurrent({populate: true}, window => {
         this.currentWindow = window;
-        this.haveDifference = this.isDifference(this.oldGroup, window);
+        // this.haveDifference = this.isDifference(this.oldGroup, window);
+
+        if( ! showMessage) return;
 
         this.$message({
           type: 'success',

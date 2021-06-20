@@ -1002,7 +1002,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     //   e.preventDefault();
     // }
 
-    // 模拟 popup 行为
+    // 获取当前插件信息
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let tab = tabs[0];
 
@@ -1037,6 +1037,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         }
       })
 
+      // 模拟 popup 行为
+
       // 一旦失去焦点就会自己把自己给关了
       // 新建窗口也会触发，并且新建多个标签将触发多个事件
       chrome.tabs.onActivated.addListener((activeInfo) => {
@@ -1049,7 +1051,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         if(tab == undefined || activeInfo.windowId != tab.windowId) return;
 
         // 让 background.js 帮忙关闭，减轻负担
-        chrome.runtime.sendMessage({ type: 'closeExtension',})
+        chrome.runtime.sendMessage({ type: 'closeExtension' })
       })
 
       // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
@@ -1057,12 +1059,24 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
         if(windowId == -1) return;
         // 再切换过来
-        if(windowId == tab.windowId) return;
+        // tab == undefined 不大可能发生
+        if(tab == undefined || windowId == tab.windowId) return;
+
+        // 当标签被拖出来成为一个新窗口会出现以下情况，注释掉可以让插件重启，减少不必要的麻烦
+        // if(activeInfo.tabId == tab.id) return;
 
         // 让 background.js 帮忙关闭，减轻负担
-        chrome.runtime.sendMessage({ type: 'closeExtension',})
+        chrome.runtime.sendMessage({ type: 'closeExtension' })
       })
     })
+
+    // // 模拟 popup 行为（完美，调试都不行，哈哈）todo 最后上线再想想要不要开启
+    // window.addEventListener('blur', (event)=>{
+    //   // event.stopPropagation();
+    //   // event.preventDefault();
+
+    //   chrome.runtime.sendMessage({ type: 'closeExtension' })
+    // });
 
     // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉
     window.addEventListener('keydown', (event)=>{

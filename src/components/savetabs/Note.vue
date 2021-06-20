@@ -468,8 +468,9 @@ console.warn('isSearched2');
       }).then((tab) => {
         // 更新结果
         this.currentTab = tab;
-        // 其实不写也没关系，只是要是 currenTab 真的变了就不好了（测试也容易，因为测试的数据有问题）
-        this.activeTabs[ this.currentTab.url ] = tab;
+        // // 其实不写也没关系，只是要是 currenTab 真的变了就不好了（测试也容易，因为测试的数据有问题）
+        // 不大可能发生，最重要的是这样会导致 number 显示不出来
+        // this.activeTabs[ this.currentTab.url ] = tab;
 
         // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
         this.storageKeyword = ' ';

@@ -314,7 +314,7 @@
     @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindow(true)"><i class="el-icon-refresh"></i></span>
+      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindows(true)"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{oldGroup.name}}</span>
         <span
@@ -928,10 +928,11 @@ console.log('get_currentWindowStorageIndex3', index);
             });
           });
         })).then((/*indexs*/) => {
-          if( ! this.isInCurrentWindow) return;
+          // 由于添加了标签变化监听事件，这里已经不需要了
+          // if( ! this.isInCurrentWindow) return;
 
-          // 刷新窗口
-          this.refreshWindow();
+          // // 刷新窗口
+          // this.refreshWindows();
         })
       } else if(keyType == 'alt') {
         // 当前窗口打开，且不关闭，也不进行存储更新
@@ -1083,7 +1084,7 @@ console.log('get_currentWindowStorageIndex3', index);
       this.oldGroup = this.currentGroup; // this.list[this.currentIndex];
 
       // 获取当前窗口
-      this.refreshWindow();
+      this.refreshWindows();
       // chrome.windows.getCurrent({populate: true}, window => {
       //   console.log(window)
       //   // 重新获取，因为有些网页可能还未加载完
@@ -1281,7 +1282,7 @@ console.log('get_currentWindowStorageIndex3', index);
         tabs: this.currentGroup.tabs,
       });
     },
-    refreshWindow(showMessage = false) {
+    refreshWindows(showMessage = false) {
       // 获取当前窗口
       chrome.windows.getCurrent({populate: true}, window => {
         this.currentWindow = window;
@@ -1297,6 +1298,8 @@ console.log('get_currentWindowStorageIndex3', index);
           duration: 2000,
         });
       })
+
+      // 由于只要窗口焦点发生变化，插件就会自动关闭，所以不同去更新其它窗口的信息
     },
 
     getTip() {
@@ -1392,15 +1395,15 @@ console.warn('finish', b, (b-a)/1000)
       if(changeInfo.status != 'complete') return;
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('window.refreshWindow')
-        this.refreshWindow();
+        console.log('window.refreshWindows')
+        this.refreshWindows();
       }, 200);
     })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('window.refreshWindow')
-        this.refreshWindow();
+        console.log('window.refreshWindows')
+        this.refreshWindows();
       }, 200);
     })
   }

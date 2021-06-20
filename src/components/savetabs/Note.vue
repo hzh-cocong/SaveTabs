@@ -226,6 +226,10 @@ export default {
       tip: '',
 
       isOperating: false,
+
+      w: {
+        timer: null,
+      }
     }
   },
   components: {
@@ -546,6 +550,8 @@ console.log('add =====h')
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
       chrome.storage.local.set({tabs: this.storageList}, () => {
         this.$open(this.currentNote.url, keyType, (tab, type) => {
+          // 虽然加了标签事件监听，但那个更新不及时
+
           // 去除末尾 /
           tab.url = tab.url == '' && tab.pendingUrl
                   ? tab.pendingUrl.replace(/(\/*$)/g,"")
@@ -563,20 +569,30 @@ console.log('add =====h')
             this.currentTab = tab;
             this.activeTabs[ this.currentTab.url ] = tab;
 
-            // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-            let origin = this.storageKeyword;
-            this.storageKeyword = ' ';
-            this.search(origin);
+            // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+            // let origin = this.storageKeyword;
+            // this.storageKeyword = ' ';
+            // this.search(origin);
           } else {
             tab.count = 1;
             tab.other = [];
             this.activeTabs[ tab.url ] = tab;
 
-            // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-            let origin = this.storageKeyword;
-            this.storageKeyword = undefined;
-            this.search(origin);
+            // // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+            // let origin = this.storageKeyword;
+            // this.storageKeyword = undefined;
+            // this.search(origin);
           }
+
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
         });
       });
     },
@@ -651,6 +667,57 @@ console.log('bb')
       }, 0)
     },
 
+    refreshTabs() {
+      Promise.all([
+        // 获取当前标签
+        new Promise((resolve) => {
+          chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            // 去除末尾 / （pendingUrl 有可能不存在）
+            tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
+                        ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
+                        : tabs[0].url.replace(/(\/*$)/g,"");
+            this.currentTab = tabs[0];
+            resolve()
+          })
+        }),
+        // 获取全部标签
+        new Promise((resolve) => {
+          chrome.tabs.query({}, tabs => {
+            this.activeTabs = {};
+            for(let tab of tabs) {
+              // 去除末尾 /
+              tab.url = tab.url == '' && tab.pendingUrl
+                      ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                      : tab.url.replace(/(\/*$)/g,"");
+              if(this.activeTabs[ tab.url ] == undefined) {
+                tab.count = 1;
+                tab.other = [];
+                this.activeTabs[ tab.url ] = tab;
+              } else {
+                this.activeTabs[ tab.url ].count++;
+                this.activeTabs[ tab.url ].other.push(tab.id);
+              }
+            }
+            resolve()
+          })
+        })
+      ]).then(() => {
+        // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+        // let origin = this.storageKeyword;
+        // this.storageKeyword = ' ';
+        // this.search(origin);
+
+        // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+        let origin = this.storageKeyword;
+        this.storageKeyword = undefined;
+        this.search(origin);
+
+        // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+        this.$nextTick(() => {
+          this.$refs.list.currentTo(1);
+        });
+      })
+    },
     getTip() {
       console.log('showTip');
       if(this.activeTabs[this.currentNote.url]) {
@@ -735,6 +802,24 @@ console.warn('finish', b, (b-a)/1000)
 
       this.isFinish = true;
       this.$emit('finish');
+    })
+
+    // 自动保持窗口信息同步
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      // if(changeInfo.status != 'complete') return; // 更新过慢
+      if(changeInfo.status != 'loading') return;
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('note.refreshTabs')
+        this.refreshTabs();
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('note.refreshTabs')
+        this.refreshTabs();
+      }, 200);
     })
   }
 }

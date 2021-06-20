@@ -116,12 +116,12 @@ let window = {
     })
   },
 
-  openWindow(index, event) {
+  openWindow(index, keyType) {
     let currentGroup = this.cacheList[index];
     let storageIndex = this.getStorageIndex(currentGroup);
     let urls = currentGroup.tabs.map(tab => tab['url']);
     let isInCurrentWindow = this.isInCurrentWindow();
-console.log('99999999999999999999999', isInCurrentWindow)
+
     // 窗口已打开，直接切换
     if(this.activeWindows[currentGroup.windowId]) {
       return new Promise(resolve => {
@@ -140,6 +140,12 @@ console.log('99999999999999999999999', isInCurrentWindow)
             tabs: group.tabs,
           }
         })}, () => {
+          if(currentGroup.windowId == this.currentWindowId) {
+            // 如果操作的是当前窗口，则直接关闭插件
+            chrome.runtime.sendMessage({ type: 'closeExtension' })
+            return;
+          }
+
           // 再切换
           chrome.windows.update(currentGroup.windowId, { focused: true}, () => {
             resolve();
@@ -148,10 +154,9 @@ console.log('99999999999999999999999', isInCurrentWindow)
       });
     }
 
-    // 当前窗口打开，且不关闭，也不进行存储更新
-    // 不自动关闭空白标签页，有隔离作用
-    if((_device.platform == 'Mac' && event.metaKey == true)
-    || (_device.platform != '' && event.ctrlKey == true)) {
+    if(keyType == 'meta/ctrl') {
+      // 当前窗口打开，且不关闭，也不进行存储更新
+      // 不自动关闭空白标签页，有隔离作用
       return Promise.all(urls.map((url) => {
         return new Promise((resolve) => {
           chrome.tabs.create({url: url, active: false}, (tab) => {
@@ -161,11 +166,9 @@ console.log('99999999999999999999999', isInCurrentWindow)
       })).then((/*indexs*/) => {
         // chrome.tabs.highlight({tabs: indexs})
       })
-    }
-
-    // 当前窗口打开，且不关闭，也不进行存储更新
-    // 会高亮标签
-    if(_device.platform != '' && event.altKey == true) {
+    } else if(keyType == 'alt') {
+      // 当前窗口打开，且不关闭，也不进行存储更新
+      // 会高亮标签
       return Promise.all(urls.map((url) => {
         return new Promise((resolve) => {
           chrome.tabs.create({url: url, active: false}, (tab) => {
@@ -175,47 +178,47 @@ console.log('99999999999999999999999', isInCurrentWindow)
       })).then((indexs) => {
         chrome.tabs.highlight({tabs: indexs})
       })
-    }
-
-    // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
-    //let type = this._device.platform != '' && event.shiftKey ? 'panel' : 'normal';
-    let type = 'normal';
-    return new Promise(resolve => {
-      // 新建新窗口（先不激活，否则无法存储数据）
-      chrome.windows.create({ url: urls, focused: false, type: type }, window => {
-        resolve(window)
-      })
-    }).then((window) => {
-       // 存储数据
+    } else {
+      // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
+      //let type = this._device.platform != '' && event.shiftKey ? 'panel' : 'normal';
+      let type = 'normal';
       return new Promise(resolve => {
-        // 更新时间
-        this.storageList[storageIndex].lastVisitTime = new Date().getTime();
-        // 搬定新的窗口id
-        this.storageList[storageIndex].windowId = window.id;
-        // 排序到最前面
-        this.storageList.unshift(this.storageList.splice(storageIndex , 1)[0]);
-        chrome.storage.local.set({list: this.storageList.map(group => {
-          // 过滤掉杂质
-          return {
-            id: group.id,
-            name: group.name,
-            windowId: group.windowId,
-            lastVisitTime: group.lastVisitTime,
-            tabs: group.tabs,
-          }
-        })}, () => {
-          resolve(window);
-        });
-      })
-    }).then((window) => {
-      // 激活窗口
-      chrome.windows.update(window.id, { focused: true});
+        // 新建新窗口（先不激活，否则无法存储数据）
+        chrome.windows.create({ url: urls, focused: false, type: type }, window => {
+          resolve(window)
+        })
+      }).then((window) => {
+        // 存储数据
+        return new Promise(resolve => {
+          // 更新时间
+          this.storageList[storageIndex].lastVisitTime = new Date().getTime();
+          // 搬定新的窗口id
+          this.storageList[storageIndex].windowId = window.id;
+          // 排序到最前面
+          this.storageList.unshift(this.storageList.splice(storageIndex , 1)[0]);
+          chrome.storage.local.set({list: this.storageList.map(group => {
+            // 过滤掉杂质
+            return {
+              id: group.id,
+              name: group.name,
+              windowId: group.windowId,
+              lastVisitTime: group.lastVisitTime,
+              tabs: group.tabs,
+            }
+          })}, () => {
+            resolve(window);
+          });
+        })
+      }).then((window) => {
+        // 激活窗口
+        chrome.windows.update(window.id, { focused: true});
 
-      // 关闭空白标签页（是工作窗口则不关闭）
-      if( ! isInCurrentWindow && this.currentTab.url == 'chrome://newtab/') {
-        chrome.tabs.remove(this.currentTab.id);
-      }
-    })
+        // 关闭空白标签页（是工作窗口则不关闭）
+        if( ! isInCurrentWindow && this.currentTab.url == 'chrome://newtab/') {
+          chrome.tabs.remove(this.currentTab.id);
+        }
+      })
+    }
   },
 
   getStorageIndex(group) {
@@ -231,19 +234,21 @@ console.log('99999999999999999999999', isInCurrentWindow)
     })
   },
 
-  showTip({event, _device}) {
-    if((_device.platform == 'Mac' && event.metaKey == true)
-    || (_device.platform != '' && event.ctrlKey == true)) {
-      return '当前窗口打开但不选中';
-    } else if(_device.platform != '' && event.shiftKey == true) {
-      return '默认新窗口打开';
-    } else if(_device.platform != '' && event.altKey == true) {
-      return '当前窗口打开并选中';
+  showTip({index, keyType}) {
+    let currentGroup = this.cacheList[index];
+    if(this.activeWindows[currentGroup.windowId]) {
+      return keyType == '' ? '' : '切换到对应的窗口';
     }
-    return '';
-  },
-  finishTip() {
-    return '';
+
+    if(keyType == 'meta/ctrl') {
+      return '当前窗口打开但不选中';
+    } else if(keyType == 'alt') {
+      return '当前窗口打开并选中';
+    } else if(keyType != '') {
+      return '默认新窗口打开';
+    } else {
+      return '';
+    }
   }
 }
 

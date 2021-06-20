@@ -56,5 +56,18 @@
     container.append(iframe);
     document.body.append(container);
     document.body.style.overflow = 'hidden';
+
+    iframe.contentWindow.focus();
+
+    // 没用
+    // iframe.focus();
   })
+
+  // 没用
+  // chrome.tabs.getCurrent(tab => {
+  //   chrome.tabs.update(tab.id, {active: true})
+  // })
+
+  // 没用
+  // window.focus();
 }

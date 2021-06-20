@@ -34,7 +34,7 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow">
+    @itemClick="_openWindow(getKeyType($event))">
     <template #default="{ index, item, isActive, isSelected }">
       <component
         :is="item.type+'Item'"
@@ -318,9 +318,9 @@ export default {
       })
     },
 
-    openWindow(index, event) {
+    openWindow(index, keyType) {
       if(index == undefined) {
-        this._openWindow(event);
+        this._openWindow(keyType);
         return;
       }
 
@@ -328,15 +328,15 @@ export default {
         return;
       }
 
-      this._openWindow(event);
+      this._openWindow(keyType);
     },
-    _openWindow(event) {
-      console.log('openWindow', event)
+    _openWindow(keyType) {
+      console.log('openWindow', keyType)
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 
-      module.openWindow(item.index, event).then((result) => {
+      module.openWindow(item.index, keyType).then((result) => {
         console.warn('all.finish', result);
         if(result == undefined) return;
 
@@ -358,21 +358,16 @@ export default {
       return this.$refs.list.choice(index);
     },
 
-    showTip(event) {
-      console.log('showTip', event)
+    showTip(keyType) {
+      console.log('showTip', keyType)
+
+      if(keyType == '' && this.tip == '') return;
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 
-      this.tip = module.showTip({event, index: item.index, _device: this._device});
-    },
-    finishTip(event) {
-      console.log('finishTip', event)
-
-      let item = this.list[ this.currentIndex ];
-      let module = this.getModule(item.type);
-
-      this.tip = module.finishTip({event, index: item.index, _device: this._device});
+      this.tip = module.showTip({index: item.index, keyType: keyType});
     },
 
     getModule(type) {

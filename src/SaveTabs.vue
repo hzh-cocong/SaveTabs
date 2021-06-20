@@ -45,9 +45,9 @@
                 '--toolbar-button-active-background-color': config.toolbar_button_active_background_color,
 
                 }">
+      <!-- autofocus 会报错 -->
       <el-input
         class="search-input"
-        autofocus
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
@@ -138,7 +138,7 @@
                   name="cog-solid"
                   class="hover"
                   style="cursor:pointer;height: 20px;color: #c0c4cc;margin-top: 4px;"
-                  @click.native="$open('./options.html?type=workspace', $event)"
+                  @click.native="$open('./options.html?type=workspace', getKeyType($event))"
                 ></svg-icon>
                 <svg-icon
                   :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
@@ -225,7 +225,7 @@
               <i
                 class="el-icon-setting hover"
                 style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
-                @click="$open('chrome://bookmarks', $event);focus();"></i>
+                @click="$open('chrome://bookmarks', getKeyType($event));focus();"></i>
               <i
                 class="el-icon-s-operation"
                 slot="reference"
@@ -331,7 +331,7 @@
       <i
         class="el-icon-s-tools"
         style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-        @click="$open('./options.html?type=themes', $event)"></i>选择主题
+        @click="$open('./options.html?type=themes', getKeyType($event))"></i>选择主题
     </div>
     <SelectX
       v-if="themeDialogVisible2"
@@ -622,9 +622,11 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow(event) {
+      // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
 
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, event);
+      let keyType = this.getKeyType(event);
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, keyType);
     },
 
     operate(event, type) {
@@ -681,9 +683,7 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
     },
 
     keydown(event) {
-      console.log('fffffffffffffffff', event)
-      // console.log('keydown', event)
-      if(this._device.platform == '') return;
+      console.log('keydown', event)
 
       // tab 和 shift+tab 左右切换
       if(event.keyCode == 9) {
@@ -700,14 +700,15 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         return;
       }
 
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(event);
+      let keyType = this.getKeyType(event);
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
 
       // 数字快捷键，默认选中对应的行并点击，当 alt 也同时被按下则不点击
       if((this._device.platform == 'Mac' && event.metaKey == true)
-      || (this._device.platform != '' && event.altKey == true)) {
+      || (this._device.platform != 'Mac' && event.altKey == true)) {
         // shift 键被太多快捷键给包了，就不跟着起哄了
         if(event.shiftKey == true) return;
 
@@ -719,14 +720,17 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
           return;
         }
 
-        // this.openWindow(index);
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, {});
+        // 数字键打开则屏蔽其它快捷键，以免发生逻辑冲突
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, '');
       }
     },
     keyup(event) {
-      if(this._device.platform == '') return;
+      console.log('keyup', event)
 
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].finishTip(event);
+      // if(this.$refs.workspaces == undefined) return;
+
+      let keyType = this.getKeyType(event);
+      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
     },
     close() {
       chrome.runtime.sendMessage({
@@ -1036,7 +1040,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           this.add(request.workspace);
         }
       })
-
+//*
       // 模拟 popup 行为
 
       // 一旦失去焦点就会自己把自己给关了
@@ -1067,16 +1071,16 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
-      })
+      })//*/
     })
+/*
+    // 模拟 popup 行为（完美，调试都不行，哈哈）todo 最后上线再想想要不要开启
+    window.addEventListener('blur', (event)=>{
+      // event.stopPropagation();
+      // event.preventDefault();
 
-    // // 模拟 popup 行为（完美，调试都不行，哈哈）todo 最后上线再想想要不要开启
-    // window.addEventListener('blur', (event)=>{
-    //   // event.stopPropagation();
-    //   // event.preventDefault();
-
-    //   chrome.runtime.sendMessage({ type: 'closeExtension' })
-    // });
+      chrome.runtime.sendMessage({ type: 'closeExtension' })
+    });//*/
 
     // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉
     window.addEventListener('keydown', (event)=>{

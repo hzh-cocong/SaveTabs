@@ -342,7 +342,7 @@ export default {
     _openWindow(event) {
       if(event != undefined
       &&((this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != '' && event.ctrlKey == true))) {
+        || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1});
       } else if(event != undefined

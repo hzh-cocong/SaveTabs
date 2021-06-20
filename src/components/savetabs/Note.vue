@@ -16,9 +16,9 @@
         <div v-if="storageList.length > 0">{{ lang('noteNoResult') }}</div>
         <div>{{ lang('noteCountTip')+storageList.length+lang('noteCountTip2') }}</div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
+      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', getKeyType($event))"></el-button>
+      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', getKeyType($event))"></el-button>
     </div>
   </el-alert>
 
@@ -35,7 +35,7 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow">
+    @itemClick="_openWindow(getKeyType($event))">
     <template #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
@@ -498,9 +498,9 @@ console.log('add =====h')
         this.isOperating = false;
       })
     },
-    openWindow(index, event) {
+    openWindow(index, keyType) {
       if(index == undefined) {
-        this._openWindow(event);
+        this._openWindow(keyType);
         return;
       }
 
@@ -508,9 +508,9 @@ console.log('add =====h')
         return;
       }
 
-      this._openWindow(event);
+      this._openWindow(keyType);
     },
-    _openWindow(event) {
+    _openWindow(keyType) {
       if(this.currentNote == null) return;
 
       // 更新时间
@@ -522,6 +522,12 @@ console.log('add =====h')
         this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
         // 先存储，再切换
         chrome.storage.local.set({tabs: this.storageList}, () => {
+          if(this.currentNote.url == this.currentTab.url) {
+            // 如果操作的是当前便签，则直接关闭插件
+            chrome.runtime.sendMessage({ type: 'closeExtension' })
+            return;
+          }
+
           // 先激活标签，再切换窗口
           chrome.tabs.update(this.activeTabs[this.currentNote.url].id, { active: true }, () => {
             chrome.windows.update(this.activeTabs[this.currentNote.url].windowId, { focused: true});
@@ -532,19 +538,18 @@ console.log('add =====h')
 
       // 存储
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
-      console.log('111111111111', this.currentNote.url, this.currentNote.title)
-      // let s = true; if(s)return;
       chrome.storage.local.set({tabs: this.storageList}, () => {
-        this.$open(this.currentNote.url, event, (tab, type) => {
-          console.log('333333333333', tab.url, tab.title, type)
+        this.$open(this.currentNote.url, keyType, (tab, type) => {
+          // 去除末尾 /
+          tab.url = tab.url == '' && tab.pendingUrl
+                  ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                  : tab.url.replace(/(\/*$)/g,"");
+
           if(type == 'cover') {
             if(this.activeTabs[ this.currentTab.url ].count > 1) {
-              console.log('mmmmmmmmmmmmmmmmmmmmmm', this.activeTabs[ this.currentTab.url ].count, this.activeTabs[ this.currentTab.url ].id, this.activeTabs[ this.currentTab.url ].other)
               this.activeTabs[ this.currentTab.url ].count--;
-              let gg = this.activeTabs[ this.currentTab.url ].other.splice(0, 1);
-              console.log('gg', gg)
-              this.activeTabs[ this.currentTab.url ].id = gg[0];
-              console.log('mmmmmmmmmmmmmmmmmmmmmm2', this.activeTabs[ this.currentTab.url ].count, this.activeTabs[ this.currentTab.url ].id, this.activeTabs[ this.currentTab.url ].other)
+              let t = this.activeTabs[ this.currentTab.url ].other.splice(0, 1);
+              this.activeTabs[ this.currentTab.url ].id = t[0];
             } else {
               delete this.activeTabs[ this.currentTab.url ];
             }
@@ -552,10 +557,18 @@ console.log('add =====h')
             this.currentTab = tab;
             this.activeTabs[ this.currentTab.url ] = tab;
 
-          console.log('444444444', this.currentTab.url, this.currentTab.title)
             // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
             let origin = this.storageKeyword;
             this.storageKeyword = ' ';
+            this.search(origin);
+          } else {
+            tab.count = 1;
+            tab.other = [];
+            this.activeTabs[ tab.url ] = tab;
+
+            // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+            let origin = this.storageKeyword;
+            this.storageKeyword = undefined;
             this.search(origin);
           }
         });
@@ -632,18 +645,26 @@ console.log('bb')
       }, 0)
     },
 
-    showTip(event) {
-      if((this._device.platform == 'Mac' && event.metaKey == true)
-      || (this._device.platform != '' && event.ctrlKey == true)) {
-        this.tip = '打开新标签但不获取焦点';
-      } else if(this._device.platform != '' && event.shiftKey == true) {
-        this.tip = '新窗口打开';
-      } else if(this._device.platform != '' && event.altKey == true) {
-        this.tip = '覆盖当前标签';
+    showTip(keyType) {
+      if(this.currentNote == null) return;
+      if(keyType == '' && this.tip == '') return;
+console.log('showTip');
+      if(this.activeTabs[this.currentNote.url]) {
+        this.tip = keyType == '' ? '' : '切换到对应的标签';
+        return;
       }
-    },
-    finishTip() {
-      this.tip = '';
+
+      if(keyType == 'meta/ctrl') {
+        this.tip = '打开新标签但不切换';
+      } else if(keyType == 'shift') {
+        this.tip = '新窗口打开';
+      } else if(keyType == 'alt') {
+        this.tip = '覆盖当前标签';
+      } else if(keyType != '') {
+        this.tip = '打开新标签并切换';
+      } else {
+        this.tip = '';
+      }
     }
   },
   beforeUpdate() {

@@ -99,7 +99,7 @@ let temporary = {
       // 当前窗口打开，且不关闭
       // 不自动关闭空白标签页，有隔离作用
       if((_device.platform == 'Mac' && event.metaKey == true)
-      || (_device.platform != '' && event.ctrlKey == true)) {
+      || (_device.platform != 'Mac' && event.ctrlKey == true)) {
         blankTabId = -1;
         return Promise.all(urls.map((url) => {
           return new Promise((resolve) => {

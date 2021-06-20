@@ -106,7 +106,7 @@ let note = {
     })
   },
 
-  openWindow(index, event) {
+  openWindow(index, keyType) {
     let currentNote = this.cacheList[index];
     let storageIndex = this.getStorageIndex(currentNote);
 
@@ -152,26 +152,52 @@ let note = {
           lastVisitTime: note.lastVisitTime,
         }
       })}, () => {
-        $open(currentNote.url, event, (tab, type) => {
+        $open(currentNote.url, keyType, (tab, type) => {
+          // 去除末尾 /
+          tab.url = tab.url == '' && tab.pendingUrl
+                  ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                  : tab.url.replace(/(\/*$)/g,"");
+
+          if(type == 'cover') {
+            for(let i = 0; i < this.cacheList.length; i++) {
+              if(this.cacheList[i].isCurrent == true) {
+                this.cacheList[i].isCurrent = false;
+                this.cacheList[i].isOpened = false;
+                delete this.activeTabs[this.cacheList[i].url];
+              }
+            }
+
+            currentNote.isCurrent = true;
+            currentNote.isOpened = true;
+            this.activeTabs[ currentNote.url ] = tab;
+          } else {
+            currentNote.isOpened = true;
+            this.activeTabs[ currentNote.url ] = tab;
+          }
+
           resolve();
         });
       });
     })
   },
 
-  showTip({event, _device}) {
-    if((_device.platform == 'Mac' && event.metaKey == true)
-    || (_device.platform != '' && event.ctrlKey == true)) {
-      return '打开新标签但不获取焦点';
-    } else if(_device.platform != '' && event.shiftKey == true) {
-      return '新窗口打开';
-    } else if(_device.platform != '' && event.altKey == true) {
-      return '覆盖当前标签';
+  showTip({index, keyType}) {
+    let currentNote = this.cacheList[index];
+    if(this.activeTabs[currentNote.url]) {
+      return keyType == '' ? '' : '切换到对应的标签';
     }
-    return '';
-  },
-  finishTip() {
-    return '';
+
+    if(keyType == 'meta/ctrl') {
+      return '打开新标签但不切换';
+    } else if(keyType == 'shift') {
+      return '新窗口打开';
+    } else if(keyType == 'alt') {
+      return '覆盖当前标签';
+    } else if(keyType != '') {
+      return '打开新标签并切换';
+    } else {
+      return '';
+    }
   },
 
   getStorageIndex(note) {

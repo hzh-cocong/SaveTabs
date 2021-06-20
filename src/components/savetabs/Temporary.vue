@@ -1078,7 +1078,7 @@ alert('空间不够')
         // 当前窗口打开，且不关闭
         // 不自动关闭空白标签页，有隔离作用
         if((this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != '' && event.ctrlKey == true)) {
+        || (this._device.platform != 'Mac' && event.ctrlKey == true)) {
           blankTabId = -1;
           return Promise.all(urls.map((url) => {
             return new Promise((resolve) => {

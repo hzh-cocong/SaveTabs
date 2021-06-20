@@ -228,7 +228,31 @@ const tool = {
           res += content.substring(pos[pos.length-1][1]+1, content.length).escape();
 
           return res;
-        }
+        },
+        getKeyType(event) {
+          if(this._device.platform == 'Mac') {
+            if(event.ctrlKey == true) {
+              return 'ctrl';
+            } else if(event.metaKey == true) {
+              return 'meta/ctrl';
+            } else if(event.shiftKey == true) {
+              return 'shift';
+            } else if(event.altKey == true) {
+              return 'alt';
+            }
+          } else {
+            if(event.metaKey == true) {
+              return 'meta';
+            } else if(event.ctrlKey == true) {
+              return 'meta/ctrl'
+            } else if(event.shiftKey == true) {
+              return 'shift';
+            } else if(event.altKey == true) {
+              return 'alt';
+            }
+          }
+          return '';
+        },
       },
       // 方便测试
       /*
@@ -598,14 +622,8 @@ const tool = {
     }
 
     // 添加实例方法
-    window.$open = Vue.prototype.$open = function (url, event, callback) {
-      let device = this == undefined ? window._device : this._device;
-
-      // 不管空白页
-      // platform = '' 空的设备暂不支持其它方式打开
-      if(event != undefined
-      &&((device.platform == 'Mac' && event.metaKey == true)
-        || (device.platform != '' && event.ctrlKey == true))) {
+    window.$open = Vue.prototype.$open = function (url, keyType, callback) {
+      if(keyType == 'meta/ctrl') {
         // 下个位置打开，但不激活
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
@@ -618,16 +636,12 @@ const tool = {
             });
           }
         })
-      } else if(event != undefined
-              && device.platform != ''
-              && event.shiftKey == true) {
+      } else if(keyType == 'shift') {
         // 新窗口打开
         chrome.windows.create({ url: [ url ], focused: true, type: 'normal' }, (window) => {
           callback != undefined && callback(window.tabs[0], 'window');
         });
-      } else if(event != undefined
-              && device.platform != ''
-              && event.altKey == true) {
+      } else if(keyType == 'alt') {
         // 覆盖当前窗口
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {

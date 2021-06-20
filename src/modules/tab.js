@@ -106,7 +106,7 @@ let tab = {
 
     if(event != undefined
     &&((_device.platform == 'Mac' && event.metaKey == true)
-      || (_device.platform != '' && event.ctrlKey == true))) {
+      || (_device.platform != 'Mac' && event.ctrlKey == true))) {
       return new Promise(resolve => {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(selectedTab.id, {windowId: this.activeTab.windowId, index: this.activeTab.index+1}, () => {

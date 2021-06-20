@@ -86,6 +86,7 @@
               v-if="isCurrentWindowChange && item.windowId == currentWindowId"
               is-dot
               class="refresh"
+              style="margin-right: 10px"
               :style="{ borderColor: config.list_current_focus_state_color } " >
               <el-button
                 type="warning"
@@ -1450,7 +1451,7 @@ console.warn('finish', b, (b-a)/1000)
 }
 
 .window .el-badge {
-  margin-right: 10px;
+  /* margin-right: 10px; */
   vertical-align: inherit;
 }
 .window .el-badge__content {

@@ -187,7 +187,7 @@ export default {
       this.w.tipTimer = setTimeout(() => {
         this.tip = this.storageTip;
         // this.storageTip = '';
-        callback();
+        callback != undefined && callback();
       }, 1000);
     }
   }

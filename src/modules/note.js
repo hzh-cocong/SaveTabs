@@ -7,19 +7,41 @@ let note = {
 
   isInit: false,
 
+  w: {
+    timer: null,
+  },
+
   init: function() {
+    // 自动保持窗口信息同步
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      // if(changeInfo.status != 'complete') return; // 更新过慢
+      if(changeInfo.status != 'loading') return;
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('note.js.refreshTabs')
+        this.refreshTabs();
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('note.js.refreshTabs')
+        this.refreshTabs();
+      }, 200);
+    })
+
     return Promise.all([
       new Promise((resolve) => {
         // 获取本地数据
         chrome.storage.local.get({tabs: []}, items => {
-          this.storageList = items.tabs.map((tab) => {
+          this.storageList = items.tabs.map((note) => {
             // 兼容旧版（旧版没有自动去除末尾 /）
-            tab.url = tab.url.replace(/(\/*$)/g,"");
+            note.url = note.url.replace(/(\/*$)/g,"");
             // 去除旧版一些没用的数据
-            delete tab.tabId;
-            delete tab.windowId;
+            delete note.tabId;
+            delete note.windowId;
 
-            return tab;
+            return note;
           });
           resolve()
         });
@@ -103,6 +125,77 @@ let note = {
     // 加载数据
     return new Promise(resolve => {
       resolve(this.cacheList.slice(start, start+length));
+    })
+  },
+
+  refreshTabs() {
+    Promise.all([
+      // 获取当前标签
+      new Promise((resolve) => {
+        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+          // 去除末尾 / （pendingUrl 有可能不存在）
+          tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
+                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
+                      : tabs[0].url.replace(/(\/*$)/g,"");
+          this.currentTab = tabs[0];
+          resolve()
+        })
+      }),
+      // 获取全部标签
+      new Promise((resolve) => {
+        chrome.tabs.query({}, tabs => {
+          this.activeTabs = {};
+          for(let tab of tabs) {
+            // 去除末尾 /
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
+            if(this.activeTabs[ tab.url ] == undefined) {
+              tab.count = 1;
+              tab.other = [];
+              this.activeTabs[ tab.url ] = tab;
+            } else {
+              this.activeTabs[ tab.url ].count++;
+              this.activeTabs[ tab.url ].other.push(tab.id);
+            }
+          }
+          resolve()
+        })
+      })
+    ]).then(() => {
+      console.log('note.js.refreshTabs.finish')
+      // 不能是 cacheList，因为这些状态在查询时并不会更新，这是唯一的更新机会
+      this.storageList.forEach((note) => {
+        // 加标签（速度很快）(存在污染问题)
+        note.isCurrent = note.url == this.currentTab.url;
+        note.isOpened = this.activeTabs[note.url] != undefined;
+        note.count = note.isOpened ? this.activeTabs[ note.url ].count : 1;
+        // note.type = 'note';
+      });
+    })
+  },
+
+  refreshData() {
+    return new Promise((resolve) => {
+      // 获取本地数据
+      chrome.storage.local.get({tabs: []}, items => {
+        this.storageList = items.tabs.map((note) => {
+          // 兼容旧版（旧版没有自动去除末尾 /）
+          note.url = note.url.replace(/(\/*$)/g,"");
+          // 去除旧版一些没用的数据
+          delete note.tabId;
+          delete note.windowId;
+
+          // 加标签（速度很快）(存在污染问题)
+          note.isCurrent = note.url == this.currentTab.url;
+          note.isOpened = this.activeTabs[note.url] != undefined;
+          note.count = note.isOpened ? this.activeTabs[ note.url ].count : 1;
+          note.type = 'note';
+
+          return note;
+        });
+        resolve()
+      });
     })
   },
 

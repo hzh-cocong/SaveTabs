@@ -390,7 +390,8 @@ export default {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if(request.type == 'data_change') {
         // 列表为空，没啥好更新的
-        if(this.list.length == 0) return;
+        // 列表为空也应该更新，可能更新后就有数据了
+        // if(this.list.length == 0) return;
 
         // 还没有在列表中展示，无需刷新
         if(this.localConfig.all_include.filter(workspace => {
@@ -399,9 +400,11 @@ export default {
           return workspace.type != request.workspace;
         }))) return;
 
+        console.log('all:data_change', request, sender);
+
         // 刷新数据
         let module = this.getModule(request.workspace);
-        module.refresh().then(() => {
+        module.refreshData().then(() => {
           // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
           let origin = this.storageKeyword;
           this.storageKeyword = ' ';

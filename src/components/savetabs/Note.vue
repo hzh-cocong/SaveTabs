@@ -421,6 +421,9 @@ console.warn('isSearched2');
 
           callback(true);
           this.isOperating = false;
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'note', operation: 'add'});
         })
 
         return;
@@ -497,6 +500,9 @@ console.log('add =====h')
         // }, 1)
         callback(true);
         this.isOperating = false;
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'note', operation: 'add'});
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -621,6 +627,9 @@ console.log('bb')
         // let origin = this.storageKeyword;
         // this.storageKeyword = ' ';
         // this.search(origin);
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'note', operation: 'delete'});
 
         this.focus();
       })

@@ -99,7 +99,7 @@ let window = {
     })
   },
 
-  refresh() {
+  refreshData() {
     return new Promise((resolve) => {
       chrome.storage.local.get({'list': []}, items => {
         // 刷新数据

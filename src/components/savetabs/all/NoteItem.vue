@@ -104,8 +104,8 @@
           direction: storageKeyword == ''
                     ? 'ltr'
                     : (isSelected ? 'rtl' : 'ltr') }"
-        v-html="isSelected && tip != ''
-              ? tip
+        v-html="isSelected && keyType != ''
+              ? getTip()
               : ( storageKeyword != ''
                 ? this.highlight(item.url, storageKeyword, '<strong>', '</strong>')
                 : (isSelected ? item.url : getDomain(item.url)) )"></div>
@@ -205,12 +205,32 @@ export default {
       required: false,
       default: '',
     },
-    tip: {
+    keyType: {
       type: String,
       required: false,
       default: '',
-    }
+    },
   },
+  methods: {
+    getTip() {
+      console.log('showTip');
+      if(this.item.isOpened) {
+        return '切换到对应的标签';
+      }
+
+      if(this.keyType == 'meta/ctrl') {
+        return '打开新标签但不切换';
+      } else if(this.keyType == 'shift') {
+        return '新窗口打开';
+      } else if(this.keyType == 'alt') {
+        return '覆盖当前标签';
+      } else if(this.keyType != '') {
+        return '打开新标签并切换';
+      } else {
+        return '';
+      }
+    },
+  }
 }
 </script>
 

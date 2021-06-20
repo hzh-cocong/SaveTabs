@@ -181,25 +181,6 @@ let note = {
     })
   },
 
-  showTip({index, keyType}) {
-    let currentNote = this.cacheList[index];
-    if(this.activeTabs[currentNote.url]) {
-      return keyType == '' ? '' : '切换到对应的标签';
-    }
-
-    if(keyType == 'meta/ctrl') {
-      return '打开新标签但不切换';
-    } else if(keyType == 'shift') {
-      return '新窗口打开';
-    } else if(keyType == 'alt') {
-      return '覆盖当前标签';
-    } else if(keyType != '') {
-      return '打开新标签并切换';
-    } else {
-      return '';
-    }
-  },
-
   getStorageIndex(note) {
     return this.storageList.findIndex(n => {
       return n.id == note.id;

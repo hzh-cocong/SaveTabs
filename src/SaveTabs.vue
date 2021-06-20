@@ -60,7 +60,7 @@
         @keydown.enter.native="openWindow"
         @keydown.esc.native="close"
         @keydown.native="keydown"
-        @keyup.native="keyup"
+        @keyup.native="keyType=getKeyType($event)"
         @input="search"
         @compositionstart.native="isComposition=true"
         @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search(keyword+$event.data)"
@@ -295,6 +295,7 @@
           :localConfig="localConfig"
           :project_config="project_config"
           :isLoad="isLoad"
+          :keyType="keyType"
 
           :history="history"
           :bookmark="bookmark"
@@ -437,6 +438,7 @@ export default {
       isOpened: {},
       things: { 0: []}, // 一开始没有切换事件
       lock: false,
+      keyType: '',
 
       config: userConfig,
       localConfig: userLocalConfig,
@@ -700,8 +702,8 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         return;
       }
 
-      let keyType = this.getKeyType(event);
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
+      this.keyType = this.getKeyType(event);
+      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
@@ -723,14 +725,6 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         // 数字键打开则屏蔽其它快捷键，以免发生逻辑冲突
         this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, '');
       }
-    },
-    keyup(event) {
-      console.log('keyup', event)
-
-      // if(this.$refs.workspaces == undefined) return;
-
-      let keyType = this.getKeyType(event);
-      this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
     },
     close() {
       chrome.runtime.sendMessage({

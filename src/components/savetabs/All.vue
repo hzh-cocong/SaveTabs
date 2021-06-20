@@ -58,7 +58,7 @@
                       : index-$refs.list.scrollLines+1)
                     )
                   : -1"
-        :tip="tip"></component>
+        :keyType="keyType"></component>
     </template>
   </list>
 
@@ -106,7 +106,12 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -122,8 +127,6 @@ export default {
       isSearched: false,
 
       length: {},
-
-      tip: '',
     }
   },
   components: {
@@ -356,18 +359,6 @@ export default {
     },
     choice(index) {
       return this.$refs.list.choice(index);
-    },
-
-    showTip(keyType) {
-      console.log('showTip', keyType)
-
-      if(keyType == '' && this.tip == '') return;
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
-
-      let item = this.list[ this.currentIndex ];
-      let module = this.getModule(item.type);
-
-      this.tip = module.showTip({index: item.index, keyType: keyType});
     },
 
     getModule(type) {

@@ -76,8 +76,8 @@
             direction: storageKeyword == ''
                       ? 'ltr'
                       : (isSelected ? 'rtl' : 'ltr') }"
-          v-html="isSelected && tip.length > 0
-                ? tip
+          v-html="isSelected && keyType != ''
+                ? getTip()
                 : ( storageKeyword != ''
                   ? highlightMap[index].url
                   : (isSelected ? item.url : getDomain(item.url)) )"></div>
@@ -198,7 +198,12 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -260,6 +265,7 @@ export default {
 
       return highlightMap;
     },
+
     isInCurrentTab() {
       return this.storageList.some((note) => {
         if(note.url == this.currentTab.url) {
@@ -645,27 +651,24 @@ console.log('bb')
       }, 0)
     },
 
-    showTip(keyType) {
-      if(this.currentNote == null) return;
-      if(keyType == '' && this.tip == '') return;
-console.log('showTip');
+    getTip() {
+      console.log('showTip');
       if(this.activeTabs[this.currentNote.url]) {
-        this.tip = keyType == '' ? '' : '切换到对应的标签';
-        return;
+        return '切换到对应的标签';
       }
 
-      if(keyType == 'meta/ctrl') {
-        this.tip = '打开新标签但不切换';
-      } else if(keyType == 'shift') {
-        this.tip = '新窗口打开';
-      } else if(keyType == 'alt') {
-        this.tip = '覆盖当前标签';
-      } else if(keyType != '') {
-        this.tip = '打开新标签并切换';
+      if(this.keyType == 'meta/ctrl') {
+        return '打开新标签但不切换';
+      } else if(this.keyType == 'shift') {
+        return '新窗口打开';
+      } else if(this.keyType == 'alt') {
+        return '覆盖当前标签';
+      } else if(this.keyType != '') {
+        return '打开新标签并切换';
       } else {
-        this.tip = '';
+        return '';
       }
-    }
+    },
   },
   beforeUpdate() {
     console.warn('beforeUpdate');

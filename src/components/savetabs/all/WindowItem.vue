@@ -91,7 +91,7 @@
         v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
       <div
         class="sub-title"
-        v-if="isSelected && tip.length > 0"
+        v-if="isSelected && keyType != ''"
         :style="{
           fontSize: config.list_explain_font_size+'px',
           color: index == 0 && item.isCurrent
@@ -100,7 +100,7 @@
                 : config.list_current_explain_font_color)
               : ( isSelected
                 ? config.list_explain_focus_font_color
-                : config.list_explain_font_color) }">{{ tip }}</div>
+                : config.list_explain_font_color) }">{{ getTip() }}</div>
     </div>
 
     <div class="right">
@@ -190,12 +190,30 @@ export default {
       required: false,
       default: '',
     },
-    tip: {
+    keyType: {
       type: String,
       required: false,
       default: '',
-    }
+    },
   },
+  methods: {
+    getTip() {
+console.log('showTip');
+      if(this.item.isOpened) {
+        return '切换到对应的窗口';
+      }
+
+      if(this.keyType == 'meta/ctrl') {
+        return  '当前窗口打开但不选中';
+      } else if(this.keyType == 'alt') {
+        return  '当前窗口打开并选中';
+      } else if(this.keyType != '') {
+        return  '默认新窗口打开';
+      } else {
+        return  '';
+      }
+    }
+  }
 }
 </script>
 

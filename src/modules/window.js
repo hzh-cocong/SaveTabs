@@ -233,23 +233,6 @@ let window = {
       return group.windowId == this.currentWindowId;
     })
   },
-
-  showTip({index, keyType}) {
-    let currentGroup = this.cacheList[index];
-    if(this.activeWindows[currentGroup.windowId]) {
-      return keyType == '' ? '' : '切换到对应的窗口';
-    }
-
-    if(keyType == 'meta/ctrl') {
-      return '当前窗口打开但不选中';
-    } else if(keyType == 'alt') {
-      return '当前窗口打开并选中';
-    } else if(keyType != '') {
-      return '默认新窗口打开';
-    } else {
-      return '';
-    }
-  }
 }
 
 export default window;

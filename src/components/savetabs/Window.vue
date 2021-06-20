@@ -67,7 +67,7 @@
           v-html="highlightMap[index]"></span>
         <div
           class="sub-title"
-          v-if="isSelected && tip.length > 0"
+          v-if="isSelected && keyType != ''"
           :style="{
             fontSize: config.list_explain_font_size+'px',
             color: item.windowId == currentWindowId
@@ -76,7 +76,7 @@
                   : config.list_current_explain_font_color)
                 : ( isSelected
                   ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color) }">{{ tip }}</div>
+                  : config.list_explain_font_color) }">{{ getTip() }}</div>
       </div>
 
       <div class="right">
@@ -433,7 +433,12 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -462,8 +467,6 @@ export default {
       oldGroup: {},
       currentWindow: {},
       // haveDifference: true,
-
-      tip: '',
 
       isOperating: false,
     }
@@ -1291,25 +1294,22 @@ console.log('get_currentWindowStorageIndex3', index);
       })
     },
 
-    showTip(keyType) {
-      if(this.currentGroup == null) return;
-      if(keyType == '' && this.tip == '') return;
-console.log('showTip');
+    getTip() {
+      console.log('showTip');
       if(this.activeWindows[this.currentGroup.windowId]) {
-        this.tip = keyType == '' ? '' : '切换到对应的窗口';
-        return;
+        return '切换到对应的窗口';
       }
 
-      if(keyType == 'meta/ctrl') {
-        this.tip = '当前窗口打开但不选中';
-      } else if(keyType == 'alt') {
-        this.tip = '当前窗口打开并选中';
-      } else if(keyType != '') {
-        this.tip = '默认新窗口打开';
+      if(this.keyType == 'meta/ctrl') {
+        return  '当前窗口打开但不选中';
+      } else if(this.keyType == 'alt') {
+        return  '当前窗口打开并选中';
+      } else if(this.keyType != '') {
+        return  '默认新窗口打开';
       } else {
-        this.tip = '';
+        return  '';
       }
-    }
+    },
   },
 
   beforeUpdate() {

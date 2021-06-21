@@ -1391,6 +1391,14 @@ console.warn('finish', b, (b-a)/1000)
     })
 
     // 自动保持窗口信息同步
+    // onCreated 触发的更新可能会缺少标题，还是不要了，有手动更新功能，用户可以自己选择
+    // chrome.tabs.onCreated.addListener(() => {
+    //   clearTimeout(this.w.timer);
+    //   this.w.timer = setTimeout(() => {
+    //     console.log('window.refreshWindows')
+    //     this.refreshWindows();
+    //   }, 200);
+    // })
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       if(changeInfo.status != 'complete') return;
       clearTimeout(this.w.timer);

@@ -556,8 +556,6 @@ console.log('add =====h')
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
       chrome.storage.local.set({tabs: this.storageList}, () => {
         this.$open(this.currentNote.url, keyType, (tab, type) => {
-          // 虽然加了标签事件监听，但那个更新不及时
-
           // 去除末尾 /
           tab.url = tab.url == '' && tab.pendingUrl
                   ? tab.pendingUrl.replace(/(\/*$)/g,"")
@@ -574,20 +572,10 @@ console.log('add =====h')
 
             this.currentTab = tab;
             this.activeTabs[ this.currentTab.url ] = tab;
-
-            // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-            // let origin = this.storageKeyword;
-            // this.storageKeyword = ' ';
-            // this.search(origin);
           } else {
             tab.count = 1;
             tab.other = [];
             this.activeTabs[ tab.url ] = tab;
-
-            // // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-            // let origin = this.storageKeyword;
-            // this.storageKeyword = undefined;
-            // this.search(origin);
           }
 
           // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
@@ -622,11 +610,6 @@ console.log('bb')
         // 移除，不重新search，体验不好
         this.list.splice(this.currentIndex, 1);
         this.cacheList.splice(this.currentIndex, 1);
-
-        // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        // let origin = this.storageKeyword;
-        // this.storageKeyword = ' ';
-        // this.search(origin);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'note', operation: 'delete'});
@@ -711,11 +694,6 @@ console.log('bb')
           })
         })
       ]).then(() => {
-        // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        // let origin = this.storageKeyword;
-        // this.storageKeyword = ' ';
-        // this.search(origin);
-
         // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
         let origin = this.storageKeyword;
         this.storageKeyword = undefined;
@@ -814,15 +792,27 @@ console.warn('finish', b, (b-a)/1000)
     })
 
     // 自动保持窗口信息同步
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-      // if(changeInfo.status != 'complete') return; // 更新过慢
-      if(changeInfo.status != 'loading') return;
+    // 便签只需要知道标签状态，不需要其详细详细，所以 onUpdated 并不需要
+    // 网页被覆盖 onCreated 或 onRemoved 是不会被触发的，所以 openWindow 要自己处理
+    // 再加上
+    // openWindow 会第一时间更新，肯定比 onCreated 快，可以防止重复点击
+    // onCreated 是为了能够及时其它工作区所导致的标签变化
+    // onUpdated 是为了能完美显示便签信息
+    chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         console.log('note.refreshTabs')
         this.refreshTabs();
       }, 200);
     })
+    // chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    //   if(changeInfo.status != 'complete') return;
+    //   clearTimeout(this.w.timer);
+    //   this.w.timer = setTimeout(() => {
+    //     console.log('note.refreshTabs')
+    //     this.refreshTabs();
+    //   }, 200);
+    // })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {

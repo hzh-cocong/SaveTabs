@@ -13,9 +13,18 @@ let note = {
 
   init: function() {
     // 自动保持窗口信息同步
+    // openWindow 会第一时间更新，肯定比 onCreated 快，可以防止重复点击
+    // onCreated 是为了能够及时其它工作区所导致的标签变化
+    // onUpdated 是为了能完美显示便签信息
+    chrome.tabs.onCreated.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('note.js.refreshTabs')
+        this.refreshTabs();
+      }, 200);
+    })
     chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-      // if(changeInfo.status != 'complete') return; // 更新过慢
-      if(changeInfo.status != 'loading') return;
+      if(changeInfo.status != 'complete') return;
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         console.log('note.js.refreshTabs')

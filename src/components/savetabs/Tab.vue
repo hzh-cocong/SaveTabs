@@ -182,6 +182,10 @@ export default {
       isSearched: false,
 
       activeTab: null,
+
+      w: {
+        timer: null,
+      }
     }
   },
   components: {
@@ -384,80 +388,143 @@ export default {
       })
 
       this.focus();
+    },
+
+    refreshTabs(callback) {
+      // 查找
+      Promise.all([
+        new Promise((resolve) => {
+          // 获取标签顺序
+          chrome.runtime.sendMessage({
+              type: 'getActiveTabs'
+          }, (tabIds) => {
+            console.log('tabIds', tabIds)
+            console.log('gggggggggg3');
+            resolve(tabIds);
+          })
+        }),
+        new Promise(resolve => {
+          // 获取所有标签
+          chrome.tabs.query({}, (tabs)=>{
+            let t = tabs.map((tab) => {
+              // 去除末尾 /
+              tab.url = tab.url == '' && tab.pendingUrl
+                      ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                      : tab.url.replace(/(\/*$)/g,"");
+              return tab;
+            });
+            console.log('gggggggggg');
+            resolve(t);
+          })
+        }),
+        new Promise(resolve => {
+          // 获取当前标签
+          chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+            this.activeTab = tabs[0];
+            resolve()
+          })
+        })
+      ]).then(([tabIds, tabs]) => {
+        console.log('ssssss', tabIds, tabs);
+
+        // 建立索引，方便快速获取 tab 位置
+        let map = new Map();
+        tabIds.forEach((tabId, index) => {
+          map.set(tabId, index)
+        })
+
+        // 当前窗口排最前面
+        map.set(this.activeTabId, map.size);
+        console.log('init', map, this.activeTabId, map.size);
+
+        // 按标签顺序排序，没有记录的排最后
+        this.originList = tabs.sort((tab1, tab2) => {
+          // // 当前窗口排最前面
+          // if(tab1.id == this.activeTabId) return -1;
+          // if(tab2.id == this.activeTabId) return 1;
+
+          let index1 = map.get(tab1.id);
+          let index2 = map.get(tab2.id);
+
+          if(index1 == undefined && index2 == undefined) return 0;
+          if(index1 == undefined) return 1;
+          if(index2 == undefined) return -1;
+
+          return index2 - index1;
+        })
+
+        this.focusList = this.originList;
+
+        callback != undefined && callback();
+      })
     }
   },
   mounted() {
     // todo
     window.tab = this;
-console.log('ttttttttttttt')
-    // 查找
-    Promise.all([
-      new Promise((resolve) => {
-        // 获取标签顺序
-        chrome.runtime.sendMessage({
-            type: 'getActiveTabs'
-        }, (tabIds) => {
-          console.log('tabIds', tabIds)
-          console.log('gggggggggg3');
-          resolve(tabIds);
-        })
-      }),
-      new Promise(resolve => {
-        // 获取所有标签
-        chrome.tabs.query({}, (tabs)=>{
-          let t = tabs.map((tab) => {
-            // 去除末尾 /
-            tab.url = tab.url == '' && tab.pendingUrl
-                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                    : tab.url.replace(/(\/*$)/g,"");
-            return tab;
-          });
-          console.log('gggggggggg');
-          resolve(t);
-        })
-      }),
-      new Promise(resolve => {
-        // 获取当前标签
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-          this.activeTab = tabs[0];
-          resolve()
-        })
-      })
-    ]).then(([tabIds, tabs]) => {
-      console.log('ssssss', tabIds, tabs);
 
-      // 建立索引，方便快速获取 tab 位置
-      let map = new Map();
-      tabIds.forEach((tabId, index) => {
-        map.set(tabId, index)
-      })
-
-      // 当前窗口排最前面
-      map.set(this.activeTabId, map.size);
-      console.log('init', map, this.activeTabId, map.size);
-
-      // 按标签顺序排序，没有记录的排最后
-      this.originList = tabs.sort((tab1, tab2) => {
-        // // 当前窗口排最前面
-        // if(tab1.id == this.activeTabId) return -1;
-        // if(tab2.id == this.activeTabId) return 1;
-
-        let index1 = map.get(tab1.id);
-        let index2 = map.get(tab2.id);
-
-        if(index1 == undefined && index2 == undefined) return 0;
-        if(index1 == undefined) return 1;
-        if(index2 == undefined) return -1;
-
-        return index2 - index1;
-      })
-
-      this.focusList = this.originList;
-
+    this.refreshTabs(() => {
       this.$emit('finish');
 
       // 更新列表
       // this.search();
+    })
+
+    // 自动保持窗口信息同步
+    // 不想 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
+    // onCreated 是为了能够及时其它工作区所导致的标签变化
+    // onUpdated 是为了能完美显示标签信息
+    chrome.tabs.onCreated.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs')
+        this.refreshTabs(() => {
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
+        });
+      }, 200);
+    })
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      if(changeInfo.status != 'complete') return;
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs')
+        this.refreshTabs(() => {
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
+        });
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs')
+        this.refreshTabs(() => {
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
+        });
+      }, 200);
     })
   }
 }

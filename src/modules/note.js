@@ -23,14 +23,14 @@ let note = {
         this.refreshTabs();
       }, 200);
     })
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-      if(changeInfo.status != 'complete') return;
-      clearTimeout(this.w.timer);
-      this.w.timer = setTimeout(() => {
-        console.log('note.js.refreshTabs')
-        this.refreshTabs();
-      }, 200);
-    })
+    // chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    //   if(changeInfo.status != 'complete') return;
+    //   clearTimeout(this.w.timer);
+    //   this.w.timer = setTimeout(() => {
+    //     console.log('note.js.refreshTabs')
+    //     this.refreshTabs();
+    //   }, 200);
+    // })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {

@@ -471,7 +471,7 @@ export default {
     })
 
     // 自动保持窗口信息同步
-    // 不想 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
+    // 不像 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
     // onCreated 是为了能够及时其它工作区所导致的标签变化
     // onUpdated 是为了能完美显示标签信息
     chrome.tabs.onCreated.addListener(() => {

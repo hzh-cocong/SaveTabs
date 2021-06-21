@@ -794,10 +794,7 @@ console.warn('finish', b, (b-a)/1000)
     // 自动保持窗口信息同步
     // 便签只需要知道标签状态，不需要其详细详细，所以 onUpdated 并不需要
     // 网页被覆盖 onCreated 或 onRemoved 是不会被触发的，所以 openWindow 要自己处理
-    // 再加上
-    // openWindow 会第一时间更新，肯定比 onCreated 快，可以防止重复点击
-    // onCreated 是为了能够及时其它工作区所导致的标签变化
-    // onUpdated 是为了能完美显示便签信息
+    // 再加上 timer ，openWindow 自己可以防止重复点击
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {

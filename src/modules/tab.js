@@ -1,4 +1,5 @@
 let tab = {
+  originList: [],
   cacheList: [],
   focusList: [],
 
@@ -6,7 +7,50 @@ let tab = {
 
   isInit: false,
 
+  w: {
+    timer: null,
+  },
+
   init: function() {
+    // 自动保持窗口信息同步
+    // 不像 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
+    // onCreated 和 onRemoved 会导致列表数量发生变化，必须重刷列表
+    // onUpdated 只是信息发生变化，无需重刷
+    chrome.tabs.onCreated.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.js.refreshTabs.create')
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'add'});
+      }, 200);
+    })
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+      if(changeInfo.status != 'complete') return;
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.js.refreshTabs.update')
+        // 这个会使得列表被重写，除非刷新，否则是看不到变化的，所以不能用这种
+        // this.refreshData();
+
+        let t = this.originList.find(t => t.id == tab.id);
+        if(t == undefined) return; // 有可能标签更新过快，此时列表还未完全刷新，这里直接忽略
+
+        Object.assign(t, tab);
+        console.log('tab.js.refreshTabs.update2')
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.js.refreshTabs.remove')
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'delete'});
+      }, 200);
+    })
+
+    return this.refreshData().then(() => {
+      this.isInit = true;
+    })
+  },
+  refreshData() {
     return Promise.all([
       new Promise((resolve) => {
         // 获取标签顺序
@@ -64,8 +108,6 @@ let tab = {
       });
 
       this.focusList = this.originList;
-
-      this.isInit = true;
     })
   },
 

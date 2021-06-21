@@ -401,7 +401,7 @@ export default {
         }))) return;
 
         console.log('all:data_change', request, sender);
-
+// todo 存在并发问题以及频繁刷新问题
         // 刷新数据
         let module = this.getModule(request.workspace);
         module.refreshData().then(() => {

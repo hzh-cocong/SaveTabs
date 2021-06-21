@@ -123,7 +123,7 @@ let note = {
       // 合并结果
       let cacheList = currentList; cacheList.push(...openedList, ...closeList);
       this.cacheList = cacheList.map((note, index) => {
-        note.index = index;
+        note.realIndex = index;
         return note;
       });
 

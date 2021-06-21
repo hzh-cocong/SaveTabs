@@ -43,7 +43,7 @@ let search = {
       // 列表赋值
       this.cacheList = filterList.map((workspace, index) => {
         workspace.tip = keywords == '' ? '' : `Search ${workspace.workspace} for '<strong>${keywords.escape()}</strong>'`;
-        workspace.index = index;
+        workspace.realIndex = index;
         return workspace;
       })
 

@@ -85,7 +85,7 @@ let window = {
       // 合并结果
       let cacheList = currentList; cacheList.push(...openedList, ...closeList);
       this.cacheList = cacheList.map((group, index) => {
-        group.index = index;
+        group.realIndex = index;
         return group;
       });
 

@@ -147,7 +147,7 @@ let tab = {
 
       // 列表赋值
       this.cacheList = filterList.map((tab, index) => {
-        tab.index = index;
+        tab.realIndex = index;
         return tab;
       });
 

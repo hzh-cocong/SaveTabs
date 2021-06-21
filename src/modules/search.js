@@ -11,7 +11,7 @@ let search = {
 
       this.storageList.forEach((item, index) => {
         item.type = 'search';
-        item.index = index;
+        item.realIndex = index;
       })
 
       this.isInit = true;
@@ -25,7 +25,7 @@ let search = {
         this.cacheList = this.storageList.map((item, index) => {
           item.url = encodeURI(item.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));
           // item.title = `Search ${item.name} for '<strong>${originKeyword.escape()}</strong>'`;
-          // item.index = index;
+          // item.realIndex = index;
           return item;
         })
         return this.cacheList.slice(0, length);

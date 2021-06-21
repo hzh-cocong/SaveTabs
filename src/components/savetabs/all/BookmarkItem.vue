@@ -72,14 +72,14 @@
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">{{
-              index+' | '+item.index+' | '+item.title
+              index+' | '+item.realIndex+' | '+item.title
           }}</div>
       </template>
       <template v-else>
         <span
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="index+' | '+item.index+' | '+highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
+          v-html="index+' | '+item.realIndex+' | '+highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
       </template>
 
       <div

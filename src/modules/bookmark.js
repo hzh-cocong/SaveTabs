@@ -136,7 +136,7 @@ let bookmark = {
           bookmark.subTitle = (this.tree.path[bookmark.parentId] ? this.tree.path[bookmark.parentId] : '')
                               + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
                                 + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')
-          bookmark.index = index;
+          bookmark.realIndex = index;
         });
 
         return this.cacheList.slice(0, length);
@@ -218,7 +218,7 @@ let bookmark = {
                                 + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
                                   + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')
 
-          bookmark.index = currentBookmark.index+'-'+index;
+          bookmark.realIndex = currentBookmark.realIndex+'-'+index;
           return bookmark;
         });
 
@@ -313,7 +313,7 @@ console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
 
   getRealIndex(i) {
     return this.cacheList.findIndex((bookmark, index) => {
-      return bookmark.index == i;
+      return bookmark.realIndex == i;
     })
   },
 }

@@ -339,7 +339,7 @@ export default {
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 
-      module.openWindow(item.index, keyType).then((result) => {
+      module.openWindow(item.realIndex, keyType).then((result) => {
         console.warn('all.finish', result);
         if(result == undefined) return;
 

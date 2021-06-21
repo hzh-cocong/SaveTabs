@@ -58,7 +58,7 @@ let history = {
             history.lastVisitTime = history.subFiles.length > 0
                                   ? history.subFiles[0].lastVisitTime
                                   : this.cacheList[index+1].lastVisitTime;
-            history.index = index;
+            history.realIndex = index;
             return history;
           });
 
@@ -117,8 +117,7 @@ let history = {
                                   ? history.subFiles[0].lastVisitTime
                                   : this.cacheList[index+1].lastVisitTime
                                 );
-          history.index = start+index;
-          // history.index = start+index;
+          history.realIndex = start+index;
           return history;
         }).slice(0, length));
       })
@@ -231,7 +230,7 @@ let history = {
         // 展开
         let historys = currentHistory.subFiles.map((history, index) => {
           history.type = 'history';
-          history.index = currentHistory.index+'-'+index;
+          history.realIndex = currentHistory.realIndex+'-'+index;
           return history;
         });
 
@@ -250,7 +249,7 @@ let history = {
 
   getRealIndex(i) {
     return this.cacheList.findIndex((history, index) => {
-      return history.index == i;
+      return history.realIndex == i;
     })
   },
 }

@@ -68,7 +68,7 @@
           style="margin-right: 10px;"
           :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
                     'el-icon-remove-outline' : item.subFiles.length <= 0, }"></i>
-        <span v-html="index+' | '+item.index+' | '+(highlight(item.title, storageKeyword, '<strong>', '</strong>')
+        <span v-html="index+' | '+item.realIndex+' | '+(highlight(item.title, storageKeyword, '<strong>', '</strong>')
                     || highlight(item.url, storageKeyword, '<strong>', '</strong>'))"></span>
       </div>
       <div

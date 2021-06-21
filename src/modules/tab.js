@@ -4,6 +4,7 @@ let tab = {
   focusList: [],
 
   activeTab: null,
+  windowRank: {},
 
   isInit: false,
 
@@ -55,9 +56,18 @@ let tab = {
       new Promise((resolve) => {
         // 获取标签顺序
         chrome.runtime.sendMessage({
-            type: 'getActiveTabs'
+            type: 'getActiveTabIds'
         }, (tabIds) => {
           resolve(tabIds);
+        })
+      }),
+      new Promise((resolve) => {
+        // 获取窗口顺序
+        chrome.runtime.sendMessage({
+            type: 'getActiveWindowIds'
+        }, (windowIds) => {
+          console.log('windowIds', windowIds)
+          resolve(windowIds);
         })
       }),
       new Promise(resolve => {
@@ -80,7 +90,13 @@ let tab = {
           resolve()
         })
       })
-    ]).then(([tabIds, tabs]) => {
+    ]).then(([tabIds, windowIds, tabs]) => {
+      // 记录窗口顺序
+      this.windowRank = windowIds.reverse().reduce((accumulator, windowId, index) => {
+        accumulator[windowId] = index+1;
+        return accumulator;
+      }, {})
+
       // 建立索引，方便快速获取 tab 位置
       let map = new Map();
       tabIds.forEach((tabId, index) => {
@@ -103,8 +119,10 @@ let tab = {
 
       // 加标签（速度很快）(存在污染问题)
       this.originList.forEach(tab => {
-        tab.isCurrent = tab.id == this.activeTab.id
+        // tab.isCurrent = tab.id == this.activeTab.id;
+        tab.isCurrent = tab.windowId == this.activeTab.windowId;
         tab.type = 'tab';
+        tab.windowRank = this.windowRank[tab.windowId];
       });
 
       this.focusList = this.originList;
@@ -143,30 +161,24 @@ let tab = {
     })
   },
 
-  openWindow(index, event) {
+  openWindow(index, keyType) {
     let selectedTab = this.cacheList[ index ];
 
-    if(event != undefined
-    &&((_device.platform == 'Mac' && event.metaKey == true)
-      || (_device.platform != 'Mac' && event.ctrlKey == true))) {
+    if(keyType == 'meta/ctrl') {
       return new Promise(resolve => {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(selectedTab.id, {windowId: this.activeTab.windowId, index: this.activeTab.index+1}, () => {
           resolve();
         });
       })
-    } else if(event != undefined
-            && _device.platform != ''
-            && event.shiftKey == true) {
+    } else if(keyType == 'shift') {
       return new Promise(resolve => {
         // 移动到新窗口（新建窗口）
         chrome.windows.create({tabId: selectedTab.id, focused: true}, () => {
           resolve();
         });
       })
-    } else if(event != undefined
-            && _device.platform != ''
-            && event.altKey == true) {
+    } else if(keyType == 'alt') {
       return new Promise(resolve => {
         // 交换两个标签的位置，激活被选中的标签
 
@@ -176,15 +188,20 @@ let tab = {
             target: this.activeTab,
             destination: selectedTab
         })
+
+        resolve();
       })
     } else {
       return new Promise(resolve => {
         // 切换到对应的标签，不做任何移动（默认方式）
         chrome.tabs.update(selectedTab.id, { active: true }, () => {
           chrome.windows.update(selectedTab.windowId, { focused: true}, () => {
-            chrome.runtime.sendMessage({
-              type: 'closeExtension',
-            })
+            // 会有专门的事件处理，这里返回回导致插件重启
+            // chrome.runtime.sendMessage({
+            //   type: 'closeExtension',
+            // })
+
+            resolve();
           });
         })
       })

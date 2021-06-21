@@ -129,7 +129,13 @@
             fontSize: config.list_state_size+'px',
             color: isSelected
               ? config.list_focus_state_color
-              : config.list_state_color }">{{ item.isCurrent ? 'Current' : 'Opened' }}</span>
+              : config.list_state_color }">{{
+              item.isCurrent
+            ? 'Current'
+            : ( item.windowRank == undefined
+              ? 'Opened'
+              : 'Win'+item.windowRank )
+          }}</span>
       </template>
       <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)">
         <span

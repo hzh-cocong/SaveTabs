@@ -187,8 +187,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     var filename = request.filename;
     let tabs = request.tabs;
     generate(filename, tabs);
-  } else if(request.type == 'getActiveTabs') {
+  } else if(request.type == 'getActiveTabIds') {
     sendResponse([...activeTabs]);
+  } else if(request.type == 'getActiveWindowIds') {
+    sendResponse([...activeWindows.keys()]);
   } else if(request.type == 'exchangeTab') {
     let target = request.target;
     let destination = request.destination;
@@ -212,12 +214,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log('exchangeTab', '新增标签，防止在交换过程中因为焦点变化而导致顺序混乱');
 
         chrome.tabs.create({windowId: target.windowId, index: target.index+1, active: false}, (tab) => {
-          console.log('exchangeTab', '空白页创建完成', tab);
+          console.log('exchangeTab', '空白页创建完成', target.index+1, destination.index+1, tab);
           // 直接交换
           chrome.tabs.move(target.id, {windowId: destination.windowId, index: destination.index+1}, () => {
             chrome.tabs.move(destination.id, {windowId: target.windowId, index: target.index+1}, () => {
               // 关闭空白页面
-              console.log('exchangeTab', '关闭空白页面', tab);
+              console.log('exchangeTab', '关闭空白页面', target.index+1, destination.index+1, tab);
               chrome.tabs.remove(tab.id);
             })
           })

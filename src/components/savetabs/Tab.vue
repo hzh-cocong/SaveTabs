@@ -35,7 +35,7 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow">
+    @itemClick="_openWindow(getKeyType($event))">
     <template #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
@@ -112,7 +112,13 @@
               fontSize: config.list_state_size+'px',
               color: isSelected
                 ? config.list_focus_state_color
-                : config.list_state_color }">Opened</span>
+                : config.list_state_color }">{{
+                item.windowId == currentWindowId
+              ? 'Current'
+              : ( windowRank[item.windowId] == undefined
+                ? 'Opened'
+                : 'Win'+windowRank[item.windowId] )
+            }}</span>
         </template>
         <!-- <template v-else> -->
         <template v-if=" ! isActive && item.id != activeTabId">
@@ -182,6 +188,7 @@ export default {
       isSearched: false,
 
       activeTab: null,
+      windowRank: {},
 
       w: {
         timer: null,
@@ -331,9 +338,9 @@ export default {
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
-    openWindow(index, event) {
+    openWindow(index, keyType) {
       if(index == undefined) {
-        this._openWindow(event);
+        this._openWindow(keyType);
         return;
       }
 
@@ -341,22 +348,18 @@ export default {
         return;
       }
 
-      this._openWindow(event);
+      this._openWindow(keyType);
     },
-    _openWindow(event) {
-      if(event != undefined
-      &&((this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
+    _openWindow(keyType) {
+      if(this.selectedTab == null) return;
+
+      if(keyType == 'meta/ctrl') {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1});
-      } else if(event != undefined
-              && this._device.platform != ''
-              && event.shiftKey == true) {
+      } else if(keyType == 'shift') {
         // 移动到新窗口（新建窗口）
         chrome.windows.create({tabId: this.selectedTabId, focused: true});
-      } else if(event != undefined
-              && this._device.platform != ''
-              && event.altKey == true) {
+      } else if(keyType == 'alt') {
         // 交换两个标签的位置，激活被选中的标签
         console.log('exchangeTab');
 
@@ -370,9 +373,10 @@ export default {
         // 切换到对应的标签，不做任何移动（默认方式）
         chrome.tabs.update(this.selectedTabId, { active: true }, () => {
           chrome.windows.update(this.selectedTab.windowId, { focused: true}, () => {
-            chrome.runtime.sendMessage({
-              type: 'closeExtension',
-            })
+            // 会有专门的事件处理，这里返回回导致插件重启
+            // chrome.runtime.sendMessage({
+            //   type: 'closeExtension',
+            // })
           });
         })
       }
@@ -396,11 +400,19 @@ export default {
         new Promise((resolve) => {
           // 获取标签顺序
           chrome.runtime.sendMessage({
-              type: 'getActiveTabs'
+              type: 'getActiveTabIds'
           }, (tabIds) => {
             console.log('tabIds', tabIds)
-            console.log('gggggggggg3');
             resolve(tabIds);
+          })
+        }),
+        new Promise((resolve) => {
+          // 获取窗口顺序
+          chrome.runtime.sendMessage({
+              type: 'getActiveWindowIds'
+          }, (windowIds) => {
+            console.log('windowIds', windowIds)
+            resolve(windowIds);
           })
         }),
         new Promise(resolve => {
@@ -424,8 +436,16 @@ export default {
             resolve()
           })
         })
-      ]).then(([tabIds, tabs]) => {
-        console.log('ssssss', tabIds, tabs);
+      ]).then(([tabIds, windowIds, tabs]) => {
+        console.log('ssssss', tabIds, windowIds, tabs);
+
+        // 记录窗口顺序
+        // this.windowRank = {};
+        // windowIds.forEach((windowId, index) => this.windowRank[windowId]=index+1);
+        this.windowRank = windowIds.reverse().reduce((accumulator, windowId, index) => {
+          accumulator[windowId] = index+1;
+          return accumulator;
+        }, {})
 
         // 建立索引，方便快速获取 tab 位置
         let map = new Map();

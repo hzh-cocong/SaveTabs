@@ -55,8 +55,8 @@
         :clearable="keyword == '' ? false : true"
         @keydown.down.native.prevent="selectDelay('down', $event)"
         @keydown.up.native.prevent="selectDelay('up', $event)"
-        @keydown.left.native="selectDelay('left', $event)"
-        @keydown.right.native="selectDelay('right', $event)"
+        @keydown.left.native="leftOrRightDown('left', $event)"
+        @keydown.right.native="leftOrRightDown('right', $event)"
         @keydown.enter.native="openWindow"
         @keydown.esc.native="close"
         @keydown.native="keydown"
@@ -689,21 +689,26 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       // tab 和 shift+tab 左右切换
       if(event.keyCode == 9) {
-        // selectDelay 自己会屏蔽
-        event.stopPropagation();
-        event.preventDefault();
-
         if(event.shiftKey == true) {
           this.selectDelay('left', event);
         } else {
           this.selectDelay('right', event);
         }
-
         return;
+      }
+      // cmd/alt + [] 左右切换
+      if((event.keyCode == 219 || event.keyCode == 221)
+      && ( (this._device.platform == 'Mac' && event.metaKey == true)
+        || (this._device.platform != 'Mac' && event.altKey == true))) {
+        if(event.keyCode == 219) {
+          this.selectDelay('left', event);
+        } else {
+          this.selectDelay('right', event);
+        }
+        return
       }
 
       this.keyType = this.getKeyType(event);
-      // this.$refs.workspaces[ this.activeWorkspaceRefIndex ].showTip(keyType);
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
@@ -726,31 +731,27 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(index, '');
       }
     },
-    close() {
-      chrome.runtime.sendMessage({
-        type: 'closeExtension',
-      })
+    leftOrRightDown(type, event) {
+      // 左右切换快捷键未开启则无法切换
+      if( ! this.localConfig.keymap_left_and_right) return;
+
+      // 只有一个工作区可用时，输入框恢复左右选择能力
+      if(this.workspaces.length <= 1) return;
+
+      // cmd、alt、shift、ctrl 按下时不屏蔽事件
+      if(event.metaKey == true
+      || event.altKey == true
+      || event.shiftKey == true
+      || event.ctrlKey == true) return;
+
+      this.selectDelay(type, event);
     },
     selectDelay(type, event) {
       // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
 
-      // 左右选择（tab切换无需该逻辑）
-      if(event.keyCode != 9 && (type == 'left' || type == 'right')) {
-        // 左右切换快捷键未开启则无法切换
-        if( ! this.localConfig.keymap_left_and_right) return;
-
-        // 只有一个工作区可用时，输入框恢复左右选择能力
-        if(this.workspaces.length <= 1) return;
-
-        // cmd、alt、shift、ctrl 按下时不屏蔽事件
-        if(event.metaKey == true
-        || event.altKey == true
-        || event.shiftKey == true
-        || event.ctrlKey == true) return;
-      }
-
       // 屏蔽事件
+      event.stopPropagation();
       event.preventDefault();
 
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
@@ -772,6 +773,11 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         this.$refs.carousel.next();
         setTimeout(() => { this.lock = false; }, 150);
       }
+    },
+    close() {
+      chrome.runtime.sendMessage({
+        type: 'closeExtension',
+      })
     },
     workspaceChange(newIndex) {
       console.log('workspaceChange', newIndex)
@@ -997,6 +1003,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // window.oncontextmenu = function(e){
     //   // 取消默认的浏览器自带右键
     //   // 输入框也被屏蔽了
+    //   e.stopPropagation();
     //   e.preventDefault();
     // }
 
@@ -1079,7 +1086,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉
     window.addEventListener('keydown', (event)=>{
       if(event.keyCode == 27) {
-        // event.stopPropagation();
+        event.stopPropagation();
         event.preventDefault();
       }
     })

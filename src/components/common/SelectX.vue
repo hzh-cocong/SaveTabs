@@ -83,6 +83,7 @@ export default {
       let startY = 0;
       let scrollToolY = 0;
       this.scrollTool.addEventListener('mousedown', (event) => {
+        event.stopPropagation();
         event.preventDefault();
 
         startY = event.clientY;
@@ -112,6 +113,7 @@ export default {
       })
     },
     mouseSelect(event) {
+      event.stopPropagation();
       event.preventDefault();
 
       const eventDeltaY = -event.wheelDeltaY || event.deltaY * 3;

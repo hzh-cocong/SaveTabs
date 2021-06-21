@@ -538,7 +538,32 @@ const tool = {
         addListener: function(callback) {
 
         }
-      }
+      },
+      onCreated: {
+        addListener: function(callback) {
+
+        }
+      },
+      onUpdated: {
+        addListener: function(callback) {
+
+        }
+      },
+      onRemoved: {
+        addListener: function(callback) {
+
+        }
+      },
+      onMoved: {
+        addListener: function(callback) {
+
+        }
+      },
+      onDetached: {
+        addListener: function(callback) {
+
+        }
+      },
     }
     chrome.history = {
       deleteUrl: function(options, callback) {
@@ -582,9 +607,16 @@ const tool = {
 
     chrome.runtime = {
       sendMessage: function(options, callback) {
-        setTimeout(() => {
-          callback != undefined && callback([21, 20, 19, 18]);
-        }, 1)
+        if(options.type == 'getActiveTabIds') {
+          setTimeout(() => {
+            callback != undefined && callback([21, 20, 19, 18]);
+          }, 1)
+        } else if(options.type == 'getActiveWindowIds') {
+          setTimeout(() => {
+            callback != undefined && callback([22, 17, 99]);
+            callback != undefined && callback([17, 99]);
+          }, 1)
+        }
       },
       onMessage: {
         addListener: function(callback) {

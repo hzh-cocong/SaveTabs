@@ -235,6 +235,45 @@
                 @click="bookmark.visible = ! bookmark.visible"></i>
             </el-popover>
           </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'tab'">
+            <el-popover
+              v-model="tab.visible"
+              placement="top-start"
+              trigger="manual"
+              transition=""
+              popper-class="tab-popver"
+              @after-leave="focus"
+              @after-enter="focus">
+              <span
+                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;">
+                <!-- <el-radio
+                  v-model="tab.windowId"
+                  style="margin-right: 10px;"
+                  v-for="([windowId, name]) in tab.windowFilter"
+                  :label="windowId"
+                  :key="windowId">{{ name }}</el-radio> -->
+                <el-radio-group
+                  v-model="tab.windowId"
+                  size="mini">
+                  <el-radio-button
+                    v-for="([windowId, name]) in tab.windowFilter"
+                    :label="windowId"
+                    :key="windowId">{{ name }}</el-radio-button>
+                </el-radio-group>
+              </span>
+              <i
+                class="el-icon-close hover"
+                style="float: right;margin-left: 10px;margin-top: 8px;cursor: pointer;"
+                @click="tab.visible = false;"></i>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': config.toolbar_height+'px',
+                          color: tab.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @click="tab.visible = ! tab.visible"></i>
+            </el-popover>
+          </template>
           <template v-else>
             <el-popover
               v-model="other.visible"
@@ -299,6 +338,7 @@
 
           :history="history"
           :bookmark="bookmark"
+          :tab="tab"
 
           @finish="finish"
           ref="workspaces"></component>
@@ -467,6 +507,11 @@ export default {
         visible: false,
         fold: false,
         unfold: false,
+      },
+      tab: {
+        visible: false,
+        windowId: 0,
+        windowFilter: [],
       },
       other: {
         visible: false,
@@ -834,6 +879,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         this.history.lastVisible = this.history.date != null && this.history.visible;
         this.history.visible = false;
         this.history.isActive = false;
+      } else if(this.tab.visible) {
+        if(this.tab.windowId == -1) this.tab.visible = false;
       }
 
       this.bookmark.visible = false;
@@ -1365,6 +1412,10 @@ img {
 }
 .toolbar .el-button-group .el-button:last-child {
   border-radius: 0;
+}
+
+.tab-popver {
+  padding: 0 12px;
 }
 
 .el-carousel__indicators {

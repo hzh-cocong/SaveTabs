@@ -339,7 +339,7 @@ export default {
       console.log('note:search===h', typeof this.storageKeyword, this.storageKeyword==undefined||this.storageKeyword.length);
       if(keyword == undefined) return;
       if(this.storageKeyword == keyword.trim()) return;
-console.log('search2===h');
+console.log('note:search2===h');
       let isFirstSearch = this.storageKeyword == undefined;
 
       this.storageKeyword = keyword.trim();

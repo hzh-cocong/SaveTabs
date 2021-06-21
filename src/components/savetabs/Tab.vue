@@ -171,6 +171,13 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    tab: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {}
+      },
     }
   },
   data() {
@@ -188,7 +195,8 @@ export default {
       isSearched: false,
 
       activeTab: null,
-      windowRank: {},
+      windowIds: [],
+      // windowRank: {},
 
       w: {
         timer: null,
@@ -197,6 +205,62 @@ export default {
   },
   components: {
     List,
+  },
+  watch: {
+    "tab.visible": function(newVal, oldVal) {
+      console.log('watch:tab.visible', newVal, oldVal);
+
+      this.search();
+
+      if(newVal == false) return;
+
+      let windowFilter = this.windowIds.map((windowId, index) => {
+        return [
+          windowId == this.currentWindowId ? 0 : windowId,
+          windowId == this.currentWindowId
+          ? 'Current'
+          : 'Win'+(index+1)
+        ];
+      })
+
+      if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
+        windowFilter.push([-2, 'Opened']);
+      }
+
+      this.tab.windowFilter = windowFilter;
+    },
+    "windowIds": function(newVal, oldVal) {
+      console.log('watch:windowIds', newVal, oldVal, this.windowIds, this.windowRank);
+      if(this.tab.visible == false) return;
+
+      let windowFilter = this.windowIds.map((windowId, index) => {
+        return [
+          windowId == this.currentWindowId ? 0 : windowId,
+          windowId == this.currentWindowId
+          ? 'Current'
+          : 'Win'+(index+1)
+        ];
+      })
+      // if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
+      //   windowFilter.push([-2, 'Opened']);
+      // }
+
+      if(this.originList.some(tab => {
+        if(this.windowRank[tab.windowId] == undefined) {
+          console.log('watch:', tab.windowId, tab)
+        }
+        return this.windowRank[tab.windowId] == undefined;
+      })) {
+        windowFilter.push([-2, 'Opened']);
+      }
+
+
+      this.tab.windowFilter = windowFilter;
+    },
+    "tab.windowId": function(newVal, oldVal) {
+      console.log('watch:tab.tab.windowId', newVal, oldVal)
+      this.search();
+    }
   },
   computed: {
     iconMap() {
@@ -254,6 +318,13 @@ export default {
     //     return tab.windowId == this.currentWindowId;
     //   })
     // }
+
+    windowRank() {
+      return this.windowIds.reduce((accumulator, windowId, index) => {
+        accumulator[windowId] = index+1;
+        return accumulator;
+      }, {})
+    }
   },
   methods: {
     itemStyle({ index, item, isActive, isSelected }) {
@@ -300,23 +371,43 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
+      let isFirstSearch = false;
+console.log('tab.search', keyword, this.storageKeyword);
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword == keyword.trim()) return;
+        isFirstSearch = this.storageKeyword == undefined;
+        this.storageKeyword = keyword.trim();
+      }
+console.log('tab.search2', keyword, this.storageKeyword);
+      // if(keyword == undefined) return;
+      // if(this.storageKeyword == keyword.trim()) return;
 
-      let isFirstSearch = this.storageKeyword == undefined;
+      // let isFirstSearch = this.storageKeyword == undefined;
 
-      this.storageKeyword = keyword.trim();
+      // this.storageKeyword = keyword.trim();
 
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
-      // 注意这里关键词为空就不会去循环，所以优化效果可能不大
-      let filterList = this.storageKeyword == '' ? this.focusList : this.focusList.filter(tab => {
+      // // 注意这里关键词为空就不会去循环，所以优化效果可能不大
+      // let filterList = this.storageKeyword == '' ? this.focusList : this.focusList.filter(tab => {
+      let filterList = this.focusList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
         // 找出不匹配的过滤掉
         return ! keywords.some((keyword) => {
           // 不匹配则为 -1
           return title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1 ;
-        });
+        }) && ( // 过滤窗口
+          ! this.tab.visible // 选择框未打开不过滤
+          || this.tab.windowId == -1 // 未选择也不过滤
+          || ( this.tab.windowId == 0
+            && tab.windowId == this.currentWindowId) // Current
+          || ( this.tab.windowId == -2
+            && tab.windowId != this.currentWindowId
+            && this.windowRank[tab.windowId] == undefined) // Opened
+          || ( tab.windowId == this.tab.windowId
+            && this.windowRank[tab.windowId] != undefined) // 过滤窗口
+        )
       })
 
       // 列表赋值
@@ -324,7 +415,7 @@ export default {
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(isFirstSearch && this.list.length > 1) {
+      if(isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
         this.currentIndex = 1;
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
@@ -436,6 +527,8 @@ export default {
               type: 'getActiveWindowIds'
           }, (windowIds) => {
             console.log('windowIds', windowIds)
+            windowIds.reverse()
+            // this.windowIds = windowIds;
             resolve(windowIds);
           })
         }),
@@ -466,10 +559,11 @@ export default {
         // 记录窗口顺序
         // this.windowRank = {};
         // windowIds.forEach((windowId, index) => this.windowRank[windowId]=index+1);
-        this.windowRank = windowIds.reverse().reduce((accumulator, windowId, index) => {
-          accumulator[windowId] = index+1;
-          return accumulator;
-        }, {})
+
+        // this.windowRank = windowIds.reduce((accumulator, windowId, index) => {
+        //   accumulator[windowId] = index+1;
+        //   return accumulator;
+        // }, {})
 
         // 建立索引，方便快速获取 tab 位置
         let map = new Map();
@@ -498,6 +592,9 @@ export default {
         })
 
         this.focusList = this.originList;
+
+        // 相关依赖需要用到 originList，所以得放在最后更新
+        this.windowIds = windowIds;
 
         callback != undefined && callback();
       })

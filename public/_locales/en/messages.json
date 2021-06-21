@@ -13,7 +13,7 @@
     "hourAgo": {"message": " hours ago"},
 
 
-    "tab": {"message": "tab"},
+    "tab": {"message": "active tab"},
     "note": {"message": "note"},
     "window": {"message": "window"},
     "temporary": {"message": "temporary"},

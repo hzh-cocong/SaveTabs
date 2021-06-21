@@ -168,6 +168,13 @@ let tab = {
       return new Promise(resolve => {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(selectedTab.id, {windowId: this.activeTab.windowId, index: this.activeTab.index+1}, () => {
+          // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
+          clearTimeout(this.w.timer);
+          this.w.timer = setTimeout(() => {
+            console.log('tab.js.refreshTabs.move')
+            chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
+          }, 200);
+
           resolve();
         });
       })

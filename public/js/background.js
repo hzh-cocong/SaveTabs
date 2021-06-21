@@ -177,6 +177,7 @@ chrome.windows.onFocusChanged.addListener((windowId)=>{
   // }
 })
 chrome.windows.onRemoved.addListener((windowId)=>{
+  console.log('window.onRemoved', windowId)
   activeWindows.delete(windowId);
 })
 
@@ -190,6 +191,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type == 'getActiveTabIds') {
     sendResponse([...activeTabs]);
   } else if(request.type == 'getActiveWindowIds') {
+    console.log('getActiveWindowIds', [...activeWindows.keys()])
     sendResponse([...activeWindows.keys()]);
   } else if(request.type == 'exchangeTab') {
     let target = request.target;

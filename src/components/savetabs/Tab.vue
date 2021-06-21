@@ -355,7 +355,30 @@ export default {
 
       if(keyType == 'meta/ctrl') {
         // 移动到当前标签的下一个位置，但不激活
-        chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1});
+        chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, (tab) => {
+          console.log('aaaaaaaaaaaaaaaaaa', tab);
+          // 位置一旦变动，很多 tab 的 index 都会发生改变，仅仅靠下面这个是完全不够的
+          // Object.assign(this.selectedTab, tab);
+          // 只需更新数据，无需重新 search
+          // 这里列表被覆盖了，局部更新还是很麻烦的，还是选择整个更新好了
+          // this.refreshTabs();
+
+          // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
+          clearTimeout(this.w.timer);
+          this.w.timer = setTimeout(() => {
+            this.refreshTabs(() => {
+              // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+              let origin = this.storageKeyword;
+              this.storageKeyword = undefined;
+              this.search(origin);
+
+              // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+              this.$nextTick(() => {
+                this.$refs.list.currentTo(1);
+              });
+            });
+          }, 200);
+        });
       } else if(keyType == 'shift') {
         // 移动到新窗口（新建窗口）
         chrome.windows.create({tabId: this.selectedTabId, focused: true});
@@ -494,10 +517,11 @@ export default {
     // 不像 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
     // onCreated 是为了能够及时其它工作区所导致的标签变化
     // onUpdated 是为了能完美显示标签信息
+    // 窗口移动窗口的状态发生改变，也需要进行监听
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs')
+        console.log('tab.refreshTabs.onCreated')
         this.refreshTabs(() => {
           // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
           let origin = this.storageKeyword;
@@ -515,7 +539,7 @@ export default {
       if(changeInfo.status != 'complete') return;
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs')
+        console.log('tab.refreshTabs.onUpdated')
         this.refreshTabs(() => {
           // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
           let origin = this.storageKeyword;
@@ -532,7 +556,7 @@ export default {
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs')
+        console.log('tab.refreshTabs.onRemoved')
         this.refreshTabs(() => {
           // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
           let origin = this.storageKeyword;
@@ -546,6 +570,24 @@ export default {
         });
       }, 200);
     })
+    // 有些移动并不会触发该事件，如将其它窗口的标签移动到当前标签，只能自己处理了，这里弃用
+    // chrome.tabs.onMoved.addListener(() => {
+    //   clearTimeout(this.w.timer);
+    //   this.w.timer = setTimeout(() => {
+    //     console.log('tab.refreshTabs.onMoved')
+    //     this.refreshTabs(() => {
+    //       // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+    //       let origin = this.storageKeyword;
+    //       this.storageKeyword = undefined;
+    //       this.search(origin);
+
+    //       // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+    //       this.$nextTick(() => {
+    //         this.$refs.list.currentTo(1);
+    //       });
+    //     });
+    //   }, 200);
+    // })
   }
 }
 </script>

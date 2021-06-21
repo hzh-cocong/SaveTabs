@@ -173,21 +173,28 @@ export default {
     }
   },
   methods: {
-    showTip(tip) {
+    showTip(tip, lower = false) {
+      // 在低优先级下，如果提示栏已经有人在用时，就不插进去了
+      // 低优先级可以被低优先级的覆盖
+      if(lower && ! this.lower && this.tip != this.storageTip) {
+        this.lower = lower;
+        return false;
+      }
+      this.lower = lower;
+
       clearTimeout(this.w.tipTimer);
 
-      // if(this.storageTip == '') {
-      //   this.storageTip = this.tip;
-      // }
-
       this.tip = tip;
+
+      return true;
     },
     finishTip(callback) {
       // 过一会再恢复，体验更好
       this.w.tipTimer = setTimeout(() => {
+        callback != undefined && callback();
+
         this.tip = this.storageTip;
         // this.storageTip = '';
-        callback != undefined && callback();
       }, 1000);
     }
   }

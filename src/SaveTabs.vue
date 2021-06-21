@@ -282,7 +282,7 @@
       :loop="true"
       :initial-index="activeWorkspaceIndex"
       :height="(config.item_height*config.item_show_count)+'px'"
-      trigger="click"
+      :trigger="carouselTrigger"
       @change="workspaceChange"
       ref="carousel">
       <el-carousel-item
@@ -418,12 +418,7 @@ export default {
       popupChange: this.popupChange,
       keymapLeftAndRightChange: this.keymapLeftAndRightChange,
 
-      statusTip: (tip) => {
-        if(this.config.statusbar_show) {
-          this.$refs.statusbar.showTip(tip);
-          this.$refs.statusbar.finishTip();
-        }
-      }
+      statusTip: this.statusTip,
     }
   },
   data() {
@@ -439,6 +434,7 @@ export default {
       things: { 0: []}, // 一开始没有切换事件
       lock: false,
       keyType: '',
+      carouselTrigger: 'click',
 
       config: userConfig,
       localConfig: userLocalConfig,
@@ -555,6 +551,13 @@ export default {
     },
     loading(visibility) {
       this.isLoading = visibility;
+    },
+    statusTip(tip, lower=false) {
+      if(this.config.statusbar_show) {
+        if(this.$refs.statusbar.showTip(tip, lower)) {
+          this.$refs.statusbar.finishTip();
+        }
+      }
     },
 
     getTypeIndex(type) {
@@ -697,9 +700,11 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
         return;
       }
       // cmd/alt + [] 左右切换
+      // cmd/ctrl + [] 左右切换
       if((event.keyCode == 219 || event.keyCode == 221)
       && ( (this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != 'Mac' && event.altKey == true))) {
+        // || (this._device.platform != 'Mac' && event.altKey == true))) {
+        || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
         if(event.keyCode == 219) {
           this.selectDelay('left', event);
         } else {
@@ -737,6 +742,19 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       // 只有一个工作区可用时，输入框恢复左右选择能力
       if(this.workspaces.length <= 1) return;
+
+      // 移动到最左或最后
+      if((this._device.platform == 'Mac' && event.metaKey == true)
+        || (this._device.platform != 'Mac' && event.altKey == true)) {
+        // 屏蔽事件
+        event.stopPropagation();
+        event.preventDefault();
+
+        if(type == 'left') this.$refs.carousel.setActiveItem(0);
+        else this.$refs.carousel.setActiveItem(this.workspaces.length - 1);
+
+        return;
+      }
 
       // cmd、alt、shift、ctrl 按下时不屏蔽事件
       if(event.metaKey == true
@@ -822,11 +840,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       this.search();
 
-      // 屏蔽鼠标事件
-      // if(this.$refs.workspaces != undefined
-      // && this.$refs.workspaces[ this.activeWorkspaceRefIndex ] != undefined) {
-      //   this.$refs.workspaces[ this.activeWorkspaceRefIndex ].mouseRealMoveRegister();
-      // }
+      let title = this.lang(this.currentWorkspace.title);
+      title += this.keymap['open_workspace_'+this.currentWorkspace.type]
+            ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+') ')
+            : '';
+      this.statusTip(title, true);
     },
 
     changeThemeMode() {
@@ -877,10 +895,43 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
     keymapLeftAndRightChange() {
       chrome.storage.local.set({'config': this.localConfig}, () => {
+
+        const h = this.$createElement;
+        let message = null;
+        if(this.localConfig.keymap_left_and_right) {
+          message = '左右快捷键切换已开启';
+        } else {
+          message = h('span', { style: 'font-size: 14px;'}, [
+            h('p', { style: 'color: teal;margin-bottom: 10px;' }, '左右快捷键切换已被禁用，但以下快捷键仍然可用'),
+            h('div', null, [
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇧' : 'shift'),
+              h('span', null, '+'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
+              h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
+              h('span', { style: 'margin: 0' }, '向右切换'),
+            ]),
+            h('div', null, [
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              h('span', null, '+'),
+              h('span', { class: 'keymap-box' }, '['),
+              h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              h('span', null, '+'),
+              h('span', { class: 'keymap-box' }, ']'),
+              h('span', { style: 'margin: 0' }, '向右切换'),
+            ]),
+          ]);
+        }
+
         this.$message({
+          showClose: true,
           type: this.localConfig.keymap_left_and_right ? 'success' : 'info',
-          message: this.localConfig.keymap_left_and_right ? '左右快捷键切换已开启' : '左右快捷键切换已被禁用，但你仍然可以使用 tab 键 和 shift+tab 键进行左右切换',
+          message: message,
           offset: 69,
+          duration: this.localConfig.keymap_left_and_right ? 3000 : 5000,
         });
       });
     },
@@ -995,7 +1046,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           clearTimeout(this.w.statusbarTipTimer);
           this.$refs.statusbar.finishTip(() => {
             this.w.statusbarTipShowSpeed = 200;
+            this.carouselTrigger = 'click';
           });
+        }
+        el.onclick = () => {
+          this.carouselTrigger = 'hover';
         }
       })
     };
@@ -1101,6 +1156,30 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 #app {
   display: inline-block;
 }
+
+.keymap-box {
+  display: inline-block;
+  height: 18px;
+  min-width: 18px;
+  margin: 5px;
+  padding: 4px;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 0 #cdcde6,inset 0 0 1px 1px #fff,0 1px 2px 1px rgba(30,35,90,0.4);
+  background: linear-gradient(-225deg,#d5dbe4,#f8f8f8);
+}
+/* .keymap-box {
+  align-items: center;
+  background: linear-gradient(-225deg,#d5dbe4,#f8f8f8);
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 0 #cdcde6,inset 0 0 1px 1px #fff,0 1px 2px 1px rgba(30,35,90,0.4);
+  display: flex;
+  height: 18px;
+  justify-content: center;
+  margin-right: .4em;
+  padding-bottom: 2px;
+  width: 20px;
+} */
 </style>
 
 <!-- 全局样式 -->

@@ -17,6 +17,7 @@ let tab = {
     // 不像 note 或 window，tab 不需要本地存储，其逻辑和一开始初始化完全相同
     // onCreated 和 onRemoved 会导致列表数量发生变化，必须重刷列表
     // onUpdated 只是信息发生变化，无需重刷
+    // 窗口移动窗口的状态发生改变，也需要进行监听
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
@@ -44,6 +45,20 @@ let tab = {
       this.w.timer = setTimeout(() => {
         console.log('tab.js.refreshTabs.remove')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'delete'});
+      }, 200);
+    })
+    chrome.tabs.onMoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.js.refreshTabs.onMoved')
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
+      }, 200);
+    })
+    chrome.tabs.onDetached.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.js.refreshTabs.onDetached')
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
       }, 200);
     })
 
@@ -168,12 +183,12 @@ let tab = {
       return new Promise(resolve => {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(selectedTab.id, {windowId: this.activeTab.windowId, index: this.activeTab.index+1}, () => {
-          // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
-          clearTimeout(this.w.timer);
-          this.w.timer = setTimeout(() => {
-            console.log('tab.js.refreshTabs.move')
-            chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
-          }, 200);
+          // // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
+          // clearTimeout(this.w.timer);
+          // this.w.timer = setTimeout(() => {
+          //   console.log('tab.js.refreshTabs.move')
+          //   chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
+          // }, 200);
 
           resolve();
         });

@@ -405,10 +405,20 @@ export default {
         // 刷新数据
         let module = this.getModule(request.workspace);
         module.refreshData().then(() => {
-          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          // let origin = this.storageKeyword;
+          // this.storageKeyword = ' ';
+          // this.search(origin);
+
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
           let origin = this.storageKeyword;
-          this.storageKeyword = ' ';
+          this.storageKeyword = undefined;
           this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
 
           // 增删查改，还有反向操作，仅 temporary
           console.log('all:reload', request);

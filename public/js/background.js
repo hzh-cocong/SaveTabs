@@ -157,6 +157,14 @@ chrome.tabs.onActivated.addListener(({tabId, windowId})=>{
 chrome.tabs.onRemoved.addListener((tabId)=>{
   activeTabs.delete(tabId);
 })
+chrome.tabs.onMoved.addListener((tabId) => {
+  activeTabs.delete(tabId);
+  activeTabs.add(tabId);
+})
+chrome.tabs.onDetached.addListener((tabId) => {
+  activeTabs.delete(tabId);
+  activeTabs.add(tabId);
+})
 chrome.windows.onFocusChanged.addListener((windowId)=>{
   let tabId = activeWindows.get(windowId);
   if(tabId != undefined) {

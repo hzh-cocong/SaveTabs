@@ -363,21 +363,22 @@ export default {
           // 这里列表被覆盖了，局部更新还是很麻烦的，还是选择整个更新好了
           // this.refreshTabs();
 
-          // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
-          clearTimeout(this.w.timer);
-          this.w.timer = setTimeout(() => {
-            this.refreshTabs(() => {
-              // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-              let origin = this.storageKeyword;
-              this.storageKeyword = undefined;
-              this.search(origin);
+          // 改用事件监听了
+          // // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
+          // clearTimeout(this.w.timer);
+          // this.w.timer = setTimeout(() => {
+          //   this.refreshTabs(() => {
+          //     // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          //     let origin = this.storageKeyword;
+          //     this.storageKeyword = undefined;
+          //     this.search(origin);
 
-              // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-              this.$nextTick(() => {
-                this.$refs.list.currentTo(1);
-              });
-            });
-          }, 200);
+          //     // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          //     this.$nextTick(() => {
+          //       this.$refs.list.currentTo(1);
+          //     });
+          //   });
+          // }, 200);
         });
       } else if(keyType == 'shift') {
         // 移动到新窗口（新建窗口）
@@ -570,24 +571,40 @@ export default {
         });
       }, 200);
     })
-    // 有些移动并不会触发该事件，如将其它窗口的标签移动到当前标签，只能自己处理了，这里弃用
-    // chrome.tabs.onMoved.addListener(() => {
-    //   clearTimeout(this.w.timer);
-    //   this.w.timer = setTimeout(() => {
-    //     console.log('tab.refreshTabs.onMoved')
-    //     this.refreshTabs(() => {
-    //       // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-    //       let origin = this.storageKeyword;
-    //       this.storageKeyword = undefined;
-    //       this.search(origin);
+    chrome.tabs.onMoved.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs.onMoved')
+        this.refreshTabs(() => {
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
 
-    //       // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-    //       this.$nextTick(() => {
-    //         this.$refs.list.currentTo(1);
-    //       });
-    //     });
-    //   }, 200);
-    // })
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
+        });
+      }, 200);
+    })
+    chrome.tabs.onDetached.addListener(() => {
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs.onDetached')
+        this.refreshTabs(() => {
+          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          let origin = this.storageKeyword;
+          this.storageKeyword = undefined;
+          this.search(origin);
+
+          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
+          this.$nextTick(() => {
+            this.$refs.list.currentTo(1);
+          });
+        });
+      }, 200);
+    })
   }
 }
 </script>

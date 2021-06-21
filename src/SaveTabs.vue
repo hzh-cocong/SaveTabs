@@ -703,8 +703,8 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       // cmd/ctrl + [] 左右切换
       if((event.keyCode == 219 || event.keyCode == 221)
       && ( (this._device.platform == 'Mac' && event.metaKey == true)
-        // || (this._device.platform != 'Mac' && event.altKey == true))) {
-        || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
+        || (this._device.platform != 'Mac' && event.altKey == true))) {
+        // || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
         if(event.keyCode == 219) {
           this.selectDelay('left', event);
         } else {
@@ -745,7 +745,8 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       // 移动到最左或最后
       if((this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != 'Mac' && event.altKey == true)) {
+        // || (this._device.platform != 'Mac' && event.altKey == true)) {
+        || (this._device.platform != 'Mac' && event.ctrlKey == true)) {
         // 屏蔽事件
         event.stopPropagation();
         event.preventDefault();
@@ -912,13 +913,13 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
               h('span', { style: 'margin: 0' }, '向右切换'),
             ]),
             h('div', null, [
-              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, '['),
               h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
-              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, ']'),
               h('span', { style: 'margin: 0' }, '向右切换'),

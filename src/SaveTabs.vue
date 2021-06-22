@@ -577,6 +577,7 @@ export default {
     input(value, type) {
       if(type == undefined) {
         this.keyword = value;
+        this.focus();
         this.search();
         return;
       }

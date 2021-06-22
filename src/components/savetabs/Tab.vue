@@ -635,11 +635,24 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         });
       }, 200);
     })
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       if(changeInfo.status != 'complete') return;
+
+      // 非搜索条件下可以直接更新，无需刷新列表，提升用户体验
+      if(this.storageKeyword == '') {
+        let t = this.originList.find(t => t.id == tab.id);
+        if(t == undefined) return; // 有可能标签更新过快，此时列表还未完全刷新，这里直接忽略
+
+        Object.assign(t, tab);
+        console.log('tab.refreshTabs.onUpdated')
+
+        return;
+      }
+
+      // 在搜索条件下，必须刷新列表
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onUpdated')
+        console.log('tab.refreshTabs.onUpdated2')
         this.refreshTabs(() => {
           // 这样才会自动选择第二项
           this.isFirstSearch = true;
@@ -649,19 +662,31 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       }, 200);
     })
     chrome.tabs.onRemoved.addListener((tabId) => {
+      let originIndex = this.originList.findIndex(tab => tab.id == tabId);
+
       // 被移除的标签本来就不存在，则不需要刷新列表，提升用户体验
-      if( ! this.originList.some(tab => tab.id == tabId)) return;
-console.log('tab.refreshTabs.onRemoved', tabId, this.originList.some(tab => tab.id == tabId))
-      clearTimeout(this.w.timer);
-      this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onRemoved2', tabId, this.originList.some(tab => tab.id == tabId))
-        this.refreshTabs(() => {
-          // 这样才会自动选择第二项
-          this.isFirstSearch = true;
-          // 当前工作区是本工作区则刷新列表，否则记录一下
-          if(this.isActiveWorkspace) this.search();
-        });
-      }, 200);
+      if(index == -1) return;
+      console.log('tab.refreshTabs.onRemoved', tabId, originIndex);
+
+      // 直接移除，无需刷新列表，提升用户体验
+      this.originList.splice(originIndex, 1);
+      let index = this.cacheList.findIndex(tab => tab.id == tabId);
+      if(index != -1) {
+        this.cacheList.splice(index, 1);
+        this.list.splice(index, 1);
+      }
+      console.log('tab.refreshTabs.onRemoved', tabId, originIndex, index);
+
+      // clearTimeout(this.w.timer);
+      // this.w.timer = setTimeout(() => {
+      //   console.log('tab.refreshTabs.onRemoved2', tabId, this.originList.some(tab => tab.id == tabId))
+      //   this.refreshTabs(() => {
+      //     // 这样才会自动选择第二项
+      //     this.isFirstSearch = true;
+      //     // 当前工作区是本工作区则刷新列表，否则记录一下
+      //     if(this.isActiveWorkspace) this.search();
+      //   });
+      // }, 200);
     })
     chrome.tabs.onMoved.addListener(() => {
       clearTimeout(this.w.timer);

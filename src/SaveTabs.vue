@@ -335,6 +335,7 @@
           :project_config="project_config"
           :isLoad="isLoad"
           :keyType="keyType"
+          :activeWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
 
           :history="history"
           :bookmark="bookmark"

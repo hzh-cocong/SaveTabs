@@ -178,7 +178,11 @@ export default {
       default: function() {
         return {}
       },
-    }
+    },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -188,7 +192,8 @@ export default {
       focusList: [],
 
       scrollDisabled: true,
-      storageKeyword: null,
+      storageKeyword: undefined,
+      isFirstSearch: true,
 
       currentIndex: -1,
 
@@ -324,6 +329,10 @@ export default {
         accumulator[windowId] = index+1;
         return accumulator;
       }, {})
+    },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'tab';
     }
   },
   methods: {
@@ -371,21 +380,16 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      let isFirstSearch = false;
-console.log('tab.search', keyword, this.storageKeyword);
+console.log('tab.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
       if(keyword != undefined) {
-        if(this.storageKeyword == keyword.trim()) return;
-        isFirstSearch = this.storageKeyword == undefined;
-        this.storageKeyword = keyword.trim();
+        if(this.storageKeyword != keyword.trim()) {
+          this.storageKeyword = keyword.trim();
+        } else if( ! this.isFirstSearch) {
+          return;
+        }
       }
-console.log('tab.search2', keyword, this.storageKeyword);
-      // if(keyword == undefined) return;
-      // if(this.storageKeyword == keyword.trim()) return;
-
-      // let isFirstSearch = this.storageKeyword == undefined;
-
-      // this.storageKeyword = keyword.trim();
+console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // // 注意这里关键词为空就不会去循环，所以优化效果可能不大
@@ -398,7 +402,7 @@ console.log('tab.search2', keyword, this.storageKeyword);
           // 不匹配则为 -1
           return title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1 ;
         }) && ( // 过滤窗口
-          ! this.tab.visible // 选择框未打开不过滤
+          ! this.tab.visible // 选择框未打开不过滤 todo
           || this.tab.windowId == -1 // 未选择也不过滤
           || ( this.tab.windowId == 0
             && tab.windowId == this.currentWindowId) // Current
@@ -415,11 +419,12 @@ console.log('tab.search2', keyword, this.storageKeyword);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
+      if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
         this.currentIndex = 1;
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
+      this.isFirstSearch = false;
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
@@ -656,11 +661,25 @@ console.log('tab.search2', keyword, this.storageKeyword);
       this.w.timer = setTimeout(() => {
         console.log('tab.refreshTabs.onRemoved')
         this.refreshTabs(() => {
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
+          // // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
+          // let origin = this.storageKeyword;
+          // this.storageKeyword = undefined;
+          // this.search(origin);
 
+          // 由于 storageKeyword 发生变化，虽然没有调用 search，但与 storageKeyword 相关依赖会因此变化，如 highlightMap，所以不能用这种方法
+          // // 当前工作区是本工作区则刷新列表，否则记录一下
+          // if( ! this.isActiveWorkspace) {
+          //   this.storageKeyword = undefined;
+          //   return;
+          // }
+
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if( ! this.isActiveWorkspace) return;
+
+          // 强制刷新
+          this.search();
           // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
           this.$nextTick(() => {
             this.$refs.list.currentTo(1);

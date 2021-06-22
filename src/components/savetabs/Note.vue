@@ -590,9 +590,10 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
             this.activeTabs[ tab.url ] = tab;
           }
 
-          // 这样才会自动选择第二项
-          this.isFirstSearch = true;
-          this.search();
+          // 列表刷洗交给监听事件吧
+          // // 这样才会自动选择第二项
+          // this.isFirstSearch = true;
+          // this.search();
         });
       });
     },
@@ -796,7 +797,7 @@ console.warn('finish', b, (b-a)/1000)
     // 便签只需要知道标签状态，不需要其详细详细，所以 onUpdated 并不需要
     // 网页被覆盖 onCreated 或 onRemoved 是不会被触发的，所以 openWindow 要自己处理
     // 再加上 timer ，openWindow 自己可以防止重复点击
-    chrome.tabs.onCreated.addListener(() => {
+    chrome.tabs.onCreated.addListener((tab) => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         console.log('note.refreshTabs')

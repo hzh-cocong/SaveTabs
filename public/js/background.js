@@ -361,3 +361,6 @@ chrome.runtime.onInstalled.addListener(() => {
   });
   }
 })
+
+// 插件刷新、升级、安装、浏览器重启，该脚本都会重新执行，临时变量会丢失，所以也不用太过于担心数据量的问题
+// alert('hello background.js')

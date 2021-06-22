@@ -35,7 +35,7 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow">>
+    @itemClick="_openWindow(getKeyType($event))">
     <template #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
@@ -266,6 +266,7 @@ export default {
       lastVisitTime: null, // new Date().getTime(),
       lastEndTime: null,
       // startTime: 0,
+      endTime: 0,
 
       range: 3600000,
       dialogVisible: false,
@@ -356,15 +357,16 @@ export default {
       return highlightMap;
     },
 
-    endTime() {
-      console.log('computed.endTime');
-      if(this.history.date == null || ! this.history.visible) {
-        // return null;
-        return new Date().getTime();
-      } else {
-        return this.history.date.getTime()+86400000-1000;
-      }
-    },
+    // 这个会导致搜索时最新的搜不到，因为 new Date().getTime() 并非双向绑定
+    // endTime() {
+    //   console.log('computed.endTime');
+    //   if(this.history.date == null || ! this.history.visible) {
+    //     // return null;
+    //     return new Date().getTime();
+    //   } else {
+    //     return this.history.date.getTime()+86400000-1000;
+    //   }
+    // },
     startTime() {
       console.log('computed.startTime');
       if(this.history.date == null ||  ! this.history.visible) {
@@ -428,25 +430,29 @@ export default {
         if(this.storageKeyword == keyword.trim()) return;
         this.storageKeyword = keyword.trim();
       }
-console.warn('isSearched');
-      console.log('search', this.storageKeyword, keyword,  this.endTime, new Date().getTime());
+
+      if(this.history.date == null || ! this.history.visible) {
+        this.endTime = new Date().getTime();
+      } else {
+        this.endTime = this.history.date.getTime()+86400000-1000;
+      }
 
       if(keyword == undefined && this.lastEndTime == this.endTime) return;
 
-      console.log('search2', this.storageKeyword, this.lastEndTime, this.endTime);
-
       this.lastEndTime = this.endTime;
       let lastVisitTime = this.endTime;
+
+console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
 
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
       // 反正历史记录就不太对，不如将错就错
       // this.startTime = 0;
-console.warn('isSearched2');
+
       // 查找历史
       this.query((historys) => {console.warn('isSearched3');
-        console.log('history.search', historys);
+        console.log('history.query', historys);
         if(historys.length == 0) {
           this.cacheList = [];
           this.list = [];
@@ -464,6 +470,7 @@ console.warn('isSearched2');
         this.cacheList = [];
         this.mergeHistory(this.cacheList, historys);
 
+        // 交由 load 才准确
         // 搜索结果只有一条时自动展开
         // if(this.storageKeyword.length > 0 && this.cacheList.length == 1 && this.cacheList[0].count > 1) {
         //   let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
@@ -598,9 +605,9 @@ console.warn('isSearched2');
       })
     },
 
-    openWindow(index, event) {
+    openWindow(index, keyType) {
       if(index == undefined) {
-        this._openWindow(event);
+        this._openWindow(keyType);
         return;
       }
 
@@ -608,9 +615,9 @@ console.warn('isSearched2');
         return;
       }
 
-      this._openWindow(event);
+      this._openWindow(keyType);
     },
-    _openWindow(event) {
+    _openWindow(keyType) {
       if(this.currentHistory == null) return;
 
       if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
@@ -619,7 +626,7 @@ console.warn('isSearched2');
                 ? this.currentHistory.url
                 : this.currentHistory.subFiles[0].url
 console.log('_openWindow', url)
-        this.$open(url, event);
+        this.$open(url, keyType);
         return;
       }
 

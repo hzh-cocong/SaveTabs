@@ -245,7 +245,8 @@
               @after-leave="focus"
               @after-enter="focus">
               <span
-                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;">
+                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;"
+                @click="focus">
                 <!-- <el-radio
                   v-model="tab.windowId"
                   style="margin-right: 10px;"
@@ -263,7 +264,7 @@
               </span>
               <i
                 class="el-icon-close hover"
-                style="float: right;margin-left: 10px;margin-top: 8px;cursor: pointer;"
+                style="float: right;margin-left: 10px;margin-top: 20px;cursor: pointer;"
                 @click="tab.visible = false;"></i>
               <i
                 class="el-icon-search"

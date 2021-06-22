@@ -665,7 +665,7 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       let originIndex = this.originList.findIndex(tab => tab.id == tabId);
 
       // 被移除的标签本来就不存在，则不需要刷新列表，提升用户体验
-      if(index == -1) return;
+      if(originIndex == -1) return;
       console.log('tab.refreshTabs.onRemoved', tabId, originIndex);
 
       // 直接移除，无需刷新列表，提升用户体验
@@ -675,7 +675,7 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         this.cacheList.splice(index, 1);
         this.list.splice(index, 1);
       }
-      console.log('tab.refreshTabs.onRemoved', tabId, originIndex, index);
+      console.log('tab.refreshTabs.onRemoved2', tabId, originIndex, index);
 
       // clearTimeout(this.w.timer);
       // this.w.timer = setTimeout(() => {

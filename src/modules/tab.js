@@ -3,6 +3,8 @@ let tab = {
   cacheList: [],
   focusList: [],
 
+  storageKeyword: '',
+
   activeTab: null,
   windowRank: {},
 
@@ -27,17 +29,22 @@ let tab = {
     })
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       if(changeInfo.status != 'complete') return;
-      clearTimeout(this.w.timer);
-      this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.update')
-        // 这个会使得列表被重写，除非刷新，否则是看不到变化的，所以不能用这种
-        // this.refreshData();
 
+      // 非搜索条件下可以直接更新，无需刷新列表，提升用户体验
+      if(this.storageKeyword == '') {
         let t = this.originList.find(t => t.id == tab.id);
         if(t == undefined) return; // 有可能标签更新过快，此时列表还未完全刷新，这里直接忽略
 
         Object.assign(t, tab);
+        console.log('tab.js.refreshTabs.update')
+        return;
+      }
+
+      // 在搜索条件下，必须刷新列表
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
         console.log('tab.js.refreshTabs.update2')
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'update'});
       }, 200);
     })
     chrome.tabs.onRemoved.addListener(() => {
@@ -149,6 +156,8 @@ let tab = {
       if(this.isInit) resolve();
       else resolve(this.init())
     }).then(() => {
+      this.storageKeyword = keywords;
+
       // 查找
       let filterList = keywords.length == 0 ? this.focusList : this.focusList.filter(tab => {
         let title = tab.title.toUpperCase();

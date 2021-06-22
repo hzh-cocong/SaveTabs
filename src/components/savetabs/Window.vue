@@ -440,6 +440,10 @@ export default {
       required: false,
       default: '',
     },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -449,6 +453,7 @@ export default {
 
       scrollDisabled: true,
       storageKeyword: undefined,
+      isFirstSearch: true,
 
       currentIndex: -1,
       activeWindows: {},
@@ -614,6 +619,10 @@ console.log('get_currentWindowStorageIndex3', index);
 
       console.log('get_currentTab3', {})
       return {};
+    },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'window';
     }
   },
   methods: {
@@ -661,12 +670,16 @@ console.log('get_currentWindowStorageIndex3', index);
       this.currentIndex++;
     },
     search(keyword) {
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
-
-      let isFirstSearch = this.storageKeyword == undefined;
-
-      this.storageKeyword = keyword.trim();
+      console.log('window.search', keyword, '|', this.storageKeyword);
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword != keyword.trim()) {
+          this.storageKeyword = keyword.trim();
+        } else if( ! this.isFirstSearch) {
+          return;
+        }
+      }
+console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -686,6 +699,8 @@ console.log('get_currentWindowStorageIndex3', index);
         })
         this.scrollDisabled = true;
         this.currentIndex = 0;
+
+        this.isFirstSearch = false;
 
         return;
       }
@@ -718,12 +733,13 @@ console.log('get_currentWindowStorageIndex3', index);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) { // todo isWrong
+      if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
         this.currentIndex = 1;
+        if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
-      let b = new Date().getTime();
+      this.isFirstSearch = false;
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
@@ -828,7 +844,7 @@ console.log('get_currentWindowStorageIndex3', index);
           // this.isCurrentWindowChange = false;
           // this.isInCurrentWindow = true;
 
-          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
+          // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
           this.storageKeyword = ' ';
 
           // 调用方会自动调用 search，不用我们处理
@@ -1118,10 +1134,8 @@ console.log('get_currentWindowStorageIndex3', index);
         this.activeWindows[this.currentWindowId] = true;
         // this.isInCurrentWindow = true;
 
-        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        let origin = this.storageKeyword;
-        this.storageKeyword = ' ';
-        this.search(origin);
+        // 强制刷新，不会自动选择第二项
+        this.search();
 
         // 关闭 dialog
         this.differenceVisible = false;
@@ -1149,10 +1163,8 @@ console.log('get_currentWindowStorageIndex3', index);
         // this.activeWindows[this.currentWindowId] = true;
         // this.isInCurrentWindow = true;
 
-        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        let origin = this.storageKeyword;
-        this.storageKeyword = ' ';
-        this.search(origin);
+        // 强制刷新，不会自动选择第二项
+        this.search();
 
         // 关闭 dialog
         this.differenceVisible = false;

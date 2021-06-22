@@ -430,8 +430,8 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         chrome.storage.local.set({tabs: this.storageList}, () => {
           this.statusTip('便签已被删除');
 
-          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-          this.storageKeyword = ' ';
+          // 这样列表才会刷新
+          this.isFirstSearch = true;
 
           callback(true);
           this.isOperating = false;
@@ -499,8 +499,8 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         // 不大可能发生，最重要的是这样会导致 number 显示不出来
         // this.activeTabs[ this.currentTab.url ] = tab;
 
-        // 这样才会自动选择第二项
-        this.isFirstSearch = true;
+        // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
+        this.storageKeyword = ' ';
 
         this.statusTip('便签添加成功');
 

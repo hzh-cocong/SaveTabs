@@ -204,6 +204,10 @@ export default {
       required: false,
       default: '',
     },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -213,6 +217,7 @@ export default {
 
       scrollDisabled: true,
       storageKeyword: undefined,
+      isFirstSearch: true,
 
       currentIndex: -1,
       currentTab: {},
@@ -289,6 +294,10 @@ export default {
       return this.storageList.findIndex(note => {
         return note.id == this.currentNote.id;
       });
+    },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'note';
     }
   },
   methods: {
@@ -336,14 +345,17 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
-      console.log('note:search===h', typeof this.storageKeyword, this.storageKeyword==undefined||this.storageKeyword.length);
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
-console.log('note:search2===h');
-      let isFirstSearch = this.storageKeyword == undefined;
+      console.log('note.search', keyword, '|', this.storageKeyword);
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword != keyword.trim()) {
+          this.storageKeyword = keyword.trim();
+        } else if( ! this.isFirstSearch) {
+          return;
+        }
+      }
+console.log('note.search2', keyword, '|',  this.storageKeyword);
 
-      this.storageKeyword = keyword.trim();
-console.warn('isSearched');
       // 查找
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
       // 注意这里关键词为空就不会去循环，所以优化效果可能不大
@@ -375,12 +387,14 @@ console.warn('isSearched');
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(isFirstSearch && this.isInCurrentTab && this.list.length > 1) {
+      if(this.isFirstSearch && this.list.length > 1 && this.list[0].url == this.currentTab.url) {
         this.currentIndex = 1;
+        if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
-console.warn('isSearched2');
+      this.isFirstSearch = false;
+
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
     },
@@ -485,10 +499,8 @@ console.warn('isSearched2');
         // 不大可能发生，最重要的是这样会导致 number 显示不出来
         // this.activeTabs[ this.currentTab.url ] = tab;
 
-        // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-        this.storageKeyword = ' ';
-console.log('add =====h')
-        // this.search(this.storageKeyword);
+        // 这样才会自动选择第二项
+        this.isFirstSearch = true;
 
         this.statusTip('便签添加成功');
 
@@ -578,15 +590,9 @@ console.log('add =====h')
             this.activeTabs[ tab.url ] = tab;
           }
 
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          this.search();
         });
       });
     },
@@ -694,15 +700,10 @@ console.log('bb')
           })
         })
       ]).then(() => {
-        // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-        let origin = this.storageKeyword;
-        this.storageKeyword = undefined;
-        this.search(origin);
-
-        // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-        this.$nextTick(() => {
-          this.$refs.list.currentTo(1);
-        });
+        // 这样才会自动选择第二项
+        this.isFirstSearch = true;
+        // 当前工作区是本工作区则刷新列表，否则记录一下
+        if(this.isActiveWorkspace) this.search();
       })
     },
     getTip() {
@@ -811,6 +812,7 @@ console.warn('finish', b, (b-a)/1000)
     //   }, 200);
     // })
     chrome.tabs.onRemoved.addListener(() => {
+      // 这个无法像 tab 那样直接移除，因为涉及到太多东西，并不是简单的删除，如同样的标签只是数据减少，但并没有为 0
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         console.log('note.refreshTabs')

@@ -632,6 +632,7 @@ console.log('a')
 
       // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
       let scrollTop = this.scrollLines*this.itemHeight;
+      console.log('currentTo4', this.$el.scrollTop, scrollTop);
       if(this.$el.scrollTop != scrollTop) {
         this.$nextTick(() => {
           console.log('list.currentTo', index);

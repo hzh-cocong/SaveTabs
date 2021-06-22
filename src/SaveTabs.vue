@@ -511,7 +511,7 @@ export default {
       },
       tab: {
         visible: false,
-        windowId: 0,
+        windowId: -1, // todo 0
         windowFilter: [],
       },
       other: {

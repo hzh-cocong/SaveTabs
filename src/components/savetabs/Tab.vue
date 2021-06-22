@@ -91,7 +91,7 @@
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
-            @click.stop="closeTab(index)"
+            @click.stop="closeTab"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
@@ -310,6 +310,12 @@ export default {
       if(this.list.length == 0) return null;
       return this.list[ this.currentIndex ];
     },
+    selectedOriginIndex() {
+      console.log('tab.selectedOriginIndex', this.selectedTab)
+      return this.originList.findIndex(tab => {
+        return tab.id == this.selectedTab.id;
+      });
+    },
 
     activeTabId() {
       return this.activeTab.id;
@@ -392,8 +398,6 @@ console.log('tab.search', keyword, '|', this.storageKeyword);
 console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       let keywords = this.storageKeyword.toUpperCase().split(/\s+/);
-      // // 注意这里关键词为空就不会去循环，所以优化效果可能不大
-      // let filterList = this.storageKeyword == '' ? this.focusList : this.focusList.filter(tab => {
       let filterList = this.focusList.filter(tab => {
         let title = tab.title.toUpperCase();
         let url = tab.url.toUpperCase();
@@ -402,7 +406,7 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
           // 不匹配则为 -1
           return title.indexOf(keyword) == -1 && url.indexOf(keyword) == -1 ;
         }) && ( // 过滤窗口
-          ! this.tab.visible // 选择框未打开不过滤 todo
+          ! this.tab.visible // 选择框未打开不过滤（为 !false = true）
           || this.tab.windowId == -1 // 未选择也不过滤
           || ( this.tab.windowId == 0
             && tab.windowId == this.currentWindowId) // Current
@@ -419,8 +423,9 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
+      if(this.isFirstSearch && this.list.length > 1 && this.list[0].id == this.activeTabId) {
         this.currentIndex = 1;
+        if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;
       }
@@ -460,19 +465,14 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
           // this.refreshTabs();
 
           // 改用事件监听了
-          // // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
+          // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
           // clearTimeout(this.w.timer);
           // this.w.timer = setTimeout(() => {
           //   this.refreshTabs(() => {
-          //     // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          //     let origin = this.storageKeyword;
-          //     this.storageKeyword = undefined;
-          //     this.search(origin);
-
-          //     // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          //     this.$nextTick(() => {
-          //       this.$refs.list.currentTo(1);
-          //     });
+          //       // 这样才会自动选择第二项
+          //       this.isFirstSearch = true;
+          //       // 当前工作区是本工作区则刷新列表，否则记录一下
+          //       if(this.isActiveWorkspace) this.search();
           //   });
           // }, 200);
         });
@@ -501,14 +501,16 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         })
       }
     },
-    closeTab(index) {
-      let id = this.list[index].id;
-      chrome.tabs.remove(id, () => {
-        this.list.splice(index, 1);
-        if(this.list.length < this.config.list_page_count
-        && this.scrollDisabled == false) {
-          this.load();
-        }
+    closeTab() {
+      console.log('tab.closeTab', this.selectedTab.id, this.currentIndex)
+
+      // 这个必须放外面，防止 onRemove 先执行而刷新列表
+      this.originList.splice(this.selectedOriginIndex, 1);
+      chrome.tabs.remove(this.selectedTab.id, () => {
+        // 防止重复点击产生错误
+        this.cacheList.splice(this.currentIndex, 1);
+        this.list.splice(this.currentIndex, 1);
+        console.log('tab.closeTab2', this.selectedTab.id, this.currentIndex, this.selectedOriginIndex)
       })
 
       this.focus();
@@ -626,15 +628,10 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.w.timer = setTimeout(() => {
         console.log('tab.refreshTabs.onCreated')
         this.refreshTabs(() => {
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) this.search();
         });
       }, 200);
     })
@@ -644,46 +641,25 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.w.timer = setTimeout(() => {
         console.log('tab.refreshTabs.onUpdated')
         this.refreshTabs(() => {
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
-        });
-      }, 200);
-    })
-    chrome.tabs.onRemoved.addListener(() => {
-      clearTimeout(this.w.timer);
-      this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onRemoved')
-        this.refreshTabs(() => {
-          // // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          // let origin = this.storageKeyword;
-          // this.storageKeyword = undefined;
-          // this.search(origin);
-
-          // 由于 storageKeyword 发生变化，虽然没有调用 search，但与 storageKeyword 相关依赖会因此变化，如 highlightMap，所以不能用这种方法
-          // // 当前工作区是本工作区则刷新列表，否则记录一下
-          // if( ! this.isActiveWorkspace) {
-          //   this.storageKeyword = undefined;
-          //   return;
-          // }
-
           // 这样才会自动选择第二项
           this.isFirstSearch = true;
           // 当前工作区是本工作区则刷新列表，否则记录一下
-          if( ! this.isActiveWorkspace) return;
-
-          // 强制刷新
-          this.search();
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          if(this.isActiveWorkspace) this.search();
+        });
+      }, 200);
+    })
+    chrome.tabs.onRemoved.addListener((tabId) => {
+      // 被移除的标签本来就不存在，则不需要刷新列表，提升用户体验
+      if( ! this.originList.some(tab => tab.id == tabId)) return;
+console.log('tab.refreshTabs.onRemoved', tabId, this.originList.some(tab => tab.id == tabId))
+      clearTimeout(this.w.timer);
+      this.w.timer = setTimeout(() => {
+        console.log('tab.refreshTabs.onRemoved2', tabId, this.originList.some(tab => tab.id == tabId))
+        this.refreshTabs(() => {
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) this.search();
         });
       }, 200);
     })
@@ -692,15 +668,10 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.w.timer = setTimeout(() => {
         console.log('tab.refreshTabs.onMoved')
         this.refreshTabs(() => {
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) this.search();
         });
       }, 200);
     })
@@ -709,15 +680,10 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.w.timer = setTimeout(() => {
         console.log('tab.refreshTabs.onDetached')
         this.refreshTabs(() => {
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) this.search();
         });
       }, 200);
     })

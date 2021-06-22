@@ -718,7 +718,7 @@ console.log('get_currentWindowStorageIndex3', index);
       this.list = this.cacheList.slice(0, this.config.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-      if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) {
+      if(isFirstSearch && this.isInCurrentWindow && this.list.length > 1) { // todo isWrong
         this.currentIndex = 1;
       } else {
         this.currentIndex = this.list.length > 0 ? 0 : -1;

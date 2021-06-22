@@ -146,31 +146,45 @@ let activeTabs = new Set();
 let activeWindows = new Map();
 
 chrome.tabs.onCreated.addListener((tab)=>{
+  console.log('listener.tabs.onCreated', tab);
   activeTabs.add(tab.id);
   activeWindows.set(tab.windowId, tab.id);
 })
 chrome.tabs.onActivated.addListener(({tabId, windowId})=>{
+  let currentWindowId = Array.from(activeWindows.keys()).pop();
+  let activeTabId = activeWindows.get(windowId);
+
+  activeWindows.set(windowId, tabId);
+console.log('listener.tabs.onActivated', tabId, windowId, currentWindowId, activeTabId);
+  if(activeTabId != undefined
+    && currentWindowId != undefined
+    && currentWindowId != windowId) return;
+console.log('listener.tabs.onActivated2', tabId, windowId, currentWindowId, activeTabId);
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
-  activeWindows.set(windowId, tabId);
 })
 chrome.tabs.onRemoved.addListener((tabId)=>{
+  console.log('listener.tabs.onRemoved', tabId);
   activeTabs.delete(tabId);
 })
 chrome.tabs.onMoved.addListener((tabId) => {
+  console.log('listener.tabs.onMoved', tabId);
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
 })
 chrome.tabs.onDetached.addListener((tabId) => {
+  console.log('listener.tabs.onDetached', tabId);
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
 })
 chrome.windows.onFocusChanged.addListener((windowId)=>{
+  console.log('listener.tabs.windows.onFocusChanged', windowId);
   let tabId = activeWindows.get(windowId);
   if(tabId != undefined) {
     activeTabs.delete(tabId);
     activeTabs.add(tabId);
-
+  }
+  if(windowId != -1) {
     activeWindows.delete(windowId);
     activeWindows.set(windowId, tabId);
   }

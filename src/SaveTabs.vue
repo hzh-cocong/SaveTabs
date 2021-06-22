@@ -494,10 +494,8 @@ export default {
       limited: false,
 
       history: {
-        date: null,
         visible: false,
-        lastVisible: false,
-        isActive: true,
+        date: null,
         isDel: false,
         pickerOptions: {
           disabledDate(time) {
@@ -870,24 +868,16 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       this.focus();
       // this.$refs['input'].focus();
 
+      // 自动关闭弹框
       if(this.currentWorkspace.type == 'history') {
-        if(this.history.lastVisible) {
-          this.$nextTick(() => {
-            this.history.visible = this.history.lastVisible;
-            this.history.lastVisible = false;
-            this.history.isActive = true;
-          })
-        }
-      } else if(this.history.visible) {
-        this.history.lastVisible = this.history.date != null && this.history.visible;
-        this.history.visible = false;
-        this.history.isActive = false;
-      } else if(this.tab.visible) {
-        if(this.tab.windowId == -1) this.tab.visible = false;
+        if(this.history.visible && this.history.date == null) this.history.visible = false;
+      } else if(this.currentWorkspace.type == 'tab') {
+        if(this.tab.visible && this.tab.windowId == -1) this.tab.visible = false;
+      } else if(this.currentWorkspace.type == 'bookmark') {
+        if(this.bookmark.visible) this.bookmark.visible = false;
+      } else if(this.other.visible){
+        this.other.visible = false;
       }
-
-      this.bookmark.visible = false;
-      this.other.visible = false;
 
       this.search();
 

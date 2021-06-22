@@ -282,7 +282,7 @@ export default {
     },
     "history.visible": function(newVal, oldVal) {
       console.log('history.visible', newVal, oldVal);
-      if(this.history.isActive) this.search();
+      this.search();
     },
     "history.isDel": function(newVal, oldVal) {
       console.log('history.isDel', newVal, oldVal);
@@ -293,8 +293,8 @@ export default {
         this.history.isDel = false;
       } else {
         this.deleteRange(this.startTime, this.endTime, () => {
-          this.storageKeyword = undefined; // 这样列表才会刷新
-          this.search('');
+          this.lastEndTime = null; // 这样列表才能刷新
+          this.search();
           this.history.isDel = false;
           this.focus();
         });
@@ -425,6 +425,9 @@ export default {
       this.currentIndex++;
     },
     search(keyword) {
+
+console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
+
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword == keyword.trim()) return;
@@ -442,7 +445,7 @@ export default {
       this.lastEndTime = this.endTime;
       let lastVisitTime = this.endTime;
 
-console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
+console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
 
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
@@ -773,8 +776,7 @@ console.log('删除整个文件夹（已展开）')
       if(this.range == -1) {
 console.log('deleteAll')
         chrome.history.deleteAll(() => {
-          this.storageKeyword = undefined; // 这样列表才会刷新
-          this.search('');
+          this.search();
           this.dialogVisible = false;
         })
       }  else {
@@ -785,8 +787,7 @@ console.log('clearRange', this.range, startTime, endTime, this.timeShow(startTim
           startTime: startTime,
           endTime: endTime,
         }, () => {
-          this.storageKeyword = undefined; // 这样列表才会刷新
-          this.search('');
+          this.search();
           this.dialogVisible = false;
         })
       }

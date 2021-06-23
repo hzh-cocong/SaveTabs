@@ -60,13 +60,11 @@
       class="main"
       :class="{ scroll: isActive }"
       :style="{
-        height: config.item_height+'px',
-
         'flex-direction': ! isSelected ? 'column' : 'column',
+        'justify-content': ! isSelected ? 'space-evenly' : 'flex-start',
         'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
         'align-content': ! isSelected ? 'normal' : 'flex-start',
-        'justify-content': ! isSelected ? 'space-evenly' : 'flex-start',
-
+        'align-items': ! isSelected ? 'normal' : 'flex-start',
         }">
       <template v-if="isSelected">
         <el-tag
@@ -177,7 +175,13 @@
           v-else-if="showIndex > 0"
           :style="{
             fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
+            color: config.list_keymap_color }">
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+          <font
+            style="display:inline-block;text-align:left;"
+            :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+        </span>
       </template>
     </div>
   </div>
@@ -374,8 +378,9 @@ export default {
   overflow: hidden;
   cursor: default;
 
+  height: 100%;
   display: flex;
-  align-items: flex-start; /* flex-wrap = wrap 才有效 */
+  /*align-items: flex-start;*/ /* flex-wrap = wrap 才有效 */
 }
 
 .temporary-item .main.scroll{
@@ -393,7 +398,6 @@ export default {
 }
 
 .temporary-item .title {
-  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

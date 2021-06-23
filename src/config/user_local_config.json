@@ -11,7 +11,7 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "search",
+            "type": "temporary",
             "count": 3,
             "is_top": 1,
             "only_search": false

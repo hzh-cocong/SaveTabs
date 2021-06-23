@@ -104,7 +104,13 @@
         v-else-if="showIndex > 0"
         :style="{
           fontSize: config.list_keymap_size+'px',
-          color: config.list_keymap_color }">{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') + showIndex}}</span>
+          color: config.list_keymap_color }">
+        <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+        <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+        <font
+          style="display:inline-block;text-align:left;"
+          :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+      </span>
     </div>
   </div>
 </template>

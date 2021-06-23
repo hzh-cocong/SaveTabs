@@ -36,7 +36,9 @@
     @load="load"
     @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
-    <template #default="{ index, item, isActive, isSelected }">
+    <template
+      v-if=" ! workspaceSwitch"
+      #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
         :style="{
@@ -185,17 +187,79 @@
               && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
               fontSize: config.list_keymap_size+'px',
-              color: config.list_keymap_color,
-            }">{{
-                (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-              + ( 1 > index-$refs.list.scrollLines+1
-                ? 1
-                : (index-$refs.list.scrollLines+1 > config.item_show_count
-                  ? config.item_show_count
-                  : index-$refs.list.scrollLines+1)
-                )
-              }}</span>
+              color: config.list_keymap_color }">
+            <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+            <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+            <font
+              style="display:inline-block;text-align:left;"
+              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+                1 > index-$refs.list.scrollLines+1
+              ? 1
+              : (index-$refs.list.scrollLines+1 > config.item_show_count
+                ? config.item_show_count
+                : index-$refs.list.scrollLines+1)
+            }}</font>
+          </span>
         </template>
+      </div>
+    </template>
+    <template
+      v-else
+      #default="{ index, item, isActive, isSelected }">
+      <span
+        class="left"
+        :style="{
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+        <svg-icon
+          :name="item.svg"
+          style="width:100%; height: 100%;"
+          :style="{ color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color, }"></svg-icon>
+      </span>
+
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+        <div
+          v-if="isSelected && item.tip != ''"
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }"
+            v-html="item.tip"></div>
+      </div>
+
+      <div class="right">
+        <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+        <span
+          v-else-if="_device.platform != ''
+            && (index-$refs.list.scrollLines+1) <= 9"
+          :style="{
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color }">
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+          <font
+            style="display:inline-block;text-align:left;"
+            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              1 > index-$refs.list.scrollLines+1
+            ? 1
+            : (index-$refs.list.scrollLines+1 > config.item_show_count
+              ? config.item_show_count
+              : index-$refs.list.scrollLines+1)
+          }}</font>
+        </span>
       </div>
     </template>
   </list>
@@ -230,6 +294,10 @@ export default {
   inject: ['focus', 'input'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -305,6 +373,25 @@ export default {
     },
   },
   computed: {
+    workspaceSwitch() {
+      return ! ( this.storageKeyword == undefined
+              || this.config.workspace_change_word == undefined
+              || this.config.workspace_change_word.length == 0
+              || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
+    },
+    workspaceList() {
+      return this.config.workspaces.filter(
+        workspace => workspace != 'history'
+      ).map(workspace => ({
+        type: workspace,
+        name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
+        svg: this.project_config.allWorkspaces[ workspace ].svg,
+      }));
+    },
+    workspaceStorageKeyword() {
+      return this.storageKeyword.substr(this.config.workspace_change_word.length).trim();
+    },
+
     iconMap() {
       console.log('getIcon:iconMap');
       let a = new Date().getTime();
@@ -423,6 +510,8 @@ export default {
 
     up(keyType) {
       if(keyType == 'meta/ctrl') {
+        if(this.workspaceSwitch) return;
+
         // 只收起文件夹
         if(this.currentHistory.count == 1) {
           // 根文件，无法收起
@@ -468,6 +557,12 @@ console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTi
       }
 
       if(keyword == undefined && this.lastEndTime == this.endTime) return;
+
+      // 展示工作区
+      if(this.workspaceSwitch) {
+        this.showWorkspaceList();
+        return;
+      }
 
       this.lastEndTime = this.endTime;
       let lastVisitTime = this.endTime;
@@ -529,6 +624,25 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
       }, lastVisitTime, 27)
+    },
+    showWorkspaceList() {
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      let filterList =  this.workspaceList.filter( workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 );
+
+      // 搜不到则展示全部工作区
+      let keywords = filterList.length > 0
+                    ? this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ')
+                    : this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      filterList = filterList.length > 0 ? filterList : this.workspaceList
+
+      // 列表赋值
+      this.list = filterList.map((workspace) => {
+        workspace.tip = keywords == '' ? '' : `Search ${workspace.type} for '<strong>${keywords.escape()}</strong>'`;
+        return workspace;
+      })
+
+      this.scrollDisabled = true;
+      this.currentIndex = 0;
     },
     load() {
       if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
@@ -650,6 +764,12 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
     _openWindow(keyType) {
       if(this.currentHistory == null) return;
 
+      // 工作区切换
+      if(this.workspaceSwitch) {
+        this.changeWorkspace();
+        return;
+      }
+
       if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
         // 打开新标签
         let url = this.currentHistory.count == undefined
@@ -685,6 +805,16 @@ console.log('_openWindow', url)
         this.cacheList.splice(this.currentIndex+1, this.currentHistory.count);
         this.currentHistory.subFiles = this.list.splice(this.currentIndex+1, this.currentHistory.count);
       }
+    },
+    changeWorkspace() {
+      let keywords;
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      if(this.workspaceList.some(workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 )) {
+        keywords = this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ');
+      } else {
+        keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      }
+      this.input(keywords, this.currentHistory.type);
     },
     deleteHistory() {
       // 删除单独一条历史记录

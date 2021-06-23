@@ -35,7 +35,9 @@
     @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))"
     @scrollEnd="scrollEnd">
-    <template #default="{ index, item, isActive, isSelected }">
+    <template
+      v-if=" ! workspaceSwitch"
+      #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
         :style="{
@@ -112,16 +114,78 @@
                   &&  (index-$refs.list.scrollLines+1) <= 9"
           :style="{
             fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color,
-          }">{{
-              (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-            + ( 1 > index-$refs.list.scrollLines+1
-              ? 1
-              : (index-$refs.list.scrollLines+1 > config.item_show_count
-                ? config.item_show_count
-                : index-$refs.list.scrollLines+1)
-              )
-            }}</span>
+            color: config.list_keymap_color }">
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+          <font
+            style="display:inline-block;text-align:left;"
+            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              1 > index-$refs.list.scrollLines+1
+            ? 1
+            : (index-$refs.list.scrollLines+1 > config.item_show_count
+              ? config.item_show_count
+              : index-$refs.list.scrollLines+1)
+          }}</font>
+        </span>
+      </div>
+    </template>
+    <template
+      v-else
+      #default="{ index, item, isActive, isSelected }">
+      <span
+        class="left"
+        :style="{
+          width: (config.item_height-20)+'px',
+          height: (config.item_height-20)+'px' }">
+        <svg-icon
+          :name="item.svg"
+          style="width:100%; height: 100%;"
+          :style="{ color: isSelected
+                          ? config.list_focus_icon_color
+                          : config.list_icon_color, }"></svg-icon>
+      </span>
+
+      <div class="main">
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+        <div
+          v-if="isSelected && item.tip != ''"
+          class="sub-title"
+          :style="{
+            fontSize: config.list_explain_font_size+'px',
+            color: isSelected
+                  ? config.list_explain_focus_font_color
+                  : config.list_explain_font_color }"
+            v-html="item.tip"></div>
+      </div>
+
+      <div class="right">
+        <span
+            v-if="isSelected"
+            :style="{
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_focus_keymap_color,
+            }">↩</span>
+        <span
+          v-else-if="_device.platform != ''
+            && (index-$refs.list.scrollLines+1) <= 9"
+          :style="{
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_keymap_color }">
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+          <font
+            style="display:inline-block;text-align:left;"
+            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              1 > index-$refs.list.scrollLines+1
+            ? 1
+            : (index-$refs.list.scrollLines+1 > config.item_show_count
+              ? config.item_show_count
+              : index-$refs.list.scrollLines+1)
+          }}</font>
+        </span>
       </div>
     </template>
   </list>
@@ -134,9 +198,13 @@ import List from '../common/List.vue'
 
 export default {
   name: 'Bookmark',
-  inject: ['focus'],
+  inject: ['focus', 'input'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -210,6 +278,25 @@ export default {
     },
   },
   computed: {
+    workspaceSwitch() {
+      return ! ( this.storageKeyword == undefined
+              || this.config.workspace_change_word == undefined
+              || this.config.workspace_change_word.length == 0
+              || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
+    },
+    workspaceList() {
+      return this.config.workspaces.filter(
+        workspace => workspace != 'bookmark'
+      ).map(workspace => ({
+        type: workspace,
+        name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
+        svg: this.project_config.allWorkspaces[ workspace ].svg,
+      }));
+    },
+    workspaceStorageKeyword() {
+      return this.storageKeyword.substr(this.config.workspace_change_word.length).trim();
+    },
+
     iconMap() {
       console.log('getIcon:iconMap');
       let a = new Date().getTime();
@@ -402,6 +489,8 @@ let b = new Date().getTime();
 
     up(keyType) {
       if(keyType == 'meta/ctrl') {
+        if(this.workspaceSwitch) return;
+
         // 只跳到父文件，不收起文件夹，体验更佳
         let i = this.currentIndex-1;
         while(i >= 0 && this.list[i].id != this.currentBookmark.parentId) i--;
@@ -437,10 +526,19 @@ let b = new Date().getTime();
       }
     },
     search(keyword) {
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
+console.log('bookmark.search', keyword, '|', this.storageKeyword);
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword == keyword.trim()) return;
+        this.storageKeyword = keyword.trim();
+      }
+console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
 
-      this.storageKeyword = keyword.trim();
+      // 展示工作区
+      if(this.workspaceSwitch) {
+        this.showWorkspaceList();
+        return;
+      }
 
       if( ! this.isSearched) {
         // 避免第一次加载页面时重复 getTree
@@ -518,6 +616,25 @@ console.log('chrome.bookmarks.getTree.second')
         })
       }
     },
+    showWorkspaceList() {
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      let filterList =  this.workspaceList.filter( workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 );
+
+      // 搜不到则展示全部工作区
+      let keywords = filterList.length > 0
+                    ? this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ')
+                    : this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      filterList = filterList.length > 0 ? filterList : this.workspaceList
+
+      // 列表赋值
+      this.list = filterList.map((workspace) => {
+        workspace.tip = keywords == '' ? '' : `Search ${workspace.type} for '<strong>${keywords.escape()}</strong>'`;
+        return workspace;
+      })
+
+      this.scrollDisabled = true;
+      this.currentIndex = 0;
+    },
     load() {
       console.warn('load----------------')
       // 加载数据
@@ -586,6 +703,12 @@ console.log('chrome.bookmarks.getTree.second')
       // 列表为空
       if(this.currentBookmark == null) return;
 
+      // 工作区切换
+      if(this.workspaceSwitch) {
+        this.changeWorkspace();
+        return;
+      }
+
       // 打开网页
       if( ! this.currentBookmark.children) {
         this.$open(this.currentBookmark.url, keyType);
@@ -626,6 +749,16 @@ console.log('chrome.bookmarks.getTree.second')
         });
         // this.collapse(this.list, this.currentIndex);
       }
+    },
+    changeWorkspace() {
+      let keywords;
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      if(this.workspaceList.some(workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 )) {
+        keywords = this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ');
+      } else {
+        keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      }
+      this.input(keywords, this.currentBookmark.type);
     },
 
     searchExpand(index) {

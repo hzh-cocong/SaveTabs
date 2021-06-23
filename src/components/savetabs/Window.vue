@@ -694,25 +694,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
-        let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
-        let filterList =  this.workspaceList.filter( workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 );
-
-        // 搜不到则展示全部工作区
-        let keywords = filterList.length > 0
-                      ? this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ')
-                      : this.workspaceStorageKeyword.split(/\s+/).join(' ');
-        filterList = filterList.length > 0 ? filterList : this.workspaceList
-
-        // 列表赋值
-        this.list = filterList.map((workspace) => {
-          workspace.tip = keywords == '' ? '' : `Search ${workspace.type} for '<strong>${keywords.escape()}</strong>'`;
-          return workspace;
-        })
-        this.scrollDisabled = true;
-        this.currentIndex = 0;
-
-        this.isFirstSearch = false;
-
+        this.showWorkspaceList();
         return;
       }
 
@@ -754,6 +736,26 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
+    },
+    showWorkspaceList() {
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      let filterList =  this.workspaceList.filter( workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 );
+
+      // 搜不到则展示全部工作区
+      let keywords = filterList.length > 0
+                    ? this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ')
+                    : this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      filterList = filterList.length > 0 ? filterList : this.workspaceList
+
+      // 列表赋值
+      this.list = filterList.map((workspace) => {
+        workspace.tip = keywords == '' ? '' : `Search ${workspace.type} for '<strong>${keywords.escape()}</strong>'`;
+        return workspace;
+      })
+
+      this.scrollDisabled = true;
+      this.currentIndex = 0;
+      this.isFirstSearch = false;
     },
     load() {
       // 加载数据
@@ -912,14 +914,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 工作区切换
       if(this.workspaceSwitch) {
-        let keywords;
-        let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
-        if(this.workspaceList.some(workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 )) {
-          keywords = this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ');
-        } else {
-          keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
-        }
-        this.input(keywords, this.currentGroup.type);
+        this.changeWorkspace();
         return;
       }
 
@@ -1017,6 +1012,16 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
           }
         })
       }
+    },
+    changeWorkspace() {
+      let keywords;
+      let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
+      if(this.workspaceList.some(workspace => workspace.name.toUpperCase().indexOf(keyword) != -1 )) {
+        keywords = this.workspaceStorageKeyword.split(/\s+/).slice(1).join(' ');
+      } else {
+        keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
+      }
+      this.input(keywords, this.currentGroup.type);
     },
     choice(index) {
       return this.$refs.list.choice(index);

@@ -665,11 +665,20 @@ console.log('get_currentWindowStorageIndex3', index);
       }
     },
 
-    up() {
-      this.currentIndex--;
+    up(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 无操作
+      } else {
+        this.currentIndex--;
+      }
     },
-    down() {
-      this.currentIndex++;
+    down(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+        this._openWindow('');
+      } else {
+        this.currentIndex++;
+      }
     },
     search(keyword) {
       console.log('window.search', keyword, '|', this.storageKeyword);

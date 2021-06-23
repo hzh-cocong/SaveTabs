@@ -53,11 +53,11 @@
                     : lang(currentWorkspace.placeholder)"
         v-model="keyword"
         :clearable="keyword == '' ? false : true"
-        @keydown.down.native.prevent="selectDelay('down', $event)"
-        @keydown.up.native.prevent="selectDelay('up', $event)"
+        @keydown.down.native="selectDelay('down', getKeyType($event))"
+        @keydown.up.native="selectDelay('up', getKeyType($event))"
         @keydown.left.native="leftOrRightDown('left', $event)"
         @keydown.right.native="leftOrRightDown('right', $event)"
-        @keydown.enter.native="openWindow"
+        @keydown.enter.native="openWindow(getKeyType($event))"
         @keydown.esc.native="close"
         @keydown.native="keydown"
         @keyup.native="keyType=getKeyType($event)"
@@ -674,11 +674,10 @@ console.log('mmmmmmmmmmmm2', JSON.stringify(this.things))
 console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
-    openWindow(event) {
+    openWindow(keyType) {
       // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
 
-      let keyType = this.getKeyType(event);
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, keyType);
     },
 
@@ -738,30 +737,34 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
     keydown(event) {
       console.log('keydown', event)
 
+      let keyType = this.getKeyType(event);
+
       // tab 和 shift+tab 左右切换
       if(event.keyCode == 9) {
+        event.stopPropagation();
+        event.preventDefault();
         if(event.shiftKey == true) {
-          this.selectDelay('left', event);
+          this.selectDelay('left', keyType);
         } else {
-          this.selectDelay('right', event);
+          this.selectDelay('right', keyType);
         }
         return;
       }
       // cmd/alt + [] 左右切换
       // cmd/ctrl + [] 左右切换
       if((event.keyCode == 219 || event.keyCode == 221)
-      && ( (this._device.platform == 'Mac' && event.metaKey == true)
-        || (this._device.platform != 'Mac' && event.altKey == true))) {
-        // || (this._device.platform != 'Mac' && event.ctrlKey == true))) {
+      && (keyType == 'meta/ctrl')) {
+        event.stopPropagation();
+        event.preventDefault();
         if(event.keyCode == 219) {
-          this.selectDelay('left', event);
+          this.selectDelay('left', keyType);
         } else {
-          this.selectDelay('right', event);
+          this.selectDelay('right', keyType);
         }
         return
       }
 
-      this.keyType = this.getKeyType(event);
+      this.keyType = keyType;
 
       let index = event.keyCode-49+1;
       if(index <= 0 || index > 9) return;
@@ -791,11 +794,10 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       // 只有一个工作区可用时，输入框恢复左右选择能力
       if(this.workspaces.length <= 1) return;
 
+      let keyType = this.getKeyType(event);
       // 移动到最左或最后
-      if((this._device.platform == 'Mac' && event.metaKey == true)
-        // || (this._device.platform != 'Mac' && event.altKey == true)) {
-        || (this._device.platform != 'Mac' && event.ctrlKey == true)) {
-        // 屏蔽事件
+      if(keyType == 'meta/ctrl') {
+         // 屏蔽事件
         event.stopPropagation();
         event.preventDefault();
 
@@ -811,15 +813,15 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       || event.shiftKey == true
       || event.ctrlKey == true) return;
 
-      this.selectDelay(type, event);
-    },
-    selectDelay(type, event) {
-      // 中文输入法时禁用，避免冲突
-      if(this.isComposition) return;
-
       // 屏蔽事件
       event.stopPropagation();
       event.preventDefault();
+
+      this.selectDelay(type, keyType);
+    },
+    selectDelay(type, keyType) {
+      // 中文输入法时禁用，避免冲突
+      if(this.isComposition) return;
 
       // 防止滚动过快，渲染速度跟不上看起来会停止，体验不好
       if(this.lock == true) return;
@@ -827,11 +829,11 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       if(type == 'down') {
         // this.down();
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down();
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].down(keyType);
         setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'up') {
         // this.up();
-        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up();
+        this.$refs.workspaces[ this.activeWorkspaceRefIndex ].up(keyType);
         setTimeout(() => { this.lock = false; }, 1);
       } else if(type == 'left') {
         this.$refs.carousel.prev();
@@ -955,13 +957,13 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
               h('span', { style: 'margin: 0' }, '向右切换'),
             ]),
             h('div', null, [
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
-              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, '['),
               h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
-              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
+              // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, ']'),
               h('span', { style: 'margin: 0' }, '向右切换'),

@@ -421,11 +421,35 @@ export default {
       }
     },
 
-    up() {
-      this.currentIndex--;
+    up(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 只收起文件夹
+        if(this.currentHistory.count == 1) {
+          // 根文件，无法收起
+        } else if(this.currentHistory.count == undefined) {
+          // 找到父文件并收起
+          for(let i = this.currentIndex-1; i >= 0; i--) {
+            if(this.list[i].count == undefined) continue;
+
+            this.currentIndex = i;
+            this._openWindow('');
+
+            break;
+          }
+        } else if(this.currentHistory.subFiles.length <= 0) {
+          this._openWindow('');
+        }
+      } else {
+        this.currentIndex--;
+      }
     },
-    down() {
-      this.currentIndex++;
+    down(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+        this._openWindow('');
+      } else {
+        this.currentIndex++;
+      }
     },
     search(keyword) {
 

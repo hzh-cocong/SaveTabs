@@ -57,6 +57,8 @@
 
       <div
         class="main"
+        @mouseenter="mainEnter"
+        @mouseleave="mainLeave"
         :class="{ scroll: isActive }"
         :style="{
           height: config.item_height+'px',
@@ -170,7 +172,7 @@
         class="right"
         :style="{ paddingLeft: isActive ? '5px' : '10px' }"
         @click.stop="focus">
-        <div v-if="isActive">
+        <div v-if="isActive && isShowOperationButton">
           <i
             class="el-icon-copy-document hover"
             @click="_openWindow(getKeyType($event))"
@@ -261,6 +263,8 @@ export default {
       tabFocus: {},
 
       isOperating: false,
+
+      isShowOperationButton: true,
     }
   },
   components: {
@@ -520,11 +524,36 @@ alert('空间不够')
       }
     },
 
-    up() {
-      this.currentIndex--;
+    hideOperationButton() {
+      console.log('mousemove', this.lock)
+
+      this.isShowOperationButton = false;
     },
-    down() {
-      this.currentIndex++;
+    mainEnter(event) {
+      console.log('temporary:mainEnter', event);
+      // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
+      event.target.addEventListener('scroll', this.hideOperationButton);
+    },
+    mainLeave(event) {
+      console.log('temporary:mainLeave', event);
+      event.target.removeEventListener('scroll', this.hideOperationButton);
+      this.isShowOperationButton = true;
+    },
+
+    up(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 无操作
+      } else {
+        this.currentIndex--;
+      }
+    },
+    down(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+        this._openWindow('');
+      } else {
+        this.currentIndex++;
+      }
     },
     search(keyword) {
       if(keyword == undefined) return;
@@ -665,9 +694,14 @@ alert('空间不够')
           id: nanoid(),
           lastVisitTime: new Date().getTime(),
           tabs: tabs.map(tab => {
+            // 去除末尾 /
+            tab.url = tab.url == '' && tab.pendingUrl
+                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                    : tab.url.replace(/(\/*$)/g,"");
+
             return {
               icon: tab.favIconUrl,
-              url: tab.url == "" ? tab.pendingUrl : tab.url,
+              url: tab.url,
               title: tab.title,
             }
           }),

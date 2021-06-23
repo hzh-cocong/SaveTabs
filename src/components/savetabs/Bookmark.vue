@@ -33,7 +33,7 @@
     ref="list"
     @load="load"
     @click.native="focus"
-    @itemClick="_openWindow"
+    @itemClick="_openWindow(getKeyType($event))"
     @scrollEnd="scrollEnd">
     <template #default="{ index, item, isActive, isSelected }">
       <span
@@ -400,11 +400,32 @@ let b = new Date().getTime();
       }
     },
 
-    up() {
-      this.currentIndex--;
+    up(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 只收起文件夹
+        if(this.currentBookmark.children && this.currentBookmark.children.length <= 0) {
+          this._openWindow('');
+        } else {
+          let i = this.currentIndex-1;
+          while(i >= 0 && this.list[i].id != this.currentBookmark.parentId) i--;
+
+          // 说明已经是到了最顶部，没法再收起了
+          if(i < 0) return;
+
+          this.currentIndex = i;
+          this._openWindow('');
+        }
+      } else {
+        this.currentIndex--;
+      }
     },
-    down() {
-      this.currentIndex++;
+    down(keyType) {
+      if(keyType == 'meta/ctrl') {
+        // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+        this._openWindow('');
+      } else {
+        this.currentIndex++;
+      }
     },
     search(keyword) {
       if(keyword == undefined) return;
@@ -540,9 +561,9 @@ console.log('chrome.bookmarks.getTree.second')
       })
     },
 
-    openWindow(index, event) {
+    openWindow(index, keyType) {
       if(index == undefined) {
-        this._openWindow(event);
+        this._openWindow(keyType);
         return;
       }
 
@@ -550,15 +571,15 @@ console.log('chrome.bookmarks.getTree.second')
         return;
       }
 
-      this._openWindow(event);
+      this._openWindow(keyType);
     },
-    _openWindow(event) {
+    _openWindow(keyType) {
       // 列表为空
       if(this.currentBookmark == null) return;
 
       // 打开网页
       if( ! this.currentBookmark.children) {
-        this.$open(this.currentBookmark.url, event);
+        this.$open(this.currentBookmark.url, keyType);
         return;
       }
 
@@ -582,10 +603,9 @@ console.log('chrome.bookmarks.getTree.second')
         // 先存储再去操作，因为列表有可能会发生滚动
         this.state[ this.currentBookmark.id ] = true;
         chrome.storage.local.set({'bookmark': { state: this.state, position: this.position }}, () => {
-
+          this.expand(this.list, this.currentIndex, true);
         });
-
-        this.expand(this.list, this.currentIndex, true);
+        // this.expand(this.list, this.currentIndex, true);
       } else {
         // 收起
 
@@ -593,10 +613,9 @@ console.log('chrome.bookmarks.getTree.second')
         // this.state[ this.currentBookmark.id ] = false;
         delete this.state[ this.currentBookmark.id ]
         chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
-
+          this.collapse(this.list, this.currentIndex);
         });
-
-        this.collapse(this.list, this.currentIndex);
+        // this.collapse(this.list, this.currentIndex);
       }
     },
 

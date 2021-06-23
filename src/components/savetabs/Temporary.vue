@@ -227,7 +227,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
-  inject: ['focus'],
+  inject: ['focus', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -701,6 +701,8 @@ alert('空间不够')
 
         this.$msgbox.close();
         this.isOperating = false;
+
+        this.statusTip('临时窗口添加成功');
       }).catch(() => {
         this.$message({
           type: 'error',

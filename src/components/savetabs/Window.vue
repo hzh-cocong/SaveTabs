@@ -422,7 +422,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
-  inject: ['focus', 'input'],
+  inject: ['focus', 'input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -865,6 +865,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
             });
           }
 
+          this.statusTip('窗口添加成功');
+
           // 让 all 保持数据同步
           chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'add'});
         }).catch(() => {
@@ -1142,6 +1144,9 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
         // 关闭 dialog
         this.differenceVisible = false;
 
+
+        this.statusTip('窗口更新成功');
+
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'update'});
       })
@@ -1170,6 +1175,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
         // 关闭 dialog
         this.differenceVisible = false;
+
+        this.statusTip('窗口绑定成功');
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'bind'});
@@ -1256,6 +1263,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
         // 关闭 dialog
         this.differenceVisible = false;
+
+        this.statusTip('窗口已还原');
       });
     },
 

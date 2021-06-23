@@ -402,12 +402,15 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .temporary-item .right {
   /* border: 1px solid black; */
-  margin-left: 10px;
-  margin-right: 10px;
+  /* border: 1px solid black; */
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
   text-align: right;
 

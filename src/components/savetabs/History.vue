@@ -123,7 +123,10 @@
         </div> -->
       </div>
 
-      <div class="right">
+      <div
+        class="right"
+        :style="{ paddingLeft: isActive ? '5px' : '10px' }"
+        @click.stop="focus">
         <div v-if="isActive">
           <i
             v-if="storageKeyword != getDomain(item.count == undefined
@@ -134,7 +137,7 @@
                                               : list[index+1].url
                                             ))"
             class="el-icon-more hover"
-            @click.stop="input(
+            @click="input(
                           getDomain(
                             item.count == undefined
                             ? item.url
@@ -148,7 +151,7 @@
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
-            @click.stop="deleteHistory"
+            @click="deleteHistory"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
@@ -666,8 +669,6 @@ console.log('_openWindow', url)
 console.log('删除单独一条历史记录')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
-
-          this.focus();
         })
         return;
       }
@@ -693,8 +694,6 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             this.cacheList.splice(this.currentIndex, 1);
             this.list.splice(this.currentIndex, 1);
           }
-
-          this.focus();
         })
 
         return;
@@ -712,8 +711,6 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
 console.log('删除整个文件夹（未展开）')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
-
-          this.focus();
         });
 
         return;
@@ -733,8 +730,6 @@ console.log('删除整个文件夹（未展开）')
 console.log('删除整个文件夹（已展开）')
           this.cacheList.splice(this.currentIndex, this.currentHistory.count+1);
           this.list.splice(this.currentIndex, this.currentHistory.count+1);
-
-          this.focus();
         });
 
         return;
@@ -868,12 +863,14 @@ console.warn('mounted')
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .list >>> .list-item .right {
   /* border: 1px solid black; */
-  margin-left: 10px;
-  margin-right: 10px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
   text-align: right;
 

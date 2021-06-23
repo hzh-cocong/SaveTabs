@@ -83,7 +83,9 @@
                   : (isSelected ? item.url : getDomain(item.url)) )"></div>
       </div>
 
-      <div class="right">
+      <div
+        class="right"
+        @click.stop="focus">
         <template v-if="isActive
                 || activeTabs[item.url]
                 || (storageKeyword != '' && item.lastVisitTime != undefined)">
@@ -91,7 +93,7 @@
             <div
               v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
               class="number-button hover"
-              @click.stop="input(item.url, 'tab')"
+              @click="input(item.url, 'tab')"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
@@ -100,14 +102,14 @@
                 && (activeTabs[item.url].count > 1
                   || isRepeat(index))"
               class="el-icon-close close-without-tab hover"
-              @click.stop="deleteNote"
+              @click="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }"></i>
             <i
               v-else
               class="el-icon-close hover"
-              @click.stop="deleteNote"
+              @click="deleteNote"
               :style="{
                 color:config.list_focus_font_color}"></i>
           </div>
@@ -620,8 +622,6 @@ console.log('bb')
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'note', operation: 'delete'});
-
-        this.focus();
       })
     },
 
@@ -866,12 +866,14 @@ console.warn('finish', b, (b-a)/1000)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .list >>> .list-item .right {
   /* border: 1px solid black; */
-  margin-left: 10px;
-  margin-right: 10px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
   text-align: right;
 

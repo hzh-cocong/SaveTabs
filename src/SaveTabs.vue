@@ -575,7 +575,7 @@ export default {
     input(value, type) {
       if(type == undefined) {
         this.keyword = value;
-        this.focus();
+        // this.focus();
         this.search();
         return;
       }
@@ -588,6 +588,8 @@ export default {
           type: 'warning'
         }).then(() => {
           this.$open('./options.html?type=workspace');
+        }).catch(() => {
+          this.focus();
         });
         return;
       }

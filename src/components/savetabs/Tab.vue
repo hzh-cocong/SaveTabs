@@ -81,17 +81,20 @@
                 : (isSelected ? item.url : getDomain(item.url))"></div>
       </div>
 
-      <div class="right">
+      <div
+        class="right"
+        :style="{ paddingLeft: isActive ? '5px' : '10px' }"
+        @click.stop="focus">
         <div v-if="isActive">
           <i
             v-if="storageKeyword != getDomain(item.url)"
             class="el-icon-more hover"
-            @click.stop="input( getDomain(item.url) )"
+            @click="input( getDomain(item.url) )"
             :style="{
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
-            @click.stop="closeTab"
+            @click="closeTab"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
@@ -502,8 +505,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       }
     },
     closeTab() {
-      console.log('tab.closeTab', this.selectedTab.id, this.currentIndex)
-
       // 这个必须放外面，防止 onRemove 先执行而刷新列表
       this.originList.splice(this.selectedOriginIndex, 1);
       chrome.tabs.remove(this.selectedTab.id, () => {
@@ -512,8 +513,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         this.list.splice(this.currentIndex, 1);
         console.log('tab.closeTab2', this.selectedTab.id, this.currentIndex, this.selectedOriginIndex)
       })
-
-      this.focus();
     },
 
     refreshTabs(callback) {
@@ -758,12 +757,14 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .list >>> .list-item .right {
   /* border: 1px solid black; */
-  margin-left: 10px;
-  margin-right: 10px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
   text-align: right;
 

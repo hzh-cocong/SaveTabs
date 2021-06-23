@@ -79,7 +79,9 @@
                   : config.list_explain_font_color) }">{{ getTip() }}</div>
       </div>
 
-      <div class="right">
+      <div
+        class="right"
+        @click.stop="focus">
         <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
             <el-badge
@@ -589,7 +591,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     currentGroup() {
       console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {
@@ -1472,12 +1474,14 @@ console.warn('finish', b, (b-a)/1000)
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }
 .list >>> .list-item .right {
   /* border: 1px solid black; */
-  margin-left: 10px;
-  margin-right: 10px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
   text-align: right;
 

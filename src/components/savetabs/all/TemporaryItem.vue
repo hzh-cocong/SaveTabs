@@ -143,7 +143,7 @@
 
     <div
       class="right"
-      :style="{ marginLeft: isActive ? '5px' : '10px' }">
+      :style="{ paddingLeft: isActive ? '5px' : '10px' }">
       <!-- <div v-if="isActive">
         <i
           class="el-icon-copy-document hover"

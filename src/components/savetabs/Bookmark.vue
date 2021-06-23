@@ -402,19 +402,28 @@ let b = new Date().getTime();
 
     up(keyType) {
       if(keyType == 'meta/ctrl') {
-        // 只收起文件夹
-        if(this.currentBookmark.children && this.currentBookmark.children.length <= 0) {
-          this._openWindow('');
-        } else {
-          let i = this.currentIndex-1;
-          while(i >= 0 && this.list[i].id != this.currentBookmark.parentId) i--;
+        // 只跳到父文件，不收起文件夹，体验更佳
+        let i = this.currentIndex-1;
+        while(i >= 0 && this.list[i].id != this.currentBookmark.parentId) i--;
 
-          // 说明已经是到了最顶部，没法再收起了
-          if(i < 0) return;
+        // 说明已经是到了最顶部，没法再收起了
+        if(i < 0) return;
 
-          this.currentIndex = i;
-          this._openWindow('');
-        }
+        this.currentIndex = i;
+
+        // // 只收起文件夹
+        // if(this.currentBookmark.children && this.currentBookmark.children.length <= 0) {
+        //   this._openWindow('');
+        // } else {
+        //   let i = this.currentIndex-1;
+        //   while(i >= 0 && this.list[i].id != this.currentBookmark.parentId) i--;
+
+        //   // 说明已经是到了最顶部，没法再收起了
+        //   if(i < 0) return;
+
+        //   this.currentIndex = i;
+        //   this._openWindow('');
+        // }
       } else {
         this.currentIndex--;
       }

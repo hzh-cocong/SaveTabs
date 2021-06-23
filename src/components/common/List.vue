@@ -247,7 +247,7 @@ export default {
 console.log('currentIndex', newVal, oldVal)
 
       if(this.list.length == 0) {
-        console.log('sssssssssss', this.currentIndex)
+        console.log('list.watch3', this.currentIndex, this.scrollLines, this.$el.scrollTop)
         this.scrollLines = 0;
         this.$el.scrollTop = 0;
         this.$emit('change', -1);
@@ -305,8 +305,11 @@ console.log('currentIndex', newVal, oldVal)
       }
 
       if(newVal.length == 0) {
-        console.log('list.watch', newVal.length)
-        this.$emit('change', -1);
+        console.log('list.watch', newVal.length, this.currentIndex, this.scrollLines, this.$el.scrollTop)
+        if(this.currentIndex != -1) this.$emit('change', -1);
+      } else if(this.currentIndex >= newVal.length) {
+        console.log('list.watch2', newVal.length, this.currentIndex, this.scrollLines, this.$el.scrollTop)
+        this.$emit('change', newVal.length-1);
       }
     },
     scrollLines(newVal, oldVal) {

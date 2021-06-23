@@ -59,6 +59,7 @@
         class="main"
         @mouseenter="mainEnter"
         @mouseleave="mainLeave"
+        @click.stop="focus"
         :class="{ scroll: isActive }"
         :style="{
           height: config.item_height+'px',
@@ -587,7 +588,7 @@ alert('空间不够')
       // 列表赋值
       this.cacheList = filterList;
       this.list = this.cacheList.slice(0, this.config.list_page_count);
-      this.currentIndex = 0;
+      this.currentIndex = this.list.length > 0 ? 0 : -1;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁

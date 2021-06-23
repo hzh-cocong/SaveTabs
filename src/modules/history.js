@@ -209,16 +209,51 @@ let history = {
     }
   },
 
-  openWindow(index, event) {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa', index);
+  up(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      let currentIndex = this.getRealIndex(index);
+      let currentHistory = this.cacheList[ currentIndex ];
+
+      // 只收起文件夹
+      if(currentHistory.count == 1) {
+        // 根文件，无法收起
+        return Promise.resolve();
+      } else if(currentHistory.count == undefined) {
+        // 找到父文件并收起
+        for(let i = currentIndex-1; i >= 0; i--) {
+          if(this.cacheList[i].count == undefined) continue;
+
+          return this.openWindow(this.cacheList[i].realIndex, '').then((result) => {
+            return { type: 'jump-up-and-collapse', count: currentIndex-i, length: result.length };
+          })
+        }
+      } else if(currentHistory.subFiles.length <= 0) {
+        return this.openWindow(index, '');
+      } else {
+        // 文件夹已收起
+        return Promise.resolve();
+      }
+    } else {
+      return Promise.resolve({ type: 'up' });
+    }
+  },
+  down(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+      return this.openWindow(index, '');
+    } else {
+      return Promise.resolve({ type: 'down' });
+    }
+  },
+
+  openWindow(index, keyType) {
     index = this.getRealIndex(index);
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa2', index);
     let currentHistory = this.cacheList[ index ];
 
     if(currentHistory.count == undefined || currentHistory.count == 1) {
       // 打开新标签
       return new Promise(resolve => {
-        $open(currentHistory.url, event, () => {
+        $open(currentHistory.url, keyType, () => {
           resolve();
         });
       })

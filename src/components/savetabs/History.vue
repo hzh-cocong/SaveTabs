@@ -527,6 +527,8 @@ export default {
           }
         } else if(this.currentHistory.subFiles.length <= 0) {
           this._openWindow('');
+        } else {
+          // 文件夹已收起
         }
       } else {
         this.currentIndex--;

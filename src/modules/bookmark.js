@@ -194,14 +194,59 @@ let bookmark = {
     })
   },
 
-  openWindow(index, event) {
+  up(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      let currentIndex = this.getRealIndex(index);
+      let currentBookmark = this.cacheList[ currentIndex ];
+
+      // 只跳到父文件，不收起文件夹，体验更佳
+      let i = currentIndex-1;
+      while(i >= 0 && this.cacheList[i].id != currentBookmark.parentId) i--;
+
+      // 说明已经是到了最顶部，没法再收起了
+      if(i < 0) return Promise.resolve();
+
+      return Promise.resolve({ type: 'jump-up', count: currentIndex-i });
+
+//       let currentIndex = this.getRealIndex(index);
+//       let currentBookmark = this.cacheList[ currentIndex ];
+// console.log('uuuuuuuuuuuuuu', currentIndex, currentBookmark);
+//       // 只收起文件夹
+//       if(currentBookmark.children && currentBookmark.children.length <= 0) {
+//         return this.openWindow(currentBookmark.realIndex, '');
+//       } else {
+//         let i = currentIndex-1;
+//         while(i >= 0 && this.cacheList[i].id != currentBookmark.parentId) i--;
+
+//         // 说明已经是到了最顶部，没法再收起了
+//         if(i < 0) return Promise.resolve();
+// console.log('uuuuuuuuuuuuuuuuu2', i, this.cacheList[i])
+
+//         return this.openWindow(this.cacheList[i].realIndex, '').then((result) => {
+//           return { type: 'jump-up-and-collapse', count: currentIndex-i, length: result.length };
+//         })
+//       }
+    } else {
+      return Promise.resolve({ type: 'up' });
+    }
+  },
+  down(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+      return this.openWindow(index, '');
+    } else {
+      return Promise.resolve({ type: 'down' });
+    }
+  },
+
+  openWindow(index, keyType) {
     index = this.getRealIndex(index);
     let currentBookmark = this.cacheList[ index ];
 
     // 打开网页
     if( ! currentBookmark.children) {
       return new Promise(resolve => {
-        $open(currentBookmark.url, event, () => {
+        $open(currentBookmark.url, keyType, () => {
           resolve();
         });
       })

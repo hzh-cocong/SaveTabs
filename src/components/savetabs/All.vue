@@ -149,11 +149,59 @@ export default {
     },
   },
   methods: {
-    up() {
-      this.currentIndex--;
+    up(keyType) {
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      module.up(item.realIndex, keyType).then((result) => {
+        console.warn('up.finish.uuuuuuuuuuuuuuuuu', result);
+        if(result == undefined) return;
+
+        if(result.type == 'up') {
+          this.currentIndex--;
+        } else if(result.type == 'jump-up') {
+          this.currentIndex -= result.count;
+        } else if(result.type == 'jump-up-and-collapse') {
+          this.currentIndex -= result.count;
+          this.list.splice(this.currentIndex+1, result.length);
+          this.length[item.type] -= result.length;
+        } else if(result.type == 'delete') {
+          this.list.splice(this.currentIndex, 1);
+          this.length[item.type]--;
+        } else if(result.type == 'spread') {
+          this.list.splice(this.currentIndex+1, 0, ...result.list);
+          this.length[item.type] += result.list.length;
+        } else if(result.type == 'collapse') {
+          this.list.splice(this.currentIndex+1, result.length);
+          this.length[item.type] -= result.length;
+        } else if(result.type == 'input') {
+          this.input(result.keywords, result.workspace)
+        }
+      });
     },
-    down() {
-      this.currentIndex++;
+    down(keyType) {
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      module.down(item.realIndex, keyType).then((result) => {
+        console.warn('down.finish', result);
+        if(result == undefined) return;
+
+        if(result.type == 'down') {
+          this.currentIndex++;
+        } else if(result.type == 'delete') {
+          this.list.splice(this.currentIndex, 1);
+          this.length[item.type]--;
+        } else if(result.type == 'spread') {
+          this.list.splice(this.currentIndex+1, 0, ...result.list);
+          this.length[item.type] += result.list.length;
+        } else if(result.type == 'collapse') {
+          this.list.splice(this.currentIndex+1, result.length);
+          this.length[item.type] -= result.length;
+        } else if(result.type == 'input') {
+          this.input(result.keywords, result.workspace)
+        }
+      });
     },
 
     search(keyword) {

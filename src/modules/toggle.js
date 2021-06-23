@@ -57,7 +57,24 @@ let search = {
     })
   },
 
-  openWindow(index, event) {
+  up(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      // 无操作
+      return Promise.resolve();
+    } else {
+      return Promise.resolve({ type: 'up' });
+    }
+  },
+  down(index, keyType) {
+    if(keyType == 'meta/ctrl') {
+      // 这个操作和鼠标点击或者直接回车是差不多的，区别是 keyType 会被强制为默认的
+      return this.openWindow(index, '');
+    } else {
+      return Promise.resolve({ type: 'down' });
+    }
+  },
+
+  openWindow(index, keyType) {
     let currentItem = this.cacheList[index];
 console.log('cccccccccccccccccc', currentItem)
     return new Promise(resolve => {

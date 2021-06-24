@@ -209,6 +209,10 @@ let history = {
     }
   },
 
+  refreshData() {
+    return Promise.resolve();
+  },
+
   up(index, keyType) {
     if(keyType == 'meta/ctrl') {
       let currentIndex = this.getRealIndex(index);

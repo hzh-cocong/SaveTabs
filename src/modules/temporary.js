@@ -63,6 +63,23 @@ let temporary = {
     })
   },
 
+  refreshData() {
+    return new Promise(resolve => {
+      // 获取本地数据
+      chrome.storage.local.get({temporary: []}, items => {
+        this.storageList = items.temporary;
+
+        // 加标签（速度很快）(存在污染问题)
+        this.storageList.forEach(group => {
+          group.type = 'temporary';
+          // group.type = 'TemporaryItem';
+        });
+
+        resolve();
+      });
+    })
+  },
+
   up(index, keyType) {
     if(keyType == 'meta/ctrl') {
       // 无操作

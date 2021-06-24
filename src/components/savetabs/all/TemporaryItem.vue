@@ -34,15 +34,8 @@
         }">{{ lang('temporaryTabTip') }}</div>
       </div>
       <svg-icon
-        name="paperclip-solid"
-        style=" position: absolute;
-                right: 0;
-                bottom: 0;
-                padding: 2px;
-                border-width: 2px 0px 0px 2px;
-                border-style: solid;
-                border-radius: 2px 0 0 0;
-                margin-right: 2px;"
+        :name="project_config.allWorkspaces[ 'temporary' ].svg"
+        class="workspace-logo"
         :style="{ backgroundColor: isSelected
                                   ? config.list_focus_background_color
                                   : config.list_background_color,
@@ -143,18 +136,14 @@
 
     <div
       class="right"
-      :style="{ paddingLeft: isActive ? '5px' : '10px' }">
-      <!-- <div v-if="isActive">
-        <i
-          class="el-icon-copy-document hover"
-          :style="{
-            color:config.list_focus_font_color}"></i>
-        <i
+      :style="{ paddingLeft: isActive ? '5px' : '10px' }"
+      @click.stop="focus">
+      <template v-if="isActive">
+        <svg-icon
           class="el-icon-close hover"
-          @click.stop="deleteTemporary"
-          :style="{
-            color:config.list_focus_font_color}"></i>
-      </div> -->
+          name="paperclip-solid"
+          @click.native="input('', 'temporary')"></svg-icon>
+      </template>
       <template v-if=" ! isActive">
         <span
           :style="{
@@ -190,8 +179,13 @@
 <script>
 export default {
   name: 'TemporaryItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
+      type: Object,
+      required: require,
+    },
+    project_config: {
       type: Object,
       required: require,
     },
@@ -347,6 +341,16 @@ export default {
   text-align: center;
   cursor: default;
 }
+.temporary-item .left .workspace-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+  border-width: 2px 0px 0px 2px;
+  border-style: solid;
+  border-radius: 2px 0 0 0;
+  margin-right: 2px
+}
 .temporary-item .image {
   /* background-color: #c0c4cb; */
   border-radius: 5px;
@@ -422,6 +426,13 @@ export default {
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+.temporary-item .right >>> .svg-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+  padding: 5px;
+  cursor:pointer;
 }
 
 .el-tag {

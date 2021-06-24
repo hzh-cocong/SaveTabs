@@ -279,7 +279,7 @@
     </el-select>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="clearRange">确 定</el-button>
+      <el-button type="primary" @click="clearRecent">确 定</el-button>
     </span>
   </el-dialog>
 
@@ -363,11 +363,17 @@ export default {
         this.dialogVisible = true;
         this.history.isDel = false;
       } else {
+        // search 虽然会改变它，但是有可能这里会先执行，所以这里也执行一遍，避免搞错
+        this.endTime = this.history.date.getTime()+86400000-1000;
+
         this.deleteRange(this.startTime, this.endTime, () => {
           this.lastEndTime = null; // 这样列表才能刷新
           this.search();
           this.history.isDel = false;
           this.focus();
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         });
       }
     },
@@ -825,6 +831,9 @@ console.log('_openWindow', url)
 console.log('删除单独一条历史记录')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         })
         return;
       }
@@ -850,6 +859,9 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             this.cacheList.splice(this.currentIndex, 1);
             this.list.splice(this.currentIndex, 1);
           }
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         })
 
         return;
@@ -867,6 +879,9 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
 console.log('删除整个文件夹（未展开）')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         });
 
         return;
@@ -886,6 +901,9 @@ console.log('删除整个文件夹（未展开）')
 console.log('删除整个文件夹（已展开）')
           this.cacheList.splice(this.currentIndex, this.currentHistory.count+1);
           this.list.splice(this.currentIndex, this.currentHistory.count+1);
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         });
 
         return;
@@ -900,7 +918,7 @@ console.log('删除整个文件夹（已展开）')
                       ? ( list[k].count == undefined
                         ? this.getDomain(list[k].url)
                         : this.getDomain(list[k].subFiles[0].url))
-                      : '';
+                      : null;
         if(domain == lastDomain && list[k].count == undefined) {
           // 文件夹展开的情况（一般不会遇到）
           let l = k;
@@ -923,26 +941,34 @@ console.log('删除整个文件夹（已展开）')
       console.log('list', list)
     },
 
-    clearRange() {
+    clearRecent() {
       if(this.range == -1) {
 console.log('deleteAll')
         chrome.history.deleteAll(() => {
           this.search();
           this.dialogVisible = false;
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         })
-      }  else {
+      } else {
         let endTime = new Date().getTime();
         let startTime = endTime-this.range;
-console.log('clearRange', this.range, startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
+console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
+
         chrome.history.deleteRange({
           startTime: startTime,
           endTime: endTime,
         }, () => {
           this.search();
           this.dialogVisible = false;
+
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'history', operation: 'delete'});
         })
       }
     },
+
     deleteRange(startTime, endTime, callback) {
       console.log('deleteRange', startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
       this.$confirm("确定删除？", '提示', {

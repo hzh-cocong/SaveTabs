@@ -52,9 +52,12 @@ const tool = {
           let res = url.match(/[a-zA-z-]+:\/\/([^/]+)/);
           if(res != null) {
             return res[1];
-          } else {
-            return '';
           }
+          if(url.indexOf('file:///') == 0) {
+            return 'file:';
+          }
+
+          return '';
         },
         timeShow(timestamp) { // 毫秒时间戳
           let time = Math.floor((new Date().getTime()-timestamp)/1000);

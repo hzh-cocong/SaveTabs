@@ -841,19 +841,17 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
           }))
         }
 
-        // 不知道为啥
-        setTimeout(() => {
-          // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-          // 不能放外面，否则会闪烁
-          this.storageKeyword = ' ';
-
-          callback(true);
-        }, 100)
+        // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
+        this.storageKeyword = ' ';
+        callback(true);
 
         this.$msgbox.close();
         this.isOperating = false;
 
         this.statusTip('临时窗口添加成功');
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'add'});
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -906,6 +904,8 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
         this.list.splice(this.currentIndex, 1);
         return new Promise(resolve => {
           chrome.storage.local.set({temporary: this.storageList}, () => {
+            // 让 all 保持数据同步
+            chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
             resolve();
           });
         })
@@ -978,9 +978,12 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       chrome.storage.local.set({temporary: this.storageList}, () => {
         // 再打开
         this.$open(url, keyType);
-      });
 
-      this.focus();
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
+
+        this.focus();
+      });
     },
     deleteTab(i) {
       if(this.currentTemporary.tabs.length == 1) {
@@ -989,15 +992,21 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       }
 
       this.storageList[this.currentStorageIndex].tabs.splice(i , 1);
-      chrome.storage.local.set({temporary: this.storageList});
+      chrome.storage.local.set({temporary: this.storageList}, () => {
+        this.focus();
 
-      this.focus();
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
+      });
     },
     deleteTemporary() {
       this.storageList.splice(this.currentStorageIndex, 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
         this.cacheList.splice(this.currentIndex, 1);
         this.list.splice(this.currentIndex, 1);
+
+        // 让 all 保持数据同步
+        chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
       });
     },
   },

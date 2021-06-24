@@ -50,15 +50,8 @@
         <div slot="placeholder" class="image-slot"></div>
       </el-image>
       <svg-icon
-        name="bookmark-regular"
-        style=" position: absolute;
-                right: 0;
-                bottom: 0;
-                padding: 2px;
-                border-width: 2px 0px 0px 2px;
-                border-style: solid;
-                border-radius: 2px 0 0 0;
-                margin-right: 2px;"
+        class="workspace-logo"
+        :name="project_config.allWorkspaces[ 'note' ].svg"
         :style="{ backgroundColor: index == 0 && item.isCurrent
                         ? ( isSelected
                           ? config.list_current_focus_background_color
@@ -181,6 +174,10 @@ export default {
       type: Object,
       required: require,
     },
+    project_config: {
+      type: Object,
+      required: require,
+    },
     isLoad: {
       type: Boolean,
       required: false,
@@ -259,6 +256,16 @@ export default {
 .note-item .left {
   padding: 10px;
   text-align: center;
+}
+.note-item .left .workspace-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+  border-width: 2px 0px 0px 2px;
+  border-style: solid;
+  border-radius: 2px 0 0 0;
+  margin-right: 2px
 }
 .note-item .main {
   flex: 1;

@@ -50,15 +50,8 @@
         <div slot="placeholder"></div>
       </el-image>
       <svg-icon
-        name="windows-brands"
-        style=" position: absolute;
-                right: 0;
-                bottom: 0;
-                padding: 2px;
-                border-width: 2px 0px 0px 2px;
-                border-style: solid;
-                border-radius: 2px 0 0 0;
-                margin-right: 2px;"
+        class="workspace-logo"
+        :name="project_config.allWorkspaces[ 'window' ].svg"
         :style="{ backgroundColor: index == 0 && item.isCurrent
                         ? ( isSelected
                           ? config.list_current_focus_background_color
@@ -166,6 +159,10 @@ export default {
       type: Object,
       required: require,
     },
+    project_config: {
+      type: Object,
+      required: require,
+    },
     isLoad: {
       type: Boolean,
       required: false,
@@ -242,6 +239,16 @@ console.log('showTip');
 .window-item .left {
   padding: 10px;
   text-align: center;
+}
+.window-item .left .workspace-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+  border-width: 2px 0px 0px 2px;
+  border-style: solid;
+  border-radius: 2px 0 0 0;
+  margin-right: 2px
 }
 .window-item .main {
   flex: 1;

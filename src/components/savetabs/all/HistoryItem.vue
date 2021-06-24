@@ -37,15 +37,8 @@
         <div slot="placeholder" class="image-slot"></div>
       </el-image>
       <svg-icon
-        name="history-solid"
-        style=" position: absolute;
-                right: 0;
-                bottom: 0;
-                padding: 2px;
-                border-width: 2px 0px 0px 2px;
-                border-style: solid;
-                border-radius: 2px 0 0 0;
-                margin-right: 2px;"
+        class="workspace-logo"
+        :name="project_config.allWorkspaces[ 'history' ].svg"
         :style="{ backgroundColor: isSelected
                                   ? config.list_focus_background_color
                                   : config.list_background_color,
@@ -125,6 +118,10 @@ export default {
       type: Object,
       required: require,
     },
+    project_config: {
+      type: Object,
+      required: require,
+    },
     isLoad: {
       type: Boolean,
       required: false,
@@ -179,6 +176,16 @@ export default {
 .history-item .left {
   padding: 10px;
   text-align: center;
+}
+.history-item .left .workspace-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px;
+  border-width: 2px 0px 0px 2px;
+  border-style: solid;
+  border-radius: 2px 0 0 0;
+  margin-right: 2px
 }
 .history-item .main {
   flex: 1;

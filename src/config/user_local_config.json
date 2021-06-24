@@ -1,6 +1,6 @@
 {
     "pinned": false,
-    "active_workspace_type": "history",
+    "active_workspace_type": "all",
 
     "theme_mode": "light",
 
@@ -11,7 +11,37 @@
     "all_sort_auto": false,
     "all_include": [
         {
+            "type": "window",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "note",
+            "count": 3,
+            "is_top": 1,
+            "only_search": false
+        },
+        {
             "type": "history",
+            "count": 3,
+            "is_top": 1,
+            "only_search": false
+        },
+        {
+            "type": "bookmark",
+            "count": 3,
+            "is_top": 1,
+            "only_search": false
+        },
+        {
+            "type": "tab",
+            "count": 3,
+            "is_top": 1,
+            "only_search": false
+        },
+        {
+            "type": "temporary",
             "count": 3,
             "is_top": 1,
             "only_search": false

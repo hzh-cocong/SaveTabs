@@ -34,8 +34,8 @@
         }">{{ lang('temporaryTabTip') }}</div>
       </div>
       <svg-icon
-        :name="project_config.allWorkspaces[ 'temporary' ].svg"
         class="workspace-logo"
+        :name="project_config.allWorkspaces[ 'temporary' ].svg"
         :style="{ backgroundColor: isSelected
                                   ? config.list_focus_background_color
                                   : config.list_background_color,
@@ -136,14 +136,14 @@
 
     <div
       class="right"
-      :style="{ paddingLeft: isActive ? '5px' : '10px' }"
-      @click.stop="focus">
+      :style="{ paddingLeft: isActive ? '5px' : '10px' }">
+      <!-- @click.stop="focus">
       <template v-if="isActive">
         <svg-icon
           class="el-icon-close hover"
           name="paperclip-solid"
           @click.native="input('', 'temporary')"></svg-icon>
-      </template>
+      </template> -->
       <template v-if=" ! isActive">
         <span
           :style="{

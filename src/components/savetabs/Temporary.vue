@@ -310,11 +310,15 @@ export default {
       required: false,
       default: true,
     },
-    platform: {
+    keyType: {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -591,6 +595,10 @@ alert('空间不够')
       return this.storageList.findIndex(temporary => {
         return temporary.id == this.currentTemporary.id;
       });
+    },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'temporary';
     }
   },
   methods: {
@@ -1024,6 +1032,30 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       // 更新列表
       // this.search();
     });
+
+    // 保持数据同步
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if(request.type == 'data_change' && request.workspace == 'temporary') {
+        // 默认全部但不包括自己
+        if(request.exclude == undefined) return;
+        // 被排除了则不处理
+        if(request.exclude.indexOf('temporary') != -1) return;
+console.log('temporary:data_change', this.isActiveWorkspace)
+
+        // 重新获取数据
+        chrome.storage.local.get({temporary: []}, items => {
+          this.storageList = items.temporary;
+
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) {
+            this.search();
+          } else {
+            // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
+            this.storageKeyword = ' ';
+          }
+        });
+      }
+    })
   }
 }
 </script>

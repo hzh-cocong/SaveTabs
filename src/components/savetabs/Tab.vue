@@ -238,11 +238,6 @@ export default {
       required: false,
       default: true,
     },
-    platform: {
-      type: String,
-      required: false,
-      default: '',
-    },
     tab: {
       type: Object,
       required: false,

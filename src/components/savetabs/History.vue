@@ -306,11 +306,6 @@ export default {
       required: false,
       default: true,
     },
-    platform: {
-      type: String,
-      required: false,
-      default: '',
-    },
     history: {
       type: Object,
       required: false,

@@ -97,7 +97,7 @@ let temporary = {
     }
   },
 
-  openWindow(index, event) {
+  openWindow(index, keyType) {
     let temporary = this.cacheList[ index ];
     let urls = temporary.tabs.map(tab => tab.url);
     let storageIndex = this.getStorageIndex(temporary);
@@ -126,14 +126,15 @@ let temporary = {
             tabs: temporary.tabs,
           }
         })}, () => {
+          // 让 all 保持数据同步
+          chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete', exclude: 'all'});
           resolve();
         });
       })
     }).then(() => {
-      // 当前窗口打开，且不关闭
-      // 不自动关闭空白标签页，有隔离作用
-      if((_device.platform == 'Mac' && event.metaKey == true)
-      || (_device.platform != 'Mac' && event.ctrlKey == true)) {
+      if(keyType == 'meta/ctrl') {
+        // 当前窗口打开，且不关闭
+        // 不自动关闭空白标签页，有隔离作用
         blankTabId = -1;
         return Promise.all(urls.map((url) => {
           return new Promise((resolve) => {
@@ -142,7 +143,7 @@ let temporary = {
             });
           });
         }))
-      } else if(_device.platform != '' && event.altKey == true) {
+      } else if(keyType == 'alt') {
         // 当前窗口打开，且不关闭，也不进行存储更新
         // 会高亮标签
         blankTabId = -1;
@@ -160,7 +161,7 @@ let temporary = {
         })
       } else {
         // 直接回车 或 shift 方式打开（panel 只支持一个网页，没法玩）
-        //let type = _device.platform != '' && event.shiftKey ? 'panel' : 'normal';
+        //let type = this._device.platform != '' && event.shiftKey ? 'panel' : 'normal';
         let type = 'normal';
         return new Promise(resolve => {
           // 新建新窗口（先不激活，否则无法存储数据）

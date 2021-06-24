@@ -437,6 +437,9 @@ export default {
     // 保持数据同步
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if(request.type == 'data_change') {
+        // 被排除了则不处理
+        if(request.exclude != undefined && request.exclude.indexOf('all') != -1) return;
+
         // 列表为空，没啥好更新的
         // 列表为空也应该更新，可能更新后就有数据了
         // if(this.list.length == 0) return;

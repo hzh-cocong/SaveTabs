@@ -213,11 +213,6 @@ export default {
       required: false,
       default: true,
     },
-    platform: {
-      type: String,
-      required: false,
-      default: '',
-    },
     bookmark: {
       type: Object,
       required: false,

@@ -78,9 +78,11 @@
             direction: storageKeyword == ''
                       ? 'ltr'
                       : (isSelected ? 'rtl' : 'ltr') }"
-          v-html="storageKeyword != ''
-                ? highlightMap[index].url
-                : (isSelected ? item.url : getDomain(item.url))"></div>
+          v-html="isSelected && keyType != ''
+                ? getTip()
+                : ( storageKeyword != ''
+                  ? highlightMap[index].url
+                  : (isSelected ? item.url : getDomain(item.url)) )"></div>
       </div>
 
       <div
@@ -244,6 +246,11 @@ export default {
       default: function() {
         return {}
       },
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
     },
     activeWorkspace: {
       type: Object,
@@ -436,6 +443,8 @@ export default {
             'color': this.config.list_current_focus_font_color,
             '--list-highlight-color': this.config.list_current_focus_highlight_color,
             '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -443,6 +452,8 @@ export default {
             'color': this.config.list_current_font_color,
             '--list-highlight-color': this.config.list_current_highlight_color,
             '--list-highlight-weight': this.config.list_current_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_highlight_weight,
           }
         }
       } else {
@@ -452,6 +463,8 @@ export default {
             'color': this.config.list_focus_font_color,
             '--list-highlight-color': this.config.list_focus_highlight_color,
             '--list-highlight-weight': this.config.list_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -459,6 +472,8 @@ export default {
             'color': this.config.list_font_color,
             '--list-highlight-color': this.config.list_highlight_color,
             '--list-highlight-weight': this.config.list_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
           }
         }
       }
@@ -737,7 +752,21 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
         callback != undefined && callback();
       })
-    }
+    },
+    getTip() {
+      console.log('showTip');
+      if(this.keyType == 'meta/ctrl') {
+        return '移动到右侧';
+      } else if(this.keyType == 'shift') {
+        return '移动到新窗口中';
+      } else if(this.keyType == 'alt') {
+        return '和当前标签交换位置';
+      } else if(this.keyType != '') {
+        return '默认切换到该标签';
+      } else {
+        return '';
+      }
+    },
   },
   mounted() {
     // todo
@@ -919,8 +948,12 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 }
 </style>
 <style>
-.tab strong {
+.tab .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+}
+.tab .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 </style>

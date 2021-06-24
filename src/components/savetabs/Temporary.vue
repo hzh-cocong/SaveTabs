@@ -310,11 +310,11 @@ export default {
       required: false,
       default: true,
     },
-    keyType: {
-      type: String,
-      required: false,
-      default: '',
-    },
+    // keyType: {
+    //   type: String,
+    //   required: false,
+    //   default: '',
+    // },
     activeWorkspace: {
       type: Object,
       required: true,
@@ -610,6 +610,8 @@ alert('空间不够')
           'color': this.config.list_focus_font_color,
           '--list-highlight-color': this.config.list_focus_highlight_color,
           '--list-highlight-weight': this.config.list_focus_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
         }
       } else {
         return {
@@ -617,6 +619,8 @@ alert('空间不够')
           'color': this.config.list_font_color,
           '--list-highlight-color': this.config.list_highlight_color,
           '--list-highlight-weight': this.config.list_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
         }
       }
     },
@@ -1216,8 +1220,12 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   top: 1px;
 }
 
-.temporary strong {
+.temporary .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+}
+.temporary .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 </style>

@@ -145,7 +145,7 @@
               fontSize: config.list_state_size+'px',
               color: isSelected
                   ? config.list_focus_state_color
-                  : config.list_keymap_color }">
+                  : config.list_state_color }">
             {{ timeShow(item.lastVisitTime) }}
           </div>
         </template>
@@ -163,19 +163,13 @@
             v-else-if="_device.platform != ''
                     && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
-              fontSize: activeTabs[item.url] || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                  ? config.list_state_size+'px'
-                  : config.list_keymap_size+'px',
-              color: activeTabs[item.url]
-                  ? config.list_state_color
-                  : config.list_keymap_color }">
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: activeTabs[item.url] || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                              ? (config.list_state_size/2)+'px'
-                              : (config.list_keymap_size/2)+'px' }">{{
+              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
                 1 > index-$refs.list.scrollLines+1
               ? 1
               : (index-$refs.list.scrollLines+1 > config.item_show_count
@@ -402,6 +396,8 @@ export default {
             'color': this.config.list_current_focus_font_color,
             '--list-highlight-color': this.config.list_current_focus_highlight_color,
             '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -409,6 +405,8 @@ export default {
             'color': this.config.list_current_font_color,
             '--list-highlight-color': this.config.list_current_highlight_color,
             '--list-highlight-weight': this.config.list_current_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_highlight_weight,
           }
         }
       } else {
@@ -418,6 +416,8 @@ export default {
             'color': this.config.list_focus_font_color,
             '--list-highlight-color': this.config.list_focus_highlight_color,
             '--list-highlight-weight': this.config.list_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -425,6 +425,8 @@ export default {
             'color': this.config.list_font_color,
             '--list-highlight-color': this.config.list_highlight_color,
             '--list-highlight-weight': this.config.list_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
           }
         }
       }
@@ -1061,8 +1063,12 @@ console.warn('finish', b, (b-a)/1000)
 </style>
 
 <style>
-.note strong {
+.note .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+}
+.note .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 </style>

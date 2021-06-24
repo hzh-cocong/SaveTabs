@@ -153,7 +153,7 @@
               fontSize: config.list_state_size+'px',
               color: isSelected
                   ? config.list_focus_state_color
-                  : config.list_keymap_color }">
+                  : config.list_state_color }">
             {{ timeShow(item.lastVisitTime) }}
           </div>
         </template>
@@ -167,19 +167,13 @@
             v-else-if="_device.platform != ''
                     && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
-              fontSize: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                  ? config.list_state_size+'px'
-                  : config.list_keymap_size+'px',
-              color: activeWindows[item.windowId]
-                  ? config.list_state_color
-                  : config.list_keymap_color }">
+              fontSize: config.list_keymap_size+'px',
+              color: config.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: activeWindows[item.windowId] || (storageKeyword != ''  && item.lastVisitTime != undefined)
-                              ? (config.list_state_size/2)+'px'
-                              : (config.list_keymap_size/2)+'px' }">{{
+              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
                 1 > index-$refs.list.scrollLines+1
               ? 1
               : (index-$refs.list.scrollLines+1 > config.item_show_count
@@ -637,6 +631,8 @@ console.log('get_currentWindowStorageIndex3', index);
             'color': this.config.list_current_focus_font_color,
             '--list-highlight-color': this.config.list_current_focus_highlight_color,
             '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -644,6 +640,8 @@ console.log('get_currentWindowStorageIndex3', index);
             'color': this.config.list_current_font_color,
             '--list-highlight-color': this.config.list_current_highlight_color,
             '--list-highlight-weight': this.config.list_current_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_current_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_current_explain_highlight_weight,
           }
         }
       } else {
@@ -653,6 +651,8 @@ console.log('get_currentWindowStorageIndex3', index);
             'color': this.config.list_focus_font_color,
             '--list-highlight-color': this.config.list_focus_highlight_color,
             '--list-highlight-weight': this.config.list_focus_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
           }
         } else {
           return {
@@ -660,6 +660,8 @@ console.log('get_currentWindowStorageIndex3', index);
             'color': this.config.list_font_color,
             '--list-highlight-color': this.config.list_highlight_color,
             '--list-highlight-weight': this.config.list_highlight_weight,
+            '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+            '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
           }
         }
       }
@@ -850,12 +852,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
         }).then((window) => {
           // 更新结果
           this.currentWindow = window;
-          // // 其实不写也没关系，只是要是 currentWindow 真的变了就不好了
-          // 不可能发生，当标签从当前窗口中脱离出来会有这个问题，但是此时会触发 tab 和 window 两个事件，造成插件关闭后又打开，此时列表已完成了修复
-          // this.activeWindows[ this.currentWindowId ] = true;
-
-          // this.isCurrentWindowChange = false;
-          // this.isInCurrentWindow = true;
 
           // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
           this.storageKeyword = ' ';
@@ -1516,9 +1512,17 @@ console.warn('finish', b, (b-a)/1000)
 </style>
 
 <style>
-.window strong {
+/* .window strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+} */
+.window .title strong {
+  color: var(--list-highlight-color);
+  font-weight: var(--list-highlight-weight);
+}
+.window .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 
 .window .el-badge__content {

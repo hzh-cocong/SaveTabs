@@ -74,24 +74,6 @@
                         'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
           <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
         </div>
-        <!-- <div
-          class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">
-          <template v-if="item.count == undefined || item.count == 1">
-            {{ item.count == undefined
-            ? (item.title || item.url)
-            : (item.subFiles[0].title || item.subFiles[0].url) }}
-          </template>
-          <template v-else>
-            <i
-              style="margin-right: 10px;"
-              :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
-                          'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
-            <span>{{ item.subFiles.length > 0
-                    ? (item.subFiles[0].title || item.subFiles[0].url)
-                    : (list[index+1].title || list[index+1].url) }}</span>
-          </template>
-        </div> -->
         <div
           class="sub-title"
           :style="{
@@ -100,29 +82,11 @@
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color,
             direction: isSelected ? 'rtl' : 'ltr' }"
-            v-html="item.count == undefined || item.count == 1
-                  ? highlightMap[index].url
-                  : highlightMap[index].domain+' | '+item.count"></div>
-        <!-- <div
-          class="sub-title"
-          :style="{
-            fontSize: config.list_explain_font_size+'px',
-            color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color,
-            direction: isSelected ? 'rtl' : 'ltr' }">
-            <template v-if="item.count == undefined || item.count == 1">
-              {{ item.count == undefined
-                ? item.url
-                : item.subFiles[0].url }}
-            </template>
-            <template v-else>
-              {{ ( item.subFiles.length > 0
-                  ? getDomain(item.subFiles[0].url)
-                  : getDomain(list[index+1].url))
-                + ' | '+item.count }}
-            </template>
-        </div> -->
+            v-html="isSelected && keyType != ''
+                  ? getTip()
+                  : ( item.count == undefined || item.count == 1
+                    ? highlightMap[index].url
+                    : (highlightMap[index].domain+' | '+item.count) )"></div>
       </div>
 
       <div
@@ -314,7 +278,16 @@ export default {
           date: null,
         }
       },
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -487,6 +460,10 @@ export default {
       // 从当前位置寻找父亲
       console.log('currentFolder', this.list[ this.currentFolderIndex ]);
       return this.list[ this.currentFolderIndex ];
+    },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'temporary';
     }
   },
   methods: {
@@ -498,6 +475,8 @@ export default {
           'color': this.config.list_focus_font_color,
           '--list-highlight-color': this.config.list_focus_highlight_color,
           '--list-highlight-weight': this.config.list_focus_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
         }
       } else {
         return {
@@ -505,6 +484,8 @@ export default {
           'color': this.config.list_font_color,
           '--list-highlight-color': this.config.list_highlight_color,
           '--list-highlight-weight': this.config.list_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
         }
       }
     },
@@ -978,18 +959,36 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
           endTime: endTime,
         }, callback)
       }).catch(callback);
-    }
+    },
+
+    getTip() {
+      console.log('showTip');
+
+      if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
+        if(this.keyType == 'meta/ctrl') {
+          return '打开新标签但不切换';
+        } else if(this.keyType == 'shift') {
+          return '新窗口打开';
+        } else if(this.keyType == 'alt') {
+          return '覆盖当前标签';
+        } else if(this.keyType != '') {
+          return '打开新标签并切换';
+        } else {
+          return '';
+        }
+      }
+
+      if(this.currentHistory.subFiles.length > 0) {
+        return '展开';
+      } else {
+        return '收起';
+      }
+    },
   },
-  // beforeUpdate() {
-  //   console.warn('beforeUpdate');
-  // },
-  // updated() {
-  //   console.warn('updated');
-  // },
   mounted() {
     // todo
     window.h = this;
-console.warn('mounted')
+
     this.$emit('finish');
 
     // 更新列表
@@ -1071,8 +1070,12 @@ console.warn('mounted')
 </style>
 
 <style>
-.history strong {
+.history .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+}
+.history .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 </style>

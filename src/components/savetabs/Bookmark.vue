@@ -89,17 +89,22 @@
             v-html="highlightMap[index]"></span>
         </template>
 
+          <!-- v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')" -->
         <div
-          v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')"
+          v-if="(isSelected && keyType != '')
+              || (tree.path[item.parentId] && (isSelected || storageKeyword != ''))"
           class="sub-title"
           :style="{
             fontSize: config.list_explain_font_size+'px',
             color: isSelected
                   ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color }">
-          {{  (tree.path[item.parentId] ? tree.path[item.parentId] : '')
-            + (item.children ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id] : '') }}
-        </div>
+                  : config.list_explain_font_color }"
+          v-text="isSelected && keyType != ''
+                  ? getTip()
+                  : ( (tree.path[item.parentId] ? tree.path[item.parentId] : '')
+                    + (item.children
+                      ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id]
+                      : '')  )"></div>
       </div>
 
       <div class="right">
@@ -219,7 +224,16 @@ export default {
       default: function() {
         return {}
       },
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -461,6 +475,10 @@ let b = new Date().getTime();
         marginLeft,
       };
     },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'temporary';
+    }
   },
   methods: {
     itemStyle({ index, item, isActive, isSelected }) {
@@ -471,6 +489,8 @@ let b = new Date().getTime();
           'color': this.config.list_focus_font_color,
           '--list-highlight-color': this.config.list_focus_highlight_color,
           '--list-highlight-weight': this.config.list_focus_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
         }
       } else {
         return {
@@ -478,6 +498,8 @@ let b = new Date().getTime();
           'color': this.config.list_font_color,
           '--list-highlight-color': this.config.list_highlight_color,
           '--list-highlight-weight': this.config.list_highlight_weight,
+          '--list-explain-highlight-color': this.config.list_explain_highlight_color,
+          '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
         }
       }
     },
@@ -972,6 +994,27 @@ console.log('chrome.bookmarks.getTree.second')
         });
       }, 200);
     },
+
+    getTip() {
+      console.log('showTip');
+
+      // 打开网页
+      if( ! this.currentBookmark.children) {
+        if(this.keyType == 'meta/ctrl') {
+          return '打开新标签但不切换';
+        } else if(this.keyType == 'shift') {
+          return '新窗口打开';
+        } else if(this.keyType == 'alt') {
+          return '覆盖当前标签';
+        } else if(this.keyType != '') {
+          return '打开新标签并切换';
+        } else {
+          return '';
+        }
+      }
+
+      return this.currentBookmark.children.length ? '展开' : '收起';
+    }
   },
   beforeUpdate() {
     console.warn('beforeUpdate');
@@ -1076,8 +1119,12 @@ console.warn('finish', b, (b-a)/1000)
 }
 </style>
 <style>
-.bookmark strong {
+.bookmark .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
+}
+.bookmark .sub-title strong {
+  color: var(--list-explain-highlight-color);
+  font-weight: var(--list-explain-highlight-weight);
 }
 </style>

@@ -93,7 +93,7 @@
       name="arrow-left-solid"
       class="hover2"
       style="margin-left: 10px;"
-      @click.native="prev"
+      @click.native="toLeft(getKeyType($event))"
     ></svg-icon>
 
     <input
@@ -107,7 +107,7 @@
       name="arrow-right-solid"
       class="hover2"
       style="margin-right: 10px;"
-      @click.native="next"
+      @click.native="toRight(getKeyType($event))"
     ></svg-icon>
 
     <span class="divider"></span>
@@ -138,7 +138,7 @@
 <script>
 export default {
   name: 'statusbar',
-  inject: ['focus', 'prev', 'next', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
+  inject: ['focus', 'prev', 'next', 'left', 'right', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
   props: {
     config: {
       type: Object,
@@ -196,6 +196,21 @@ export default {
         this.tip = this.storageTip;
         // this.storageTip = '';
       }, 1000);
+    },
+
+    toLeft(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.left();
+      } else if(keyType == '') {
+        this.prev();
+      }
+    },
+    toRight(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.right();
+      } else if(keyType == '') {
+        this.next();
+      }
     }
   }
 }

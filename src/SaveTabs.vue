@@ -455,6 +455,8 @@ export default {
 
       prev: () => this.$refs.carousel.prev(),
       next: () => this.$refs.carousel.next(),
+      left: () => this.$refs.carousel.setActiveItem(0),
+      right: () => this.$refs.carousel.setActiveItem(this.workspaces.length - 1),
 
       changeThemeMode: this.changeThemeMode,
       toPin: this.toPin,

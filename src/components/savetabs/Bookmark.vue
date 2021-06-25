@@ -76,7 +76,7 @@
         <template v-if="storageKeyword == ''">
           <div
             class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{
+            :style="{ fontSize: config.list_font_size+'px' }">{{index+'|'+
                 item.title
                 + ( ! isSelected || tree.path[item.parentId]
                   ? ''
@@ -87,7 +87,7 @@
           <span
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }"
-            v-html="highlightMap[index]"></span>
+            v-html="index+'|'+highlightMap[index]"></span>
         </template>
 
           <!-- v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')" -->
@@ -573,40 +573,86 @@ let b = new Date().getTime();
         while(true) {
           if(index >= list.length) break;
 
-          let bookmark = list[index];console.log('copy2', bookmark, parentId);
-          if(bookmark.children) {
-            // 当前为文件夹
-            if(bookmark.children.length == 0) {
-              // 文件夹已收起，或者是空文件夹
-              index++;
-            } else {
-              // 文件处于展开状态，需要记录一下 parentId
-              stack.push(parentId);
-              parentId = bookmark.id;
-              index++;
+          let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
+          if(bookmark.parentId != parentId) {
+            // 不相等，说明是从文件夹中出来了
+            if(stack.length == 0) {
+              // 遍历结束
+              console.log('copy_finish', bookmark, parentId, index, list.length);
+              break;
             }
+
+            // 取出上一个文件夹
+            parentId = stack.pop();
+            // index 不能增加
+            continue;
+          }
+
+          if(bookmark.children) {
+            // 子文件夹，需要记录一下 parentId
+            console.log('copy_dir', bookmark, parentId);
+            stack.push(parentId);
+            parentId = bookmark.id;
+            console.log('copy_dir2', bookmark, parentId);
           } else {
             // 当前为网页
-            if(bookmark.parentId == parentId) {
-              if(parentId == this.currentBookmark.id) {
-                count++;
-                if(count == 1) urls += bookmark.url;
-                else urls += "\n"+bookmark.url;
-              }
-              index++;
-            } else {
-              // 不相等，说明是从文件夹中出来了
-              if(stack.length == 0) {
-                // 遍历结束
-                break;
-              } else {
-                // 取出上一个文件夹
-                parentId = stack.pop();
-                // index 不能增加
-              }
+            if(parentId == this.currentBookmark.id) {
+              count++;
+              if(count == 1) urls += bookmark.url;
+              else urls += "\n"+bookmark.url;
             }
           }
+
+          index++;
         }
+        // while(true) {
+        //   if(index >= list.length) break;
+
+        //   let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
+        //   if(bookmark.children) {
+        //     // 当前为文件夹
+        //     if(bookmark.parentId == parentId) {
+        //       // 子文件夹，需要记录一下 parentId
+        //       console.log('copy21', bookmark, parentId);
+        //       stack.push(parentId);
+        //       parentId = bookmark.id;
+        //       console.log('copy211', bookmark, parentId);
+        //       index++;
+        //     } else {
+        //       // 不相等，说明是从文件夹中出来了
+        //       if(stack.length == 0) {
+        //         // 遍历结束
+        //         console.log('copy99', bookmark, parentId);
+        //         break;
+        //       } else {
+        //         // 取出上一个文件夹
+        //         parentId = stack.pop();
+        //         // index 不能增加
+        //       }
+        //     }
+        //   } else {
+        //     // 当前为网页
+        //     if(bookmark.parentId == parentId) {
+        //       if(parentId == this.currentBookmark.id) {
+        //         count++;
+        //         if(count == 1) urls += bookmark.url;
+        //         else urls += "\n"+bookmark.url;
+        //       }
+        //       index++;
+        //     } else {
+        //       // 不相等，说明是从文件夹中出来了
+        //       if(stack.length == 0) {
+        //         // 遍历结束
+        //         console.log('copy22', bookmark, parentId);
+        //         break;
+        //       } else {
+        //         // 取出上一个文件夹
+        //         parentId = stack.pop();
+        //         // index 不能增加
+        //       }
+        //     }
+        //   }
+        // }
       }
 
       console.log('copy3', urls, count)

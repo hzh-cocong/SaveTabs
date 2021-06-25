@@ -1181,7 +1181,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
             message: `成功复制 ${request.count} 条地址`,
             customClass: 'window-message-box',
             offset: 69,
-            duration: 2000,
+            duration: 1000,
           });
         }
       })

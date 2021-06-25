@@ -129,6 +129,37 @@ export default {
       isSearched: false,
 
       length: {},
+
+      conditions: [
+        [ // storageKeyword == ''
+          [ // search
+            {is_top: 1, only_search: false},
+            {is_top: 0, only_search: false},
+            {is_top: -1, only_search: false},
+            // {is_top: -2, only_search: false},
+          ],
+          [ // load
+            {is_top: 1, only_search: false},
+            {is_top: 0, only_search: false},
+            {is_top: -1, only_search: false},
+            // {is_top: -2, only_search: false},
+          ],
+        ],
+        [ // storageKeyword != ''
+          [ // search
+            {is_top: 1},
+            {is_top: 0},
+            {is_top: -1},
+            {is_top: -2, only_search: true},
+          ],
+          [ // load
+            {is_top: 1},
+            {is_top: 0},
+            {is_top: -1},
+            // {is_top: -2, only_search: true},
+          ],
+        ]
+      ]
     }
   },
   components: {
@@ -237,22 +268,6 @@ export default {
 
       this.length = {};
 
-      if(this.storageKeyword == '') {
-        this.conditions = [
-          {is_top: 1, only_search: false},
-          {is_top: 0, only_search: false},
-          {is_top: -1, only_search: false},
-          {is_top: -2, only_search: false},
-        ];
-      } else {
-        this.conditions = [
-          {is_top: 1},
-          {is_top: 0},
-          {is_top: -1},
-          {is_top: -2},
-        ];
-      }
-
       this.toSearch(0).then((list) => {
         console.log('search:lists', list);
 
@@ -271,11 +286,13 @@ export default {
       })
     },
     toSearch(index = 0) {
-      if(index >= this.conditions.length) {
+      let conditions = this.storageKeyword == '' ? this.conditions[0][0] : this.conditions[1][0];
+
+      if(index >= conditions.length) {
         return new Promise(resolve => resolve([]));
       }
 
-      let condition = this.conditions[index];
+      let condition = conditions[index];
 
       return Promise.all(this.localConfig.all_include.filter(workspace => {
         return Object.keys(condition).every((attr) => {
@@ -319,11 +336,13 @@ export default {
       })
     },
     toLoad(index = 0) {
-      if(index >= this.conditions.length) {
+      let conditions = this.storageKeyword == '' ? this.conditions[0][1] : this.conditions[1][1];
+
+      if(index >= conditions.length) {
         return new Promise(resolve => resolve([]));
       }
 
-      let condition = this.conditions[index];
+      let condition = conditions[index];
 
       return Promise.all(this.localConfig.all_include.filter(workspace => {
         return Object.keys(condition).every((attr) => {

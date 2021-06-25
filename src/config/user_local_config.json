@@ -17,9 +17,9 @@
             "only_search": false
         },
         {
-            "type": "tab",
+            "type": "search",
             "count": 3,
-            "is_top": 1,
+            "is_top": -2,
             "only_search": false
         }
     ],

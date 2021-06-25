@@ -59,11 +59,11 @@
         'align-content': ! isSelected ? 'normal' : 'flex-start',
         'align-items': ! isSelected ? 'normal' : 'flex-start',
         }">
+          <!-- :title="tab.title+'\r\n'+tab.url" -->
       <template v-if="isSelected">
         <el-tag
           v-for="(tab, i) in item.tabs"
           :key="i"
-          :title="tab.title+'\r\n'+tab.url"
           :style="{ height: tagConfig.tag_font_size+'px',
                     width: 'calc(100% / '+(storageKeyword == '' || item.tabs.length > tagConfig.tag_line_count ? tagConfig.tag_line_count : item.tabs.length)
                                           +' - '+(tagConfig.tag_padding_left*2+1*2+tagConfig.tag_margin_right)+'px)',

@@ -64,15 +64,13 @@
       <template v-if="storageKeyword == ''">
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">{{
-              index+' | '+item.realIndex+' | '+item.title
-          }}</div>
+          :style="{ fontSize: config.list_font_size+'px' }">{{ item.title }}</div>
       </template>
       <template v-else>
         <span
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="index+' | '+item.realIndex+' | '+highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
+          v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
       </template>
 
       <div

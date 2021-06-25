@@ -43,7 +43,8 @@
         :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
-        lazy>
+        :scroll-container="$parent.$el"
+        :lazy="index >= config.item_show_count">
         <div slot="error">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
@@ -129,7 +130,8 @@
           {{ timeShow(item.lastVisitTime) }}
         </div>
       </template>
-      <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)">
+      <!-- <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)"> -->
+      <template v-if=" ! (index == 0 && item.isCurrent)">
         <span
           v-if="isSelected"
           :style="{
@@ -216,7 +218,7 @@ console.log('showTip');
         return  '';
       }
     }
-  }
+  },
 }
 </script>
 

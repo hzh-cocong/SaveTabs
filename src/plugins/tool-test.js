@@ -135,6 +135,10 @@ const tool = {
 
           return '';
         },
+        beautifyTitle(title) {
+          if(title == undefined) return '';
+          return title.replace(/\s*[-|_—]\s*.*$/, '');
+        },
         timeShow(timestamp) { // 毫秒时间戳
           let time = Math.floor((new Date().getTime()-timestamp)/1000);
 

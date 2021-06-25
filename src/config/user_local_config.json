@@ -1,6 +1,6 @@
 {
     "pinned": false,
-    "active_workspace_type": "window",
+    "active_workspace_type": "note",
 
     "theme_mode": "light",
 
@@ -12,8 +12,8 @@
     "all_include": [
         {
             "type": "window",
-            "count": 3,
-            "is_top": 0,
+            "count": 30,
+            "is_top": 1,
             "only_search": false
         },
         {

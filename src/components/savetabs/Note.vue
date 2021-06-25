@@ -61,10 +61,16 @@
       </span>
 
       <div class="main">
+        <!-- <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }"
+          v-html="highlightMap[index].title || highlightMap[index].url"></div> -->
         <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlightMap[index].title || highlightMap[index].url"></div>
+          v-html="isSelected || storageKeyword != ''
+                ? (highlightMap[index].title || highlightMap[index].url)
+                : (beautifyTitle(highlightMap[index].title) || getDomain(highlightMap[index].url))"></div>
         <div
           class="sub-title"
           :style="{

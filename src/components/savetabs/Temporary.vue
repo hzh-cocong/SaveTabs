@@ -109,6 +109,14 @@
                 <!-- <img src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
+            <!-- <div
+              class="title"
+              :style="{ fontSize: tagConfig.tag_font_size+'px',
+                        width: 'calc(100% - '
+                              +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
+                                + (isActive ? 20 : 0) )
+                              +'px' }"
+              v-html="highlightMap[index][i].title || highlightMap[index][i].url"></div> -->
             <div
               class="title"
               :style="{ fontSize: tagConfig.tag_font_size+'px',
@@ -116,7 +124,9 @@
                               +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
                                 + (isActive ? 20 : 0) )
                               +'px' }"
-              v-html="highlightMap[index][i].title || highlightMap[index][i].url"></div>
+              v-html="tabFocus[index+'|'+i] || storageKeyword != ''
+                    ? highlightMap[index][i].title || highlightMap[index][i].url
+                    : beautifyTitle(highlightMap[index][i].title) || getDomain(highlightMap[index][i].url)"></div>
           </el-tag>
         </template>
         <template v-else>
@@ -141,7 +151,12 @@
             </el-image>
             <span
               style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
-              v-html="highlightMap[index][0].title || highlightMap[index][0].url"></span>
+              v-html="isSelected || storageKeyword != ''
+                    ? (highlightMap[index][0].title || highlightMap[index][0].url)
+                    : (beautifyTitle(highlightMap[index][0].title) || getDomain(highlightMap[index][0].url))"></span>
+            <!-- <span
+              style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
+              v-html="highlightMap[index][0].title || highlightMap[index][0].url"></span> -->
             <!-- <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span> -->
           </div>
           <div
@@ -152,7 +167,9 @@
                     ? config.list_explain_focus_font_color
                     : config.list_explain_font_color,
               marginLeft: (config.list_font_size+5)+'px' }"
-              v-html="highlightMap[index][0].domain"></div>
+              v-html="storageKeyword == ''
+                    ? highlightMap[index][0].domain
+                    : highlightMap[index][0].url"></div>
           <!-- <div
             class="sub-title"
             :style="{

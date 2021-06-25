@@ -64,7 +64,7 @@
       </span>
 
       <div class="main">
-        <div
+        <!-- <div
           class="title"
           :style="{ fontSize: config.list_font_size+'px' }">
           <i
@@ -73,6 +73,18 @@
             :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
                         'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
           <span v-html="highlightMap[index].title || highlightMap[index].url"></span>
+        </div> -->
+        <div
+          class="title"
+          :style="{ fontSize: config.list_font_size+'px' }">
+          <i
+            v-if="item.count != undefined && item.count > 1"
+            style="margin-right: 10px;"
+            :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
+                        'el-icon-remove-outline' : item.subFiles.length <= 0,  }"></i>
+          <span v-html="isSelected || storageKeyword != ''
+                      ? (highlightMap[index].title || highlightMap[index].url)
+                      : (beautifyTitle(highlightMap[index].title) || getDomain(highlightMap[index].url))"></span>
         </div>
         <div
           class="sub-title"
@@ -85,7 +97,9 @@
             v-html="isSelected && keyType != ''
                   ? getTip()
                   : ( item.count == undefined || item.count == 1
-                    ? highlightMap[index].url
+                    ? (isSelected || storageKeyword != ''
+                      ? highlightMap[index].url
+                      : highlightMap[index].domain)
                     : (highlightMap[index].domain+' | '+item.count) )"></div>
       </div>
 

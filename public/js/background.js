@@ -297,6 +297,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // sendMessage 应用本身是收不到的，所以要让 background.js 来实现广播
     request.type = 'data_change';
     chrome.runtime.sendMessage(request);
+  } else if(request.type == 'copy') {
+    // 不行，DOMException: Document is not focused
+    // navigator.clipboard.writeText(request.data).then((s) => {
+    //   console.log('00000000000001', s, request);
+    // }).catch((s) => {
+    //   console.log('00000000000002', s, request);
+    // })
+
+    // 不行 DOMException: Document is not focused
+    // navigator.clipboard.writeText(request.data).then((s) => {
+    //     console.log('00000000000001', s, request)
+    // }, (s) => {
+    //     console.log('00000000000002', s, request)
+    // });
+
+    // 可行
+    var input = document.createElement('textarea');
+    document.body.appendChild(input);
+    input.value = request.data;
+    input.focus();
+    input.select();
+    try {
+      let s = document.execCommand('Copy');
+      if(true) {
+        chrome.runtime.sendMessage({
+          type: 'copySuccessfully',
+          data: request.data,
+        })
+      }
+    } catch(e) {
+      console.log(e)
+    } finally {
+      input.remove();
+    }
   }
 })
 

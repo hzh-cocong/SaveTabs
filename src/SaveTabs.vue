@@ -571,6 +571,26 @@ export default {
     Statusbar,
   },
   methods: {
+    gg() {
+      // inject script 没权限
+      // let s = navigator.clipboard.writeText('Yo')
+      // console.log('0000000000000', s);
+
+      // 还是不行
+      // let text='jjjjjjjjjjjjjjjj'
+      // navigator.clipboard.writeText(text).then(() => {
+      //     //clipboard successfully set
+      //     console.log('aaaaaaaaaaaaa', arguments)
+      // }, () => {
+      //     //clipboard write failed, use fallback
+      //     console.log('bbbbbbbbbbbbbb', arguments)
+      // });
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: '8888888888',
+      })
+    },
     focus() {
       // 输入框聚焦
       this.$refs['input'].focus();
@@ -1163,6 +1183,14 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           }
         } else if(request.type == 'to_add') {
           this.add(request.workspace);
+        } else if(request.type == 'copySuccessfully') {
+          this.$message({
+            type: 'success',
+            message: '复制成功',
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 2000,
+          });
         }
       })
 //*

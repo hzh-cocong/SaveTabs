@@ -60,14 +60,16 @@
         :style="{ fontSize: config.list_font_size+'px' }"
         v-text="item.name"></div>
       <div
-        v-if="isSelected && storageKeyword != ''"
+        v-if="isSelected && (storageKeyword != '' || keyType != '')"
         class="sub-title"
         :style="{
           fontSize: config.list_explain_font_size+'px',
           color: isSelected
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color }"
-          v-html="'Search '+item.name+' for \'<strong>'+storageKeyword.escape()+'</strong>\''"></div>
+          v-html="isSelected && keyType != ''
+                  ? getTip()
+                  : ('Search '+item.name+' for \'<strong>'+storageKeyword.escape()+'</strong>\'')"></div>
     </div>
 
     <div class="right">
@@ -129,9 +131,30 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
+  methods: {
+    getTip() {
+      console.log('showTip');
 
+      if(this.keyType == 'meta/ctrl') {
+        return '打开新标签但不切换';
+      } else if(this.keyType == 'shift') {
+        return '新窗口打开';
+      } else if(this.keyType == 'alt') {
+        return '覆盖当前标签';
+      } else if(this.keyType != '') {
+        return '打开新标签并切换';
+      } else {
+        return '';
+      }
+    },
+  }
 }
 </script>
 

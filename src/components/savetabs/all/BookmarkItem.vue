@@ -82,7 +82,7 @@
           color: isSelected
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color }">
-        {{ item.subTitle }}
+        {{ isSelected && keyType != '' ? getTip() : item.subTitle }}
       </div>
     </div>
 
@@ -158,7 +158,12 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     switchTo(keyType) {
@@ -167,6 +172,27 @@ export default {
       } else if(keyType == '') {
         this.input(this.item.title, 'bookmark');
       }
+    },
+
+    getTip() {
+      console.log('showTip');
+
+      // 打开网页
+      if( ! this.item.children) {
+        if(this.keyType == 'meta/ctrl') {
+          return '打开新标签但不切换';
+        } else if(this.keyType == 'shift') {
+          return '新窗口打开';
+        } else if(this.keyType == 'alt') {
+          return '覆盖当前标签';
+        } else if(this.keyType != '') {
+          return '打开新标签并切换';
+        } else {
+          return '';
+        }
+      }
+
+      return this.item.children.length ? '展开' : '收起';
     }
   }
 }

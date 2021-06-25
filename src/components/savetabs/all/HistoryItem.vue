@@ -77,11 +77,13 @@
                 ? config.list_explain_focus_font_color
                 : config.list_explain_font_color,
           direction: isSelected ? 'rtl' : 'ltr' }"
-          v-html="item.count == undefined || item.count == 1
-                ? (isSelected || storageKeyword != ''
-                  ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
-                  : getDomain(item.count == undefined ? item.url : item.subFiles[0].url))
-                : highlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count"></div>
+          v-html="isSelected && keyType != ''
+                ? getTip()
+                : ( item.count == undefined || item.count == 1
+                  ? (isSelected || storageKeyword != ''
+                    ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                    : getDomain(item.count == undefined ? item.url : item.subFiles[0].url))
+                  : (highlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count) )"></div>
     </div>
 
     <div
@@ -167,7 +169,12 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     switchTo(keyType) {
@@ -176,7 +183,31 @@ export default {
       } else if(keyType == '') {
         this.input(this.item.title || this.item.url, 'history');
       }
-    }
+    },
+
+    getTip() {
+      console.log('showTip');
+
+      if(this.item.count == undefined || this.item.count == 1) {
+        if(this.keyType == 'meta/ctrl') {
+          return '打开新标签但不切换';
+        } else if(this.keyType == 'shift') {
+          return '新窗口打开';
+        } else if(this.keyType == 'alt') {
+          return '覆盖当前标签';
+        } else if(this.keyType != '') {
+          return '打开新标签并切换';
+        } else {
+          return '';
+        }
+      }
+
+      if(this.item.subFiles.length > 0) {
+        return '展开';
+      } else {
+        return '收起';
+      }
+    },
   }
 }
 </script>

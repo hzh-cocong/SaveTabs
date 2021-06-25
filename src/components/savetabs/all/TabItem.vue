@@ -105,9 +105,11 @@
           direction: storageKeyword == ''
                     ? 'ltr'
                     : (isSelected ? 'rtl' : 'ltr') }"
-        v-html="storageKeyword != ''
-              ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
-              : (isSelected ? item.url : getDomain(item.url))"></div>
+        v-html="isSelected && keyType != ''
+                ? getTip()
+                : ( storageKeyword != ''
+                  ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                  : (isSelected ? item.url : getDomain(item.url)) )"></div>
     </div>
 
     <div
@@ -209,7 +211,12 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    keyType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     switchTo(keyType) {
@@ -218,7 +225,22 @@ export default {
       } else if(keyType == '') {
         this.input(this.item.title || this.item.url, 'tab');
       }
-    }
+    },
+
+    getTip() {
+      console.log('showTip');
+      if(this.keyType == 'meta/ctrl') {
+        return '移动到右侧';
+      } else if(this.keyType == 'shift') {
+        return '移动到新窗口中';
+      } else if(this.keyType == 'alt') {
+        return '和当前标签交换位置';
+      } else if(this.keyType != '') {
+        return '默认切换到该标签';
+      } else {
+        return '';
+      }
+    },
   }
 }
 </script>

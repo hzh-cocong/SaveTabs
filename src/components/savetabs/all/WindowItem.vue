@@ -105,7 +105,7 @@
           <svg-icon
             class="hover"
             :name="project_config.allWorkspaces[ 'window' ].svg"
-            @click.native="input(item.tabs[0].title || item.tabs[0].url, 'window')"></svg-icon>
+            @click.native="input(item.name, 'window')"></svg-icon>
         </template>
         <div
           v-else-if="index == 0 && item.isCurrent"

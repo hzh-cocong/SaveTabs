@@ -122,8 +122,10 @@
           </el-image>
           <span
             style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
-            v-html="highlight(item.tabs[0].title, storageKeyword, '<strong>', '</strong>')
-                  || highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>')"></span>
+            v-html="isSelected || storageKeyword != ''
+                  ? ( highlight(item.tabs[0].title, storageKeyword, '<strong>', '</strong>')
+                    || highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>'))
+                  : (beautifyTitle(item.tabs[0].title) || getDomain(item.tabs[0].url))"></span>
         </div>
         <div
           class="sub-title"
@@ -133,7 +135,9 @@
                   ? config.list_explain_focus_font_color
                   : config.list_explain_font_color,
             marginLeft: (config.list_font_size+5)+'px' }"
-            v-html="highlight(getDomain(item.tabs[0].url), storageKeyword, '<strong>', '</strong>')"></div>
+            v-html="storageKeyword == ''
+                  ? getDomain(item.tabs[0].url)
+                  : highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>')"></div>
       </template>
     </div>
 

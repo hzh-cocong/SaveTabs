@@ -75,6 +75,7 @@
       </template>
 
       <div
+        v-if="(isSelected || storageKeyword != '')"
         class="sub-title"
         :style="{
           fontSize: config.list_explain_font_size+'px',
@@ -85,7 +86,9 @@
       </div>
     </div>
 
-    <div class="right">
+    <div
+      class="right"
+      @click.stop="focus">
       <template v-if="isActive">
         <svg-icon
           class="hover"

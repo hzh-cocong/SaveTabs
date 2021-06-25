@@ -1017,7 +1017,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.currentGroup.type);
+      this.input(keywords, this.currentGroup.type, true);
     },
     choice(index) {
       return this.$refs.list.choice(index);

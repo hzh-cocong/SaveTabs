@@ -70,7 +70,7 @@
           :style="{ fontSize: config.list_font_size+'px' }"
           v-html="isSelected || storageKeyword != ''
                 ? (highlightMap[index].title || highlightMap[index].url)
-                : (beautifyTitle(highlightMap[index].title) || getDomain(highlightMap[index].url))"></div>
+                : (beautifyTitle(item.title) || getDomain(item.url))"></div>
           <!-- v-if="isSelected || storageKeyword != ''" -->
         <div
           class="sub-title"
@@ -658,7 +658,7 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.selectedTab.type);
+      this.input(keywords, this.selectedTab.type, true);
     },
     closeTab() {
       // 这个必须放外面，防止 onRemove 先执行而刷新列表

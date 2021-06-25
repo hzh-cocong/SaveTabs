@@ -776,7 +776,7 @@ console.log('chrome.bookmarks.getTree.second')
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.currentBookmark.type);
+      this.input(keywords, this.currentBookmark.type, true);
     },
 
     searchExpand(index) {

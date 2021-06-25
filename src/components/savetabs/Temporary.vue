@@ -989,7 +989,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.currentTemporary.type);
+      this.input(keywords, this.currentTemporary.type, true);
     },
     openTab(i, keyType) {
       // 先删除标签

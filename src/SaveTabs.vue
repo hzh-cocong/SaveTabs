@@ -48,6 +48,7 @@
       <!-- autofocus 会报错 -->
       <el-input
         class="search-input"
+        name="search-input"
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
@@ -310,7 +311,7 @@
           :title="limited
                 ? '功能受限'
                 : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
-          @click="operate($event, type)"></el-button><!-- todo  :disabled="limited" -->
+          @click="operate(getKeyType($event), type)"></el-button><!-- todo  :disabled="limited" -->
       </el-button-group>
     </div>
 
@@ -572,10 +573,17 @@ export default {
       // 输入框聚焦
       this.$refs['input'].focus();
     },
-    input(value, type) {
+    select() {
+      // this.keyword = value; 和 input 双向绑定，但更新是最后执行的，此时值还未变，无法全选，所以得在主线程之后
+      this.$nextTick(() => {
+        // 全选
+        this.$refs['input'].$el.querySelector("input[name='search-input']").select();
+      })
+    },
+    input(value, type, isSelect=true) {
       if(type == undefined) {
         this.keyword = value;
-        // this.focus();
+        isSelect && this.select();
         this.search();
         return;
       }
@@ -595,6 +603,7 @@ export default {
       }
 
       this.keyword = value;
+      isSelect && this.select();
       this.$refs.carousel.setActiveItem(index);
     },
     loading(visibility) {
@@ -681,19 +690,27 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, keyType);
     },
 
-    operate(event, type) {
-      // 其它快捷键不管，以免混乱
-      if(event.shiftKey == true || event.altKey == true) return;
+    // operate(event, type) {
+    //   // 其它快捷键不管，以免混乱
+    //   if(event.shiftKey == true || event.altKey == true) return;
 
-      if((this._device.platform == 'Mac' && event.metaKey == true)
-      || (this._device.platform != 'Mac' && event.altKey == true)) {
+    //   if((this._device.platform == 'Mac' && event.metaKey == true)
+    //   || (this._device.platform != 'Mac' && event.altKey == true)) {
 
+    //     let index = this.getTypeIndex(type);
+    //     this.$refs.carousel.setActiveItem(index);
+    //     return;
+    //   }
+
+    //   this.add(type);
+    // },
+    operate(keyType, type) {
+      if(keyType == 'meta/ctrl') {
         let index = this.getTypeIndex(type);
         this.$refs.carousel.setActiveItem(index);
-        return;
-      }
-
-      this.add(type);
+      } else if(keyType == '') {
+        this.add(type);
+      }// 其它快捷键不管，以免混乱
     },
     add(type) {
       // 先切换到对应的工作区

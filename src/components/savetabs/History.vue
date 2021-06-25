@@ -99,7 +99,7 @@
                   : ( item.count == undefined || item.count == 1
                     ? (isSelected || storageKeyword != ''
                       ? highlightMap[index].url
-                      : highlightMap[index].domain)
+                      : getDomain(item.count == undefined ? item.url : item.subFiles[0].url))
                     : (highlightMap[index].domain+' | '+item.count) )"></div>
       </div>
 
@@ -812,7 +812,7 @@ console.log('_openWindow', url)
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.currentHistory.type);
+      this.input(keywords, this.currentHistory.type, true);
     },
     deleteHistory() {
       // 删除单独一条历史记录

@@ -78,11 +78,18 @@
     </span>
 
     <div class="main">
-      <div
+      <!-- <div
         class="title"
         :style="{ fontSize: config.list_font_size+'px' }"
         v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')
-              || highlight(item.url, storageKeyword, '<strong>', '</strong>')"></div>
+              || highlight(item.url, storageKeyword, '<strong>', '</strong>')"></div> -->
+      <div
+        class="title"
+        :style="{ fontSize: config.list_font_size+'px' }"
+        v-html="isSelected || storageKeyword != ''
+              ? (highlight(item.title, storageKeyword, '<strong>', '</strong>')
+                || highlight(item.url, storageKeyword, '<strong>', '</strong>'))
+              : (beautifyTitle(item.title) || getDomain(item.url))"></div>
       <div
         class="sub-title"
         :style="{

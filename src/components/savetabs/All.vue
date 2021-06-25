@@ -1,8 +1,10 @@
 <template>
   <div class="all">
-
+<!--
   <el-alert
-    v-if="isSearched && list.length == 0"
+    v-if="isSearched && list.length == 0" -->
+  <el-alert
+    v-if="false"
     type="info"
     :closable="false"
     show-icon
@@ -175,7 +177,7 @@ export default {
           this.list.splice(this.currentIndex+1, result.length);
           this.length[item.type] -= result.length;
         } else if(result.type == 'input') {
-          this.input(result.keywords, result.workspace)
+          this.input(result.keywords, result.workspace, true)
         }
       });
     },
@@ -199,7 +201,7 @@ export default {
           this.list.splice(this.currentIndex+1, result.length);
           this.length[item.type] -= result.length;
         } else if(result.type == 'input') {
-          this.input(result.keywords, result.workspace)
+          this.input(result.keywords, result.workspace, true)
         }
       });
     },
@@ -401,7 +403,7 @@ export default {
           this.list.splice(this.currentIndex+1, result.length);
           this.length[item.type] -= result.length;
         } else if(result.type == 'input') {
-          this.input(result.keywords, result.workspace)
+          this.input(result.keywords, result.workspace, true)
         }
       });
     },

@@ -70,7 +70,7 @@
           :style="{ fontSize: config.list_font_size+'px' }"
           v-html="isSelected || storageKeyword != ''
                 ? (highlightMap[index].title || highlightMap[index].url)
-                : (beautifyTitle(highlightMap[index].title) || getDomain(highlightMap[index].url))"></div>
+                : (beautifyTitle(item.title) || getDomain(item.url))"></div>
         <div
           class="sub-title"
           :style="{
@@ -747,7 +747,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       } else {
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
-      this.input(keywords, this.currentNote.type);
+      this.input(keywords, this.currentNote.type, true);
     },
     deleteNote() {
       // 移除数据

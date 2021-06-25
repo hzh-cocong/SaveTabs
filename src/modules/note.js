@@ -248,6 +248,12 @@ let note = {
             lastVisitTime: note.lastVisitTime,
           }
         })}, () => {
+          if(currentNote.url == this.currentTab.url) {
+            // 如果操作的是当前便签，则直接关闭插件
+            chrome.runtime.sendMessage({ type: 'closeExtension' })
+            return;
+          }
+
           // 先激活标签，再切换窗口
           chrome.tabs.update(this.activeTabs[currentNote.url].id, { active: true }, () => {
             chrome.windows.update(this.activeTabs[currentNote.url].windowId, { focused: true}, () => {

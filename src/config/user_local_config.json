@@ -11,8 +11,14 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "search",
-            "count": 30,
+            "type": "window",
+            "count": 3,
+            "is_top": 1,
+            "only_search": false
+        },
+        {
+            "type": "tab",
+            "count": 3,
             "is_top": 1,
             "only_search": false
         }

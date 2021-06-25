@@ -413,7 +413,7 @@ export default {
     selectedOriginIndex() {
       console.log('tab.selectedOriginIndex', this.selectedTab)
       return this.originList.findIndex(tab => {
-        return tab.id == this.selectedTab.id;
+        return tab.id == this.selectedTabId;
       });
     },
 
@@ -639,6 +639,14 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
             destination: this.selectedTab
         })
       } else {
+        // 当前窗口则直接关闭，因为 inject 不会像 popup 那样自动关闭
+        if(this.selectedTabId == this.activeTabId) {
+          chrome.runtime.sendMessage({
+            type: 'closeExtension',
+          })
+          return;
+        }
+
         // 切换到对应的标签，不做任何移动（默认方式）
         chrome.tabs.update(this.selectedTabId, { active: true }, () => {
           chrome.windows.update(this.selectedTab.windowId, { focused: true}, () => {
@@ -663,11 +671,11 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
     closeTab() {
       // 这个必须放外面，防止 onRemove 先执行而刷新列表
       this.originList.splice(this.selectedOriginIndex, 1);
-      chrome.tabs.remove(this.selectedTab.id, () => {
+      chrome.tabs.remove(this.selectedTabId, () => {
         // 防止重复点击产生错误
         this.cacheList.splice(this.currentIndex, 1);
         this.list.splice(this.currentIndex, 1);
-        console.log('tab.closeTab2', this.selectedTab.id, this.currentIndex, this.selectedOriginIndex)
+        console.log('tab.closeTab2', this.selectedTabId, this.currentIndex, this.selectedOriginIndex)
       })
     },
 

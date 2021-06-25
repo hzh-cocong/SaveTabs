@@ -241,6 +241,14 @@ let tab = {
       })
     } else {
       return new Promise(resolve => {
+        // 当前窗口则直接关闭，因为 inject 不会像 popup 那样自动关闭
+        if(selectedTab.id == this.activeTab.id) {
+          chrome.runtime.sendMessage({
+            type: 'closeExtension',
+          })
+          return;
+        }
+
         // 切换到对应的标签，不做任何移动（默认方式）
         chrome.tabs.update(selectedTab.id, { active: true }, () => {
           chrome.windows.update(selectedTab.windowId, { focused: true}, () => {

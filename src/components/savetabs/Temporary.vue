@@ -59,17 +59,16 @@
 
       <div
         class="main"
-        @mouseenter="mainEnter"
-        @mouseleave="mainLeave"
-        @click.stop="focus"
         :class="{ scroll: isActive }"
         :style="{
           'flex-direction': ! isSelected ? 'column' : 'column',
           'justify-content': ! isSelected ? 'space-evenly' : 'flex-start',
           'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
           'align-content': ! isSelected ? 'normal' : 'flex-start',
-          'align-items': ! isSelected ? 'normal' : 'flex-start',
-          }">
+          'align-items': ! isSelected ? 'normal' : 'flex-start' }"
+        @mouseenter="mainEnter"
+        @mouseleave="mainLeave"
+        @click.stop="focus">
         <template v-if="isSelected">
           <el-tag
             v-for="(tab, i) in item.tabs"
@@ -91,6 +90,10 @@
             @mouseout.native="$set(tabFocus, index+'|'+i, false)"
             @click.stop="openTab(i, getKeyType($event))"
             @close.stop="deleteTab(i)">
+            <!-- 都不行 -->
+            <!-- :scroll-container="'.main[data-text=\''+index+'\']'" -->
+            <!-- :scroll-container="$refs.list.$el && $refs.list.$el.children[index].children[1]" -->
+              <!-- :lazy="tagConfig.tag_line_count*tagConfig.tag_row_count >= i" -->
             <el-image
               v-if="isLoad"
               :src="getIcon(tab.icon, tab.url, tagConfig.tag_font_size)"
@@ -114,13 +117,6 @@
                                 + (isActive ? 20 : 0) )
                               +'px' }"
               v-html="highlightMap[index][i].title || highlightMap[index][i].url"></div>
-            <!-- <span
-              class="tab-title"
-              :style="{ fontSize: tagConfig.tag_font_size+'px',
-                        width: 'calc(100% - '
-                              +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
-                                + (isActive ? 20 : 0) )
-                              +'px' }">{{ tab.title || tab.url }}</span> -->
           </el-tag>
         </template>
         <template v-else>
@@ -134,7 +130,8 @@
               fit="cover"
               :style="{ width: config.list_font_size+'px',
                         height: config.list_font_size+'px' }"
-              lazy>
+              :scroll-container="$refs.list.$el"
+              :lazy="index >= config.item_show_count">
               <div slot="error" class="image-slot">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>

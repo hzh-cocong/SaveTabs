@@ -50,6 +50,7 @@
           :src="iconMap[index]"
           style="width:100%; height: 100%;"
           fit="cover"
+          :scroll-container="$refs.list.$el"
           :lazy="index >= config.item_show_count">
           <div slot="error">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
@@ -278,6 +279,7 @@
           :src="getIcon(tab.icon, tab.url, 20)"
           style="width:20px; height:20px;"
           fit="cover"
+          scroll-container=".window-group .group-list"
           lazy>
           <div slot="error">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
@@ -339,7 +341,7 @@
               :src="getIcon(tab.icon, tab.url, 20)"
               style="width:20px; height:20px;"
               fit="cover"
-              scroll-container=".group-list"
+              scroll-container=".window-difference .compare .left .group-list"
               lazy>
               <div slot="error">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
@@ -373,13 +375,11 @@
             v-for="(tab, index) in currentWindow.tabs"
             :key="index">
 
-            <!-- 由于 ul 使用了 overlay，所以要加
-              scroll-container=".group-list"，但是这里不生效，应该是联合滚动的原因，
-              不过由于是当前窗口的图标，那缓存肯定有，直接拿缓存速度更快，也无所谓懒加载了 -->
             <el-image
               :src="getIcon('', tab.url || tab.pendingUrl, 20)"
               style="width:20px; height:20px;"
               fit="cover"
+              scroll-container=".window-difference .compare .right .group-list"
               lazy>
               <div slot="error">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
@@ -1096,8 +1096,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
       });
     },
     addCompareEvent() {
-      let leftNode = document.querySelector('.compare .left .group-list');
-      let rightNode = document.querySelector('.compare .right .group-list');
+      let leftNode = document.querySelector('.window-difference .compare .left .group-list');
+      let rightNode = document.querySelector('.window-difference .compare .right .group-list');
 
       leftNode.addEventListener('scroll',() => {
         rightNode.scrollTop = leftNode.scrollTop;

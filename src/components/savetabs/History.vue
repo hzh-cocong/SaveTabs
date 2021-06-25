@@ -50,10 +50,10 @@
         <el-image
           v-if="isLoad"
           :src="iconMap[index]"
-          :scroll-container="$el.firstElementChild"
           style="width:100%; height: 100%;"
           fit="cover"
-          lazy>
+          :scroll-container="$refs.list.$el"
+          :lazy="index >= config.item_show_count">
           <div slot="error" class="image-slot">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>

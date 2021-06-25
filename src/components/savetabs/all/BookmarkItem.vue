@@ -93,7 +93,7 @@
         <svg-icon
           class="hover"
           :name="project_config.allWorkspaces[ 'bookmark' ].svg"
-          @click.native="input(item.title, 'bookmark')"></svg-icon>
+          @click.native="switchTo(getKeyType($event))"></svg-icon>
       </template>
       <span
         v-else-if="isSelected"
@@ -160,6 +160,15 @@ export default {
       default: '',
     }
   },
+  methods: {
+    switchTo(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.input(null, 'bookmark');
+      } else if(keyType == '') {
+        this.input(this.item.title, 'bookmark');
+      }
+    }
+  }
 }
 </script>
 

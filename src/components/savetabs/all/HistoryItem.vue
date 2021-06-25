@@ -91,7 +91,7 @@
         <svg-icon
           class="hover"
           :name="project_config.allWorkspaces[ 'history' ].svg"
-          @click.native="input(item.title || item.url, 'history')"></svg-icon>
+          @click.native="switchTo(getKeyType($event))"></svg-icon>
         </template>
       <template v-if=" ! isActive">
         <span
@@ -169,7 +169,15 @@ export default {
       default: '',
     }
   },
-
+  methods: {
+    switchTo(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.input(null, 'history');
+      } else if(keyType == '') {
+        this.input(this.item.title || this.item.url, 'history');
+      }
+    }
+  }
 }
 </script>
 

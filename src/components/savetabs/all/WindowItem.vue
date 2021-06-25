@@ -105,7 +105,7 @@
           <svg-icon
             class="hover"
             :name="project_config.allWorkspaces[ 'window' ].svg"
-            @click.native="input(item.name, 'window')"></svg-icon>
+            @click.native="switchTo(getKeyType($event))"></svg-icon>
         </template>
         <div
           v-else-if="index == 0 && item.isCurrent"
@@ -210,6 +210,14 @@ export default {
     },
   },
   methods: {
+    switchTo(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.input(null, 'window');
+      } else if(keyType == '') {
+        this.input(this.item.name, 'window');
+      }
+    },
+
     getTip() {
 console.log('showTip');
       if(this.item.isOpened) {

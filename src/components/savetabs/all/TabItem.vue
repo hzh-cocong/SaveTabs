@@ -117,7 +117,7 @@
         <svg-icon
           class="hover"
           :name="project_config.allWorkspaces[ 'tab' ].svg"
-          @click.native="input(item.title || item.url, 'tab')"></svg-icon>
+          @click.native="switchTo(getKeyType($event))"></svg-icon>
         </template>
       <template v-else-if="index == 0 && item.isCurrent">
         <span
@@ -211,6 +211,15 @@ export default {
       default: '',
     }
   },
+  methods: {
+    switchTo(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.input(null, 'tab');
+      } else if(keyType == '') {
+        this.input(this.item.title || this.item.url, 'tab');
+      }
+    }
+  }
 }
 </script>
 

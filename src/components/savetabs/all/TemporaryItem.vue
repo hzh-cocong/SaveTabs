@@ -149,7 +149,7 @@
         <svg-icon
           class="el-icon-close hover"
           :name="project_config.allWorkspaces[ 'temporary' ].svg"
-          @click.native="input(item.tabs[0].title || item.tabs[0].url, 'temporary')"></svg-icon>
+          @click.native="switchTo(getKeyType($event))"></svg-icon>
       </template>
       <template v-if=" ! isActive">
         <span
@@ -349,6 +349,14 @@ export default {
       event.target.removeEventListener('scroll', this.hideOperationButton);
       this.isShowOperationButton = true;
     },
+
+    switchTo(keyType) {
+      if(keyType == 'meta/ctrl') {
+        this.input(null, 'temporary');
+      } else if(keyType == '') {
+        this.input(this.item.tabs[0].title || this.item.tabs[0].url, 'temporary');
+      }
+    }
   }
 }
 </script>

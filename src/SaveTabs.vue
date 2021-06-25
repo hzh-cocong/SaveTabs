@@ -602,6 +602,11 @@ export default {
         return;
       }
 
+      if(value == undefined) {
+        this.$refs.carousel.setActiveItem(index);
+        return;
+      }
+
       this.keyword = value;
       isSelect && this.select();
       this.$refs.carousel.setActiveItem(index);

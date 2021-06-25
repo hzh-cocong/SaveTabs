@@ -502,6 +502,24 @@ export default {
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.selectedTab)
+
+      if(this.selectedTab == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let url = this.selectedTab.url;
+      if(url == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: url,
+        count: 1,
+      })
+    },
+
     search(keyword) {
 console.log('tab.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新

@@ -324,6 +324,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.runtime.sendMessage({
           type: 'copySuccessfully',
           data: request.data,
+          count: request.count,
         })
       }
     } catch(e) {

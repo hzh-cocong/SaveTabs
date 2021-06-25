@@ -543,6 +543,82 @@ let b = new Date().getTime();
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.currentBookmark)
+
+      if(this.currentBookmark == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let urls = '';
+      let count = 0;
+      if( ! this.currentBookmark.children) {
+        urls = this.currentBookmark.url;
+        count = 1;
+      } else if(this.currentBookmark.children.length > 0) { // 未展开
+        urls = this.currentBookmark.children.reduce((accumulator, bookmark) => {
+          if(bookmark.parentId != this.currentBookmark.id) return accumulator;
+          if(bookmark.children) return accumulator;
+
+          count++;
+          if(count == 1) return bookmark.url;
+          else return accumulator+"\n"+bookmark.url;
+        }, '');
+      } else { // 已展开
+        let stack = [];
+        let parentId = this.currentBookmark.id;
+        let index = this.currentIndex+1;
+        let list = this.storageKeyword != '' ? this.cacheList : this.list;
+        while(true) {
+          if(index >= list.length) break;
+
+          let bookmark = list[index];console.log('copy2', bookmark, parentId);
+          if(bookmark.children) {
+            // 当前为文件夹
+            if(bookmark.children.length == 0) {
+              // 文件夹已收起，或者是空文件夹
+              index++;
+            } else {
+              // 文件处于展开状态，需要记录一下 parentId
+              stack.push(parentId);
+              parentId = bookmark.id;
+              index++;
+            }
+          } else {
+            // 当前为网页
+            if(bookmark.parentId == parentId) {
+              if(parentId == this.currentBookmark.id) {
+                count++;
+                if(count == 1) urls += bookmark.url;
+                else urls += "\n"+bookmark.url;
+              }
+              index++;
+            } else {
+              // 不相等，说明是从文件夹中出来了
+              if(stack.length == 0) {
+                // 遍历结束
+                break;
+              } else {
+                // 取出上一个文件夹
+                parentId = stack.pop();
+                // index 不能增加
+              }
+            }
+          }
+        }
+      }
+
+      console.log('copy3', urls, count)
+      if(urls == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: urls,
+        count: count,
+      })
+    },
+
     search(keyword) {
 console.log('bookmark.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新

@@ -670,6 +670,28 @@ alert('空间不够')
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.currentTemporary)
+
+      if(this.currentTemporary == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let urls = this.currentTemporary.tabs.reduce((accumulator, temporary, index) => {
+        if(index == 0) return temporary.url;
+        else return accumulator+"\n"+temporary.url;
+      }, '');
+      console.log('copy2', urls, urls == '')
+      if(urls == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: urls,
+        count: this.currentTemporary.tabs.length,
+      })
+    },
+
     search(keyword) {
 console.log('temporary.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新

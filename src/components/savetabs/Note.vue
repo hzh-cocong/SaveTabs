@@ -454,6 +454,24 @@ export default {
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.currentNote)
+
+      if(this.currentNote == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let url = this.currentNote.url;
+      if(url == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: url,
+        count: 1,
+      })
+    },
+
     search(keyword) {
       console.log('note.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新

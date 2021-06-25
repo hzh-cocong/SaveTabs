@@ -538,6 +538,48 @@ export default {
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.currentHistory)
+
+      if(this.currentHistory == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let urls='';
+      // let count = 0;
+      if(this.currentHistory.count == undefined) {
+        urls = this.currentHistory.url;
+        // count = 0;
+      } else if(this.currentHistory.count == 1) {
+        urls = this.currentHistory.subFiles[0].url;
+        // count = 0;
+      } else if(this.currentHistory.subFiles.length > 0) { // 未展开
+        urls = this.currentHistory.subFiles.reduce((accumulator, history, index) => {
+          if(index == 0) return history.url;
+          else return accumulator+"\n"+history.url;
+        }, '');
+        // count = this.currentHistory.subFiles.length;
+      } else { // 已展开
+        for(let i = this.currentIndex+1; i <= this.currentIndex+this.currentHistory.count; i++) {
+          if(i == this.currentIndex+1) {
+            urls = this.list[i].url;
+          } else {
+            urls += "\n"+this.list[i].url;
+          }
+        }
+        // count = this.this.currentHistory.count;
+      }
+
+      if(urls == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: urls,
+        count: this.currentHistory.count == undefined ? 1 : this.currentHistory.count,
+      })
+    },
+
     search(keyword) {
 
 console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);

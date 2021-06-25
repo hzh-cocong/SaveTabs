@@ -571,26 +571,6 @@ export default {
     Statusbar,
   },
   methods: {
-    gg() {
-      // inject script 没权限
-      // let s = navigator.clipboard.writeText('Yo')
-      // console.log('0000000000000', s);
-
-      // 还是不行
-      // let text='jjjjjjjjjjjjjjjj'
-      // navigator.clipboard.writeText(text).then(() => {
-      //     //clipboard successfully set
-      //     console.log('aaaaaaaaaaaaa', arguments)
-      // }, () => {
-      //     //clipboard write failed, use fallback
-      //     console.log('bbbbbbbbbbbbbb', arguments)
-      // });
-
-      chrome.runtime.sendMessage({
-        type: 'copy',
-        data: '8888888888',
-      })
-    },
     focus() {
       // 输入框聚焦
       this.$refs['input'].focus();
@@ -806,6 +786,17 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
           this.selectDelay('right', keyType);
         }
         return
+      }
+
+      // 复制
+      if(event.keyCode == 67 && keyType == 'meta/ctrl') {
+        let inputNode = this.$refs.input.$el.querySelector("input[name='search-input']");
+        if(inputNode.selectionStart == inputNode.selectionEnd) {
+          this.$refs.workspaces[ this.activeWorkspaceRefIndex ].copy();
+          return;
+        }
+        // 肯定不符合下面的条件，就直接返回了
+        return;
       }
 
       this.keyType = keyType;
@@ -1186,7 +1177,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         } else if(request.type == 'copySuccessfully') {
           this.$message({
             type: 'success',
-            message: '复制成功',
+            // message: '地址复制成功',
+            message: `成功复制 ${request.count} 条地址`,
             customClass: 'window-message-box',
             offset: 69,
             duration: 2000,

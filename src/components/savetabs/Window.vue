@@ -682,6 +682,28 @@ console.log('get_currentWindowStorageIndex3', index);
         this.currentIndex++;
       }
     },
+    copy() {
+      console.log('copy', this.currentGroup)
+
+      if(this.currentGroup == null) return;
+
+      // 工作区切换
+      if(this.workspaceSwitch) return
+
+      let urls = this.currentGroup.tabs.reduce((accumulator, group, index) => {
+        if(index == 0) return group.url;
+        else return accumulator+"\n"+group.url;
+      }, '');
+      console.log('copy2', urls, urls == '')
+      if(urls == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: urls,
+        count: this.currentGroup.tabs.length,
+      })
+    },
+
     search(keyword) {
       console.log('window.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
@@ -834,9 +856,15 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
             windowId: window.id,
             lastVisitTime: new Date().getTime(),
             tabs: window.tabs.map((tab) => {
+              // 去除末尾 /
+              tab.url = tab.url == '' && tab.pendingUrl
+                      ? tab.pendingUrl.replace(/(\/*$)/g,"")
+                      : tab.url.replace(/(\/*$)/g,"");
+
               return {
                 icon: tab.favIconUrl,
-                url: tab.url == "" ? tab.pendingUrl : tab.url,
+                // url: tab.url == "" ? tab.pendingUrl : tab.url,
+                url: tab.url,
                 title: tab.title,
               };
             }),
@@ -1318,6 +1346,11 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
     refreshWindows(showMessage = false) {
       // 获取当前窗口
       chrome.windows.getCurrent({populate: true}, window => {
+        window.tabs.forEach((tab) => {
+          // 去除末尾 /
+          tab.url = tab.url.replace(/(\/*$)/g,"");
+          tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/(\/*$)/g,""));
+        })
         this.currentWindow = window;
         // this.haveDifference = this.isDifference(this.oldGroup, window);
 
@@ -1380,7 +1413,11 @@ console.warn('mounted', a);
       // 获取当前窗口（不再 getAll 里拿是因为要加 populate 参数，会获取太多不必要的数据，当然实际测试好像速度没区别）
       new Promise((resolve) => {
         chrome.windows.getCurrent({populate: true}, (window) => {
-          // resolve(window)
+          window.tabs.forEach((tab) => {
+            // 去除末尾 /
+            tab.url = tab.url.replace(/(\/*$)/g,"");
+            tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/(\/*$)/g,""));
+          })
           this.currentWindow = window;
           let b = new Date().getTime();
           console.warn('获取当前窗口', b, (b-a)/1000)

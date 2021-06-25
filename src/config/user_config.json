@@ -16,7 +16,7 @@
     "list_page_count": 8,
 
     "list_focus_background_color": "#7497de",
-    "list_focus_font_color": "#ffffff",
+    "list_focus_font_color": "red",
     "list_focus_highlight_color": "#f73131",
     "list_focus_highlight_weight": "400",
     "list_explain_focus_font_color": "#e4e7ed",

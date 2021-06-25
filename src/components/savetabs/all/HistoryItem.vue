@@ -30,7 +30,8 @@
         :src="getIcon('', item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
-        lazy>
+        :scroll-container="$parent.$el"
+        :lazy="index >= config.item_show_count">
         <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
@@ -83,7 +84,15 @@
                 : highlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count"></div>
     </div>
 
-    <div class="right">
+    <div
+      class="right"
+      @click.stop="focus">
+      <template v-if="isActive">
+        <svg-icon
+          class="hover"
+          :name="project_config.allWorkspaces[ 'history' ].svg"
+          @click.native="input(item.title || item.url, 'history')"></svg-icon>
+        </template>
       <template v-if=" ! isActive">
         <span
           :style="{
@@ -119,6 +128,7 @@
 <script>
 export default {
   name: 'HistoryItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -231,16 +241,11 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
-
-.history-item .right .el-icon-more {
-  margin-right: 11px;
-  padding: 5px;
-  font-size: 20px;
-  cursor:pointer;
-}
-.history-item .right .el-icon-close {
+.history-item .right >>> .svg-icon {
+  width: 20px;
+  height: 20px;
   margin-right: 2px;
-  font-size: 20px;
+  padding: 5px;
   cursor:pointer;
 }
 </style>

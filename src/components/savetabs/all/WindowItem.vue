@@ -97,10 +97,18 @@
                 : config.list_explain_font_color) }">{{ getTip() }}</div>
     </div>
 
-    <div class="right">
+    <div
+      class="right"
+      @click.stop="focus">
       <template v-if="isActive || item.isOpened || item.lastVisitTime != undefined">
+        <template v-if="isActive">
+          <svg-icon
+            class="hover"
+            :name="project_config.allWorkspaces[ 'window' ].svg"
+            @click.native="input(item.tabs[0].title || item.tabs[0].url, 'window')"></svg-icon>
+        </template>
         <div
-          v-if="index == 0 && item.isCurrent"
+          v-else-if="index == 0 && item.isCurrent"
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
@@ -130,8 +138,7 @@
           {{ timeShow(item.lastVisitTime) }}
         </div>
       </template>
-      <!-- <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)"> -->
-      <template v-if=" ! (index == 0 && item.isCurrent)">
+      <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)">
         <span
           v-if="isSelected"
           :style="{
@@ -156,6 +163,7 @@
 <script>
 export default {
   name: 'WindowItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -289,6 +297,13 @@ console.log('showTip');
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+.window-item .right >>> .svg-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+  padding: 5px;
+  cursor:pointer;
 }
 </style>
 <style>

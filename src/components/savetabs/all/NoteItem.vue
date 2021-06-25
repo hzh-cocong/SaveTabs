@@ -43,7 +43,8 @@
         :src="this.getIcon(item.icon, item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
-        lazy>
+        :scroll-container="$parent.$el"
+        :lazy="index >= config.item_show_count">
         <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
@@ -111,12 +112,20 @@
                 : (isSelected ? item.url : getDomain(item.url)) )"></div>
     </div>
 
-    <div class="right">
+    <div
+      class="right"
+      @click.stop="focus">
       <template v-if="isActive
               || item.isOpened
               || (storageKeyword != '' && item.lastVisitTime != undefined)">
+        <template v-if="isActive">
+          <svg-icon
+            class="hover"
+            :name="project_config.allWorkspaces[ 'note' ].svg"
+            @click.native="input(item.title || item.url, 'note')"></svg-icon>
+        </template>
         <div
-          v-if="index == 0 && item.isCurrent"
+          v-else-if="index == 0 && item.isCurrent"
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
@@ -176,6 +185,7 @@
 <script>
 export default {
   name: 'NoteItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -312,40 +322,12 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
-
-.note-item .right .number-button {
-  min-width: 10px;
+.note-item .right >>> .svg-icon {
+  width: 20px;
   height: 20px;
-  padding: 2px 7px;
-  font-size: 18px;
-  line-height: 20px;
-  border: 2px solid white;
-  border-radius: 20px;
-  margin-right: 15px;
-  text-align: center;
-  white-space: nowrap;
-  display: inline-block;
-  cursor: pointer;
-}
-.note-item .right .close-without-tab {
-  min-width: 20px;
-  height: 20px;
-  font-size: 18px !important;
-  font-weight: 800;
-  padding: 2px;
-  border:2px solid white;
-  border-radius: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-.note-item .right .close-without-tab:before {
-  position: relative;
-  top: 1px;
-}
-.note-item .right .el-icon-close {
   margin-right: 2px;
-  font-size: 20px;
-  cursor: pointer;
+  padding: 5px;
+  cursor:pointer;
 }
 </style>
 <style>

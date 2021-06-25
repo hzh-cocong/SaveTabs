@@ -58,7 +58,9 @@
         'flex-wrap': ! isSelected ? 'nowrap' : 'wrap',
         'align-content': ! isSelected ? 'normal' : 'flex-start',
         'align-items': ! isSelected ? 'normal' : 'flex-start',
-        }">
+        }"
+      @mouseenter="mainEnter"
+      @mouseleave="mainLeave">
           <!-- :title="tab.title+'\r\n'+tab.url" -->
       <template v-if="isSelected">
         <el-tag
@@ -111,7 +113,8 @@
             fit="cover"
             :style="{ width: config.list_font_size+'px',
                       height: config.list_font_size+'px' }"
-            lazy>
+            :scroll-container="$parent.$el"
+            :lazy="index >= config.item_show_count">
             <div slot="error" class="image-slot">
               <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
@@ -136,14 +139,14 @@
 
     <div
       class="right"
-      :style="{ paddingLeft: isActive ? '5px' : '10px' }">
-      <!-- @click.stop="focus">
-      <template v-if="isActive">
+      :style="{ paddingLeft: isActive ? '5px' : '10px' }"
+      @click.stop="focus">
+      <template v-if="isActive && isShowOperationButton">
         <svg-icon
           class="el-icon-close hover"
-          name="paperclip-solid"
-          @click.native="input('', 'temporary')"></svg-icon>
-      </template> -->
+          :name="project_config.allWorkspaces[ 'temporary' ].svg"
+          @click.native="input(item.tabs[0].title || item.tabs[0].url, 'temporary')"></svg-icon>
+      </template>
       <template v-if=" ! isActive">
         <span
           :style="{
@@ -194,6 +197,10 @@ export default {
       required: false,
       default: true,
     },
+    index: {
+      type: Number,
+      required: require,
+    },
     item: {
       type: Object,
       required: require,
@@ -214,6 +221,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    }
+  },
+  data(){
+    return {
+      isShowOperationButton: true,
     }
   },
   computed: {
@@ -315,6 +327,23 @@ export default {
         tag_padding_top,
         tag_padding_left,
       }
+    },
+  },
+  methods: {
+    hideOperationButton() {
+      console.log('mousemove', this.lock)
+
+      this.isShowOperationButton = false;
+    },
+    mainEnter(event) {
+      console.log('temporary:mainEnter', event);
+      // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
+      event.target.addEventListener('scroll', this.hideOperationButton);
+    },
+    mainLeave(event) {
+      console.log('temporary:mainLeave', event);
+      event.target.removeEventListener('scroll', this.hideOperationButton);
+      this.isShowOperationButton = true;
     },
   }
 }

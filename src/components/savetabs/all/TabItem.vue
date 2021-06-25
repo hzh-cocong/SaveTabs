@@ -43,7 +43,8 @@
         :src="getIcon('', item.url, config.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
-        lazy>
+        :scroll-container="$parent.$el"
+        :lazy="index >= config.item_show_count">
         <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
@@ -109,9 +110,15 @@
               : (isSelected ? item.url : getDomain(item.url))"></div>
     </div>
 
-    <div class="right">
-      <div v-if="isActive">
-      </div>
+    <div
+      class="right"
+      @click.stop="focus">
+      <template v-if="isActive">
+        <svg-icon
+          class="hover"
+          :name="project_config.allWorkspaces[ 'tab' ].svg"
+          @click.native="input(item.title || item.url, 'tab')"></svg-icon>
+        </template>
       <template v-else-if="index == 0 && item.isCurrent">
         <span
           :style="{
@@ -163,6 +170,7 @@
 <script>
 export default {
   name: 'TabItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -274,15 +282,11 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
 }
-.tab-item .right .el-icon-more {
-  margin-right: 11px;
-  padding: 5px;
-  font-size: 20px;
-  cursor:pointer;
-}
-.tab-item .right .el-icon-close {
+.tab-item .right >>> .svg-icon {
+  width: 20px;
+  height: 20px;
   margin-right: 2px;
-  font-size: 20px;
+  padding: 5px;
   cursor:pointer;
 }
 </style>

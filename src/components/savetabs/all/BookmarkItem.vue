@@ -37,7 +37,8 @@
           :src="getIcon('', item.url, config.item_height-20)"
           style="width:100%; height: 100%;"
           fit="cover"
-          lazy>
+          :scroll-container="$parent.$el"
+          :lazy="index >= config.item_show_count">
           <div slot="error" class="image-slot">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
@@ -85,8 +86,14 @@
     </div>
 
     <div class="right">
+      <template v-if="isActive">
+        <svg-icon
+          class="hover"
+          :name="project_config.allWorkspaces[ 'bookmark' ].svg"
+          @click.native="input(item.title, 'bookmark')"></svg-icon>
+      </template>
       <span
-        v-if="isSelected"
+        v-else-if="isSelected"
         :style="{
           fontSize: config.list_keymap_size+'px',
           color: config.list_focus_keymap_color,
@@ -109,6 +116,7 @@
 <script>
 export default {
   name: 'BookmarkItem',
+  inject: ['focus', 'input'],
   props: {
     config: {
       type: Object,
@@ -218,6 +226,13 @@ export default {
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+.bookmark-item .right >>> .svg-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+  padding: 5px;
+  cursor:pointer;
 }
 </style>
 <style>

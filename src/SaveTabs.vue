@@ -50,6 +50,7 @@
       <!-- autofocus 会报错 -->
       <el-input
         class="search-input"
+        :class="{ clearable: keyword !='' && showClearButton }"
         name="search-input"
         spellcheck="false"
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
@@ -174,6 +175,7 @@
           <i
             v-if="keyword !='' && showClearButton"
             class="el-icon-circle-close"
+            @mousedown.prevent
             @click="$refs.input.$emit('input', '');focus();"></i>
         </template>
         <template slot="prefix">
@@ -294,12 +296,12 @@
               placement="top-start"
               trigger="manual"
               transition=""
-              @after-leave="focus"
-              @after-enter="focus">
-              <span>暂无其它功能</span>
+              @after-leave="focus">
+              <span @mousedown.prevent>暂无其它功能</span>
               <i
                 class="el-icon-close hover"
                 style="float: right;margin-top: 3px;cursor: pointer;"
+                @mousedown.prevent
                 @click="other.visible = false;"></i>
               <i
                 class="el-icon-search"
@@ -307,6 +309,7 @@
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
                           color: other.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @mousedown.prevent
                 @click="other.visible = ! other.visible"></i>
             </el-popover>
           </template>
@@ -589,6 +592,10 @@ export default {
       alert(f)
     },
     focus() {
+      console.log('focus', this.originInputNode, document.activeElement)
+      // 已获得焦点则不再 focus，以免引起闪烁
+      if(this.originInputNode == document.activeElement) return;
+console.log('focus2', this.originInputNode, document.activeElement)
       // 输入框聚焦
       this.$refs['input'].focus();
     },
@@ -1393,6 +1400,11 @@ img {
   font-size: var(--toolbar-input-font-size);
   color: var(--toolbar-input-font-color);
   background-color: var(--toolbar-background-color);
+
+  padding-right: 10px;
+}
+.toolbar .search-input.clearable input {
+  padding-right: 30px;
 }
 .toolbar .search-input input:focus {
   border-color: var(--toolbar-input-focus-color);

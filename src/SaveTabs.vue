@@ -56,7 +56,7 @@
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         v-model="keyword"
-        :clearable="keyword == '' ? false : true"
+        :clearable="false"
         @keydown.down.native.prevent.stop="selectDelay('down', getKeyType($event))"
         @keydown.up.native.prevent.stop="selectDelay('up', getKeyType($event))"
         @keydown.left.native="leftOrRightDown('left', $event)"
@@ -69,6 +69,7 @@
         @compositionstart.native="isComposition=true"
         @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search(keyword+$event.data)"
         @compositionend.native="isComposition=false"
+        @mouseleave.native="showClearButton=false"
         ref="input">
         <template slot="prepend">
           <el-dropdown
@@ -84,7 +85,9 @@
                     && (activeWorkspaceIndex=arguments[0],
                         $refs.carousel.setActiveItem(activeWorkspaceIndex)),
                         focus()"><!-- 可能重复点击，所以还是要 focus 的 -->
-            <span class="el-dropdown-link" @click="focus"> <!-- 工作区标题 -->
+            <span
+              class="el-dropdown-link"
+              @click="focus"> <!-- 工作区标题 -->
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 style="width: 20px; height: 20px; margin-right: 3px;"
@@ -166,6 +169,12 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+        </template>
+        <template slot="suffix">
+          <i
+            v-if="keyword !='' && showClearButton"
+            class="el-icon-circle-close"
+            @click="keyword='';focus();"></i>
         </template>
         <template slot="prefix">
           <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">
@@ -524,6 +533,8 @@ export default {
       },
 
       statusbarHeight: 30,
+      originInputNode: null,
+      showClearButton: false,
       w: {
         statusbarTipTimer: null,
         statusbarTipShowSpeed: 200,
@@ -574,6 +585,9 @@ export default {
     Statusbar,
   },
   methods: {
+    sss(f) {
+      alert(f)
+    },
     focus() {
       // 输入框聚焦
       this.$refs['input'].focus();
@@ -582,7 +596,8 @@ export default {
       // this.keyword = value; 和 input 双向绑定，但更新是最后执行的，此时值还未变，无法全选，所以得在主线程之后
       this.$nextTick(() => {
         // 全选
-        this.$refs['input'].$el.querySelector("input[name='search-input']").select();
+        // this.$refs['input'].$el.querySelector("input[name='search-input']").select();
+        this.originInputNode.select();
       })
     },
     input(value, type, isSelect=true) {
@@ -793,8 +808,8 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
 
       // 复制
       if(event.keyCode == 67 && keyType == 'meta/ctrl') {
-        let inputNode = this.$refs.input.$el.querySelector("input[name='search-input']");
-        if(inputNode.selectionStart == inputNode.selectionEnd) {
+        // let originInputNode = this.$refs.input.$el.querySelector("input[name='search-input']");
+        if(this.originInputNode.selectionStart == this.originInputNode.selectionEnd) {
           this.$refs.workspaces[ this.activeWorkspaceRefIndex ].copy();
           return;
         }
@@ -1136,6 +1151,19 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           this.carouselTrigger = 'hover';
         }
       })
+
+      // 输入框鼠标经过显示清除按钮
+      this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
+      this.originInputNode.addEventListener('mouseenter', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        this.showClearButton = true;
+      })
+      // this.originInputNode.addEventListener('mouseleave', (event) => {
+      //   // event.stopPropagation();
+      //   // event.preventDefault();
+      //   this.showClearButton = false;
+      // })
     };
 
     // window.oncontextmenu = function(e){
@@ -1376,16 +1404,16 @@ img {
   background: var(--toolbar-input-selected-background-color);
   color: var(--toolbar-input-selected-font-color);
 }
-/* .toolbar .el-input__suffix .el-icon-circle-close {
+.toolbar .el-input__suffix .el-icon-circle-close {
+  padding-right: 4px;
   line-height: var(--toolbar_height);
   color: var(--toolbar-icon-color);
-} */
-/* .toolbar .el-input__suffix .el-icon-circle-close:hover, */
-.toolbar .el-input__prefix .el-icon-search:hover,
-.toolbar .el-input__prefix .el-icon-date:hover,
-.toolbar .el-input__prefix .el-icon-s-operation:hover {
-  color: var(--toolbar-icon-focus-color) !important;
+  cursor: pointer;
 }
+.toolbar .el-input__suffix .el-icon-circle-close:hover {
+  color: var(--toolbar-icon-focus-color);
+}
+
 .toolbar .el-button-group .el-button {
   height: 100%;
   width: 100%;

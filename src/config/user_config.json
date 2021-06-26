@@ -73,7 +73,7 @@
 
     "toolbar_input_font_size": 20,
     "toolbar_input_font_color": "#606266",
-    "toolbar_input_focus_color": "#c0c4cc",
+    "toolbar_input_focus_color": "#dcdfe6",
     "toolbar_input_selected_font_color": "#ffffff",
     "toolbar_input_selected_background_color": "#7497de",
     "toolbar_show_input_tip": false,

@@ -254,6 +254,8 @@ export default {
       });
     },
     copy() {
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 

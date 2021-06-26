@@ -183,6 +183,8 @@ export default {
   },
   methods: {
     up(keyType) {
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
 
@@ -213,8 +215,14 @@ export default {
       });
     },
     down(keyType) {
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
+
+      if(keyType == 'meta/ctrl') {
+        this.autoSort(item.type);
+      }
 
       module.down(item.realIndex, keyType).then((result) => {
         console.warn('down.finish', result);
@@ -452,6 +460,7 @@ console.log('all:search:lists');
       console.log('autoSort', type, this.localConfig.all_include, this.localConfig.all_sort_auto)
 
       if( ! this.localConfig.all_sort_auto) return;
+      if(this.workspaceSwitch) return;
 
       let index = this.localConfig.all_include.findIndex((workspace) => {
         return workspace.type == type;

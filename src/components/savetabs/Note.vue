@@ -767,6 +767,9 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       }
       this.input(keywords, this.currentNote.type, true);
     },
+    choice(index) {
+      return this.$refs.list.choice(index);
+    },
     deleteNote() {
       // 移除数据
       this.storageList.splice(this.currentStorageIndex , 1);

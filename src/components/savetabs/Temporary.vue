@@ -1013,6 +1013,9 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       }
       this.input(keywords, this.currentTemporary.type, true);
     },
+    choice(index) {
+      return this.$refs.list.choice(index);
+    },
     openTab(i, keyType) {
       // 先删除标签
       let url = this.currentTemporary.tabs[i].url;

@@ -507,6 +507,7 @@ export default {
     up(keyType) {
       if(keyType == 'meta/ctrl') {
         if(this.workspaceSwitch) return;
+        if(this.currentHistory == null) return;
 
         // 只收起文件夹
         if(this.currentHistory.count == 1) {
@@ -685,6 +686,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       this.currentIndex = 0;
     },
     load() {
+      console.log('history.load.test')
       if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
         // 性能最高
         this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
@@ -699,6 +701,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
 
       // 查找历史
       this.query((historys) => {
+        console.log('history.load.test2')
         if(historys.length == 0) {
           this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
 
@@ -855,6 +858,9 @@ console.log('_openWindow', url)
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
       this.input(keywords, this.currentHistory.type, true);
+    },
+    choice(index) {
+      return this.$refs.list.choice(index);
     },
     deleteHistory() {
       // 删除单独一条历史记录

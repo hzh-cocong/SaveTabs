@@ -508,6 +508,7 @@ let b = new Date().getTime();
     up(keyType) {
       if(keyType == 'meta/ctrl') {
         if(this.workspaceSwitch) return;
+        if(this.currentBookmark == null) return;
 
         // 只跳到父文件，不收起文件夹，体验更佳
         let i = this.currentIndex-1;
@@ -899,6 +900,9 @@ console.log('chrome.bookmarks.getTree.second')
         keywords =  this.workspaceStorageKeyword.split(/\s+/).join(' ');
       }
       this.input(keywords, this.currentBookmark.type, true);
+    },
+    choice(index) {
+      return this.$refs.list.choice(index);
     },
 
     searchExpand(index) {

@@ -11,31 +11,7 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "bookmark",
-            "count": 2,
-            "is_top": 1,
-            "only_search": false
-        },
-        {
-            "type": "history",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
             "type": "tab",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "note",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "window",
             "count": 2,
             "is_top": -1,
             "only_search": false

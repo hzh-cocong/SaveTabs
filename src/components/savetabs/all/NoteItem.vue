@@ -117,7 +117,7 @@
       @click.stop="focus">
       <template v-if="isActive
               || item.isOpened
-              || (storageKeyword != '' && item.lastVisitTime != undefined)">
+              || item.lastVisitTime != undefined">
         <template v-if="isActive">
           <svg-icon
             class="hover"
@@ -147,12 +147,12 @@
             + (isSelected && item.count > 1 ? ' ('+item.count+')' : '') }}
         </div>
         <div
-          v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
+          v-else-if="item.lastVisitTime != undefined"
           :style="{
             fontSize: config.list_state_size+'px',
             color: isSelected
                 ? config.list_focus_state_color
-                : config.list_keymap_color }">
+                : config.list_state_color }">
           {{ timeShow(item.lastVisitTime) }}
         </div>
       </template>
@@ -160,12 +160,8 @@
         <span
           v-if="isSelected"
           :style="{
-            fontSize: isSelected
-                ? config.list_state_size
-                : config.list_keymap_size+'px',
-            color: isSelected
-                ? config.list_focus_keymap_color
-                : config.list_focus_keymap_color }">↩</span>
+            fontSize: config.list_keymap_size+'px',
+            color: config.list_focus_keymap_color }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{

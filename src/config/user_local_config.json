@@ -13,7 +13,7 @@
         {
             "type": "bookmark",
             "count": 2,
-            "is_top": 0,
+            "is_top": 1,
             "only_search": false
         },
         {
@@ -35,21 +35,9 @@
             "only_search": false
         },
         {
-            "type": "temporary",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
             "type": "window",
             "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "search",
-            "count": 2,
-            "is_top": 0,
+            "is_top": -1,
             "only_search": false
         }
     ],

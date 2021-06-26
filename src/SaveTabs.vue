@@ -1178,7 +1178,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           this.$message({
             type: 'success',
             // message: '地址复制成功',
-            message: `成功复制 ${request.count} 条地址`,
+            message: `已成功复制 ${request.count} 条地址`,
             customClass: 'window-message-box',
             offset: 69,
             duration: 1000,

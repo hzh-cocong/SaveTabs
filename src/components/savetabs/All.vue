@@ -253,29 +253,14 @@ export default {
 
       // 展示工作区
       if(this.workspaceSwitch) {
-        let module = this.getModule('toggle');
-        module.search({
-          keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
-          length: 100,
-          config: this.config,
-          localConfig: this.localConfig,
-          originKeyword: this.storageKeyword,
-          parent: this,
-        }).then((list) => {
-          console.log(77777777777777777, list)
-          this.list = list;
-
-          this.scrollDisabled = true;
-          this.currentIndex = 0;
-        })
-
+        this.showWorkspaceList();
         return;
       }
 
       this.length = {};
-
+console.log('all:search:lists');
       this.toSearch(0).then((list) => {
-        console.log('search:lists', list);
+        console.log('all:search:lists2', list);
 
         this.list = list;
 
@@ -316,7 +301,7 @@ export default {
           parent: this,
         })
       })).then((lists) => {
-        console.log('toSearch:lists', lists);
+        console.log('all:toSearch:lists', lists);
 
         let list = [];
         lists.forEach((workspaceList) => {
@@ -333,9 +318,29 @@ export default {
         }
       })
     },
+    showWorkspaceList() {
+      let module = this.getModule('toggle');
+      module.search({
+        keywords: this.storageKeyword == '' ? [] : this.storageKeyword.toUpperCase().split(/\s+/),
+        length: 100,
+        config: this.config,
+        localConfig: this.localConfig,
+        originKeyword: this.storageKeyword,
+        parent: this,
+      }).then((list) => {
+        console.log(77777777777777777, list)
+        this.list = list;
+
+        this.scrollDisabled = true;
+        this.currentIndex = 0;
+      })
+    },
     load() {
+      console.log('all:load:lists');
+      // 避免因为列表加载慢而重复 load，infinite-scroll-delay 默认节流时延为 200ms，但具体load要多久这个谁也说不准，所以干脆禁用，等有结果了再重新开启
+      this.scrollDisabled = true;
       this.toLoad(0).then((list) => {
-        console.log('load:lists', list);
+        console.log('load:lists2', list);
 
         this.scrollDisabled = list.length <= 0;
         this.list.push(...list);
@@ -378,7 +383,7 @@ export default {
           })
         }
       })).then(lists => {
-        console.log('toLoad:lists', lists);
+        console.log('all:toLoad:lists', lists);
 
         let list = [];
         lists.forEach((workspaceList) => {
@@ -389,8 +394,10 @@ export default {
         })
 
         if(list.length > 0) {
+          console.log('all:toLoad:lists21', lists);
           return list;
         } else {
+          console.log('all:toLoad:lists22', index+1);
           return this.toLoad(index+1);
         }
       })
@@ -411,8 +418,13 @@ export default {
     _openWindow(keyType) {
       console.log('openWindow', keyType)
 
+      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
+
+      // 先保存，在打开，因为列表有可能会自动刷新
+      this.autoSort(item.type);
 
       module.openWindow(item.realIndex, keyType).then((result) => {
         console.warn('all.finish', result);
@@ -434,6 +446,33 @@ export default {
     },
     choice(index) {
       return this.$refs.list.choice(index);
+    },
+
+    autoSort(type) {
+      console.log('autoSort', type, this.localConfig.all_include, this.localConfig.all_sort_auto)
+
+      if( ! this.localConfig.all_sort_auto) return;
+
+      let index = this.localConfig.all_include.findIndex((workspace) => {
+        return workspace.type == type;
+      });
+      if(index <= 0) return; // 找不到或者排在第一的位置则无需重排
+
+      let currentWorkspace = this.localConfig.all_include[index];
+
+      // 找到同优先级的排在第一的 workspce
+      let topIndex = this.localConfig.all_include.findIndex((workspace) => {
+        return currentWorkspace.is_top == workspace.is_top;
+      });
+      if(topIndex == -1 || topIndex == index) return; // -1 不可能出现，写上去更具兼容性
+
+      // 将当前的 workspace 插入到顶部的前面去
+      this.localConfig.all_include.splice(topIndex, 0, this.localConfig.all_include.splice(index , 1)[0]);
+
+      console.log('autoSort2', type, this.localConfig.all_include)
+
+      // 重新保存
+      chrome.storage.local.set({'config': this.localConfig});
     },
 
     getModule(type) {

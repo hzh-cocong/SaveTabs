@@ -76,7 +76,7 @@
         <template v-if="storageKeyword == ''">
           <div
             class="title"
-            :style="{ fontSize: config.list_font_size+'px' }">{{index+'|'+
+            :style="{ fontSize: config.list_font_size+'px' }">{{
                 item.title
                 + ( ! isSelected || tree.path[item.parentId]
                   ? ''
@@ -87,7 +87,7 @@
           <span
             class="title"
             :style="{ fontSize: config.list_font_size+'px' }"
-            v-html="index+'|'+highlightMap[index]"></span>
+            v-html="highlightMap[index]"></span>
         </template>
 
           <!-- v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')" -->

@@ -249,6 +249,39 @@ let history = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let currentIndex = this.getRealIndex(index);
+    let currentHistory = this.cacheList[ currentIndex ];
+
+    let urls='';
+    if(currentHistory.count == undefined) {
+      urls = currentHistory.url;
+    } else if(currentHistory.count == 1) {
+      urls = currentHistory.subFiles[0].url;
+    } else if(currentHistory.subFiles.length > 0) { // 未展开
+      urls = currentHistory.subFiles.reduce((accumulator, history, index) => {
+        if(index == 0) return history.url;
+        else return accumulator+"\n"+history.url;
+      }, '');
+    } else { // 已展开
+      for(let i = currentIndex+1; i <= currentIndex+currentHistory.count; i++) {
+        if(i == currentIndex+1) {
+          urls = this.cacheList[i].url;
+        } else {
+          urls += "\n"+this.cacheList[i].url;
+        }
+      }
+    }
+
+    console.log('copy2', urls);
+    if(urls == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: urls,
+      count: currentHistory.count == undefined ? 1 : currentHistory.count,
+    })
+  },
 
   openWindow(index, keyType) {
     index = this.getRealIndex(index);

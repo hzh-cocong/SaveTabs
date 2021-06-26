@@ -132,6 +132,22 @@ let window = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let currentGroup = this.cacheList[index];
+
+    let urls = currentGroup.tabs.reduce((accumulator, group, index) => {
+      if(index == 0) return group.url;
+      else return accumulator+"\n"+group.url;
+    }, '');
+    console.log('copy2', urls, urls == '')
+    if(urls == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: urls,
+      count: currentGroup.tabs.length,
+    })
+  },
 
   openWindow(index, keyType) {
     let currentGroup = this.cacheList[index];

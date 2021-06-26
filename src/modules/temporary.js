@@ -96,6 +96,22 @@ let temporary = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let currentTemporary = this.cacheList[ index ];
+
+    let urls = currentTemporary.tabs.reduce((accumulator, temporary, index) => {
+      if(index == 0) return temporary.url;
+      else return accumulator+"\n"+temporary.url;
+    }, '');
+    console.log('copy2', urls, urls == '')
+    if(urls == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: urls,
+      count: currentTemporary.tabs.length,
+    })
+  },
 
   openWindow(index, keyType) {
     let temporary = this.cacheList[ index ];

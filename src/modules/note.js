@@ -224,6 +224,19 @@ let note = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let currentNote = this.cacheList[index];
+
+    let url = currentNote.url;
+    console.log('copy2', url);
+    if(url == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: url,
+      count: 1,
+    })
+  },
 
   openWindow(index, keyType) {
     let currentNote = this.cacheList[index];

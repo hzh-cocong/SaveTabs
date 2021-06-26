@@ -238,6 +238,75 @@ let bookmark = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let currentIndex = this.getRealIndex(index);
+    let currentBookmark = this.cacheList[ currentIndex ];
+
+    let urls = '';
+    let count = 0;
+    if( ! currentBookmark.children) {
+      urls = currentBookmark.url;
+      count = 1;
+    } else if(currentBookmark.children.length > 0) { // 未展开
+      urls = currentBookmark.children.reduce((accumulator, bookmark) => {
+        if(bookmark.parentId != currentBookmark.id) return accumulator;
+        if(bookmark.children) return accumulator;
+
+        count++;
+        if(count == 1) return bookmark.url;
+        else return accumulator+"\n"+bookmark.url;
+      }, '');
+    } else { // 已展开
+      let stack = [];
+      let parentId = currentBookmark.id;
+      let index = currentIndex+1;
+      let list = this.cacheList;
+      while(true) {
+        if(index >= list.length) break;
+
+        let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
+        if(bookmark.parentId != parentId) {
+          // 不相等，说明是从文件夹中出来了
+          if(stack.length == 0) {
+            // 遍历结束
+            console.log('copy_finish', bookmark, parentId, index, list.length);
+            break;
+          }
+
+          // 取出上一个文件夹
+          parentId = stack.pop();
+          // index 不能增加
+          continue;
+        }
+
+        if(bookmark.children) {
+          // 子文件夹，需要记录一下 parentId
+          console.log('copy_dir', bookmark, parentId);
+          stack.push(parentId);
+          parentId = bookmark.id;
+          console.log('copy_dir2', bookmark, parentId);
+        } else {
+          // 当前为网页
+          if(parentId == currentBookmark.id) {
+            count++;
+            if(count == 1) urls += bookmark.url;
+            else urls += "\n"+bookmark.url;
+          }
+        }
+
+        index++;
+      }
+    }
+
+    console.log('copy3', urls, count)
+    if(urls == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: urls,
+      count: count,
+    })
+  },
 
   openWindow(index, keyType) {
     index = this.getRealIndex(index);

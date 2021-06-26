@@ -1,6 +1,6 @@
 {
     "pinned": false,
-    "active_workspace_type": "bookmark",
+    "active_workspace_type": "all",
 
     "theme_mode": "light",
 
@@ -11,15 +11,45 @@
     "all_sort_auto": false,
     "all_include": [
         {
+            "type": "bookmark",
+            "count": 2,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "history",
+            "count": 2,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "tab",
+            "count": 2,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "note",
+            "count": 2,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "temporary",
+            "count": 2,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
             "type": "window",
-            "count": 3,
-            "is_top": 1,
+            "count": 2,
+            "is_top": 0,
             "only_search": false
         },
         {
             "type": "search",
-            "count": 3,
-            "is_top": -2,
+            "count": 2,
+            "is_top": 0,
             "only_search": false
         }
     ],

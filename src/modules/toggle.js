@@ -73,6 +73,9 @@ let search = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy() {
+    // do nothing
+  },
 
   openWindow(index, keyType) {
     let currentItem = this.cacheList[index];

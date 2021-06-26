@@ -54,6 +54,19 @@ let search = {
         return Promise.resolve({ type: 'down' });
       }
     },
+    copy(index) {
+      let currentItem = this.cacheList[index];
+
+      let url = currentItem.url;
+      console.log('copy2', url);
+      if(url == '') return;
+
+      chrome.runtime.sendMessage({
+        type: 'copy',
+        data: url,
+        count: 1,
+      })
+    },
 
     openWindow(index, keyType) {
       let currentItem = this.cacheList[index];

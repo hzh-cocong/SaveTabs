@@ -236,6 +236,12 @@ export default {
         }
       });
     },
+    copy() {
+      let item = this.list[ this.currentIndex ];
+      let module = this.getModule(item.type);
+
+      module.copy(item.realIndex);
+    },
 
     search(keyword) {
       if(keyword == undefined) return;

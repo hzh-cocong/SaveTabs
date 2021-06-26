@@ -201,6 +201,19 @@ let tab = {
       return Promise.resolve({ type: 'down' });
     }
   },
+  copy(index) {
+    let selectedTab = this.cacheList[ index ];
+
+    let url = selectedTab.url;
+    console.log('copy2', url);
+    if(url == '') return;
+
+    chrome.runtime.sendMessage({
+      type: 'copy',
+      data: url,
+      count: 1,
+    })
+  },
 
   openWindow(index, keyType) {
     let selectedTab = this.cacheList[ index ];

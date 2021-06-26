@@ -114,6 +114,10 @@ export default {
       required: false,
       default: '',
     },
+    activeWorkspace: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -122,6 +126,7 @@ export default {
       currentIndex: 0,
 
       storageKeyword: undefined,
+      isFirstSearch: true,
       conditions: [],
 
       scrollDisabled: true, // 一定要为 true，否则会再一开始就触发 load，而此时 search 可能还未执行完，就会导致冲突
@@ -180,6 +185,10 @@ export default {
               || this.config.workspace_change_word.length == 0
               || this.storageKeyword.startsWith(this.config.workspace_change_word) == false);
     },
+
+    isActiveWorkspace() {
+      return this.activeWorkspace.type == 'all';
+    }
   },
   methods: {
     up(keyType) {
@@ -252,12 +261,16 @@ export default {
     },
 
     search(keyword) {
-      if(keyword == undefined) return;
-      if(this.storageKeyword == keyword.trim()) return;
-
-      let isFirstSearch = this.storageKeyword == undefined;
-
-      this.storageKeyword = keyword.trim();
+console.log('all.search', keyword, '|', this.storageKeyword, this.isFirstSearch);
+      // 无参数时则强制刷新
+      if(keyword != undefined) {
+        if(this.storageKeyword != keyword.trim()) {
+          this.storageKeyword = keyword.trim();
+        } else if( ! this.isFirstSearch) {
+          return;
+        }
+      }
+console.log('all.search2', keyword, '|',  this.storageKeyword, this.isFirstSearch);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -266,19 +279,22 @@ export default {
       }
 
       this.length = {};
-console.log('all:search:lists');
+console.log('all.search:lists');
       this.toSearch(0).then((list) => {
-        console.log('all:search:lists2', list);
+        console.log('all.search:lists2', list);
 
         this.list = list;
 
         // 置顶只要有一个结果，就不会继续查，此时列表如果没有被填满也不用担心，load 会加载
         this.scrollDisabled = false;
-        if(isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
+        if(this.isFirstSearch && this.list.length > 1 && this.list[0].isCurrent == true) {
           this.currentIndex = 1;
+          if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
         } else {
           this.currentIndex = this.list.length > 0 ? 0 : -1;
         }
+        this.isFirstSearch = false;
+        console.log('all.search:lists3', list, this.isFirstSearch);
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
@@ -341,6 +357,7 @@ console.log('all:search:lists');
 
         this.scrollDisabled = true;
         this.currentIndex = 0;
+        this.isFirstSearch = false;
       })
     },
     load() {
@@ -527,24 +544,15 @@ console.log('all:search:lists');
         }))) return;
 
         console.log('all:data_change', request, sender);
-// todo 存在并发问题以及频繁刷新问题
+
+        // 虽然可能会有并发，但是是不同类型的并发，同一类型的发送方已经做了缓冲，所以无碍
         // 刷新数据
         let module = this.getModule(request.workspace);
         module.refreshData().then(() => {
-          // // 这样列表才会被触发更新，不能为 undefined，否则会自动选择第二项
-          // let origin = this.storageKeyword;
-          // this.storageKeyword = ' ';
-          // this.search(origin);
-
-          // 这样列表才会被触发更新，为 undefined，就是要自动选择第二项
-          let origin = this.storageKeyword;
-          this.storageKeyword = undefined;
-          this.search(origin);
-
-          // 不加这个，第一行可能会被隐藏，即自动向上滚动了一行
-          this.$nextTick(() => {
-            this.$refs.list.currentTo(1);
-          });
+          // 这样才会自动选择第二项
+          this.isFirstSearch = true;
+          // 当前工作区是本工作区则刷新列表，否则记录一下
+          if(this.isActiveWorkspace) this.search();
 
           // 增删查改，还有反向操作，仅 temporary
           console.log('all:reload', request);

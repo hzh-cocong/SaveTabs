@@ -174,7 +174,7 @@
           <i
             v-if="keyword !='' && showClearButton"
             class="el-icon-circle-close"
-            @click="keyword='';focus();"></i>
+            @click="$refs.input.$emit('input', '');focus();"></i>
         </template>
         <template slot="prefix">
           <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">

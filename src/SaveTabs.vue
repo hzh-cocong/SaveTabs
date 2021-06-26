@@ -35,6 +35,8 @@
                 '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
                 '--toolbar-input-font-color': config.toolbar_input_font_color,
                 '--toolbar-input-focus-color': config.toolbar_input_focus_color,
+                '--toolbar-input-selected-font-color': config.toolbar_input_selected_font_color,
+                '--toolbar-input-selected-background-color': config.toolbar_input_selected_background_color,
 
                 '--toolbar-button-font-color': config.toolbar_button_font_color,
                 '--toolbar-button-hover-font-color': config.toolbar_button_hover_font_color,
@@ -49,6 +51,7 @@
       <el-input
         class="search-input"
         name="search-input"
+        spellcheck="false"
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
@@ -1368,6 +1371,10 @@ img {
 }
 .toolbar .search-input input::placeholder {
   color: var(--toolbar-icon-color);
+}
+.toolbar .search-input input::selection{
+  background: var(--toolbar-input-selected-background-color);
+  color: var(--toolbar-input-selected-font-color);
 }
 /* .toolbar .el-input__suffix .el-icon-circle-close {
   line-height: var(--toolbar_height);

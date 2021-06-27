@@ -1,10 +1,10 @@
 <template>
-  <div>WorkspaceWindow</div>
+  <div>OtherShare</div>
 </template>
 
 <script>
 export default {
-  name: 'WorkspaceWindow'
+  name: 'OtherShare'
 }
 </script>
 

@@ -123,7 +123,7 @@ export default {
 
       if(Object.keys(syncItems.config).length == 0) {
         chrome.storage.sync.set({'config': this.storageConfig});
-        alert(JSON.stringify(this.storageConfig));
+        // alert(JSON.stringify(this.storageConfig));
       }
 
       this.commands = commands;

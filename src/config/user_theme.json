@@ -1,551 +1,315 @@
-[
-    {
-        "id": "11",
-        "name": "默认主题是否是神盾覅神盾是神盾神盾发",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_highlight_color": "#ff0000",
-            "list_highlight_weight": "400",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
+{
+    "theme_id": "0",
+    "theme_injected_id": "0",
+    "theme_list": [
+        {
+            "id": "1",
+            "name": "SaveTabs Classic",
+            "type": 0,
+            "config": {
+                "list_font_color": "#000000",
+                "list_background_color": "#ffffff",
+                "list_highlight_color": "#f73131",
+                "list_highlight_weight": "400",
+                "list_explain_font_color": "#909399",
+                "list_explain_highlight_color": "gold",
+                "list_explain_highlight_weight": "100",
+                "list_icon_color": "rgb(193, 196, 203)",
+                "list_state_color": "#339966",
+                "list_keymap_color": "#0066CC",
 
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
+                "list_focus_font_color": "#ffffff",
+                "list_focus_background_color": "#7497de",
+                "list_focus_highlight_color": "#f73131",
+                "list_focus_highlight_weight": "400",
+                "list_explain_focus_font_color": "#e4e7ed",
+                "list_explain_focus_highlight_color": "blue",
+                "list_explain_focus_highlight_weight": "900",
+                "list_focus_icon_color": "#e4e7ed",
+                "list_focus_state_color": "#33FF66",
+                "list_focus_keymap_color": "#33FF66",
 
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_highlight_color": "#ff0000",
-            "list_focus_highlight_weight": "400",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
+                "list_current_font_color": "#ffffff",
+                "list_current_background_color": "#c0c4cc",
+                "list_current_highlight_color": "#f73131",
+                "list_current_highlight_weight": "400",
+                "list_current_explain_font_color": "#ffffff",
+                "list_current_explain_highlight_color": "#8f1021",
+                "list_current_explain_highlight_weight": "100",
+                "list_current_icon_color": "#ffffff",
+                "list_current_state_color": "#ffffff",
 
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
+                "list_current_focus_font_color": "#ffffff",
+                "list_current_focus_background_color": "#909399",
+                "list_current_focus_highlight_color": "#f73131",
+                "list_current_focus_highlight_weight": "400",
+                "list_current_explain_focus_font_color": "#ffffff",
+                "list_current_explain_focus_highlight_color": "#21f302",
+                "list_current_explain_focus_highlight_weight": "900",
+                "list_current_focus_icon_color": "#ffffff",
+                "list_current_focus_state_color": "#ffffff",
 
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
+                "list_scrollbar_color": "rgba(127, 127, 127, .6)",
+                "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
 
-            "list_scrollbar_color": "rgba(127, 127, 127, .6)",
-            "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
+                "list_font_size": 20,
+                "list_explain_font_size": 12,
+                "list_state_size": 12,
+                "list_keymap_size": 16,
 
-            "item_height": 50,
-            "item_show_count": 7,
+                "border_color": "#ffffff",
+                "background_color": "#ffffff",
 
-            "width": 500,
-            "border_width": 8,
-            "padding_width": 0,
-            "border_color": "#ffffff",
-            "background_color": "#ffffff",
+                "item_height": 50,
+                "width": 500,
+                "border_width": 8,
+                "padding_width": 0,
 
-            "toolbar_height": 40,
-            "toolbar_background_color": "#ffffff",
-            "toolbar_border_color": "#dcdfe6",
+                "item_show_count": 7,
+                "list_page_count": 8,
 
-            "toolbar_icon_color": "#C1C4CB",
-            "toolbar_icon_focus_color": "#919398",
+                "tag_line_count": 3,
 
-            "toolbar_menu_icon_color": "#C1C4CB",
-            "toolbar_menu_icon_fixed_color": "gray",
-            "toolbar_menu_font_color": "#909399",
+                "toolbar_height": 40,
+                "toolbar_background_color": "#ffffff",
+                "toolbar_border_color": "#dcdfe6",
 
-            "toolbar_input_font_size": 14,
-            "toolbar_input_font_color": "#606266",
-            "toolbar_input_focus_color": "#c0c4cc",
-            "toolbar_show_input_tip": true,
+                "toolbar_icon_color": "#C1C4CB",
+                "toolbar_icon_focus_color": "#919398",
 
-            "toolbar_button_font_color": "#606266",
-            "toolbar_button_hover_font_color": "#409eff",
-            "toolbar_button_active_font_color": "#3a8ee6",
-            "toolbar_button_hover_border_color": "#c6e2ff",
-            "toolbar_button_active_border_color": "#3a8ee6",
-            "toolbar_button_hover_background_color": "#ecf5ff",
-            "toolbar_button_active_background_color": "#ecf5ff",
+                "toolbar_menu_icon_color": "#C1C4CB",
+                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_font_color": "#909399",
 
-            "button_follow_workspace": false,
-            "show_workspace_name": true
+                "toolbar_input_font_size": 20,
+                "toolbar_input_font_color": "#606266",
+                "toolbar_input_focus_border_color": "#dcdfe6",
+                "toolbar_input_selected_font_color": "#ffffff",
+                "toolbar_input_selected_background_color": "#7497de",
+                "toolbar_show_input_tip": false,
+
+                "toolbar_button_font_color": "#606266",
+                "toolbar_button_hover_font_color": "#409eff",
+                "toolbar_button_hover_border_color": "#c6e2ff",
+                "toolbar_button_hover_background_color": "#ecf5ff",
+                "toolbar_button_active_font_color": "#3a8ee6",
+                "toolbar_button_active_border_color": "#3a8ee6",
+                "toolbar_button_active_background_color": "#ecf5ff",
+
+                "statusbar_icon_color": "#c0c4cc",
+                "statusbar_background_color": "#fbfbfb",
+                "statusbar_image_opacity": 0.2,
+
+                "show_workspace_name": true,
+                "show_menu": true,
+                "statusbar_show": true
+            }
+        },
+        {
+            "id": "2",
+            "name": "SaveTabs Classic2",
+            "type": 1,
+            "config": {
+                "list_font_color": "#000000",
+                "list_background_color": "#ffffff",
+                "list_highlight_color": "#f73131",
+                "list_highlight_weight": "400",
+                "list_explain_font_color": "#909399",
+                "list_explain_highlight_color": "gold",
+                "list_explain_highlight_weight": "100",
+                "list_icon_color": "rgb(193, 196, 203)",
+                "list_state_color": "#339966",
+                "list_keymap_color": "#0066CC",
+
+                "list_focus_font_color": "#ffffff",
+                "list_focus_background_color": "#7497de",
+                "list_focus_highlight_color": "#f73131",
+                "list_focus_highlight_weight": "400",
+                "list_explain_focus_font_color": "#e4e7ed",
+                "list_explain_focus_highlight_color": "blue",
+                "list_explain_focus_highlight_weight": "900",
+                "list_focus_icon_color": "#e4e7ed",
+                "list_focus_state_color": "#33FF66",
+                "list_focus_keymap_color": "#33FF66",
+
+                "list_current_font_color": "#ffffff",
+                "list_current_background_color": "#c0c4cc",
+                "list_current_highlight_color": "#f73131",
+                "list_current_highlight_weight": "400",
+                "list_current_explain_font_color": "#ffffff",
+                "list_current_explain_highlight_color": "#8f1021",
+                "list_current_explain_highlight_weight": "100",
+                "list_current_icon_color": "#ffffff",
+                "list_current_state_color": "#ffffff",
+
+                "list_current_focus_font_color": "#ffffff",
+                "list_current_focus_background_color": "#909399",
+                "list_current_focus_highlight_color": "#f73131",
+                "list_current_focus_highlight_weight": "400",
+                "list_current_explain_focus_font_color": "#ffffff",
+                "list_current_explain_focus_highlight_color": "#21f302",
+                "list_current_explain_focus_highlight_weight": "900",
+                "list_current_focus_icon_color": "#ffffff",
+                "list_current_focus_state_color": "#ffffff",
+
+                "list_scrollbar_color": "rgba(127, 127, 127, .6)",
+                "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
+
+                "list_font_size": 20,
+                "list_explain_font_size": 12,
+                "list_state_size": 12,
+                "list_keymap_size": 16,
+
+                "border_color": "#ffffff",
+                "background_color": "#ffffff",
+
+                "item_height": 50,
+                "width": 500,
+                "border_width": 8,
+                "padding_width": 0,
+
+                "item_show_count": 7,
+                "list_page_count": 8,
+
+                "tag_line_count": 3,
+
+                "toolbar_height": 40,
+                "toolbar_background_color": "#ffffff",
+                "toolbar_border_color": "#dcdfe6",
+
+                "toolbar_icon_color": "#C1C4CB",
+                "toolbar_icon_focus_color": "#919398",
+
+                "toolbar_menu_icon_color": "#C1C4CB",
+                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_font_color": "#909399",
+
+                "toolbar_input_font_size": 20,
+                "toolbar_input_font_color": "#606266",
+                "toolbar_input_focus_border_color": "#dcdfe6",
+                "toolbar_input_selected_font_color": "#ffffff",
+                "toolbar_input_selected_background_color": "#7497de",
+                "toolbar_show_input_tip": false,
+
+                "toolbar_button_font_color": "#606266",
+                "toolbar_button_hover_font_color": "#409eff",
+                "toolbar_button_hover_border_color": "#c6e2ff",
+                "toolbar_button_hover_background_color": "#ecf5ff",
+                "toolbar_button_active_font_color": "#3a8ee6",
+                "toolbar_button_active_border_color": "#3a8ee6",
+                "toolbar_button_active_background_color": "#ecf5ff",
+
+                "statusbar_icon_color": "#c0c4cc",
+                "statusbar_background_color": "#fbfbfb",
+                "statusbar_image_opacity": 0.2,
+
+                "show_workspace_name": true,
+                "show_menu": true,
+                "statusbar_show": true
+            }
+        },
+        {
+            "id": "3",
+            "name": "SaveTabs Classic3",
+            "type": 2,
+            "config": {
+                "list_font_color": "#000000",
+                "list_background_color": "#ffffff",
+                "list_highlight_color": "#f73131",
+                "list_highlight_weight": "400",
+                "list_explain_font_color": "#909399",
+                "list_explain_highlight_color": "gold",
+                "list_explain_highlight_weight": "100",
+                "list_icon_color": "rgb(193, 196, 203)",
+                "list_state_color": "#339966",
+                "list_keymap_color": "#0066CC",
+
+                "list_focus_font_color": "#ffffff",
+                "list_focus_background_color": "#7497de",
+                "list_focus_highlight_color": "#f73131",
+                "list_focus_highlight_weight": "400",
+                "list_explain_focus_font_color": "#e4e7ed",
+                "list_explain_focus_highlight_color": "blue",
+                "list_explain_focus_highlight_weight": "900",
+                "list_focus_icon_color": "#e4e7ed",
+                "list_focus_state_color": "#33FF66",
+                "list_focus_keymap_color": "#33FF66",
+
+                "list_current_font_color": "#ffffff",
+                "list_current_background_color": "#c0c4cc",
+                "list_current_highlight_color": "#f73131",
+                "list_current_highlight_weight": "400",
+                "list_current_explain_font_color": "#ffffff",
+                "list_current_explain_highlight_color": "#8f1021",
+                "list_current_explain_highlight_weight": "100",
+                "list_current_icon_color": "#ffffff",
+                "list_current_state_color": "#ffffff",
+
+                "list_current_focus_font_color": "#ffffff",
+                "list_current_focus_background_color": "#909399",
+                "list_current_focus_highlight_color": "#f73131",
+                "list_current_focus_highlight_weight": "400",
+                "list_current_explain_focus_font_color": "#ffffff",
+                "list_current_explain_focus_highlight_color": "#21f302",
+                "list_current_explain_focus_highlight_weight": "900",
+                "list_current_focus_icon_color": "#ffffff",
+                "list_current_focus_state_color": "#ffffff",
+
+                "list_scrollbar_color": "rgba(127, 127, 127, .6)",
+                "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
+
+                "list_font_size": 20,
+                "list_explain_font_size": 12,
+                "list_state_size": 12,
+                "list_keymap_size": 16,
+
+                "border_color": "#ffffff",
+                "background_color": "#ffffff",
+
+                "item_height": 50,
+                "width": 500,
+                "border_width": 8,
+                "padding_width": 0,
+
+                "item_show_count": 7,
+                "list_page_count": 8,
+
+                "tag_line_count": 3,
+
+                "toolbar_height": 40,
+                "toolbar_background_color": "#ffffff",
+                "toolbar_border_color": "#dcdfe6",
+
+                "toolbar_icon_color": "#C1C4CB",
+                "toolbar_icon_focus_color": "#919398",
+
+                "toolbar_menu_icon_color": "#C1C4CB",
+                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_font_color": "#909399",
+
+                "toolbar_input_font_size": 20,
+                "toolbar_input_font_color": "#606266",
+                "toolbar_input_focus_border_color": "#dcdfe6",
+                "toolbar_input_selected_font_color": "#ffffff",
+                "toolbar_input_selected_background_color": "#7497de",
+                "toolbar_show_input_tip": false,
+
+                "toolbar_button_font_color": "#606266",
+                "toolbar_button_hover_font_color": "#409eff",
+                "toolbar_button_hover_border_color": "#c6e2ff",
+                "toolbar_button_hover_background_color": "#ecf5ff",
+                "toolbar_button_active_font_color": "#3a8ee6",
+                "toolbar_button_active_border_color": "#3a8ee6",
+                "toolbar_button_active_background_color": "#ecf5ff",
+
+                "statusbar_icon_color": "#c0c4cc",
+                "statusbar_background_color": "#fbfbfb",
+                "statusbar_image_opacity": 0.2,
+
+                "show_workspace_name": true,
+                "show_menu": true,
+                "statusbar_show": true
+            }
         }
-    },
-    {
-        "id": "12",
-        "name": "美丽主题33",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_highlight_color": "blue",
-            "list_highlight_weight": "900",
-            "list_background_color": "yellow",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 25,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_highlight_color": "green",
-            "list_focus_highlight_weight": "900",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "list_scrollbar_color": "pink",
-            "list_scrollbar_focus_color": "red",
-
-            "item_height": 60,
-            "item_show_count": 5,
-
-            "width": 400,
-            "border_width": 8,
-            "padding_width": 10,
-            "border_color": "blue",
-            "background_color": "purple",
-
-            "toolbar_height": 50,
-            "toolbar_background_color": "green",
-            "toolbar_border_color": "red",
-
-            "toolbar_icon_color": "red",
-            "toolbar_icon_focus_color": "pink",
-
-            "toolbar_menu_icon_color": "#C1C4CB",
-            "toolbar_menu_icon_fixed_color": "yellow",
-            "toolbar_menu_font_color": "gray",
-
-            "toolbar_input_font_size": 20,
-            "toolbar_input_font_color": "purple",
-            "toolbar_input_focus_color": "pink",
-            "toolbar_show_input_tip": false,
-
-            "toolbar_button_font_color": "white",
-            "toolbar_button_hover_font_color": "blue",
-            "toolbar_button_active_font_color": "#3a8ee6",
-            "toolbar_button_hover_border_color": "#c6e2ff",
-            "toolbar_button_active_border_color": "#3a8ee6",
-            "toolbar_button_hover_background_color": "#ecf5ff",
-            "toolbar_button_active_background_color": "#ecf5ff",
-
-            "button_follow_workspace": true,
-            "show_workspace_name": false
-        }
-    },
-    {
-        "id": "13",
-        "name": "美丽主题ss",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_highlight_color": "green",
-            "list_background_color": "#892402",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 26,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#faead1",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_highlight_color": "yellow",
-            "list_focus_highlight_weight": "900",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 70,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "purple",
-
-            "border_width": 10,
-            "border_color": "gray",
-
-            "button_follow_workspace": true,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "14",
-        "name": "美丽主题哈哈哈哈",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "green",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "15",
-        "name": "美丽主题gg",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 1,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "16",
-        "name": "美丽主题",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "17",
-        "name": "美丽主题防守打法是是神盾是是是",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "18",
-        "name": "美丽主题",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "19",
-        "name": "美丽主题",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "20",
-        "name": "美丽主题fff",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    },
-    {
-        "id": "21",
-        "name": "美丽主题33g",
-        "isSelect": true,
-        "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
-            "list_state_color": "#339966",
-            "list_keymap_color": "#0066CC",
-            "list_font_size": 20,
-            "list_state_size": 12,
-            "list_keymap_size": 16,
-            "list_page_count": 8,
-
-            "list_explain_font_size": 12,
-            "list_explain_font_color": "#909399",
-            "list_explain_focus_font_color": "#e4e7ed",
-
-            "list_focus_background_color": "#7497de",
-            "list_focus_font_color": "#ffffff",
-            "list_focus_state_color": "#33FF66",
-            "list_focus_keymap_color": "#33FF66",
-
-            "list_current_background_color": "#c0c4cc",
-            "list_current_font_color": "#ffffff",
-            "list_current_state_color": "#ffffff",
-
-            "list_current_focus_background_color": "#909399",
-            "list_current_focus_font_color": "#ffffff",
-            "list_current_focus_state_color": "#ffffff",
-
-            "item_height": 50,
-            "item_show_count": 7,
-
-            "width": 500,
-            "background_color": "red",
-
-            "border_width": 8,
-            "border_color": "#ffffff",
-
-            "button_follow_workspace": false,
-            "show_workspace_name": true
-        }
-    }
-]
+    ]
+}

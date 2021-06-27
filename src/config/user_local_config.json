@@ -1,114 +1,53 @@
 {
-    "pinned": false,
     "active_workspace_type": "all",
-
+    "pinned": false,
     "theme_mode": "light",
-
-    "keymap_left_and_right": true,
-
     "popup": true,
+    "keymap_left_and_right": true,
 
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "bookmark",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "history",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
             "type": "tab",
-            "count": 2,
+            "count": 3,
             "is_top": 0,
             "only_search": false
         },
         {
             "type": "note",
-            "count": 2,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "temporary",
-            "count": 2,
+            "count": 3,
             "is_top": 0,
             "only_search": false
         },
         {
             "type": "window",
-            "count": 2,
+            "count": 3,
             "is_top": 0,
             "only_search": false
         },
         {
-            "type": "search",
-            "count": 2,
+            "type": "bookmark",
+            "count": 3,
             "is_top": 0,
-            "only_search": false
+            "only_search": true
+        },
+        {
+            "type": "history",
+            "count": 3,
+            "is_top": -1,
+            "only_search": true
+        },
+        {
+            "type": "search",
+            "count": 3,
+            "is_top": -2,
+            "only_search": true
         }
     ],
     "all_search_engine": [
         {
             "formate": "https://www.google.com/search?q={query}",
             "name": "Google"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google2"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google3"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google4"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google5"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google6"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google7"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google8"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google9"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google10"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google11"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google12"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google12"
-        },
-        {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google14"
         },
         {
             "formate": "https://www.baidu.com/s?ie=utf-8&wd={query}",

@@ -6,6 +6,14 @@ export default menus.reduce((accumulator, menu) => {
     let name = menu.name+'-'+submenu.name;
     let path = '/'+name;
 
+    if(submenu.redirect != undefined) {
+      return {
+        name: name,
+        path: path,
+        redirect: submenu.redirect,
+      }
+    }
+
     // import 不支持变量
     // let componentPath = './'
     //                   + menu.name[0].toLocaleUpperCase().concat(menu.name.slice(1))

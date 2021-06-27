@@ -55,14 +55,18 @@
         popper-class="product-box"
         :open-delay="450"
         @hide="focus">
-        <div style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;">
+        <div
+          style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
+          @mousedown.prevent>
           <span>点击购买<span class="hover" style="cursor:pointer">（广告）</span></span>
           <i
             title="换一换"
             class="el-icon-refresh hover"
             style="float:right; margin-right: 10px;cursor: pointer"></i>
         </div>
-        <div style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: pointer">
+        <div
+          style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: pointer"
+          @mousedown.prevent>
           <span><img src="@/assets/images/shops/product-1.png" style="width: 120px; height: 120px" /></span>
           <span style="flex: 1;padding: 10px;">
             <div>{{ storageTip }}</div>
@@ -118,12 +122,14 @@
       width="200"
       trigger="hover"
       @hide="focus">
-      <img
-        src="@/assets/images/logo/weibo_32x32.png"
-        width="32"
-        height="32"
-        style="cursor: pointer"
-        @click="$open('https://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.cocong.cn%2F&title=SaveTabs %E5%88%86%E4%BA%AB&pic=http%3A%2F%2Fwww.cocong.cn%2Fassets%2Fimages%2Fcocong-34.png&appkey=', $event)"/>
+      <div @mousedown.prevent>
+        <img
+          src="@/assets/images/logo/weibo_32x32.png"
+          width="32"
+          height="32"
+          style="cursor: pointer"
+          @click="$open('https://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.cocong.cn%2F&title=SaveTabs %E5%88%86%E4%BA%AB&pic=http%3A%2F%2Fwww.cocong.cn%2Fassets%2Fimages%2Fcocong-34.png&appkey=', $event)"/>
+      </div>
       <svg-icon
         slot="reference"
         name="share-alt-solid"

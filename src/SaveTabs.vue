@@ -226,29 +226,30 @@
               placement="top-start"
               trigger="manual"
               transition
+              popper-class="no-padding"
               @after-leave="focus">
-              <el-button
-                size="mini"
-                icon="el-icon-s-fold"
-                :disabled="keyword.trim() != ''"
-                @mousedown.native.prevent
-                @click="bookmark.fold = true;">全部收起</el-button>
-              <el-button
-                size="mini"
-                icon="el-icon-s-unfold"
-                :disabled="keyword.trim() != ''"
-                @mousedown.native.prevent
-                @click="bookmark.unfold = true;">全部展开</el-button>
-              <i
-                class="el-icon-close hover"
-                style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
-                @mousedown.prevent
-                @click="bookmark.visible = false;"></i>
-              <i
-                class="el-icon-setting hover"
-                style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
-                @mousedown.prevent
-                @click="$open('chrome://bookmarks', getKeyType($event))"></i>
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <el-button
+                  size="mini"
+                  icon="el-icon-s-fold"
+                  :disabled="keyword.trim() != ''"
+                  @click="bookmark.fold = true;">全部收起</el-button>
+                <el-button
+                  size="mini"
+                  icon="el-icon-s-unfold"
+                  :disabled="keyword.trim() != ''"
+                  @click="bookmark.unfold = true;">全部展开</el-button>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                  @click="bookmark.visible = false;"></i>
+                <i
+                  class="el-icon-setting hover"
+                  style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                  @click="$open('chrome://bookmarks', getKeyType($event))"></i>
+              </div>
               <i
                 class="el-icon-s-operation"
                 slot="reference"
@@ -306,14 +307,17 @@
               placement="top-start"
               trigger="manual"
               transition
+              popper-class="no-padding"
               @after-leave="focus">
-              <span
-                @mousedown.prevent>暂无其它功能</span>
-              <i
-                class="el-icon-close hover"
-                style="float: right;margin-top: 3px;cursor: pointer;"
-                @mousedown.prevent
-                @click="other.visible = false;"></i>
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <span>暂无其它功能</span>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  @click="other.visible = false;"></i>
+              </div>
               <i
                 class="el-icon-search"
                 slot="reference"
@@ -1551,6 +1555,9 @@ img {
 }
 
 /* 组件共享样式 */
+.no-padding {
+  padding: 0;
+}
 .window-message-box {
   min-width: 80% !important;
   max-width: 99% !important;

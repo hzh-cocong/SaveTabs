@@ -34,7 +34,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template
       v-if=" ! workspaceSwitch"
@@ -68,7 +67,7 @@
           'align-items': ! isSelected ? 'normal' : 'flex-start' }"
         @mouseenter="mainEnter"
         @mouseleave="mainLeave"
-        @click.stop="focus">
+        @click.stop>
         <template v-if="isSelected">
           <el-tag
             v-for="(tab, i) in item.tabs"
@@ -88,8 +87,8 @@
             :hit="false"
             @mouseover.native="$set(tabFocus, index+'|'+i, true)"
             @mouseout.native="$set(tabFocus, index+'|'+i, false)"
-            @click.stop="openTab(i, getKeyType($event))"
-            @close.stop="deleteTab(i)">
+            @click="openTab(i, getKeyType($event))"
+            @close="deleteTab(i)">
             <!-- 都不行 -->
             <!-- :scroll-container="'.main[data-text=\''+index+'\']'" -->
             <!-- :scroll-container="$refs.list.$el && $refs.list.$el.children[index].children[1]" -->
@@ -186,7 +185,7 @@
       <div
         class="right"
         :style="{ paddingLeft: isActive ? '5px' : '10px' }"
-        @click.stop="focus">
+        @click.stop>
         <div v-if="isActive && isShowOperationButton">
           <i
             class="el-icon-copy-document hover"
@@ -309,7 +308,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
-  inject: ['focus', 'statusTip', 'input'],
+  inject: ['statusTip', 'input'],
   props: {
     config: {
       type: Object,
@@ -1038,8 +1037,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
-
-        this.focus();
       });
     },
     deleteTab(i) {
@@ -1050,8 +1047,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
 
       this.storageList[this.currentStorageIndex].tabs.splice(i , 1);
       chrome.storage.local.set({temporary: this.storageList}, () => {
-        this.focus();
-
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'delete'});
       });
@@ -1118,13 +1113,6 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list >>> .list-item .left {
   padding: 5px;

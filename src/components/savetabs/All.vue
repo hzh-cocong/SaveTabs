@@ -35,7 +35,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template #default="{ index, item, isActive, isSelected }">
       <component
@@ -90,7 +89,7 @@ import Toggle from '../../modules/toggle.js'
 
 export default {
   name: 'All',
-  inject: ['focus', 'input'],
+  inject: ['input'],
   props: {
     config: {
       type: Object,

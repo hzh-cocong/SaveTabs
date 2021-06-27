@@ -34,7 +34,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template
       v-if=" ! workspaceSwitch"
@@ -96,17 +95,17 @@
       <div
         class="right"
         :style="{ paddingLeft: isActive ? '5px' : '10px' }"
-        @click.stop="focus">
+        @click.stop>
         <div v-if="isActive">
           <i
             v-if="storageKeyword != getDomain(item.url)"
             class="el-icon-more hover"
-            @click="input( getDomain(item.url) )"
+            @click.stop="input( getDomain(item.url) )"
             :style="{
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
-            @click="closeTab"
+            @click.stop="closeTab"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
@@ -233,7 +232,7 @@ import List from '../common/List.vue'
 
 export default {
   name: 'Tab',
-  inject: ['focus', 'input'],
+  inject: ['input'],
   props: {
     config: {
       type: Object,
@@ -926,13 +925,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list >>> .list-item .left {
   padding: 10px;

@@ -650,7 +650,8 @@ export default {
         }).then(() => {
           this.$open('./options.html?type=workspace');
         }).catch(() => {
-          this.focus();
+          // 窗口关闭后会自动 foucs，无需这个
+          // this.focus();
         });
         return;
       }

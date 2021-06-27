@@ -34,7 +34,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template
       v-if=" ! workspaceSwitch"
@@ -106,7 +105,7 @@
       <div
         class="right"
         :style="{ paddingLeft: isActive ? '5px' : '10px' }"
-        @click.stop="focus">
+        @click.stop>
         <div v-if="isActive">
           <i
             v-if="storageKeyword != getDomain(item.count == undefined
@@ -117,7 +116,7 @@
                                               : list[index+1].url
                                             ))"
             class="el-icon-more hover"
-            @click="input(
+            @click.stop="input(
                           getDomain(
                             item.count == undefined
                             ? item.url
@@ -131,7 +130,7 @@
               color:config.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
-            @click="deleteHistory"
+            @click.stop="deleteHistory"
             :style="{
               color:config.list_focus_font_color}"></i>
         </div>
@@ -353,6 +352,7 @@ export default {
           this.lastEndTime = null; // 这样列表才能刷新
           this.search();
           this.history.isDel = false;
+          // 删除按钮有可能在 input 非 foucs 时按下，那么 $confirm 关闭后 input 当然不会获得 focus，这里矫正一下
           this.focus();
 
           // 让 all 保持数据同步
@@ -1069,13 +1069,6 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list >>> .list-item .left {
   padding: 10px;

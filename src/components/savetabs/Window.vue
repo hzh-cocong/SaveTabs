@@ -1082,7 +1082,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
       }).then(({ value }) => {
         value = value.trim();
 
-        this.focus();
+        // 窗口关闭后会自动 foucs，无需这个
+        // this.focus();
 
         // 未修改则不更新
         if(this.storageList[ this.currentStorageIndex ].name == value) {
@@ -1096,7 +1097,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
           chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'change'});
         });
       }).catch(() => {
-        this.focus();
+        // 窗口关闭后会自动 foucs，无需这个
+        // this.focus();
       });
     },
     deleteGroup() {
@@ -1117,9 +1119,11 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
           // 让 all 保持数据同步
           chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'delete'});
         });
-        this.focus();
+        // 窗口关闭后会自动 foucs，无需这个
+        // this.focus();
       }).catch(() => {
-        this.focus();
+        // 窗口关闭后会自动 foucs，无需这个
+        // this.focus();
       });
     },
     addCompareEvent() {

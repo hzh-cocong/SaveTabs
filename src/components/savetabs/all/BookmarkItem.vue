@@ -88,12 +88,12 @@
 
     <div
       class="right"
-      @click.stop="focus">
+      @click.stop>
       <template v-if="isActive">
         <svg-icon
           class="hover"
           :name="project_config.allWorkspaces[ 'bookmark' ].svg"
-          @click.native="switchTo(getKeyType($event))"></svg-icon>
+          @click.native.stop="switchTo(getKeyType($event))"></svg-icon>
       </template>
       <span
         v-else-if="isSelected"
@@ -119,7 +119,7 @@
 <script>
 export default {
   name: 'BookmarkItem',
-  inject: ['focus', 'input'],
+  inject: ['input'],
   props: {
     config: {
       type: Object,
@@ -206,13 +206,6 @@ export default {
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .bookmark-item .left {
   padding: 10px;

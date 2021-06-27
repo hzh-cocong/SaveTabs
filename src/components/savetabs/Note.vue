@@ -34,7 +34,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template
       v-if=" ! workspaceSwitch"
@@ -94,7 +93,7 @@
 
       <div
         class="right"
-        @click.stop="focus">
+        @click.stop>
         <template v-if="isActive
                 || activeTabs[item.url]
                 || (storageKeyword != '' && item.lastVisitTime != undefined)">
@@ -102,7 +101,7 @@
             <div
               v-if="activeTabs[item.url] && activeTabs[item.url].count > 1"
               class="number-button hover"
-              @click="input(item.url, 'tab')"
+              @click.stop="input(item.url, 'tab')"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
@@ -111,14 +110,14 @@
                 && (activeTabs[item.url].count > 1
                   || isRepeat(index))"
               class="el-icon-close close-without-tab hover"
-              @click="deleteNote"
+              @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color,
                 borderColor:config.list_focus_font_color }"></i>
             <i
               v-else
               class="el-icon-close hover"
-              @click="deleteNote"
+              @click.stop="deleteNote"
               :style="{
                 color:config.list_focus_font_color}"></i>
           </div>
@@ -258,7 +257,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Note',
-  inject: ['focus', 'input', 'statusTip'],
+  inject: ['input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -1004,13 +1003,6 @@ console.warn('finish', b, (b-a)/1000)
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list >>> .list-item .left {
   padding: 10px;

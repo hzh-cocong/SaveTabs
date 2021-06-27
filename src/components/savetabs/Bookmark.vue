@@ -32,7 +32,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))"
     @scrollEnd="scrollEnd">
     <template
@@ -204,7 +203,7 @@ import List from '../common/List.vue'
 
 export default {
   name: 'Bookmark',
-  inject: ['focus', 'input'],
+  inject: ['input'],
   props: {
     config: {
       type: Object,
@@ -1196,13 +1195,6 @@ console.warn('finish', b, (b-a)/1000)
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list >>> .list-item .left {
   padding: 10px;

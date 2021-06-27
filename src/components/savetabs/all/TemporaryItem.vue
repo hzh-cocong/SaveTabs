@@ -144,12 +144,12 @@
     <div
       class="right"
       :style="{ paddingLeft: isActive ? '5px' : '10px' }"
-      @click.stop="focus">
+      @click.stop>
       <template v-if="isActive && isShowOperationButton">
         <svg-icon
           class="el-icon-close hover"
           :name="project_config.allWorkspaces[ 'temporary' ].svg"
-          @click.native="switchTo(getKeyType($event))"></svg-icon>
+          @click.native.stop="switchTo(getKeyType($event))"></svg-icon>
       </template>
       <template v-if=" ! isActive">
         <span
@@ -186,7 +186,7 @@
 <script>
 export default {
   name: 'TemporaryItem',
-  inject: ['focus', 'input'],
+  inject: ['input'],
   props: {
     config: {
       type: Object,
@@ -369,13 +369,6 @@ export default {
   height:100%;
   display:flex;
   align-items: center;
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .temporary-item .left {
   padding: 5px;

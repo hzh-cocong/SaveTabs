@@ -267,7 +267,7 @@
     <!-- v-if="groupVisible" 减少不必要的调用 -->
     <ul
       v-if="groupVisible2"
-      class="group-list"
+      class="group-list beautify-scrollbar"
       :style="{ height: (30*config.item_show_count)+'px' }">
       <li
         class="group-list-item"
@@ -1589,7 +1589,7 @@ console.warn('finish', b, (b-a)/1000)
 .window-group .group-list {
   padding: 0;
   margin: 0;
-  overflow: auto;
+  overflow: overlay;
   font-size: 15px;
 }
 .window-group .group-list-item {

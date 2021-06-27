@@ -269,7 +269,8 @@
               popper-class="tab-popver"
               @after-leave="focus">
               <span
-                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;">
+                style="display: inline-block; max-width: 200px;margin-bottom: -4px;padding: 12px 0;overflow: overlay; white-space:nowrap;"
+                class="beautify-scrollbar">
                 <!-- <el-radio
                   v-model="tab.windowId"
                   style="margin-right: 10px;"
@@ -1558,6 +1559,25 @@ img {
 .no-padding {
   padding: 0;
 }
+
+.beautify-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+.beautify-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .6);
+}
+.beautify-scrollbar::-webkit-scrollbar-thumb:hover {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .9);;
+}
+/* 边角 */
+.beautify-scrollbar::-webkit-scrollbar-corner  {
+  background: transparent;
+}
+
 .window-message-box {
   min-width: 80% !important;
   max-width: 99% !important;

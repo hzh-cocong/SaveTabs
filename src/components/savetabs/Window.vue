@@ -1667,6 +1667,15 @@ console.warn('finish', b, (b-a)/1000)
   border-radius: 5px;
   background-color: rgba(127, 127, 127, .9);;
 }
+/* 滚动槽 */
+/* .window-difference .group-list::-webkit-scrollbar-track {
+  box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius:10px;
+} */
+/* 边角 */
+.window-difference .group-list::-webkit-scrollbar-corner  {
+  background: transparent;
+}
 .window-difference .group-list-item {
   padding: 5px;
   align-items: center;

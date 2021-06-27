@@ -34,7 +34,6 @@
     v-model="currentIndex"
     ref="list"
     @load="load"
-    @click.native="focus"
     @itemClick="_openWindow(getKeyType($event))">
     <template
       v-if=" ! workspaceSwitch"
@@ -82,7 +81,7 @@
 
       <div
         class="right"
-        @click.stop="focus">
+        @click.stop>
         <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
             <el-badge
@@ -252,7 +251,7 @@
     :append-to-body="true"
     width="80%"
     class="window-group"
-    @open="groupVisible2=true"
+    @open="groupVisible2=true;blur();"
     @closed="groupVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
@@ -308,7 +307,7 @@
     width="80%"
     class="window-difference"
     @opened="addCompareEvent"
-    @open="differenceVisible2=true"
+    @open="differenceVisible2=true;"
     @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
@@ -399,11 +398,11 @@
         </ul>
       </div>
     </div>
-    <span slot="footer">
+    <span slot="footer" v-if="differenceVisible2">
       <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">还 原</el-button>
       <el-button size="small" v-else style="float: left;" @click="bind">绑 定</el-button>
       <el-button size="small" @click="differenceVisible = false">取 消</el-button>
-      <el-button type="primary" size="small" @click="updateGroup">更 新</el-button>
+      <el-button class="autofocus" type="primary" size="small" @click="updateGroup">更 新</el-button>
     </span>
   </el-dialog>
 
@@ -416,7 +415,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Window',
-  inject: ['focus', 'input', 'statusTip'],
+  inject: ['focus', 'blur', 'input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -1151,6 +1150,11 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
       // })
 
       this.differenceVisible = true;
+
+      this.$nextTick(() => {
+        // autofocus 只在页面一开始加载的时候有效，只能用这种方式了
+        document.querySelector('.el-button.autofocus').focus();
+      })
     },
     updateGroup() {
       // 更新数据
@@ -1499,11 +1503,12 @@ console.warn('finish', b, (b-a)/1000)
   align-items: center;
 
   /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
+  /* 有了 @mousedown.prevent，不再需要这个了
+  /* -moz-user-select:none; */ /*火狐*/
+  /* -webkit-user-select:none; */ /*webkit浏览器*/
+  /* -ms-user-select:none; */ /*IE10*/
+  /* -khtml-user-select:none; */ /*早期浏览器*/
+  /* user-select:none; */
 }
 .list >>> .list-item .left {
   padding: 10px;

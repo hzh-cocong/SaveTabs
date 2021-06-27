@@ -6,7 +6,8 @@
     width: (config.width
           + config.border_width*2
           + config.padding_width*2)+'px',
-  }">
+  }"
+  @click.stop="focus">
 
   <div
     style="border-style:solid;overflow:hidden;"
@@ -49,23 +50,24 @@
                 }">
       <!-- autofocus 会报错 -->
       <el-input
+        v-model="keyword"
+        name="search-input"
         class="search-input"
         :class="{ clearable: keyword !='' && showClearButton }"
-        name="search-input"
         spellcheck="false"
         :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
-        v-model="keyword"
         :clearable="false"
-        @keydown.down.native.prevent.stop="selectDelay('down', getKeyType($event))"
-        @keydown.up.native.prevent.stop="selectDelay('up', getKeyType($event))"
-        @keydown.left.native="leftOrRightDown('left', $event)"
-        @keydown.right.native="leftOrRightDown('right', $event)"
-        @keydown.enter.native="openWindow(getKeyType($event))"
-        @keydown.esc.native="close"
-        @keydown.native="keydown"
+        :autofocus="true"
         @keyup.native="keyType=getKeyType($event)"
+        @keydown.native="keydown"
+        @keydown.native.down="selectDelay('down', getKeyType($event))"
+        @keydown.native.up="selectDelay('up', getKeyType($event))"
+        @keydown.native.left="leftOrRightDown('left', $event)"
+        @keydown.native.right="leftOrRightDown('right', $event)"
+        @keydown.native.enter="openWindow(getKeyType($event))"
+        @keydown.native.esc="close"
         @input="search"
         @compositionstart.native="isComposition=true"
         @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search(keyword+$event.data)"
@@ -84,11 +86,10 @@
             @visible-change="menuVisible = arguments[0]"
             @command="arguments[0] != -1
                     && (activeWorkspaceIndex=arguments[0],
-                        $refs.carousel.setActiveItem(activeWorkspaceIndex)),
-                        focus()"><!-- 可能重复点击，所以还是要 focus 的 -->
+                        $refs.carousel.setActiveItem(activeWorkspaceIndex))"><!-- 可能重复点击，所以还是要 focus 的 -->
             <span
               class="el-dropdown-link"
-              @click="focus"> <!-- 工作区标题 -->
+              @mousedown.prevent> <!-- 工作区标题 -->
               <svg-icon
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 style="width: 20px; height: 20px; margin-right: 3px;"
@@ -105,6 +106,7 @@
             <el-dropdown-menu
               slot="dropdown"
               class="toolbar-menu"
+              @mousedown.native.prevent
               :style="{ maxHeight: (config.item_height*config.item_show_count
                                   + config.border_width
                                   + config.padding_width
@@ -184,8 +186,8 @@
               v-model="history.visible"
               placement="top-start"
               trigger="manual"
-              transition=""
-              @after-enter="history.date == null ? $refs.date.focus() : focus()"
+              transition
+              @after-enter="history.date == null && $refs.date.focus()"
               @after-leave="focus">
               <el-date-picker
                 type="date"
@@ -201,10 +203,12 @@
                 style="margin-left: 10px;cursor: pointer;"
                 :style="{ color: keyword.trim() != '' ? '#c0c4cc' : 'inherit',
                           cursor: keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
+                @mousedown.prevent
                 @click="keyword.trim() != '' ? '' : history.isDel = true"></i>
               <i
                 class="el-icon-close"
                 style="margin-left: 10px; cursor: pointer;"
+                @mousedown.prevent
                 @click="history.visible = false;"></i>
               <i
                 class="el-icon-date"
@@ -212,6 +216,7 @@
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
                           color: history.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @mousedown.prevent
                 @click="history.visible = ! history.visible"></i>
             </el-popover>
           </template>
@@ -220,33 +225,37 @@
               v-model="bookmark.visible"
               placement="top-start"
               trigger="manual"
-              transition=""
-              @after-leave="focus"
-              @after-enter="focus">
+              transition
+              @after-leave="focus">
               <el-button
                 size="mini"
                 icon="el-icon-s-fold"
                 :disabled="keyword.trim() != ''"
-                @click="bookmark.fold = true;focus();">全部收起</el-button>
+                @mousedown.native.prevent
+                @click="bookmark.fold = true;">全部收起</el-button>
               <el-button
                 size="mini"
                 icon="el-icon-s-unfold"
                 :disabled="keyword.trim() != ''"
-                @click="bookmark.unfold = true;focus();">全部展开</el-button>
+                @mousedown.native.prevent
+                @click="bookmark.unfold = true;">全部展开</el-button>
               <i
                 class="el-icon-close hover"
                 style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                @mousedown.prevent
                 @click="bookmark.visible = false;"></i>
               <i
                 class="el-icon-setting hover"
                 style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
-                @click="$open('chrome://bookmarks', getKeyType($event));focus();"></i>
+                @mousedown.prevent
+                @click="$open('chrome://bookmarks', getKeyType($event))"></i>
               <i
                 class="el-icon-s-operation"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
                           color: bookmark.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @mousedown.prevent
                 @click="bookmark.visible = ! bookmark.visible"></i>
             </el-popover>
           </template>
@@ -255,13 +264,11 @@
               v-model="tab.visible"
               placement="top-start"
               trigger="manual"
-              transition=""
+              transition
               popper-class="tab-popver"
-              @after-leave="focus"
-              @after-enter="focus">
+              @after-leave="focus">
               <span
-                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;"
-                @click="focus">
+                style="display: inline-block; max-width: 200px;margin-bottom: -5px;padding: 12px 0;overflow: scroll; white-space:nowrap;">
                 <!-- <el-radio
                   v-model="tab.windowId"
                   style="margin-right: 10px;"
@@ -270,7 +277,8 @@
                   :key="windowId">{{ name }}</el-radio> -->
                 <el-radio-group
                   v-model="tab.windowId"
-                  size="mini">
+                  size="mini"
+                  @change="focus">
                   <el-radio-button
                     v-for="([windowId, name]) in tab.windowFilter"
                     :label="windowId"
@@ -280,6 +288,7 @@
               <i
                 class="el-icon-close hover"
                 style="float: right;margin-left: 10px;margin-top: 20px;cursor: pointer;"
+                @mousedown.prevent
                 @click="tab.visible = false;"></i>
               <i
                 class="el-icon-search"
@@ -287,6 +296,7 @@
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': config.toolbar_height+'px',
                           color: tab.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                @mousedown.prevent
                 @click="tab.visible = ! tab.visible"></i>
             </el-popover>
           </template>
@@ -295,9 +305,10 @@
               v-model="other.visible"
               placement="top-start"
               trigger="manual"
-              transition=""
+              transition
               @after-leave="focus">
-              <span @mousedown.prevent>暂无其它功能</span>
+              <span
+                @mousedown.prevent>暂无其它功能</span>
               <i
                 class="el-icon-close hover"
                 style="float: right;margin-top: 3px;cursor: pointer;"
@@ -326,7 +337,8 @@
           :title="limited
                 ? '功能受限'
                 : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
-          @click="operate(getKeyType($event), type)"></el-button><!-- todo  :disabled="limited" -->
+          @mousedown.native.prevent
+          @click.stop="operate(getKeyType($event), type)"></el-button><!-- todo  :disabled="limited" -->
       </el-button-group>
     </div>
 
@@ -340,6 +352,7 @@
       :height="(config.item_height*config.item_show_count)+'px'"
       :trigger="carouselTrigger"
       @change="workspaceChange"
+      @mousedown.native.prevent
       ref="carousel">
       <el-carousel-item
         v-for="(workspace, index) in workspaces"
@@ -372,7 +385,7 @@
     :isLoad="isLoad"
     :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
     :statusbarHeight="statusbarHeight"
-    @click.native="focus"
+    @mousedown.native.prevent
     ref="statusbar"></Statusbar>
 
   <el-dialog
@@ -385,7 +398,7 @@
     class="theme"
     @open="themeDialogVisible2=true"
     @closed="themeDialogVisible2=false"
-    @click.native="focus">
+    @mousedown.native.prevent>
     <div slot="title" style="font-size: 16px;">
       <i
         class="el-icon-s-tools"
@@ -465,6 +478,7 @@ export default {
   provide(){
     return {
       focus: this.focus,
+      blur: this.blur,
       input: this.input,
       loading: this.loading,
 
@@ -588,16 +602,28 @@ export default {
     Statusbar,
   },
   methods: {
-    sss(f) {
-      alert(f)
+    sss() {
+      var clickEvent = document.createEvent ('MouseEvents');
+      var eventType = 'mousedown'
+    clickEvent.initEvent (eventType, true, true);
+    this.originInputNode.dispatchEvent (clickEvent);
+      // alert('test')
+    },
+    sss2(gg, event) {
+      console.log(gg, event)
+      document.body.dispatchEvent (event);
     },
     focus() {
       console.log('focus', this.originInputNode, document.activeElement)
       // 已获得焦点则不再 focus，以免引起闪烁
-      if(this.originInputNode == document.activeElement) return;
-console.log('focus2', this.originInputNode, document.activeElement)
+      // 闪烁并非 focus 引起，而是要先 blur 再 focus 才会
+      // if(this.originInputNode == document.activeElement) return;
+
       // 输入框聚焦
       this.$refs['input'].focus();
+    },
+    blur() {
+      this.$refs.input.blur();
     },
     select() {
       // this.keyword = value; 和 input 双向绑定，但更新是最后执行的，此时值还未变，无法全选，所以得在主线程之后
@@ -772,7 +798,7 @@ console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
           this.search();
         }
 
-        this.focus();
+        // this.focus();
 
         // console.log('add', refIndex, this.activeWorkspaceRefIndex)
         // if(refIndex == this.activeWorkspaceRefIndex) {
@@ -929,7 +955,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       // 切换后输入框自动获取聚焦
       // 其它地方注意不要再重复foucs，没有意义
-      this.focus();
+      // 有了 @mousedown.prevent ，这里也不需要了
+      // this.focus();
       // this.$refs['input'].focus();
 
       // 自动关闭弹框
@@ -1121,8 +1148,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       console.warn('isLoad');
       this.isLoad = true;
 
+      let carouselNode = document.querySelector('.el-carousel__indicators');
       if( ! this.config.statusbar_show) {
-        document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
+        carouselNode.children.forEach((el, index) => {
           let workspace = this.workspaces[ index ];
           let title = this.lang(workspace.title)
           title += this.keymap['open_workspace_'+workspace.type]
@@ -1134,7 +1162,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       }
 
       // 走马灯底部指示器提示
-      document.querySelector('.el-carousel__indicators').children.forEach((el, index) => {
+      carouselNode.children.forEach((el, index) => {
         el.onmouseenter = () => {
           clearTimeout(this.w.statusbarTipTimer);
           this.w.statusbarTipTimer = setTimeout(() => {
@@ -1273,6 +1301,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       }
     })
 
+    // autofocus 只有在页面最开始接在的时候有用，所有这个还是要的
     this.focus();
   }
 }
@@ -1349,12 +1378,13 @@ img {
   display: flex;
   align-items: center;
 
-   /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
+  /* 禁止选择 */
+  /* 有了 @mousedown.prevent，不再需要这个了
+  /* -moz-user-select:none; */ /*火狐*/
+  /* -webkit-user-select:none; */ /*webkit浏览器*/
+  /* -ms-user-select:none; */ /*IE10*/
+  /* -khtml-user-select:none; */ /*早期浏览器*/
+  /* user-select:none; */
 }
 .theme-item.selected {
   background-color: #fff;

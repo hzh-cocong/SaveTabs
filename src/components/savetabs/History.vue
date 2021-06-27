@@ -247,8 +247,9 @@
     :append-to-body="true"
     width="80%"
     title="清除浏览数据"
+    @opened="$nextTick( $refs.select.focus )"
     @close="focus">
-    <el-select v-model="range" style="width: 100%;">
+    <el-select v-model="range" style="width: 100%;" ref="select">
       <el-option :value="3600000" label="过去一小时"></el-option>
       <el-option :value="86400000" label="过去24小时"></el-option>
       <el-option :value="604800000" label="过去7天"></el-option>

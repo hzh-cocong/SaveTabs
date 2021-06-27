@@ -51,7 +51,7 @@
         width="300"
         style="height: 30px;"
         trigger="hover"
-        transition=""
+        transition
         popper-class="product-box"
         :open-delay="450"
         @hide="focus">

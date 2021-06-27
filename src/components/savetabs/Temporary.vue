@@ -786,20 +786,20 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
         let message = null;
         if(highlightCount > 0) {
           message = h('p', {style: {'text-align': 'center'}}, [
-            h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, '保存非选中标签页'),
-            h('el-button', {attrs: {size: 'mini', type: 'primary', plain: true}, on: {click: () => this._add('selected', callback)}}, '保存选中标签页'),
+            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, '保存非选中标签页'),
+            h('el-button', {class: 'autofocus', props: {size: 'mini', plain: true}, on: {click: () => this._add('selected', callback)}}, '保存选中标签页'),
             h('div', {style: {margin: '10px 0 0 0'}}, null),
-            h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+            h('el-button', {props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
           ])
         } else {
           message = h('p', {style: {'text-align': 'center'}}, [
-            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
-            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('only-this', callback)}}, '仅保存此标签页'),
-            h('el-button', {attrs: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('only-this', callback)}}, '仅保存此标签页'),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
             h('div', {style: {margin: '10px 0'}}, null),
-            h('el-button', {attrs: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, '保存除此标签页以外的标签页'),
+            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, '保存除此标签页以外的标签页'),
             h('div', {style: {margin: '10px 0 0 0'}}, null),
-            h('el-button', {attrs: {size: 'mini', type: 'primary'}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+            h('el-button', {class: 'autofocus', props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
           ])
         }
 
@@ -821,6 +821,12 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
             }
           }
         });
+        this.$nextTick(() => {
+          // 由于弹框是 createElement 创建的，此时 button 还没有被渲染，所以要再放到下一个事件流中
+          this.$nextTick(() => {
+            document.querySelector('.el-button.autofocus').focus();
+          })
+        })
       })
     },
     _add(type, callback) {

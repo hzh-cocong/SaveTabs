@@ -129,17 +129,20 @@
 
             "toolbar_icon_color": "#C1C4CB",
             "toolbar_icon_focus_color": "#919398",
+            "toolbar_icon_auto_hide": false,
 
             "toolbar_menu_icon_color": "#C1C4CB",
             "toolbar_menu_icon_fixed_color": "gray",
             "toolbar_menu_font_color": "#909399",
+            "toolbar_menu_show_workspace_name": true,
+            "toolbar_menu_show": true,
 
             "toolbar_input_font_size": 20,
             "toolbar_input_font_color": "#606266",
             "toolbar_input_focus_border_color": "#dcdfe6",
             "toolbar_input_selected_font_color": "#ffffff",
             "toolbar_input_selected_background_color": "#7497de",
-            "toolbar_show_input_tip": false,
+            "toolbar_input_tip_show": false,
 
             "toolbar_button_font_color": "#606266",
             "toolbar_button_hover_font_color": "#409eff",
@@ -148,14 +151,11 @@
             "toolbar_button_active_font_color": "#3a8ee6",
             "toolbar_button_active_border_color": "#3a8ee6",
             "toolbar_button_active_background_color": "#ecf5ff",
+            "toolbar_button_auto_hide": false,
 
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
-
-            "show_workspace_name": true,
-            "show_menu": true,
-            "auto_hide_operate_button": false,
             "statusbar_show": true
         }
     },
@@ -233,17 +233,20 @@
 
             "toolbar_icon_color": "#C1C4CB",
             "toolbar_icon_focus_color": "#919398",
+            "toolbar_icon_auto_hide": false,
 
             "toolbar_menu_icon_color": "#C1C4CB",
             "toolbar_menu_icon_fixed_color": "gray",
             "toolbar_menu_font_color": "#909399",
+            "toolbar_menu_show_workspace_name": true,
+            "toolbar_menu_show": true,
 
             "toolbar_input_font_size": 20,
             "toolbar_input_font_color": "#606266",
             "toolbar_input_focus_border_color": "#dcdfe6",
             "toolbar_input_selected_font_color": "#ffffff",
             "toolbar_input_selected_background_color": "#7497de",
-            "toolbar_show_input_tip": false,
+            "toolbar_input_tip_show": false,
 
             "toolbar_button_font_color": "#606266",
             "toolbar_button_hover_font_color": "#409eff",
@@ -252,14 +255,11 @@
             "toolbar_button_active_font_color": "#3a8ee6",
             "toolbar_button_active_border_color": "#3a8ee6",
             "toolbar_button_active_background_color": "#ecf5ff",
+            "toolbar_button_auto_hide": false,
 
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
-
-            "show_workspace_name": true,
-            "show_menu": true,
-            "auto_hide_operate_button": false,
             "statusbar_show": true
         }
     }

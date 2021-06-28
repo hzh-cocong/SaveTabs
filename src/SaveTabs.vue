@@ -54,9 +54,12 @@
         v-model="keyword"
         name="search-input"
         class="search-input"
-        :class="{ clearable: keyword !='' && showClearButton }"
+        :class="{ clearable: keyword !='' && showClearButton,
+                  smaller: ! currentThemeConfig.toolbar_icon_auto_hide
+                        || showClearButton
+                        || (other.visible || history.visible || bookmark.visible || tab.visible) }"
         spellcheck="false"
-        :placeholder="currentWorkspace == undefined || ! currentThemeConfig.toolbar_show_input_tip
+        :placeholder="currentWorkspace == undefined || ! currentThemeConfig.toolbar_input_tip_show
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         :clearable="false"
@@ -77,11 +80,11 @@
         ref="input">
         <template slot="prepend">
           <el-dropdown
-            v-if="currentThemeConfig.show_menu"
+            v-if="currentThemeConfig.toolbar_menu_show"
             trigger="hover"
             placement="bottom-start"
             style="height: 100%;"
-            :style="{ width: currentThemeConfig.show_workspace_name ? '140px' : 'auto' }"
+            :style="{ width: currentThemeConfig.toolbar_menu_show_workspace_name ? '140px' : 'auto' }"
             :hide-on-click="false"
             :show-timeout="0"
             @visible-change="menuVisible = arguments[0]"
@@ -97,7 +100,7 @@
                 :style="{ color: localConfig.pinned && currentWorkspace != undefined && localConfig.active_workspace_type == currentWorkspace.type
                       ? currentThemeConfig.toolbar_menu_icon_fixed_color : currentThemeConfig.toolbar_menu_icon_color}"></svg-icon>
               <span
-                v-if="currentThemeConfig.show_workspace_name"
+                v-if="currentThemeConfig.toolbar_menu_show_workspace_name"
                 :style="{ color: currentThemeConfig.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
               <i style="transition: transform .3s;"
                 class="el-icon-arrow-down el-icon--right"
@@ -182,7 +185,11 @@
             @mousedown.prevent
             @click="$refs.input.$emit('input', '');focus();"></i>
         </template>
-        <template slot="prefix">
+        <template
+          slot="prefix"
+          v-if=" ! currentThemeConfig.toolbar_icon_auto_hide
+                || showClearButton
+                || (other.visible || history.visible || bookmark.visible || tab.visible)">
           <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">
             <el-popover
               v-model="history.visible"
@@ -334,7 +341,7 @@
         </template>
       </el-input>
       <el-button-group
-        v-if=" ! currentThemeConfig.auto_hide_operate_button || showOperationButton"
+        v-if=" ! currentThemeConfig.toolbar_button_auto_hide || showOperationButton"
         style="display: flex"
         :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
         <el-button
@@ -1330,9 +1337,13 @@ img {
   background-color: var(--toolbar-background-color);
 
   padding-right: 10px;
+  padding-left: 10px;
 }
 .toolbar .search-input.clearable input {
   padding-right: 30px;
+}
+.toolbar .search-input.smaller input {
+  padding-left: 30px;
 }
 .toolbar .search-input input:focus {
   border-color: var(--toolbar-input-focus-border-color);

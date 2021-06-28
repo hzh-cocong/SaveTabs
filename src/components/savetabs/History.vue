@@ -7,11 +7,11 @@
     show-icon
     v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
-    :style="{ width: (config.width-20)+'px' }">
+    :style="{ width: (currentThemeConfig.width-20)+'px' }">
     <div
       slot="title"
       style="display:flex;align-items: center;"
-      :style="{ width: (config.width-70)+'px' }">
+      :style="{ width: (currentThemeConfig.width-70)+'px' }">
       <div style="flex:1;">
         <div>{{ lang('historyNoResult') }}</div>
         <div>{{ lang('historyCountTip') }}</div>
@@ -25,11 +25,11 @@
   <list
     :list="list"
     :listLength="list.length"
-    :itemHeight="config.item_height"
-    :itemShowCount="config.item_show_count"
+    :itemHeight="currentThemeConfig.item_height"
+    :itemShowCount="currentThemeConfig.item_show_count"
     :scrollDisabled="scrollDisabled"
-    :scrollbarColor="config.list_scrollbar_color"
-    :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :scrollbarColor="currentThemeConfig.list_scrollbar_color"
+    :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
     :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
@@ -41,8 +41,8 @@
       <span
         class="left"
         :style="{
-          width: (config.item_height-20)+'px',
-          height: (config.item_height-20)+'px',
+          width: (currentThemeConfig.item_height-20)+'px',
+          height: (currentThemeConfig.item_height-20)+'px',
           marginLeft: item.count == undefined
                     ? 10+'px'
                     : 0 }">
@@ -52,7 +52,7 @@
           style="width:100%; height: 100%;"
           fit="cover"
           :scroll-container="$refs.list.$el"
-          :lazy="index >= config.item_show_count">
+          :lazy="index >= currentThemeConfig.item_show_count">
           <div slot="error" class="image-slot">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
@@ -65,7 +65,7 @@
       <div class="main">
         <!-- <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }">
           <i
             v-if="item.count != undefined && item.count > 1"
             style="margin-right: 10px;"
@@ -75,7 +75,7 @@
         </div> -->
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }">
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }">
           <i
             v-if="item.count != undefined && item.count > 1"
             style="margin-right: 10px;"
@@ -88,10 +88,10 @@
         <div
           class="sub-title"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color,
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color,
             direction: isSelected ? 'rtl' : 'ltr' }"
             v-html="isSelected && keyType != ''
                   ? getTip()
@@ -127,20 +127,20 @@
                             )
                           ))"
             :style="{
-              color:config.list_focus_font_color}"></i>
+              color:currentThemeConfig.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
             @click.stop="deleteHistory"
             :style="{
-              color:config.list_focus_font_color}"></i>
+              color:currentThemeConfig.list_focus_font_color}"></i>
         </div>
         <template v-if=" ! isActive">
           <span
             :style="{
-              fontSize: config.list_state_size+'px',
+              fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
-                ? config.list_focus_state_color
-                : config.list_state_color,
+                ? currentThemeConfig.list_focus_state_color
+                : currentThemeConfig.list_state_color,
             }">{{
               timeShow(
                 item.count == undefined
@@ -156,24 +156,24 @@
           <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color,
             }">↩</span>
           <span
             v-else-if="_device.platform != ''
               && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_keymap_color }">
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
                 1 > index-$refs.list.scrollLines+1
               ? 1
-              : (index-$refs.list.scrollLines+1 > config.item_show_count
-                ? config.item_show_count
+              : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+                ? currentThemeConfig.item_show_count
                 : index-$refs.list.scrollLines+1)
             }}</font>
           </span>
@@ -186,29 +186,29 @@
       <span
         class="left"
         :style="{
-          width: (config.item_height-20)+'px',
-          height: (config.item_height-20)+'px' }">
+          width: (currentThemeConfig.item_height-20)+'px',
+          height: (currentThemeConfig.item_height-20)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
           :style="{ color: isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color, }"></svg-icon>
+                          ? currentThemeConfig.list_focus_icon_color
+                          : currentThemeConfig.list_icon_color, }"></svg-icon>
       </span>
 
       <div class="main">
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }"
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
           v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color }"
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color }"
             v-html="item.tip"></div>
       </div>
 
@@ -216,24 +216,24 @@
         <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color,
             }">↩</span>
         <span
           v-else-if="_device.platform != ''
             && (index-$refs.list.scrollLines+1) <= 9"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
               1 > index-$refs.list.scrollLines+1
             ? 1
-            : (index-$refs.list.scrollLines+1 > config.item_show_count
-              ? config.item_show_count
+            : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+              ? currentThemeConfig.item_show_count
               : index-$refs.list.scrollLines+1)
           }}</font>
         </span>
@@ -275,7 +275,11 @@ export default {
       type: Object,
       required: require,
     },
-    project_config: {
+    currentThemeConfig: {
+      type: Object,
+      required: require,
+    },
+    projectConfig: {
       type: Object,
       required: require,
     },
@@ -374,7 +378,7 @@ export default {
       ).map(workspace => ({
         type: workspace,
         name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
-        svg: this.project_config.allWorkspaces[ workspace ].svg,
+        svg: this.projectConfig.allWorkspaces[ workspace ].svg,
       }));
     },
     workspaceStorageKeyword() {
@@ -392,7 +396,7 @@ export default {
                                   item.subFiles.length > 0
                                 ? item.subFiles[0].url
                                 : this.list[index+1].url
-                              ), this.config.item_height-20);
+                              ), this.currentThemeConfig.item_height-20);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -456,8 +460,8 @@ export default {
     },
 
     // list() {
-    //   return this.cacheList.slice(0, this.page*this.config.list_page_count);
-    //   // this.list.concat(this.list.length, this.list.length+this.config.list_page_count);
+    //   return this.cacheList.slice(0, this.page*this.currentThemeConfig.list_page_count);
+    //   // this.list.concat(this.list.length, this.list.length+this.currentThemeConfig.list_page_count);
     // },
     currentHistory() {
       if(this.list.length == 0) return null;
@@ -486,21 +490,21 @@ export default {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(isSelected) {
         return {
-          'background-color': this.config.list_focus_background_color,
-          'color': this.config.list_focus_font_color,
-          '--list-highlight-color': this.config.list_focus_highlight_color,
-          '--list-highlight-weight': this.config.list_focus_highlight_weight,
-          '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
-          '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
+          'background-color': this.currentThemeConfig.list_focus_background_color,
+          'color': this.currentThemeConfig.list_focus_font_color,
+          '--list-highlight-color': this.currentThemeConfig.list_focus_highlight_color,
+          '--list-highlight-weight': this.currentThemeConfig.list_focus_highlight_weight,
+          '--list-explain-highlight-color': this.currentThemeConfig.list_explain_focus_highlight_color,
+          '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_focus_highlight_weight,
         }
       } else {
         return {
-          'background-color': this.config.list_background_color,
-          'color': this.config.list_font_color,
-          '--list-highlight-color': this.config.list_highlight_color,
-          '--list-highlight-weight': this.config.list_highlight_weight,
-          '--list-explain-highlight-color': this.config.list_explain_highlight_color,
-          '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
+          'background-color': this.currentThemeConfig.list_background_color,
+          'color': this.currentThemeConfig.list_font_color,
+          '--list-highlight-color': this.currentThemeConfig.list_highlight_color,
+          '--list-highlight-weight': this.currentThemeConfig.list_highlight_weight,
+          '--list-explain-highlight-color': this.currentThemeConfig.list_explain_highlight_color,
+          '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_highlight_weight,
         }
       }
     },
@@ -655,7 +659,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         //   this.currentIndex = 0;
         // }
 
-        this.list = this.cacheList.slice(0, this.config.list_page_count);
+        this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
 
         this.currentIndex = 0;
 
@@ -688,14 +692,14 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
     },
     load() {
       console.log('history.load.test')
-      if(this.cacheList.length >= this.list.length+this.config.list_page_count) {
+      if(this.cacheList.length >= this.list.length+this.currentThemeConfig.list_page_count) {
         // 性能最高
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count));
         return;
       }
 
       if(this.queryDisabled) {
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
         this.scrollDisabled = true;
         return;
       }
@@ -704,7 +708,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       this.query((historys) => {
         console.log('history.load.test2')
         if(historys.length == 0) {
-          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
 
           this.scrollDisabled = true;
           this.queryDisabled = true;
@@ -728,14 +732,14 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         }
 
         this.mergeHistory(this.cacheList, historys);
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count));
+        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count));
       })
 
       // 不使用预加载，因为预加载过快，dom 反而会因此等待
     },
     query(callback, lastVisitTime, max) {
       max = max == undefined ? 55 : max;
-      max = max < this.config.list_page_count ? this.config.list_page_count : max;
+      max = max < this.currentThemeConfig.list_page_count ? this.currentThemeConfig.list_page_count : max;
 
       // 防止并发问题
       lastVisitTime = lastVisitTime == undefined ? this.lastVisitTime : lastVisitTime;
@@ -745,13 +749,13 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         text: this.storageKeyword,
         startTime: this.startTime,
         endTime: lastVisitTime,
-        maxResults: max, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+        maxResults: max, // this.currentThemeConfig.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
       }, (historys)=>{
         console.log('chrome.history.query', {
           text: this.storageKeyword,
           startTime: this.startTime,
           endTime: lastVisitTime,
-          maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+          maxResults: 10, //100, // this.currentThemeConfig.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
         }, historys)
 
         // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
@@ -836,8 +840,8 @@ console.log('_openWindow', url)
 
         // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
         this.$nextTick(() => {
-          if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.config.item_show_count) {
-            let index = this.config.item_show_count-this.currentHistory.count-1;
+          if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.currentThemeConfig.item_show_count) {
+            let index = this.currentThemeConfig.item_show_count-this.currentHistory.count-1;
             // index = index < 0 ? 0 : index;
             console.warn('kkkk2')
             this.$refs.list.currentTo(index);

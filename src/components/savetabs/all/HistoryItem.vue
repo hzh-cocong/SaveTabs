@@ -3,35 +3,35 @@
     class="history-item"
     :style="{
       backgroundColor: isSelected
-                      ? config.list_focus_background_color
-                      : config.list_background_color,
+                      ? currentThemeConfig.list_focus_background_color
+                      : currentThemeConfig.list_background_color,
       color: isSelected
-            ? config.list_focus_font_color
-            : config.list_font_color,
+            ? currentThemeConfig.list_focus_font_color
+            : currentThemeConfig.list_font_color,
 
       '--list-highlight-color': isSelected
-                              ? config.list_focus_highlight_color
-                              : config.list_highlight_color,
+                              ? currentThemeConfig.list_focus_highlight_color
+                              : currentThemeConfig.list_highlight_color,
       '--list-highlight-weight': isSelected
-                                ? config.list_focus_highlight_weight
-                                : config.list_highlight_weight,
+                                ? currentThemeConfig.list_focus_highlight_weight
+                                : currentThemeConfig.list_highlight_weight,
     }">
     <span
       class="left"
       style="position: relative"
       :style="{
-        width: (config.item_height-20)+'px',
-        height: (config.item_height-20)+'px',
+        width: (currentThemeConfig.item_height-20)+'px',
+        height: (currentThemeConfig.item_height-20)+'px',
         marginLeft: item.count == undefined
                   ? 10+'px'
                   : 0 }">
       <el-image
         v-if="isLoad"
-        :src="getIcon('', item.url, config.item_height-20)"
+        :src="getIcon('', item.url, currentThemeConfig.item_height-20)"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"
-        :lazy="index >= config.item_show_count">
+        :lazy="index >= currentThemeConfig.item_show_count">
         <div slot="error" class="image-slot">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
@@ -39,24 +39,24 @@
       </el-image>
       <svg-icon
         class="workspace-logo"
-        :name="project_config.allWorkspaces[ 'history' ].svg"
+        :name="projectConfig.allWorkspaces[ 'history' ].svg"
         :style="{ backgroundColor: isSelected
-                                  ? config.list_focus_background_color
-                                  : config.list_background_color,
+                                  ? currentThemeConfig.list_focus_background_color
+                                  : currentThemeConfig.list_background_color,
                   borderColor: isSelected
-                              ? config.list_focus_background_color
-                              : config.list_background_color,
+                              ? currentThemeConfig.list_focus_background_color
+                              : currentThemeConfig.list_background_color,
                   color: isSelected
-                        ? config.list_focus_icon_color
-                        : config.list_icon_color,
-                  width: config.item_height/4+'px',
-                  height: config.item_height/4+'px', }"></svg-icon>
+                        ? currentThemeConfig.list_focus_icon_color
+                        : currentThemeConfig.list_icon_color,
+                  width: currentThemeConfig.item_height/4+'px',
+                  height: currentThemeConfig.item_height/4+'px', }"></svg-icon>
     </span>
 
     <div class="main">
       <div
         class="title"
-        :style="{ fontSize: config.list_font_size+'px' }">
+        :style="{ fontSize: currentThemeConfig.list_font_size+'px' }">
         <i
           v-if="item.count != undefined && item.count > 1"
           style="margin-right: 10px;"
@@ -72,10 +72,10 @@
       <div
         class="sub-title"
         :style="{
-          fontSize: config.list_explain_font_size+'px',
+          fontSize: currentThemeConfig.list_explain_font_size+'px',
           color: isSelected
-                ? config.list_explain_focus_font_color
-                : config.list_explain_font_color,
+                ? currentThemeConfig.list_explain_focus_font_color
+                : currentThemeConfig.list_explain_font_color,
           direction: isSelected ? 'rtl' : 'ltr' }"
           v-html="isSelected && keyType != ''
                 ? getTip()
@@ -92,35 +92,35 @@
       <template v-if="isActive">
         <svg-icon
           class="hover"
-          :name="project_config.allWorkspaces[ 'history' ].svg"
+          :name="projectConfig.allWorkspaces[ 'history' ].svg"
           @click.native.stop="switchTo(getKeyType($event))"></svg-icon>
         </template>
       <template v-if=" ! isActive">
         <span
           :style="{
-            fontSize: config.list_state_size+'px',
+            fontSize: currentThemeConfig.list_state_size+'px',
             color: isSelected
-              ? config.list_focus_state_color
-              : config.list_state_color,
+              ? currentThemeConfig.list_focus_state_color
+              : currentThemeConfig.list_state_color,
           }">{{ timeShow(item.lastVisitTime) }}</span>
       </template>
       <template v-if=" ! isActive">
         <span
           v-if="isSelected"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_focus_keymap_color,
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_focus_keymap_color,
           }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
         </span>
       </template>
     </div>
@@ -132,11 +132,11 @@ export default {
   name: 'HistoryItem',
   inject: ['input'],
   props: {
-    config: {
+    currentThemeConfig: {
       type: Object,
       required: require,
     },
-    project_config: {
+    projectConfig: {
       type: Object,
       required: require,
     },

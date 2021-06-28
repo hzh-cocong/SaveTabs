@@ -3,50 +3,50 @@
     class="temporary-item"
     :style="{
       backgroundColor: isSelected
-                      ? config.list_focus_background_color
-                      : config.list_background_color,
+                      ? currentThemeConfig.list_focus_background_color
+                      : currentThemeConfig.list_background_color,
       color: isSelected
-            ? config.list_focus_font_color
-            : config.list_font_color,
+            ? currentThemeConfig.list_focus_font_color
+            : currentThemeConfig.list_font_color,
 
       '--list-highlight-color': isSelected
-                              ? config.list_focus_highlight_color
-                              : config.list_highlight_color,
+                              ? currentThemeConfig.list_focus_highlight_color
+                              : currentThemeConfig.list_highlight_color,
       '--list-highlight-weight': isSelected
-                                ? config.list_focus_highlight_weight
-                                : config.list_highlight_weight,
+                                ? currentThemeConfig.list_focus_highlight_weight
+                                : currentThemeConfig.list_highlight_weight,
     }">
     <span
       class="left"
       style="position: relative"
       :style="{
-        width: (config.item_height-10)+'px',
-        height: (config.item_height-10)+'px' }">
-      <div class="image" :style="{ height: (config.item_height-14)+'px' }">
+        width: (currentThemeConfig.item_height-10)+'px',
+        height: (currentThemeConfig.item_height-10)+'px' }">
+      <div class="image" :style="{ height: (currentThemeConfig.item_height-14)+'px' }">
         <div class="a" :style="{
-          transform : 'scale('+config.item_height/50*1.3+', '+config.item_height/50*1.3+')'
+          transform : 'scale('+currentThemeConfig.item_height/50*1.3+', '+currentThemeConfig.item_height/50*1.3+')'
         }">{{ item.tabs.length}}</div>
         <div class="b" :style="{
-          transform : 'scale('+config.item_height/50/2+', '+config.item_height/50/2+')',
-          marginTop : config.item_height > 50
-                    ? ((config.item_height-50)/5) + 'px'
+          transform : 'scale('+currentThemeConfig.item_height/50/2+', '+currentThemeConfig.item_height/50/2+')',
+          marginTop : currentThemeConfig.item_height > 50
+                    ? ((currentThemeConfig.item_height-50)/5) + 'px'
                     : 0,
         }">{{ lang('temporaryTabTip') }}</div>
       </div>
       <svg-icon
         class="workspace-logo"
-        :name="project_config.allWorkspaces[ 'temporary' ].svg"
+        :name="projectConfig.allWorkspaces[ 'temporary' ].svg"
         :style="{ backgroundColor: isSelected
-                                  ? config.list_focus_background_color
-                                  : config.list_background_color,
+                                  ? currentThemeConfig.list_focus_background_color
+                                  : currentThemeConfig.list_background_color,
                   borderColor: isSelected
-                              ? config.list_focus_background_color
-                              : config.list_background_color,
+                              ? currentThemeConfig.list_focus_background_color
+                              : currentThemeConfig.list_background_color,
                   color: isSelected
-                        ? config.list_focus_icon_color
-                        : config.list_icon_color,
-                  width: config.item_height/4+'px',
-                  height: config.item_height/4+'px', }"></svg-icon>
+                        ? currentThemeConfig.list_focus_icon_color
+                        : currentThemeConfig.list_icon_color,
+                  width: currentThemeConfig.item_height/4+'px',
+                  height: currentThemeConfig.item_height/4+'px', }"></svg-icon>
     </span>
 
     <div
@@ -106,15 +106,15 @@
         <div
         class="title"
         style="display:flex; overflow: hidden; align-items: center;"
-        :style="{ fontSize: config.list_font_size+'px' }">
+        :style="{ fontSize: currentThemeConfig.list_font_size+'px' }">
           <el-image
             v-if="isLoad"
-            :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.list_font_size)"
+            :src="getIcon(item.tabs[0].icon, item.tabs[0].url, currentThemeConfig.list_font_size)"
             fit="cover"
-            :style="{ width: config.list_font_size+'px',
-                      height: config.list_font_size+'px' }"
+            :style="{ width: currentThemeConfig.list_font_size+'px',
+                      height: currentThemeConfig.list_font_size+'px' }"
             :scroll-container="$parent.$el"
-            :lazy="index >= config.item_show_count">
+            :lazy="index >= currentThemeConfig.item_show_count">
             <div slot="error" class="image-slot">
               <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
             </div>
@@ -130,11 +130,11 @@
         <div
           class="sub-title"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color,
-            marginLeft: (config.list_font_size+5)+'px' }"
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color,
+            marginLeft: (currentThemeConfig.list_font_size+5)+'px' }"
             v-html="storageKeyword == ''
                   ? getDomain(item.tabs[0].url)
                   : highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>')"></div>
@@ -148,35 +148,35 @@
       <template v-if="isActive && isShowOperationButton">
         <svg-icon
           class="el-icon-close hover"
-          :name="project_config.allWorkspaces[ 'temporary' ].svg"
+          :name="projectConfig.allWorkspaces[ 'temporary' ].svg"
           @click.native.stop="switchTo(getKeyType($event))"></svg-icon>
       </template>
       <template v-if=" ! isActive">
         <span
           :style="{
-            fontSize: config.list_state_size+'px',
+            fontSize: currentThemeConfig.list_state_size+'px',
             color: isSelected
-              ? config.list_focus_state_color
-              : config.list_state_color,
+              ? currentThemeConfig.list_focus_state_color
+              : currentThemeConfig.list_state_color,
           }">{{ timeShow(item.lastVisitTime) }}</span>
       </template>
       <template v-if=" ! isActive">
         <span
           v-if="isSelected"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_focus_keymap_color,
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_focus_keymap_color,
           }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
         </span>
       </template>
     </div>
@@ -188,11 +188,11 @@ export default {
   name: 'TemporaryItem',
   inject: ['input'],
   props: {
-    config: {
+    currentThemeConfig: {
       type: Object,
       required: require,
     },
-    project_config: {
+    projectConfig: {
       type: Object,
       required: require,
     },
@@ -237,7 +237,7 @@ export default {
     tagConfig() {
       console.log('temporaryItem:computed:tagConfig')
 
-      let item_height = this.config.item_height;
+      let item_height = this.currentThemeConfig.item_height;
       let border = 1; // 上下左右
 
       let tag_margin_top_min = 3;
@@ -245,7 +245,7 @@ export default {
       let tag_row_count_min = 1;
 
       let tag_margin_top_max = 10;
-      let tag_font_size_max = this.config.list_font_size;
+      let tag_font_size_max = this.currentThemeConfig.list_font_size;
 
       let tag_row_count = tag_row_count_min;
       let row_count = Math.floor((item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2));
@@ -314,7 +314,7 @@ export default {
       }
 
       // 开放给用户设置
-      let tag_line_count = this.config.tag_line_count;
+      let tag_line_count = this.currentThemeConfig.tag_line_count;
 
       let tag_margin_right = tag_margin_top;
       let tag_padding_left = tag_margin_top;

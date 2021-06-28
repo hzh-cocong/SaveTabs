@@ -7,11 +7,11 @@
     show-icon
     v-if="isSearched && list.length == 0"
     style="margin: 0 10px;"
-    :style="{ width: (config.width-20)+'px' }">
+    :style="{ width: (currentThemeConfig.width-20)+'px' }">
     <div
       slot="title"
       style="display:flex;align-items: center;"
-      :style="{ width: (config.width-70)+'px' }">
+      :style="{ width: (currentThemeConfig.width-70)+'px' }">
       <div style="flex:1;">
         <div v-if="storageList.length > 0">{{ lang('temporaryNoResult') }}</div>
         <div>{{ lang('temporaryCountTip')+storageList.length+lang('temporaryCountTip2') }}</div>
@@ -25,11 +25,11 @@
   <list
     :list="list"
     :listLength="list.length"
-    :itemHeight="config.item_height"
-    :itemShowCount="config.item_show_count"
+    :itemHeight="currentThemeConfig.item_height"
+    :itemShowCount="currentThemeConfig.item_show_count"
     :scrollDisabled="scrollDisabled"
-    :scrollbarColor="config.list_scrollbar_color"
-    :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :scrollbarColor="currentThemeConfig.list_scrollbar_color"
+    :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
     :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
@@ -41,16 +41,16 @@
       <span
         class="left"
         :style="{
-          width: (config.item_height-10)+'px',
-          height: (config.item_height-10)+'px' }">
-        <div class="image" :style="{ height: (config.item_height-14)+'px' }">
+          width: (currentThemeConfig.item_height-10)+'px',
+          height: (currentThemeConfig.item_height-10)+'px' }">
+        <div class="image" :style="{ height: (currentThemeConfig.item_height-14)+'px' }">
           <div class="a" :style="{
-            transform : 'scale('+config.item_height/50*1.3+', '+config.item_height/50*1.3+')'
+            transform : 'scale('+currentThemeConfig.item_height/50*1.3+', '+currentThemeConfig.item_height/50*1.3+')'
           }">{{ item.tabs.length}}</div>
           <div class="b" :style="{
-            transform : 'scale('+config.item_height/50/2+', '+config.item_height/50/2+')',
-            marginTop : config.item_height > 50
-                      ? ((config.item_height-50)/5) + 'px'
+            transform : 'scale('+currentThemeConfig.item_height/50/2+', '+currentThemeConfig.item_height/50/2+')',
+            marginTop : currentThemeConfig.item_height > 50
+                      ? ((currentThemeConfig.item_height-50)/5) + 'px'
                       : 0,
           }">{{ lang('temporaryTabTip') }}</div>
         </div>
@@ -132,15 +132,15 @@
           <div
           class="title"
           style="display:flex; overflow: hidden; align-items: center;"
-          :style="{ fontSize: config.list_font_size+'px' }">
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }">
             <el-image
               v-if="isLoad"
               :src="iconMap[index]"
               fit="cover"
-              :style="{ width: config.list_font_size+'px',
-                        height: config.list_font_size+'px' }"
+              :style="{ width: currentThemeConfig.list_font_size+'px',
+                        height: currentThemeConfig.list_font_size+'px' }"
               :scroll-container="$refs.list.$el"
-              :lazy="index >= config.item_show_count">
+              :lazy="index >= currentThemeConfig.item_show_count">
               <div slot="error" class="image-slot">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
@@ -161,22 +161,22 @@
           <div
             class="sub-title"
             :style="{
-              fontSize: config.list_explain_font_size+'px',
+              fontSize: currentThemeConfig.list_explain_font_size+'px',
               color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              marginLeft: (config.list_font_size+5)+'px' }"
+                    ? currentThemeConfig.list_explain_focus_font_color
+                    : currentThemeConfig.list_explain_font_color,
+              marginLeft: (currentThemeConfig.list_font_size+5)+'px' }"
               v-html="storageKeyword == ''
                     ? highlightMap[index][0].domain
                     : highlightMap[index][0].url"></div>
           <!-- <div
             class="sub-title"
             :style="{
-              fontSize: config.list_explain_font_size+'px',
+              fontSize: currentThemeConfig.list_explain_font_size+'px',
               color: isSelected
-                    ? config.list_explain_focus_font_color
-                    : config.list_explain_font_color,
-              marginLeft: (config.list_font_size+5)+'px' }">
+                    ? currentThemeConfig.list_explain_focus_font_color
+                    : currentThemeConfig.list_explain_font_color,
+              marginLeft: (currentThemeConfig.list_font_size+5)+'px' }">
               {{ getDomain(item.tabs[0].url) }}
           </div> -->
         </template>
@@ -191,44 +191,44 @@
             class="el-icon-copy-document hover"
             @click="_openWindow(getKeyType($event))"
             :style="{
-              color:config.list_focus_font_color}"></i>
+              color:currentThemeConfig.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
             @click="deleteTemporary"
             :style="{
-              color:config.list_focus_font_color}"></i>
+              color:currentThemeConfig.list_focus_font_color}"></i>
         </div>
         <template v-if=" ! isActive">
           <span
             :style="{
-              fontSize: config.list_state_size+'px',
+              fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
-                ? config.list_focus_state_color
-                : config.list_state_color,
+                ? currentThemeConfig.list_focus_state_color
+                : currentThemeConfig.list_state_color,
             }">{{ timeShow(item.lastVisitTime) }}</span>
         </template>
         <template v-if=" ! isActive">
           <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color,
             }">↩</span>
           <span
             v-else-if="_device.platform != ''
               && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_keymap_color }">
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
                 1 > index-$refs.list.scrollLines+1
               ? 1
-              : (index-$refs.list.scrollLines+1 > config.item_show_count
-                ? config.item_show_count
+              : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+                ? currentThemeConfig.item_show_count
                 : index-$refs.list.scrollLines+1)
             }}</font>
           </span>
@@ -242,14 +242,14 @@
         class="left"
         style="padding: 10px;"
         :style="{
-          width: (config.item_height-20)+'px',
-          height: (config.item_height-20)+'px' }">
+          width: (currentThemeConfig.item_height-20)+'px',
+          height: (currentThemeConfig.item_height-20)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
           :style="{ color: isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color, }"></svg-icon>
+                          ? currentThemeConfig.list_focus_icon_color
+                          : currentThemeConfig.list_icon_color, }"></svg-icon>
       </span>
 
       <div
@@ -257,16 +257,16 @@
         style="flex-direction: column;justify-content: space-evenly;">
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }"
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
           v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color }"
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color }"
             v-html="item.tip"></div>
       </div>
 
@@ -274,24 +274,24 @@
         <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color,
             }">↩</span>
         <span
           v-else-if="_device.platform != ''
             && (index-$refs.list.scrollLines+1) <= 9"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
               1 > index-$refs.list.scrollLines+1
             ? 1
-            : (index-$refs.list.scrollLines+1 > config.item_show_count
-              ? config.item_show_count
+            : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+              ? currentThemeConfig.item_show_count
               : index-$refs.list.scrollLines+1)
           }}</font>
         </span>
@@ -314,7 +314,11 @@ export default {
       type: Object,
       required: require,
     },
-    project_config: {
+    currentThemeConfig: {
+      type: Object,
+      required: require,
+    },
+    projectConfig: {
       type: Object,
       required: require,
     },
@@ -370,7 +374,7 @@ export default {
       ).map(workspace => ({
         type: workspace,
         name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
-        svg: this.project_config.allWorkspaces[ workspace ].svg,
+        svg: this.projectConfig.allWorkspaces[ workspace ].svg,
       }));
     },
     workspaceStorageKeyword() {
@@ -382,7 +386,7 @@ export default {
       let a = new Date().getTime();
 
       let ss = this.list.map((item, index) => {
-        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.config.list_font_size);
+        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.currentThemeConfig.list_font_size);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -430,7 +434,7 @@ export default {
 
     // 行数尽可能多，字体尽可能大
     tagConfig() {
-      let item_height = this.config.item_height;
+      let item_height = this.currentThemeConfig.item_height;
       let border = 1; // 上下左右
 
       let tag_margin_top_min = 3;
@@ -443,7 +447,7 @@ export default {
       let tag_margin_top_max = 10;
       // let tag_margin_right_max = 10; // 同上
       // let tag_padding_max = 3; // 同上
-      let tag_font_size_max = this.config.list_font_size;
+      let tag_font_size_max = this.currentThemeConfig.list_font_size;
       // let tag_row_count_min = 0; // 不限制
       // let tag_line_count_max = 0; // 不限制
 
@@ -559,7 +563,7 @@ alert('空间不够')
       console.log('tagConfig 上下计算结果', tag_row_count, tag_font_size, tag_margin_top, tag_padding_top)
 
       // 开放给用户设置
-      let tag_line_count = this.config.tag_line_count;
+      let tag_line_count = this.currentThemeConfig.tag_line_count;
 
       let tag_margin_right = tag_margin_top;
       let tag_padding_left = tag_margin_top;
@@ -619,21 +623,21 @@ alert('空间不够')
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(isSelected) {
         return {
-          'background-color': this.config.list_focus_background_color,
-          'color': this.config.list_focus_font_color,
-          '--list-highlight-color': this.config.list_focus_highlight_color,
-          '--list-highlight-weight': this.config.list_focus_highlight_weight,
-          '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
-          '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
+          'background-color': this.currentThemeConfig.list_focus_background_color,
+          'color': this.currentThemeConfig.list_focus_font_color,
+          '--list-highlight-color': this.currentThemeConfig.list_focus_highlight_color,
+          '--list-highlight-weight': this.currentThemeConfig.list_focus_highlight_weight,
+          '--list-explain-highlight-color': this.currentThemeConfig.list_explain_focus_highlight_color,
+          '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_focus_highlight_weight,
         }
       } else {
         return {
-          'background-color': this.config.list_background_color,
-          'color': this.config.list_font_color,
-          '--list-highlight-color': this.config.list_highlight_color,
-          '--list-highlight-weight': this.config.list_highlight_weight,
-          '--list-explain-highlight-color': this.config.list_explain_highlight_color,
-          '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
+          'background-color': this.currentThemeConfig.list_background_color,
+          'color': this.currentThemeConfig.list_font_color,
+          '--list-highlight-color': this.currentThemeConfig.list_highlight_color,
+          '--list-highlight-weight': this.currentThemeConfig.list_highlight_weight,
+          '--list-explain-highlight-color': this.currentThemeConfig.list_explain_highlight_color,
+          '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_highlight_weight,
         }
       }
     },
@@ -731,7 +735,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
 
       // 列表赋值
       this.cacheList = filterList;
-      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
       this.currentIndex = this.list.length > 0 ? 0 : -1;
       this.scrollDisabled = this.list.length >= this.cacheList.length;
 
@@ -759,7 +763,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
     },
     load() {
       // 加载数据
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {

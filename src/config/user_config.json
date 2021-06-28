@@ -1,8 +1,14 @@
 {
     "workspaces": [
-        "window"
+        "all",
+        "window",
+        "note",
+        "tab",
+        "temporary",
+        "bookmark",
+        "history"
     ],
-    "operateOrder": [ "window" ],
+    "operateOrder": [ "window", "note", "temporary" ],
 
     "workspace_change_word": ">"
 }

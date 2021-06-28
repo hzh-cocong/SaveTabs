@@ -3,46 +3,46 @@
     class="toggle-item"
     :style="{
       backgroundColor: isSelected
-                      ? config.list_focus_background_color
-                      : config.list_background_color,
+                      ? currentThemeConfig.list_focus_background_color
+                      : currentThemeConfig.list_background_color,
       color: isSelected
-            ? config.list_focus_font_color
-            : config.list_font_color,
+            ? currentThemeConfig.list_focus_font_color
+            : currentThemeConfig.list_font_color,
 
       '--list-highlight-color': isSelected
-                              ? config.list_focus_highlight_color
-                              : config.list_highlight_color,
+                              ? currentThemeConfig.list_focus_highlight_color
+                              : currentThemeConfig.list_highlight_color,
       '--list-highlight-weight': isSelected
-                                ? config.list_focus_highlight_weight
-                                : config.list_highlight_weight,
+                                ? currentThemeConfig.list_focus_highlight_weight
+                                : currentThemeConfig.list_highlight_weight,
     }">
     <span
       class="left"
       style="position: relative"
       :style="{
-        width: (config.item_height-20)+'px',
-        height: (config.item_height-20)+'px' }">
+        width: (currentThemeConfig.item_height-20)+'px',
+        height: (currentThemeConfig.item_height-20)+'px' }">
       <svg-icon
-          :name="project_config.allWorkspaces[ item.workspace ].svg"
+          :name="projectConfig.allWorkspaces[ item.workspace ].svg"
           style="width:100%; height: 100%;"
           :style="{ color: isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color, }"></svg-icon>
+                          ? currentThemeConfig.list_focus_icon_color
+                          : currentThemeConfig.list_icon_color, }"></svg-icon>
     </span>
 
     <div class="main">
       <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }"
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
           v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
       <div
         v-if="isSelected && item.tip != ''"
         class="sub-title"
         :style="{
-          fontSize: config.list_explain_font_size+'px',
+          fontSize: currentThemeConfig.list_explain_font_size+'px',
           color: isSelected
-                ? config.list_explain_focus_font_color
-                : config.list_explain_font_color }"
+                ? currentThemeConfig.list_explain_focus_font_color
+                : currentThemeConfig.list_explain_font_color }"
           v-html="item.tip"></div>
     </div>
 
@@ -50,36 +50,36 @@
       <span
         v-if="isSelected"
         :style="{
-          fontSize: config.list_keymap_size+'px',
-          color: config.list_focus_keymap_color,
+          fontSize: currentThemeConfig.list_keymap_size+'px',
+          color: currentThemeConfig.list_focus_keymap_color,
         }">↩</span>
       <span
         v-else-if="showIndex > 0"
         :style="{
-          fontSize: config.list_keymap_size+'px',
-          color: config.list_keymap_color }">
+          fontSize: currentThemeConfig.list_keymap_size+'px',
+          color: currentThemeConfig.list_keymap_color }">
         <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
         <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
         <font
           style="display:inline-block;text-align:left;"
-          :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+          :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
       </span>
       <!-- <template v-if=" ! isActive">
         <span
           v-if="isSelected"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_focus_keymap_color,
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_focus_keymap_color,
           }">↩</span>
         <span
           v-else-if="showIndex > 0"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color }">
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
         </span>
       </template> -->
     </div>
@@ -94,7 +94,11 @@ export default {
       type: Object,
       required: require,
     },
-    project_config: {
+    currentThemeConfig: {
+      type: Object,
+      required: require,
+    },
+    projectConfig: {
       type: Object,
       required: require,
     },

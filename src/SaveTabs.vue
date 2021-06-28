@@ -536,6 +536,9 @@ export default {
         else this.localConfig.theme_inject = theme;
         chrome.storage.local.set({'config': this.localConfig}, () => {
           this.statusTip(theme.name);
+          // show_menu 发生变化时可能会失去焦点
+          this.focus();
+
           // this.$nextTick(() => {
           //   this.statusTip(theme.name);
           // })

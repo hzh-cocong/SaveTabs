@@ -9,11 +9,11 @@
     :closable="false"
     show-icon
     style="margin: 0 10px;"
-    :style="{ width: (config.width-20)+'px' }">
+    :style="{ width: (currentThemeConfig.width-20)+'px' }">
     <div
       slot="title"
       style="display:flex;align-items: center;"
-      :style="{ width: (config.width-70)+'px' }">
+      :style="{ width: (currentThemeConfig.width-70)+'px' }">
       <div style="flex:1;">
         <!-- <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
         <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div> -->
@@ -27,11 +27,11 @@
   <list
     :list="list"
     :listLength="list.length"
-    :itemHeight="config.item_height"
-    :itemShowCount="config.item_show_count"
+    :itemHeight="currentThemeConfig.item_height"
+    :itemShowCount="currentThemeConfig.item_show_count"
     :scrollDisabled="scrollDisabled"
-    :scrollbarColor="config.list_scrollbar_color"
-    :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :scrollbarColor="currentThemeConfig.list_scrollbar_color"
+    :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
     v-model="currentIndex"
     ref="list"
     @load="load"
@@ -46,7 +46,8 @@
         :isSelected="isSelected"
 
         :config="config"
-        :project_config="project_config"
+        :currentThemeConfig="currentThemeConfig"
+        :projectConfig="projectConfig"
         :isLoad="isLoad"
 
         :storageKeyword="storageKeyword"
@@ -54,8 +55,8 @@
         :showIndex="(index-$refs.list.scrollLines+1) <= 9
                   ? ( 1 > index-$refs.list.scrollLines+1
                     ? 1
-                    : (index-$refs.list.scrollLines+1 > config.item_show_count
-                      ? config.item_show_count
+                    : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+                      ? currentThemeConfig.item_show_count
                       : index-$refs.list.scrollLines+1)
                     )
                   : -1"
@@ -99,7 +100,11 @@ export default {
       type: Object,
       required: require,
     },
-    project_config: {
+    currentThemeConfig: {
+      type: Object,
+      required: require,
+    },
+    projectConfig: {
       type: Object,
       required: require,
     },

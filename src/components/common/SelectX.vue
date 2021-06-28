@@ -7,7 +7,8 @@
         v-for="(item, index) in list"
         class="list-item"
         :style="{ height: itemHeight+'px' }"
-        :key="index">
+        :key="index"
+        @click="$emit('change', index)">
         <slot
           :index="index"
           :item="item"

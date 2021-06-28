@@ -401,7 +401,7 @@
     :append-to-body="true"
     :close-on-click-modal="false"
     :destroy-on-close="false"
-    width="200px"
+    width="250px"
     class="theme"
     @open="themeDialogVisible2=true"
     @closed="themeDialogVisible2=false"
@@ -411,53 +411,20 @@
         :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
         class="hover"
         style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;cursor: pointer;"
+        @click.native="popupChange"
       ></svg-icon>
       <span>选择主题</span>
       <i
         class="el-icon-s-tools hover"
         style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;cursor: pointer;"
         @click="$open('./options.html?type=themes', getKeyType($event))"></i>
-
-      <!-- <i
-        class="el-icon-s-tools hover"
-        style="color: gray;position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-        @click="$open('./options.html?type=themes', getKeyType($event))"></i>
-        选择主题
-      <svg-icon
-        :name="!localConfig.popup ? 'fly-brands' : 'ship-solid'"
-        class="hover"
-        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;right: 0;margin-left: 10px;cursor: pointer;"
-      ></svg-icon> -->
-
-      <!-- <svg-icon
-        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
-        class="hover"
-        style="width: 16px;height: 16px;color: gray;position: relative;top: 1px;margin-right: 10px;cursor: pointer;"
-      ></svg-icon>选择主题 -->
-
-      <!-- <i
-        class="el-icon-s-tools"
-        style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-        @click="$open('./options.html?type=themes', getKeyType($event))"></i>选择主题 -->
-
-      <!-- <span
-        style="color:gray;cursor:pointer;margin-top:4px;"
-        @click="$open('./options.html?type=themes', getKeyType($event))">
-        <svg-icon
-          :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
-          style="width: 16px;height: 16px;"
-        ></svg-icon>
-      </span>
-      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-        <span>选择主题</span>
-      </span> -->
     </div>
     <SelectX
       v-if="themeDialogVisible2"
       :list="currentThemeList"
       :itemHeight="65"
       :itemShowCount="3"
-      style="width:200px"
+      style="width:250px"
       v-model="currentThemeIndex">
       <template #default="{ index, item, isSelected }">
         <div

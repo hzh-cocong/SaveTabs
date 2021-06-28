@@ -7,11 +7,11 @@
     :closable="false"
     show-icon
     style="margin: 0 10px;"
-    :style="{ width: (config.width-20)+'px' }">
+    :style="{ width: (currentThemeConfig.width-20)+'px' }">
     <div
       slot="title"
       style="display:flex;align-items: center;"
-      :style="{ width: (config.width-70)+'px' }">
+      :style="{ width: (currentThemeConfig.width-70)+'px' }">
       <div style="flex:1;">
         <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
         <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div>
@@ -25,11 +25,11 @@
   <list
     :list="list"
     :listLength="list.length"
-    :itemHeight="config.item_height"
-    :itemShowCount="config.item_show_count"
+    :itemHeight="currentThemeConfig.item_height"
+    :itemShowCount="currentThemeConfig.item_show_count"
     :scrollDisabled="scrollDisabled"
-    :scrollbarColor="config.list_scrollbar_color"
-    :scrollbarFocusColor="config.list_scrollbar_focus_color"
+    :scrollbarColor="currentThemeConfig.list_scrollbar_color"
+    :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
     :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"
@@ -41,21 +41,21 @@
       <span
         class="left"
         :style="{
-          width: (config.item_height-20)+'px',
-          height: (config.item_height-20)+'px' }">
-          <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, config.item_height-20)" -->
+          width: (currentThemeConfig.item_height-20)+'px',
+          height: (currentThemeConfig.item_height-20)+'px' }">
+          <!-- :src="getIcon(item.tabs[0].icon, item.tabs[0].url, currentThemeConfig.item_height-20)" -->
         <el-image
           v-if="isLoad"
           :src="iconMap[index]"
           style="width:100%; height: 100%;"
           fit="cover"
           :scroll-container="$refs.list.$el"
-          :lazy="index >= config.item_show_count">
+          :lazy="index >= currentThemeConfig.item_show_count">
           <div slot="error">
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder">
-            <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            <!-- <img v-if="index >= currentThemeConfig.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
       </span>
@@ -63,20 +63,20 @@
       <div class="main">
         <span
           class="title"
-          :style="{fontSize: config.list_font_size+'px'}"
+          :style="{fontSize: currentThemeConfig.list_font_size+'px'}"
           v-html="highlightMap[index]"></span>
         <div
           class="sub-title"
           v-if="isSelected && keyType != ''"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: item.windowId == currentWindowId
                 ? ( isSelected
-                  ? config.list_current_explain_focus_font_color
-                  : config.list_current_explain_font_color)
+                  ? currentThemeConfig.list_current_explain_focus_font_color
+                  : currentThemeConfig.list_current_explain_font_color)
                 : ( isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color) }">{{ getTip() }}</div>
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color) }">{{ getTip() }}</div>
       </div>
 
       <div
@@ -89,7 +89,7 @@
               is-dot
               class="refresh"
               style="margin-right: 10px"
-              :style="{ borderColor: config.list_current_focus_state_color } " >
+              :style="{ borderColor: currentThemeConfig.list_current_focus_state_color } " >
               <el-button
                 type="warning"
                 icon="el-icon-refresh"
@@ -121,13 +121,13 @@
           <div
             v-else-if="item.windowId == currentWindowId"
             :style="{
-              fontSize: config.list_state_size+'px',
+              fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
-                    ? config.list_current_focus_state_color
-                    : config.list_current_state_color,
+                    ? currentThemeConfig.list_current_focus_state_color
+                    : currentThemeConfig.list_current_state_color,
               borderColor: isSelected
-                    ? config.list_current_focus_state_color
-                    : config.list_current_state_color }">
+                    ? currentThemeConfig.list_current_focus_state_color
+                    : currentThemeConfig.list_current_state_color }">
             <template v-if="isCurrentWindowChange">
               <el-badge
                 is-dot>
@@ -141,19 +141,19 @@
           <div
             v-else-if="activeWindows[item.windowId]"
             :style="{
-              fontSize: config.list_state_size+'px',
+              fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
-                  ? config.list_focus_state_color
-                  : config.list_state_color }">
+                  ? currentThemeConfig.list_focus_state_color
+                  : currentThemeConfig.list_state_color }">
             {{ lang('opened') }}
           </div>
           <div
             v-else-if="storageKeyword != '' && item.lastVisitTime != undefined"
             :style="{
-              fontSize: config.list_state_size+'px',
+              fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
-                  ? config.list_focus_state_color
-                  : config.list_state_color }">
+                  ? currentThemeConfig.list_focus_state_color
+                  : currentThemeConfig.list_state_color }">
             {{ timeShow(item.lastVisitTime) }}
           </div>
         </template>
@@ -161,23 +161,23 @@
           <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color }">↩</span>
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color }">↩</span>
           <span
             v-else-if="_device.platform != ''
                     && (index-$refs.list.scrollLines+1) <= 9"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_keymap_color }">
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+              :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
                 1 > index-$refs.list.scrollLines+1
               ? 1
-              : (index-$refs.list.scrollLines+1 > config.item_show_count
-                ? config.item_show_count
+              : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+                ? currentThemeConfig.item_show_count
                 : index-$refs.list.scrollLines+1)
             }}</font>
           </span>
@@ -190,29 +190,29 @@
       <span
         class="left"
         :style="{
-          width: (config.item_height-20)+'px',
-          height: (config.item_height-20)+'px' }">
+          width: (currentThemeConfig.item_height-20)+'px',
+          height: (currentThemeConfig.item_height-20)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
           :style="{ color: isSelected
-                          ? config.list_focus_icon_color
-                          : config.list_icon_color, }"></svg-icon>
+                          ? currentThemeConfig.list_focus_icon_color
+                          : currentThemeConfig.list_icon_color, }"></svg-icon>
       </span>
 
       <div class="main">
         <div
           class="title"
-          :style="{ fontSize: config.list_font_size+'px' }"
-          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
+          v-html="highlight(item.name, storageKeyword.substr(currentThemeConfig.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
           :style="{
-            fontSize: config.list_explain_font_size+'px',
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
             color: isSelected
-                  ? config.list_explain_focus_font_color
-                  : config.list_explain_font_color }"
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color }"
             v-html="item.tip"></div>
       </div>
 
@@ -220,25 +220,25 @@
         <span
             v-if="isSelected"
             :style="{
-              fontSize: config.list_keymap_size+'px',
-              color: config.list_focus_keymap_color,
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color,
             }">↩</span>
         <span
           v-else-if="_device.platform != ''
             && (index-$refs.list.scrollLines+1) <= 9"
           :style="{
-            fontSize: config.list_keymap_size+'px',
-            color: config.list_keymap_color,
+            fontSize: currentThemeConfig.list_keymap_size+'px',
+            color: currentThemeConfig.list_keymap_color,
           }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
           <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
           <font
             style="display:inline-block;text-align:left;"
-            :style="{ width: (config.list_keymap_size/2)+'px' }">{{
+            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
               1 > index-$refs.list.scrollLines+1
             ? 1
-            : (index-$refs.list.scrollLines+1 > config.item_show_count
-              ? config.item_show_count
+            : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
+              ? currentThemeConfig.item_show_count
               : index-$refs.list.scrollLines+1)
           }}</font>
         </span>
@@ -268,7 +268,7 @@
     <ul
       v-if="groupVisible2"
       class="group-list beautify-scrollbar"
-      :style="{ height: (30*config.item_show_count)+'px' }">
+      :style="{ height: (30*currentThemeConfig.item_show_count)+'px' }">
       <li
         class="group-list-item"
         v-for="(tab, index) in group.tabs"
@@ -284,7 +284,7 @@
             <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
           </div>
           <div slot="placeholder">
-            <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
+            <!-- <img v-if="index >= currentThemeConfig.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
           </div>
         </el-image>
 
@@ -330,7 +330,7 @@
         </div>
         <ul
           class="group-list"
-          :style="{ height: (30*(config.item_show_count <= 2 ? 1 : config.item_show_count-2)+10)+'px' }">
+          :style="{ height: (30*(currentThemeConfig.item_show_count <= 2 ? 1 : currentThemeConfig.item_show_count-2)+10)+'px' }">
           <li
             class="group-list-item"
             v-for="(tab, index) in oldGroup.tabs"
@@ -346,7 +346,7 @@
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
+                <!-- <img v-if="index >= currentThemeConfig.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -368,7 +368,7 @@
         </div>
         <ul
           class="group-list"
-          :style="{ height: (30*(config.item_show_count <= 2 ? 1 : config.item_show_count-2)+10)+'px' }">
+          :style="{ height: (30*(currentThemeConfig.item_show_count <= 2 ? 1 : currentThemeConfig.item_show_count-2)+10)+'px' }">
           <li
             class="group-list-item"
             v-for="(tab, index) in currentWindow.tabs"
@@ -384,7 +384,7 @@
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
               <div slot="placeholder">
-                <!-- <img v-if="index >= config.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
+                <!-- <img v-if="index >= currentThemeConfig.item_show_count" src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
               </div>
             </el-image>
 
@@ -421,7 +421,11 @@ export default {
       type: Object,
       required: require,
     },
-    project_config: {
+    currentThemeConfig: {
+      type: Object,
+      required: require,
+    },
+    projectConfig: {
       type: Object,
       required: require,
     },
@@ -492,7 +496,7 @@ export default {
       ).map(workspace => ({
         type: workspace,
         name: this.lang(workspace) + ( this.lang(workspace) == workspace ? '' : ` (${workspace}) `),
-        svg: this.project_config.allWorkspaces[ workspace ].svg,
+        svg: this.projectConfig.allWorkspaces[ workspace ].svg,
       }));
     },
     workspaceStorageKeyword() {
@@ -504,7 +508,7 @@ export default {
       let a = new Date().getTime();
 
       let ss = this.list.map((item, index) => {
-        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.config.item_height-20);
+        return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.currentThemeConfig.item_height-20);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -555,7 +559,7 @@ console.log('get_currentWindowStorageIndex3', index);
       //     return i;
       //   }
       //   // todo
-      //   // else if(i >= this.config.list_page_count) {
+      //   // else if(i >= this.currentThemeConfig.list_page_count) {
       //   //   return -1;
       //   // }
       // }
@@ -626,41 +630,41 @@ console.log('get_currentWindowStorageIndex3', index);
       if(item.windowId == this.currentWindowId) {
         if(isSelected) {
           return {
-            'background-color': this.config.list_current_focus_background_color,
-            'color': this.config.list_current_focus_font_color,
-            '--list-highlight-color': this.config.list_current_focus_highlight_color,
-            '--list-highlight-weight': this.config.list_current_focus_highlight_weight,
-            '--list-explain-highlight-color': this.config.list_current_explain_focus_highlight_color,
-            '--list-explain-highlight-weight': this.config.list_current_explain_focus_highlight_weight,
+            'background-color': this.currentThemeConfig.list_current_focus_background_color,
+            'color': this.currentThemeConfig.list_current_focus_font_color,
+            '--list-highlight-color': this.currentThemeConfig.list_current_focus_highlight_color,
+            '--list-highlight-weight': this.currentThemeConfig.list_current_focus_highlight_weight,
+            '--list-explain-highlight-color': this.currentThemeConfig.list_current_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.currentThemeConfig.list_current_explain_focus_highlight_weight,
           }
         } else {
           return {
-            'background-color': this.config.list_current_background_color,
-            'color': this.config.list_current_font_color,
-            '--list-highlight-color': this.config.list_current_highlight_color,
-            '--list-highlight-weight': this.config.list_current_highlight_weight,
-            '--list-explain-highlight-color': this.config.list_current_explain_highlight_color,
-            '--list-explain-highlight-weight': this.config.list_current_explain_highlight_weight,
+            'background-color': this.currentThemeConfig.list_current_background_color,
+            'color': this.currentThemeConfig.list_current_font_color,
+            '--list-highlight-color': this.currentThemeConfig.list_current_highlight_color,
+            '--list-highlight-weight': this.currentThemeConfig.list_current_highlight_weight,
+            '--list-explain-highlight-color': this.currentThemeConfig.list_current_explain_highlight_color,
+            '--list-explain-highlight-weight': this.currentThemeConfig.list_current_explain_highlight_weight,
           }
         }
       } else {
         if(isSelected) {
           return {
-            'background-color': this.config.list_focus_background_color,
-            'color': this.config.list_focus_font_color,
-            '--list-highlight-color': this.config.list_focus_highlight_color,
-            '--list-highlight-weight': this.config.list_focus_highlight_weight,
-            '--list-explain-highlight-color': this.config.list_explain_focus_highlight_color,
-            '--list-explain-highlight-weight': this.config.list_explain_focus_highlight_weight,
+            'background-color': this.currentThemeConfig.list_focus_background_color,
+            'color': this.currentThemeConfig.list_focus_font_color,
+            '--list-highlight-color': this.currentThemeConfig.list_focus_highlight_color,
+            '--list-highlight-weight': this.currentThemeConfig.list_focus_highlight_weight,
+            '--list-explain-highlight-color': this.currentThemeConfig.list_explain_focus_highlight_color,
+            '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_focus_highlight_weight,
           }
         } else {
           return {
-            'background-color': this.config.list_background_color,
-            'color': this.config.list_font_color,
-            '--list-highlight-color': this.config.list_highlight_color,
-            '--list-highlight-weight': this.config.list_highlight_weight,
-            '--list-explain-highlight-color': this.config.list_explain_highlight_color,
-            '--list-explain-highlight-weight': this.config.list_explain_highlight_weight,
+            'background-color': this.currentThemeConfig.list_background_color,
+            'color': this.currentThemeConfig.list_font_color,
+            '--list-highlight-color': this.currentThemeConfig.list_highlight_color,
+            '--list-highlight-weight': this.currentThemeConfig.list_highlight_weight,
+            '--list-explain-highlight-color': this.currentThemeConfig.list_explain_highlight_color,
+            '--list-explain-highlight-weight': this.currentThemeConfig.list_explain_highlight_weight,
           }
         }
       }
@@ -746,7 +750,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 列表赋值
       this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
-      this.list = this.cacheList.slice(0, this.config.list_page_count);
+      this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
 
       this.scrollDisabled = this.list.length >= this.cacheList.length;
       if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
@@ -782,10 +786,10 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
     },
     load() {
       // 加载数据
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.config.list_page_count))
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
 
-      // let data = this.cacheList.slice(this.page*this.config.list_page_count, (this.page+1)*this.config.list_page_count);
+      // let data = this.cacheList.slice(this.page*this.currentThemeConfig.list_page_count, (this.page+1)*this.currentThemeConfig.list_page_count);
       // if(data.length <= 0) {
       //   this.scrollDisabled = true;
       //   return;

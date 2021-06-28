@@ -1,11 +1,13 @@
 {
-    "theme_id": "0",
-    "theme_injected_id": "0",
-    "theme_list": [
+    "theme_popup_id": "1",
+    "theme_inject_id": "1",
+    "rank": {},
+    "user_theme_list": [],
+    "system_theme_list": [
         {
             "id": "1",
             "name": "SaveTabs Classic",
-            "type": 0,
+            "type": 3,
             "config": {
                 "list_font_color": "#000000",
                 "list_background_color": "#ffffff",

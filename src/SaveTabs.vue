@@ -3,49 +3,49 @@
   id="app"
   v-loading.fullscreen="isLoading"
   :style="{
-    width: (config.width
-          + config.border_width*2
-          + config.padding_width*2)+'px',
+    width: (currentThemeConfig.width
+          + currentThemeConfig.border_width*2
+          + currentThemeConfig.padding_width*2)+'px',
   }"
   @click.stop="focus">
 
   <div
     style="border-style:solid;overflow:hidden;"
     :style="{
-      height: (config.item_height*config.item_show_count
-          + config.toolbar_height
+      height: (currentThemeConfig.item_height*currentThemeConfig.item_show_count
+          + currentThemeConfig.toolbar_height
           + 20
           + 10)+'px',
-      backgroundColor: config.background_color,
-      borderWidth: config.border_width+'px',
-      borderColor: config.border_color,
-      padding: config.padding_width+'px',
+      backgroundColor: currentThemeConfig.background_color,
+      borderWidth: currentThemeConfig.border_width+'px',
+      borderColor: currentThemeConfig.border_color,
+      padding: currentThemeConfig.padding_width+'px',
     }">
 
     <div
       class="toolbar"
-      :style="{  height: config.toolbar_height+'px',
+      :style="{  height: currentThemeConfig.toolbar_height+'px',
 
-                '--toolbar_height': config.toolbar_height+'px',
-                '--toolbar-background-color': config.toolbar_background_color,
-                '--toolbar-border-color': config.toolbar_border_color,
+                '--toolbar_height': currentThemeConfig.toolbar_height+'px',
+                '--toolbar-background-color': currentThemeConfig.toolbar_background_color,
+                '--toolbar-border-color': currentThemeConfig.toolbar_border_color,
 
-                '--toolbar-icon-color': config.toolbar_icon_color,
-                '--toolbar-icon-focus-color': config.toolbar_icon_focus_color,
+                '--toolbar-icon-color': currentThemeConfig.toolbar_icon_color,
+                '--toolbar-icon-focus-color': currentThemeConfig.toolbar_icon_focus_color,
 
-                '--toolbar-input-font-size': config.toolbar_input_font_size+'px',
-                '--toolbar-input-font-color': config.toolbar_input_font_color,
-                '--toolbar-input-focus-color': config.toolbar_input_focus_color,
-                '--toolbar-input-selected-font-color': config.toolbar_input_selected_font_color,
-                '--toolbar-input-selected-background-color': config.toolbar_input_selected_background_color,
+                '--toolbar-input-font-size': currentThemeConfig.toolbar_input_font_size+'px',
+                '--toolbar-input-font-color': currentThemeConfig.toolbar_input_font_color,
+                '--toolbar-input-focus-border-color': currentThemeConfig.toolbar_input_focus_border_color,
+                '--toolbar-input-selected-font-color': currentThemeConfig.toolbar_input_selected_font_color,
+                '--toolbar-input-selected-background-color': currentThemeConfig.toolbar_input_selected_background_color,
 
-                '--toolbar-button-font-color': config.toolbar_button_font_color,
-                '--toolbar-button-hover-font-color': config.toolbar_button_hover_font_color,
-                '--toolbar-button-active-font-color': config.toolbar_button_active_font_color,
-                '--toolbar-button-hover-border-color': config.toolbar_button_hover_border_color,
-                '--toolbar-button-active-border-color': config.toolbar_button_active_border_color,
-                '--toolbar-button-hover-background-color': config.toolbar_button_hover_background_color,
-                '--toolbar-button-active-background-color': config.toolbar_button_active_background_color,
+                '--toolbar-button-font-color': currentThemeConfig.toolbar_button_font_color,
+                '--toolbar-button-hover-font-color': currentThemeConfig.toolbar_button_hover_font_color,
+                '--toolbar-button-active-font-color': currentThemeConfig.toolbar_button_active_font_color,
+                '--toolbar-button-hover-border-color': currentThemeConfig.toolbar_button_hover_border_color,
+                '--toolbar-button-active-border-color': currentThemeConfig.toolbar_button_active_border_color,
+                '--toolbar-button-hover-background-color': currentThemeConfig.toolbar_button_hover_background_color,
+                '--toolbar-button-active-background-color': currentThemeConfig.toolbar_button_active_background_color,
 
                 }">
       <!-- autofocus 会报错 -->
@@ -55,7 +55,7 @@
         class="search-input"
         :class="{ clearable: keyword !='' && showClearButton }"
         spellcheck="false"
-        :placeholder="currentWorkspace == undefined || ! config.toolbar_show_input_tip
+        :placeholder="currentWorkspace == undefined || ! currentThemeConfig.toolbar_show_input_tip
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         :clearable="false"
@@ -76,11 +76,11 @@
         ref="input">
         <template slot="prepend">
           <el-dropdown
-            v-if="config.show_menu"
+            v-if="currentThemeConfig.show_menu"
             trigger="hover"
             placement="bottom-start"
             style="height: 100%;"
-            :style="{ width: config.show_workspace_name ? '140px' : 'auto' }"
+            :style="{ width: currentThemeConfig.show_workspace_name ? '140px' : 'auto' }"
             :hide-on-click="false"
             :show-timeout="0"
             @visible-change="menuVisible = arguments[0]"
@@ -94,22 +94,22 @@
                 :name="currentWorkspace == undefined ? 'frown-open-regular' : currentWorkspace.svg"
                 style="width: 20px; height: 20px; margin-right: 3px;"
                 :style="{ color: localConfig.pinned && currentWorkspace != undefined && localConfig.active_workspace_type == currentWorkspace.type
-                      ? config.toolbar_menu_icon_fixed_color : config.toolbar_menu_icon_color}"></svg-icon>
+                      ? currentThemeConfig.toolbar_menu_icon_fixed_color : currentThemeConfig.toolbar_menu_icon_color}"></svg-icon>
               <span
-                v-if="config.show_workspace_name"
-                :style="{ color: config.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
+                v-if="currentThemeConfig.show_workspace_name"
+                :style="{ color: currentThemeConfig.toolbar_menu_font_color }">{{ currentWorkspace == undefined ? '' : lang(currentWorkspace.title) }}</span>
               <i style="transition: transform .3s;"
                 class="el-icon-arrow-down el-icon--right"
                 :class="{ 'is-reverse': menuVisible}"
-                :style="{ color: config.toolbar_icon_color }"></i>
+                :style="{ color: currentThemeConfig.toolbar_icon_color }"></i>
             </span>
             <el-dropdown-menu
               slot="dropdown"
               class="toolbar-menu"
               @mousedown.native.prevent
-              :style="{ maxHeight: (config.item_height*config.item_show_count
-                                  + config.border_width
-                                  + config.padding_width
+              :style="{ maxHeight: (currentThemeConfig.item_height*currentThemeConfig.item_show_count
+                                  + currentThemeConfig.border_width
+                                  + currentThemeConfig.padding_width
                                   + statusbarHeight
                                   - 10)+'px' }">
               <el-dropdown-item
@@ -214,8 +214,8 @@
                 class="el-icon-date"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
-                :style="{ 'line-height': config.toolbar_height+'px',
-                          color: history.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: history.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
                 @mousedown.prevent
                 @click="history.visible = ! history.visible"></i>
             </el-popover>
@@ -254,8 +254,8 @@
                 class="el-icon-s-operation"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
-                :style="{ 'line-height': config.toolbar_height+'px',
-                          color: bookmark.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: bookmark.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
                 @mousedown.prevent
                 @click="bookmark.visible = ! bookmark.visible"></i>
             </el-popover>
@@ -296,8 +296,8 @@
                 class="el-icon-search"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
-                :style="{ 'line-height': config.toolbar_height+'px',
-                          color: tab.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: tab.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
                 @mousedown.prevent
                 @click="tab.visible = ! tab.visible"></i>
             </el-popover>
@@ -323,8 +323,8 @@
                 class="el-icon-search"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
-                :style="{ 'line-height': config.toolbar_height+'px',
-                          color: other.visible ? config.toolbar_icon_focus_color : config.toolbar_icon_color }"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: other.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
                 @mousedown.prevent
                 @click="other.visible = ! other.visible"></i>
             </el-popover>
@@ -333,7 +333,7 @@
       </el-input>
       <el-button-group
         style="display: flex"
-        :style="{ width: ((config.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
+        :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
         <el-button
           v-for="(type, i) in config.operateOrder"
           :key="i"
@@ -354,7 +354,7 @@
       :autoplay="false"
       :loop="true"
       :initial-index="activeWorkspaceIndex"
-      :height="(config.item_height*config.item_show_count)+'px'"
+      :height="(currentThemeConfig.item_height*currentThemeConfig.item_show_count)+'px'"
       :trigger="carouselTrigger"
       @change="workspaceChange"
       @mousedown.native.prevent
@@ -367,7 +367,8 @@
           :is="workspace.type"
           :config="config"
           :localConfig="localConfig"
-          :project_config="project_config"
+          :currentThemeConfig="currentThemeConfig"
+          :projectConfig="projectConfig"
           :isLoad="isLoad"
           :keyType="keyType"
           :activeWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
@@ -384,8 +385,9 @@
   </div>
 
   <Statusbar
-    v-if="config.statusbar_show"
+    v-if="currentThemeConfig.statusbar_show"
     :config="config"
+    :currentThemeConfig="currentThemeConfig"
     :localConfig="localConfig"
     :isLoad="isLoad"
     :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
@@ -404,15 +406,55 @@
     @open="themeDialogVisible2=true"
     @closed="themeDialogVisible2=false"
     @mousedown.native.prevent>
-    <div slot="title" style="font-size: 16px;">
+    <div slot="title" style="font-size: 16px;position: relative;">
+      <svg-icon
+        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
+        class="hover"
+        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;cursor: pointer;"
+      ></svg-icon>
+      <span>选择主题</span>
       <i
+        class="el-icon-s-tools hover"
+        style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;cursor: pointer;"
+        @click="$open('./options.html?type=themes', getKeyType($event))"></i>
+
+      <!-- <i
+        class="el-icon-s-tools hover"
+        style="color: gray;position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
+        @click="$open('./options.html?type=themes', getKeyType($event))"></i>
+        选择主题
+      <svg-icon
+        :name="!localConfig.popup ? 'fly-brands' : 'ship-solid'"
+        class="hover"
+        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;right: 0;margin-left: 10px;cursor: pointer;"
+      ></svg-icon> -->
+
+      <!-- <svg-icon
+        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
+        class="hover"
+        style="width: 16px;height: 16px;color: gray;position: relative;top: 1px;margin-right: 10px;cursor: pointer;"
+      ></svg-icon>选择主题 -->
+
+      <!-- <i
         class="el-icon-s-tools"
         style="position: relative;top: 1px;margin-right: 5px;cursor: pointer;"
-        @click="$open('./options.html?type=themes', getKeyType($event))"></i>选择主题
+        @click="$open('./options.html?type=themes', getKeyType($event))"></i>选择主题 -->
+
+      <!-- <span
+        style="color:gray;cursor:pointer;margin-top:4px;"
+        @click="$open('./options.html?type=themes', getKeyType($event))">
+        <svg-icon
+          :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
+          style="width: 16px;height: 16px;"
+        ></svg-icon>
+      </span>
+      <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        <span>选择主题</span>
+      </span> -->
     </div>
     <SelectX
       v-if="themeDialogVisible2"
-      :list="themes"
+      :list="currentThemeList"
       :itemHeight="65"
       :itemShowCount="3"
       style="width:200px"
@@ -420,8 +462,7 @@
       <template #default="{ index, item, isSelected }">
         <div
           class="theme-item"
-          :class="{ selected: isSelected }"
-          @click="changeTheme(item, index)">
+          :class="{ selected: isSelected }">
           <span
             style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
             :style="{ borderColor: item.config.border_color,
@@ -448,12 +489,12 @@
               }">.</span></span>
           <span
             class="title"
-            :style="{ color: item.id == config.theme_id ? config.list_focus_background_color : 'black' }">{{ item.name }}</span>
+            :style="{ color: item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }">{{ item.name }}</span>
           <i
             v-show="isSelected"
             class="el-icon-check"
             style="font-weight: 700"
-            :style="{ color:  item.id == config.theme_id ? config.list_focus_background_color : 'black' }"></i>
+            :style="{ color:  item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }"></i>
         </div>
       </template>
     </SelectX>
@@ -473,10 +514,15 @@ import Temporary from './components/savetabs/Temporary.vue'
 import All from './components/savetabs/All.vue'
 import Statusbar from './components/savetabs/Statusbar.vue'
 
-import userConfig from './config/user_config.json'
-import userLocalConfig from './config/user_local_config.json'
-import projectConfig from './config/project_config.json'
-import userTheme from './config/user_theme.json'
+import user_config from './config/user_config.json'
+import user_local_config from './config/user_local_config.json'
+import project_config from './config/project_config.json'
+import user_theme from './config/user_theme.json'
+
+const THEME_TYPWE = {
+  POPUP: 1,
+  INJECT: 2,
+}
 
 export default {
   name: 'app',
@@ -515,18 +561,18 @@ export default {
       keyType: '',
       carouselTrigger: 'click',
 
-      config: userConfig,
-      localConfig: userLocalConfig,
-      project_config: projectConfig,
-      themes: userTheme,
-      allWorkspaces: projectConfig.allWorkspaces,
+      config: user_config,
+      localConfig: user_local_config,
+      theme: user_theme,
+      openWay: user_local_config.popup ? 'popup' : 'inject',
+      projectConfig: project_config,
+      allWorkspaces: project_config.allWorkspaces,
       commands: {},
 
       menuVisible: false,
       themeDialogVisible: false,
       themeDialogVisible2: false,
       themeScrollPosition: 0,
-      // currentThemeIndex: -1,
 
       limited: false,
 
@@ -570,18 +616,59 @@ export default {
     currentWorkspace() {
       return this.workspaces[ this.activeWorkspaceIndex ];
     },
-    currentTheme() {
-      return this.themes[ this.currentThemeIndex ];
+
+    currentThemeConfig() {
+      return this.currentTheme.config;
     },
-    currentThemeIndex() {
-      let index = -1;
-      for(let theme of this.themes) {
-        index++;
-        if(theme.id == this.config.theme_id) {
-          return index;
+    currentTheme() {
+      return this.currentThemeList[ this.currentThemeIndex ];
+    },
+    currentThemeIndex: {
+      set(index) {
+        this.currentThemeId = this.currentThemeList[index].id;
+      },
+      get() {
+        let index = -1;
+        for(let theme of this.currentThemeList) {
+          index++;
+          if(this.currentThemeId == theme.id) {
+            return index;
+          }
         }
+        return -1;
       }
-      return -1;
+    },
+    currentThemeId: {
+      set(themeId) {
+        if(this.openWay == 'popup') this.theme.theme_popup_id = themeId;
+        else this.theme.theme_inject_id = themeId;
+
+        let theme = Object.assign({}, this.theme);
+        delete theme.system_theme_list;
+        chrome.storage.local.set({'theme':theme});
+      },
+      get() {
+        return this.openWay == 'popup' ? this.theme.theme_popup_id : this.theme.theme_inject_id;
+      }
+    },
+    currentThemeList() {
+      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
+      return this.themeList.filter(theme => themeType & theme.type );
+    },
+    themeList() {
+      // 合并系统主题和用户主题
+      let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
+
+      // 对主题排序（没有 rank 的排最后）
+      themeList.sort((theme1, theme2) => {
+        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
+        if(this.theme.rank[theme1.id] == undefined) return 1;
+        if(this.theme.rank[theme2.id] == undefined) return -1;
+
+        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
+      });
+
+      return themeList;
     },
 
     keymap() {
@@ -674,7 +761,7 @@ export default {
       this.isLoading = visibility;
     },
     statusTip(tip, lower=false) {
-      if(this.config.statusbar_show) {
+      if(this.currentThemeConfig.statusbar_show) {
         if(this.$refs.statusbar.showTip(tip, lower)) {
           this.$refs.statusbar.finishTip();
         }
@@ -703,7 +790,7 @@ export default {
         // 没有其它事情
         return;
       }
-console.log('mmmmmmmmmmffff', JSON.stringify(things))
+
       things.forEach((thing) => {
         if(typeof(thing) == 'string') {
           this[thing]();
@@ -734,17 +821,13 @@ console.log('mmmmmmmmmmffff', JSON.stringify(things))
     search() {
       if(this.$refs.workspaces == undefined
       || this.$refs.workspaces[ this.activeWorkspaceRefIndex ] == undefined) {
-console.log('search', this.activeWorkspaceRefIndex )
-console.log('mmmmmmmmmmmm', JSON.stringify(this.things))
         this.things[ this.activeWorkspaceRefIndex ].push('search');
-console.log('mmmmmmmmmmmm2', JSON.stringify(this.things))
         // 如果在这之前已经有其它事情待处理（如添加），则不作查询，会有人帮忙处理
         // if(this.things[ this.activeWorkspaceRefIndex ] == undefined) {
         //   this.things[ this.activeWorkspaceRefIndex ] = 'search';
         // }
         return;
       }
-console.log('mmmmmmmmmmmm3', JSON.stringify(this.things))
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search(this.keyword);
     },
     openWindow(keyType) {
@@ -1005,14 +1088,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       }
       chrome.storage.local.set({'config': this.localConfig});
     },
-    changeTheme(theme, index) {
-      if(this.currentThemeIndex == index) return;
-
-      this.config.theme_id = theme.id;
-      Object.assign(this.config, theme.config);
-
-      chrome.storage.sync.set({'config': this.config});
-    },
     popupChange() {
       this.localConfig.popup = ! this.localConfig.popup;
       chrome.storage.local.set({'config': this.localConfig}, () => {
@@ -1091,7 +1166,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         })
       }),
       new Promise((resolve) => {
-        chrome.storage.local.get({'config': {}, 'info': {}}, items => {
+        chrome.storage.local.get({'config': {}, 'theme': {}, 'info': {}}, items => {
           resolve(items);
         })
       }),
@@ -1105,9 +1180,12 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       Object.assign(this.config, syncItems.config);
       Object.assign(this.localConfig, localItems.config);
+      Object.assign(this.theme, localItems.theme);
 
+      this.openWay = this.localConfig.popup ? 'popup' : 'inject';
       if(Object.keys(localItems.info).length > 0) {
         chrome.storage.local.remove('info');
+        this.openWay = 'inject';
       }
 
       this.commands = commands;
@@ -1132,11 +1210,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       this.search();
 
-      // this.things[ this.activeWorkspaceRefIndex ].push({
-      //   'method': 'add',
-      //   'params': ['note', this.keyword],
-      // });
-
       if(localItems.info.add_type != undefined) {
         let type = localItems.info.add_type;
         // let index = this.getTypeIndex(type);
@@ -1154,44 +1227,44 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       console.warn('isLoad');
       this.isLoad = true;
 
-      let carouselNode = document.querySelector('.el-carousel__indicators');
-      if( ! this.config.statusbar_show) {
-        carouselNode.children.forEach((el, index) => {
-          let workspace = this.workspaces[ index ];
-          let title = this.lang(workspace.title)
-          title += this.keymap['open_workspace_'+workspace.type]
-                  ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-                  : '';
-          el.setAttribute('title', title)
-        })
-        return;
-      }
+      // let carouselNode = document.querySelector('.el-carousel__indicators');
+      // if( ! this.currentThemeConfig.statusbar_show) {
+      //   carouselNode.children.forEach((el, index) => {
+      //     let workspace = this.workspaces[ index ];
+      //     let title = this.lang(workspace.title)
+      //     title += this.keymap['open_workspace_'+workspace.type]
+      //             ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+      //             : '';
+      //     el.setAttribute('title', title)
+      //   })
+      //   return;
+      // }
 
-      // 走马灯底部指示器提示
-      carouselNode.children.forEach((el, index) => {
-        el.onmouseenter = () => {
-          clearTimeout(this.w.statusbarTipTimer);
-          this.w.statusbarTipTimer = setTimeout(() => {
-            let workspace = this.workspaces[ index ];
-            let title = this.lang(workspace.title)
-            title += this.keymap['open_workspace_'+workspace.type]
-                    ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-                    : '';
-            this.$refs.statusbar.showTip(title);
-            this.w.statusbarTipShowSpeed = 0;
-          }, this.w.statusbarTipShowSpeed)
-        }
-        el.onmouseleave = () => {
-          clearTimeout(this.w.statusbarTipTimer);
-          this.$refs.statusbar.finishTip(() => {
-            this.w.statusbarTipShowSpeed = 200;
-            this.carouselTrigger = 'click';
-          });
-        }
-        el.onclick = () => {
-          this.carouselTrigger = 'hover';
-        }
-      })
+      // // 走马灯底部指示器提示
+      // carouselNode.children.forEach((el, index) => {
+      //   el.onmouseenter = () => {
+      //     clearTimeout(this.w.statusbarTipTimer);
+      //     this.w.statusbarTipTimer = setTimeout(() => {
+      //       let workspace = this.workspaces[ index ];
+      //       let title = this.lang(workspace.title)
+      //       title += this.keymap['open_workspace_'+workspace.type]
+      //               ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+      //               : '';
+      //       this.$refs.statusbar.showTip(title);
+      //       this.w.statusbarTipShowSpeed = 0;
+      //     }, this.w.statusbarTipShowSpeed)
+      //   }
+      //   el.onmouseleave = () => {
+      //     clearTimeout(this.w.statusbarTipTimer);
+      //     this.$refs.statusbar.finishTip(() => {
+      //       this.w.statusbarTipShowSpeed = 200;
+      //       this.carouselTrigger = 'click';
+      //     });
+      //   }
+      //   el.onclick = () => {
+      //     this.carouselTrigger = 'hover';
+      //   }
+      // })
 
       // 输入框鼠标经过显示清除按钮
       this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
@@ -1200,11 +1273,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         event.preventDefault();
         this.showClearButton = true;
       })
-      // this.originInputNode.addEventListener('mouseleave', (event) => {
-      //   // event.stopPropagation();
-      //   // event.preventDefault();
-      //   this.showClearButton = false;
-      // })
     };
 
     // window.oncontextmenu = function(e){
@@ -1443,7 +1511,7 @@ img {
   padding-right: 30px;
 }
 .toolbar .search-input input:focus {
-  border-color: var(--toolbar-input-focus-color);
+  border-color: var(--toolbar-input-focus-border-color);
 }
 .toolbar .search-input input::placeholder {
   color: var(--toolbar-icon-color);

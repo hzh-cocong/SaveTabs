@@ -2,11 +2,11 @@
   <div
     class="statusbar"
     :style="{ height: statusbarHeight+'px',
-              backgroundColor: config.statusbar_background_color,
-              color: config.statusbar_icon_color,
+              backgroundColor: currentThemeConfig.statusbar_background_color,
+              color: currentThemeConfig.statusbar_icon_color,
 
-              '--statusbar-icon-color': config.statusbar_icon_color,
-              '--statusbar-image-opacity': config.statusbar_image_opacity }">
+              '--statusbar-icon-color': currentThemeConfig.statusbar_icon_color,
+              '--statusbar-image-opacity': currentThemeConfig.statusbar_image_opacity }">
 
     <svg-icon
       :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
@@ -151,6 +151,10 @@ export default {
       required: require,
     },
     localConfig: {
+      type: Object,
+      required: require,
+    },
+    currentThemeConfig: {
       type: Object,
       required: require,
     },

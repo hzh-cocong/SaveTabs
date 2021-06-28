@@ -1,12 +1,8 @@
 {
     "workspaces": [
-        "all",
-        "tab",
-        "window",
-        "note",
-        "temporary"
+        "window"
     ],
-    "operateOrder": [ "window", "note", "temporary" ],
+    "operateOrder": [ "window" ],
 
     "workspace_change_word": ">"
 }

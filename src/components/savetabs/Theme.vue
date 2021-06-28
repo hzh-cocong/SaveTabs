@@ -9,7 +9,9 @@
     :destroy-on-close="false"
     width="250px"
     class="theme"
-    @mousedown.native.prevent>
+    @mousedown.native.prevent
+    @open="$emit('open')"
+    @closed="$emit('closed')">
     <div slot="title" style="font-size: 16px;position: relative;">
       <svg-icon
         :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
@@ -24,9 +26,7 @@
         @click="$open('./options.html?type=themes', getKeyType($event))"></i>
     </div>
     <SelectX
-      :currentIndex="currentThemeIndex"
-      @change="$emit('change', $event)"
-
+      v-model="currentThemeIndex"
       :list="currentThemeList"
       :itemHeight="65"
       :itemShowCount="3"
@@ -61,12 +61,12 @@
               }">.</span></span>
           <span
             class="title"
-            :style="{ color: item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }">{{ item.name }}</span>
+            :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.name }}</span>
           <i
             v-show="isSelected"
             class="el-icon-check"
             style="font-weight: 700"
-            :style="{ color:  item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }"></i>
+            :style="{ color:  item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }"></i>
         </div>
       </template>
     </SelectX>
@@ -75,12 +75,18 @@
 
 <script>
 import SelectX from '../common/SelectX.vue'
+import user_theme from '../../config/user_theme.json'
+
+const THEME_TYPWE = {
+  POPUP: 1,
+  INJECT: 2,
+}
 
 export default {
   name: 'theme',
-  inject: ['statusTip', 'popupChange'],
+  inject: ['popupChange'],
   model: {
-      prop: 'currentThemeIndex',
+      prop: 'currentTheme',
       event: 'change'
   },
   props: {
@@ -92,27 +98,64 @@ export default {
       type: Object,
       required: require,
     },
-    currentThemeIndex: {
-      type: Number,
-      required: require,
-    },
-    currentThemeId: {
-      type: String,
-      required: require,
-    },
-    currentThemeConfig: {
+    currentTheme: {
       type: Object,
       required: require,
     },
-    currentThemeList: {
-      type: Array,
-      required: require,
+    openWay: {
+      type: String,
+      required: true
     },
   },
+  data() {
+    return {
+      theme: user_theme,
+    }
+  },
   computed: {
+    currentThemeIndex: {
+      set(index) {
+        this.$emit('change', this.currentThemeList[index]);
+      },
+      get() {
+        let index = -1;
+        for(let theme of this.currentThemeList) {
+          index++;
+          if(this.currentTheme.id == theme.id) {
+            return index;
+          }
+        }
+        return -1;
+      }
+    },
+    currentThemeList() {
+      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
+      return this.themeList.filter(theme => themeType & theme.type );
+    },
+    themeList() {
+      // 合并系统主题和用户主题
+      let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
+
+      // 对主题排序（没有 rank 的排最后）
+      themeList.sort((theme1, theme2) => {
+        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
+        if(this.theme.rank[theme1.id] == undefined) return 1;
+        if(this.theme.rank[theme2.id] == undefined) return -1;
+
+        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
+      });
+
+      return themeList;
+    },
   },
   components: {
     SelectX,
+  },
+  mounted() {
+    console.log('mounted.theme');
+    chrome.storage.local.get({'theme': {}}, items => {
+      Object.assign(this.theme, items.theme);
+    })
   }
 }
 </script>
@@ -122,5 +165,53 @@ export default {
 </style>
 
 <style>
+.theme .el-dialog__header {
+  padding: 10px 53px 0 11px !important;
+  text-align: left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.theme .el-dialog__header .el-dialog__headerbtn {
+  top: 12px !important;
+}
+.theme .el-dialog__body{
+  padding: 8px 0 0 0 !important;
+}
 
+.theme-item {
+  margin: 4px 4px 6px 4px;
+  padding: 0px 9px 0px 0px;
+
+  border-radius: 2px;
+
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  /* 禁止选择 */
+  /* 有了 @mousedown.prevent，不再需要这个了
+  /* -moz-user-select:none; */ /*火狐*/
+  /* -webkit-user-select:none; */ /*webkit浏览器*/
+  /* -ms-user-select:none; */ /*IE10*/
+  /* -khtml-user-select:none; */ /*早期浏览器*/
+  /* user-select:none; */
+}
+.theme-item.selected {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  font-weight: 700;
+}
+.theme-item .title {
+  flex: 1;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.theme-item:hover:not(.selected) {
+  background-color: #fff;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 </style>

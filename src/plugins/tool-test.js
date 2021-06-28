@@ -479,7 +479,9 @@ const tool = {
           }
         },
         set: function(options, callback) {
-          callback != undefined && callback();
+          setTimeout(() => {
+            callback != undefined && callback();
+          }, 0)
         },
         remove: function(keys, callback) {
           callback != undefined && callback();

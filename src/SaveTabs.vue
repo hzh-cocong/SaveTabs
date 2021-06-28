@@ -47,7 +47,8 @@
                 '--toolbar-button-hover-background-color': currentThemeConfig.toolbar_button_hover_background_color,
                 '--toolbar-button-active-background-color': currentThemeConfig.toolbar_button_active_background_color,
 
-                }">
+                }"
+      @mouseleave="showOperationButton=false">
       <!-- autofocus 会报错 -->
       <el-input
         v-model="keyword"
@@ -333,6 +334,7 @@
         </template>
       </el-input>
       <el-button-group
+        v-if=" ! currentThemeConfig.auto_hide_operate_button || showOperationButton"
         style="display: flex"
         :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
         <el-button
@@ -397,19 +399,18 @@
     ref="statusbar"></Statusbar>
 
   <theme
-    v-model="currentThemeIndex"
-    v-if="menuVisible || themeDialogVisible"
+    v-if="menuVisible || themeDialogVisible || ! themeDialogFinish"
+    v-model="currentTheme"
     :visible.sync="themeDialogVisible"
     :localConfig="localConfig"
-    :currentThemeList="currentThemeList"
-    :currentThemeId="currentThemeId"
-    :currentThemeConfig="currentThemeConfig"></theme>
+    :openWay="openWay"
+    @open="themeDialogFinish=false"></theme>
+    <!-- @closed="themeDialogFinish=false" -->
 
 </div>
 </template>
 
 <script>
-import SelectX from './components/common/SelectX.vue'
 import Window from './components/savetabs/Window.vue'
 import History from './components/savetabs/History.vue'
 import Tab from './components/savetabs/Tab.vue'
@@ -423,12 +424,6 @@ import Statusbar from './components/savetabs/Statusbar.vue'
 import user_config from './config/user_config.json'
 import user_local_config from './config/user_local_config.json'
 import project_config from './config/project_config.json'
-import user_theme from './config/user_theme.json'
-
-const THEME_TYPWE = {
-  POPUP: 1,
-  INJECT: 2,
-}
 
 export default {
   name: 'app',
@@ -469,7 +464,6 @@ export default {
 
       config: user_config,
       localConfig: user_local_config,
-      theme: user_theme,
       openWay: user_local_config.popup ? 'popup' : 'inject',
       projectConfig: project_config,
       allWorkspaces: project_config.allWorkspaces,
@@ -477,6 +471,7 @@ export default {
 
       menuVisible: false,
       themeDialogVisible: false,
+      themeDialogFinish: true,
       themeScrollPosition: 0,
 
       limited: false,
@@ -508,6 +503,7 @@ export default {
       statusbarHeight: 30,
       originInputNode: null,
       showClearButton: false,
+      showOperationButton: false,
       w: {
         statusbarTipTimer: null,
         statusbarTipShowSpeed: 200,
@@ -525,55 +521,23 @@ export default {
     currentThemeConfig() {
       return this.currentTheme.config;
     },
-    currentTheme() {
-      return this.currentThemeList[ this.currentThemeIndex ];
-    },
-    currentThemeIndex: {
-      set(index) {
-        this.currentThemeId = this.currentThemeList[index].id;
+    currentTheme: {
+      set(theme) {
+        console.log('uuuuuuuuuuu1')
+        if(this.openWay == 'popup') this.localConfig.theme_popup = theme;
+        else this.localConfig.theme_inject = theme;
+        chrome.storage.local.set({'config': this.localConfig}, () => {
+          this.statusTip(theme.name);
+          // this.$nextTick(() => {
+          //   this.statusTip(theme.name);
+          // })
+        });
       },
       get() {
-        let index = -1;
-        for(let theme of this.currentThemeList) {
-          index++;
-          if(this.currentThemeId == theme.id) {
-            return index;
-          }
-        }
-        return -1;
+        console.log('uuuuuuuuuuu2')
+        if(this.openWay == 'popup') return this.localConfig.theme_popup;
+        else return this.localConfig.theme_inject;
       }
-    },
-    currentThemeId: {
-      set(themeId) {
-        if(this.openWay == 'popup') this.theme.theme_popup_id = themeId;
-        else this.theme.theme_inject_id = themeId;
-
-        let theme = Object.assign({}, this.theme);
-        delete theme.system_theme_list;
-        chrome.storage.local.set({'theme':theme});
-      },
-      get() {
-        return this.openWay == 'popup' ? this.theme.theme_popup_id : this.theme.theme_inject_id;
-      }
-    },
-    currentThemeList() {
-      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
-      return this.themeList.filter(theme => themeType & theme.type );
-    },
-    themeList() {
-      // 合并系统主题和用户主题
-      let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
-
-      // 对主题排序（没有 rank 的排最后）
-      themeList.sort((theme1, theme2) => {
-        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
-        if(this.theme.rank[theme1.id] == undefined) return 1;
-        if(this.theme.rank[theme2.id] == undefined) return -1;
-
-        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
-      });
-
-      return themeList;
     },
 
     keymap() {
@@ -588,7 +552,6 @@ export default {
     },
   },
   components: {
-    SelectX,
     Window,
     History,
     Tab,
@@ -1054,6 +1017,62 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         });
       });
     },
+
+    finalWork() {
+      console.warn('isLoad');
+      this.isLoad = true;
+
+      // 走马灯底部指示器提示
+      let carouselNode = document.querySelector('.el-carousel__indicators');
+      carouselNode.children.forEach((el, index) => {
+        let workspace = this.workspaces[ index ];
+        let title = this.lang(workspace.title)
+        title += this.keymap['open_workspace_'+workspace.type]
+                ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+                : '';
+
+        el.onmouseenter = () => {
+          if( ! this.currentThemeConfig.statusbar_show) {
+            el.setAttribute('title', title)
+            return;
+          } else {
+            el.setAttribute('title', '')
+          }
+
+          clearTimeout(this.w.statusbarTipTimer);
+          this.w.statusbarTipTimer = setTimeout(() => {
+            let workspace = this.workspaces[ index ];
+            let title = this.lang(workspace.title)
+            title += this.keymap['open_workspace_'+workspace.type]
+                    ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
+                    : '';
+            this.$refs.statusbar.showTip(title);
+            this.w.statusbarTipShowSpeed = 0;
+          }, this.w.statusbarTipShowSpeed)
+        }
+        el.onmouseleave = () => {
+          if( ! this.currentThemeConfig.statusbar_show) return;
+
+          clearTimeout(this.w.statusbarTipTimer);
+          this.$refs.statusbar.finishTip(() => {
+            this.w.statusbarTipShowSpeed = 200;
+            this.carouselTrigger = 'click';
+          });
+        }
+        el.onclick = () => {
+          this.carouselTrigger = 'hover';
+        }
+      })
+
+      // 输入框鼠标经过显示清除按钮
+      this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
+      this.originInputNode.addEventListener('mouseenter', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        this.showClearButton = true;
+        this.showOperationButton = true;
+      })
+    }
   },
   beforeUpdate() {
     console.warn('savetabs:beforeUpdate');
@@ -1072,7 +1091,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         })
       }),
       new Promise((resolve) => {
-        chrome.storage.local.get({'config': {}, 'theme': {}, 'info': {}}, items => {
+        chrome.storage.local.get({'config': {}, 'info': {}}, items => {
           resolve(items);
         })
       }),
@@ -1086,7 +1105,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       Object.assign(this.config, syncItems.config);
       Object.assign(this.localConfig, localItems.config);
-      Object.assign(this.theme, localItems.theme);
 
       this.openWay = this.localConfig.popup ? 'popup' : 'inject';
       if(Object.keys(localItems.info).length > 0) {
@@ -1127,59 +1145,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       }
     })
 
-    // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
+    // 等页面加载完了再加载图片，否则插件弹出的速度会变慢
     // 这个才是最对的
-    document.body.onload=() => {
-      console.warn('isLoad');
-      this.isLoad = true;
-
-      // let carouselNode = document.querySelector('.el-carousel__indicators');
-      // if( ! this.currentThemeConfig.statusbar_show) {
-      //   carouselNode.children.forEach((el, index) => {
-      //     let workspace = this.workspaces[ index ];
-      //     let title = this.lang(workspace.title)
-      //     title += this.keymap['open_workspace_'+workspace.type]
-      //             ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-      //             : '';
-      //     el.setAttribute('title', title)
-      //   })
-      //   return;
-      // }
-
-      // // 走马灯底部指示器提示
-      // carouselNode.children.forEach((el, index) => {
-      //   el.onmouseenter = () => {
-      //     clearTimeout(this.w.statusbarTipTimer);
-      //     this.w.statusbarTipTimer = setTimeout(() => {
-      //       let workspace = this.workspaces[ index ];
-      //       let title = this.lang(workspace.title)
-      //       title += this.keymap['open_workspace_'+workspace.type]
-      //               ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-      //               : '';
-      //       this.$refs.statusbar.showTip(title);
-      //       this.w.statusbarTipShowSpeed = 0;
-      //     }, this.w.statusbarTipShowSpeed)
-      //   }
-      //   el.onmouseleave = () => {
-      //     clearTimeout(this.w.statusbarTipTimer);
-      //     this.$refs.statusbar.finishTip(() => {
-      //       this.w.statusbarTipShowSpeed = 200;
-      //       this.carouselTrigger = 'click';
-      //     });
-      //   }
-      //   el.onclick = () => {
-      //     this.carouselTrigger = 'hover';
-      //   }
-      // })
-
-      // 输入框鼠标经过显示清除按钮
-      this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
-      this.originInputNode.addEventListener('mouseenter', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.showClearButton = true;
-      })
-    };
+    document.body.onload = this.finalWork;
 
     // window.oncontextmenu = function(e){
     //   // 取消默认的浏览器自带右键
@@ -1331,56 +1299,6 @@ body {
 
 img {
   filter: var(--filter);
-}
-
-.theme .el-dialog__header {
-  padding: 10px 53px 0 11px !important;
-  text-align: left;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.theme .el-dialog__header .el-dialog__headerbtn {
-  top: 12px !important;
-}
-.theme .el-dialog__body{
-  padding: 8px 0 0 0 !important;
-}
-
-.theme-item {
-  margin: 4px 4px 6px 4px;
-  padding: 0px 9px 0px 0px;
-
-  border-radius: 2px;
-
-  background-color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-
-  /* 禁止选择 */
-  /* 有了 @mousedown.prevent，不再需要这个了
-  /* -moz-user-select:none; */ /*火狐*/
-  /* -webkit-user-select:none; */ /*webkit浏览器*/
-  /* -ms-user-select:none; */ /*IE10*/
-  /* -khtml-user-select:none; */ /*早期浏览器*/
-  /* user-select:none; */
-}
-.theme-item.selected {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  font-weight: 700;
-}
-.theme-item .title {
-  flex: 1;
-  margin-left: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.theme-item:hover:not(.selected) {
-  background-color: #fff;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .toolbar {

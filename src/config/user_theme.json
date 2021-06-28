@@ -1,6 +1,4 @@
 {
-    "theme_popup_id": "1",
-    "theme_inject_id": "1",
     "rank": {},
     "user_theme_list": [],
     "system_theme_list": [
@@ -104,6 +102,7 @@
 
                 "show_workspace_name": true,
                 "show_menu": true,
+                "auto_hide_operate_button": false,
                 "statusbar_show": true
             }
         },
@@ -207,7 +206,8 @@
 
                 "show_workspace_name": true,
                 "show_menu": true,
-                "statusbar_show": true
+                "auto_hide_operate_button": true,
+                "statusbar_show": false
             }
         },
         {
@@ -310,6 +310,7 @@
 
                 "show_workspace_name": true,
                 "show_menu": true,
+                "auto_hide_operate_button": false,
                 "statusbar_show": true
             }
         }

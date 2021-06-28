@@ -50,6 +50,7 @@
                 }"
       @mouseleave="showOperationButton=false">
       <!-- autofocus 会报错 -->
+      <!-- up down 加 prevent 是为了让光标不跟着移动 -->
       <el-input
         v-model="keyword"
         name="search-input"
@@ -66,8 +67,8 @@
         :autofocus="true"
         @keyup.native="keyType=getKeyType($event)"
         @keydown.native="keydown"
-        @keydown.native.down="selectDelay('down', getKeyType($event))"
-        @keydown.native.up="selectDelay('up', getKeyType($event))"
+        @keydown.native.down.prevent="selectDelay('down', getKeyType($event))"
+        @keydown.native.up.prevent="selectDelay('up', getKeyType($event))"
         @keydown.native.left="leftOrRightDown('left', $event)"
         @keydown.native.right="leftOrRightDown('right', $event)"
         @keydown.native.enter="openWindow(getKeyType($event))"

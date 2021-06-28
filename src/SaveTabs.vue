@@ -134,6 +134,7 @@
               <el-dropdown-item
                 divided
                 :command="-1"
+                :title="currentTheme.name"
                 style="overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
                 @click.native="themeDialogVisible=true;"><!-- 顶部已继承了 click focus -->
                 <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
@@ -395,77 +396,14 @@
     @mousedown.native.prevent
     ref="statusbar"></Statusbar>
 
-  <el-dialog
+  <theme
+    v-model="currentThemeIndex"
+    v-if="menuVisible || themeDialogVisible"
     :visible.sync="themeDialogVisible"
-    :modal="false"
-    :append-to-body="true"
-    :close-on-click-modal="false"
-    :destroy-on-close="false"
-    width="250px"
-    class="theme"
-    @open="themeDialogVisible2=true"
-    @closed="themeDialogVisible2=false"
-    @mousedown.native.prevent>
-    <div slot="title" style="font-size: 16px;position: relative;">
-      <svg-icon
-        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
-        class="hover"
-        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;cursor: pointer;"
-        @click.native="popupChange"
-      ></svg-icon>
-      <span>选择主题</span>
-      <i
-        class="el-icon-s-tools hover"
-        style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;cursor: pointer;"
-        @click="$open('./options.html?type=themes', getKeyType($event))"></i>
-    </div>
-    <SelectX
-      v-if="themeDialogVisible2"
-      :list="currentThemeList"
-      :itemHeight="65"
-      :itemShowCount="3"
-      style="width:250px"
-      v-model="currentThemeIndex">
-      <template #default="{ index, item, isSelected }">
-        <div
-          class="theme-item"
-          :class="{ selected: isSelected }">
-          <span
-            style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
-            :style="{ borderColor: item.config.border_color,
-                      backgroundColor: item.config.background_color }"><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_background_color,
-                color: item.config.list_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_font_color,
-                color: item.config.list_font_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_background_color,
-                color: item.config.list_focus_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_font_color,
-                color: item.config.list_focus_font_color,
-              }">.</span></span>
-          <span
-            class="title"
-            :style="{ color: item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }">{{ item.name }}</span>
-          <i
-            v-show="isSelected"
-            class="el-icon-check"
-            style="font-weight: 700"
-            :style="{ color:  item.id == currentThemeId ? currentThemeConfig.list_focus_background_color : 'black' }"></i>
-        </div>
-      </template>
-    </SelectX>
-  </el-dialog>
+    :localConfig="localConfig"
+    :currentThemeList="currentThemeList"
+    :currentThemeId="currentThemeId"
+    :currentThemeConfig="currentThemeConfig"></theme>
 
 </div>
 </template>
@@ -479,6 +417,7 @@ import Bookmark from './components/savetabs/Bookmark.vue'
 import Note from './components/savetabs/Note.vue'
 import Temporary from './components/savetabs/Temporary.vue'
 import All from './components/savetabs/All.vue'
+import Theme from './components/savetabs/Theme.vue'
 import Statusbar from './components/savetabs/Statusbar.vue'
 
 import user_config from './config/user_config.json'
@@ -538,7 +477,6 @@ export default {
 
       menuVisible: false,
       themeDialogVisible: false,
-      themeDialogVisible2: false,
       themeScrollPosition: 0,
 
       limited: false,
@@ -658,6 +596,7 @@ export default {
     Note,
     Temporary,
     All,
+    Theme,
     Statusbar,
   },
   methods: {

@@ -52,9 +52,11 @@ export default {
   },
   watch: {
     currentIndex: function(newVal) {
-      let center = Math.ceil(this.itemShowCount/2);
-      this.ulNode.scrollTop = (newVal+1-center)*this.itemHeight;
-      this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
+      if(this.scrollTool != null) {
+        let center = Math.ceil(this.itemShowCount/2);
+        this.ulNode.scrollTop = (newVal+1-center)*this.itemHeight;
+        this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
+      }
     },
     // list: function(newVal, oldVal) {
     //   alert('ss')

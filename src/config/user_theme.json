@@ -112,7 +112,7 @@
             "name": "SaveTabs Classic2",
             "type": 1,
             "config": {
-                "list_font_color": "#000000",
+                "list_font_color": "red",
                 "list_background_color": "#ffffff",
                 "list_highlight_color": "#f73131",
                 "list_highlight_weight": "400",

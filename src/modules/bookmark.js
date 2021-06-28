@@ -356,7 +356,7 @@ let bookmark = {
     let stack = [];
     for(let currentIndex = index, endIndex = index; currentIndex <= endIndex; currentIndex++) {
       let bookmark = this.cacheList[currentIndex];
-console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
+
       // 不是目录，跳过
       if( ! bookmark.children) continue;
 

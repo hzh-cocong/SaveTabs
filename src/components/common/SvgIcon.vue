@@ -25,7 +25,7 @@ export default {
       // 异步加载
       let icon = require(`@/assets/icons/${this.name}.svg`);
       icon = icon.default;
-console.log('jjjjjjjjjjjjjjjjjjjjjj', icon)
+
       return `#${icon.id}`;
 
       // return `#icon-${this.name}`;

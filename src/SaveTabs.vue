@@ -1272,6 +1272,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 #app {
   /* 加这个在 statusbar 隐藏时底部会出现空白，使得高度超出计算范围 */
   /* display: inline-block; */
+
+  /* 非常重要，可以避免因为字体的不同而导致的各种对齐问题 */
+  line-height: 1;
 }
 
 .keymap-box {

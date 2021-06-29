@@ -1128,6 +1128,8 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   border-radius: 5px;
   border: 2px solid #c0c4cb;
   text-align: center;
+  line-height: normal;
+
   display: flex;
   /* box-shadow: 1px 1px 2px 2px #ebeef5; */
   flex-direction: column;

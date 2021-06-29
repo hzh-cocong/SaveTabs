@@ -159,12 +159,8 @@
           <span
             v-if="isSelected"
             :style="{
-              fontSize: isSelected
-                  ? currentThemeConfig.list_state_size
-                  : currentThemeConfig.list_keymap_size+'px',
-              color: isSelected
-                  ? currentThemeConfig.list_focus_keymap_color
-                  : currentThemeConfig.list_focus_keymap_color }">↩</span>
+              fontSize: currentThemeConfig.list_keymap_size+'px',
+              color: currentThemeConfig.list_focus_keymap_color }">↩</span>
           <span
             v-else-if="_device.platform != ''
                     && (index-$refs.list.scrollLines+1) <= 9"

@@ -111,11 +111,11 @@
             "list_keymap_size": 16,
 
             "border_color": "#ffffff",
-            "background_color": "#ffffff",
+            "background_color": "red",
 
             "item_height": 50,
             "width": 500,
-            "border_width": 8,
+            "border_width": 0,
             "padding_width": 0,
 
             "item_show_count": 7,
@@ -260,7 +260,12 @@
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
-            "statusbar_show": true
+            "statusbar_show": true,
+
+            "position_horizontal_align": "center",
+            "position_horizontal_distance": 0,
+            "position_vertical_align": "top",
+            "position_vertical_distance": 50
         }
     }
 }

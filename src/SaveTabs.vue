@@ -49,7 +49,7 @@
 
                 }"
       @mouseleave="showOperationButton=false">
-      <!-- autofocus 会报错 -->
+      <!-- autofocus 会报错 Blocked autofocusing on a <input> element in a cross-origin subframe.-->
       <!-- up down 加 prevent 是为了让光标不跟着移动 -->
       <el-input
         v-model="keyword"
@@ -64,7 +64,6 @@
                     ? ''
                     : lang(currentWorkspace.placeholder)"
         :clearable="false"
-        :autofocus="true"
         @keyup.native="keyType=getKeyType($event)"
         @keydown.native="keydown"
         @keydown.native.down.prevent="selectDelay('down', getKeyType($event))"
@@ -513,6 +512,8 @@ export default {
       showClearButton: false,
       showOperationButton: false,
       w: {
+        carouselTriggerTimer: null,
+
         statusbarTipTimer: null,
         statusbarTipShowSpeed: 200,
       }
@@ -1043,12 +1044,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
                 : '';
 
         el.onmouseenter = () => {
-          if( ! this.currentThemeConfig.statusbar_show) {
-            el.setAttribute('title', title)
-            return;
-          } else {
-            el.setAttribute('title', '')
-          }
+          clearTimeout(this.w.carouselTriggerTimer);
+          el.setAttribute('title', this.currentThemeConfig.statusbar_show ? '' : title);
+
+          if( ! this.currentThemeConfig.statusbar_show) return;
 
           clearTimeout(this.w.statusbarTipTimer);
           this.w.statusbarTipTimer = setTimeout(() => {
@@ -1062,12 +1061,14 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           }, this.w.statusbarTipShowSpeed)
         }
         el.onmouseleave = () => {
+          this.w.carouselTriggerTimer = setTimeout(() => this.carouselTrigger = 'click', 1000);
+
           if( ! this.currentThemeConfig.statusbar_show) return;
 
           clearTimeout(this.w.statusbarTipTimer);
           this.$refs.statusbar.finishTip(() => {
             this.w.statusbarTipShowSpeed = 200;
-            this.carouselTrigger = 'click';
+            // this.carouselTrigger = 'click';
           });
         }
         el.onclick = () => {
@@ -1269,7 +1270,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #app {
-  display: inline-block;
+  /* 加这个在 statusbar 隐藏时底部会出现空白，使得高度超出计算范围 */
+  /* display: inline-block; */
 }
 
 .keymap-box {
@@ -1304,8 +1306,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
   /* --animate-delay: 0s; 没有用 */
 }
 
-body {
+html, body {
+  /* display: inline-block; */
   margin: 0;
+  padding: 0;
 }
 
 img {

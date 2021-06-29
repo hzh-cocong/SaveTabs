@@ -124,13 +124,14 @@
               fontSize: currentThemeConfig.list_state_size+'px',
               color: isSelected
                     ? currentThemeConfig.list_current_focus_state_color
-                    : currentThemeConfig.list_current_state_color,
-              borderColor: isSelected
-                    ? currentThemeConfig.list_current_focus_state_color
                     : currentThemeConfig.list_current_state_color }">
             <template v-if="isCurrentWindowChange">
               <el-badge
-                is-dot>
+                is-dot
+                :style="{
+                  borderColor: isSelected
+                              ? currentThemeConfig.list_current_focus_state_color
+                              : currentThemeConfig.list_current_state_color }">
                 <span style="margin-right: 5px;">{{ lang('currentWindow') }}</span>
               </el-badge>
             </template>
@@ -1576,8 +1577,8 @@ console.warn('finish', b, (b-a)/1000)
 }
 
 .window .el-badge__content {
-    background-color: inherit !important;
-    border-color: inherit !important;
+  background-color: inherit !important;
+  border-color: inherit !important;
 }
 
 .window-group .el-dialog__header {

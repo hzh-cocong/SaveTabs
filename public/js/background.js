@@ -61,11 +61,11 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
 
     if(onlyInjection) return;
 
-    chrome.storage.sync.get({'config': {}}, items => {
+    chrome.storage.local.get({'config': {}}, items => {
       chrome.windows.getCurrent((w) => {
-        let config = items.config;
-        let width = config.width+config.border_width*2+config.padding_width*2;
-        let height = config.item_height*config.item_show_count+(config.toolbar_height+10*2)+config.padding_width*2+config.border_width*2+10;
+        let currentThemeConfig = items.config.theme_inject.config;
+        let width = currentThemeConfig.width+currentThemeConfig.border_width*2+currentThemeConfig.padding_width*2;
+        let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count+(currentThemeConfig.toolbar_height+10*2)+currentThemeConfig.padding_width*2+currentThemeConfig.border_width*2+10;
         let left = w.left+(w.width-width)/2;
         let top = w.top+120;
 
@@ -129,18 +129,18 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
 let isFirstInstall = false;
 chrome.storage.local.get({'config': {}}, items => {
   if(items.config.popup == false) {
-    chrome.browserAction.setPopup({ popup: ''})
+    chrome.browserAction.setPopup({ popup: '' });
   }
-})
-chrome.storage.sync.get({'config': {}}, items => {
-  // if(items.config.show_tab_index) {
-  //   showTabIndex = true;
-  // }
 
   console.log('fff', items, Object.keys(items.config))
   // 这个新版本的都弹出，往后的才不弹出
-  isFirstInstall = items.config.theme_id === undefined || Object.keys(items.config).length == 0;
+  isFirstInstall = items.config.theme_popup == undefined;
 })
+// chrome.storage.sync.get({'config': {}}, items => {
+//   // if(items.config.show_tab_index) {
+//   //   showTabIndex = true;
+//   // }
+// })
 
 let activeTabs = new Set();
 let activeWindows = new Map();
@@ -393,7 +393,7 @@ chrome.runtime.onInstalled.addListener(() => {
   if(isFirstInstall) {
     chrome.tabs.create({
       url: chrome.extension.getURL("options.html"),
-  });
+    });
   }
 })
 

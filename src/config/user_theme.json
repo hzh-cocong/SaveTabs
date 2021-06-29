@@ -82,7 +82,7 @@
                 "toolbar_menu_icon_fixed_color": "gray",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
-                "toolbar_menu_show": true,
+                "toolbar_menu_auto_hide": true,
 
                 "toolbar_input_font_size": 20,
                 "toolbar_input_font_color": "#606266",
@@ -186,7 +186,7 @@
                 "toolbar_menu_icon_fixed_color": "gray",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
-                "toolbar_menu_show": false,
+                "toolbar_menu_auto_hide": true,
 
                 "toolbar_input_font_size": 20,
                 "toolbar_input_font_color": "#606266",

@@ -40,6 +40,9 @@
                 '--toolbar-input-focus-border-color': currentThemeConfig.toolbar_input_focus_border_color,
                 '--toolbar-input-selected-font-color': currentThemeConfig.toolbar_input_selected_font_color,
                 '--toolbar-input-selected-background-color': currentThemeConfig.toolbar_input_selected_background_color,
+                '--toolbar-input-prepend-border-width': ((! currentThemeConfig.toolbar_menu_auto_hide
+                                                        || showClearButton
+                                                        || menuVisible) ? 1 : 0 )+'px',
 
                 '--toolbar-button-font-color': currentThemeConfig.toolbar_button_font_color,
                 '--toolbar-button-hover-font-color': currentThemeConfig.toolbar_button_hover_font_color,
@@ -78,11 +81,13 @@
         @compositionstart.native="isComposition=true"
         @compositionupdate.native="$refs.workspaces[ activeWorkspaceRefIndex ].search(keyword+$event.data)"
         @compositionend.native="isComposition=false"
-        @mouseleave.native="showClearButton=false"
+        @mouseleave.native="showClearButton=false;"
         ref="input">
         <template slot="prepend">
           <el-dropdown
-            v-if="currentThemeConfig.toolbar_menu_show"
+            v-show=" ! currentThemeConfig.toolbar_menu_auto_hide
+                  || showClearButton
+                  || menuVisible"
             trigger="hover"
             placement="bottom-start"
             style="height: 100%;"
@@ -343,7 +348,7 @@
         </template>
       </el-input>
       <el-button-group
-        v-if=" ! currentThemeConfig.toolbar_button_auto_hide || showOperationButton"
+        v-show=" ! currentThemeConfig.toolbar_button_auto_hide || showOperationButton"
         style="display: flex"
         :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
         <el-button
@@ -577,17 +582,6 @@ export default {
     Statusbar,
   },
   methods: {
-    sss() {
-      var clickEvent = document.createEvent ('MouseEvents');
-      var eventType = 'mousedown'
-    clickEvent.initEvent (eventType, true, true);
-    this.originInputNode.dispatchEvent (clickEvent);
-      // alert('test')
-    },
-    sss2(gg, event) {
-      console.log(gg, event)
-      document.body.dispatchEvent (event);
-    },
     focus() {
       console.log('focus', this.originInputNode, document.activeElement)
       // 已获得焦点则不再 focus，以免引起闪烁
@@ -1081,8 +1075,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 输入框鼠标经过显示清除按钮
       this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
       this.originInputNode.addEventListener('mouseenter', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
+        // event.stopPropagation();
+        // event.preventDefault();
         this.showClearButton = true;
         this.showOperationButton = true;
       })
@@ -1336,6 +1330,7 @@ img {
   flex:1;
 }
 .toolbar .search-input .el-input-group__prepend {
+  border-width: var(--toolbar-input-prepend-border-width);
   background-color: var(--toolbar-background-color);
   border-radius: 0;
   padding: 0;

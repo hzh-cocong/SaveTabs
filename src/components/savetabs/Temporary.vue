@@ -41,18 +41,11 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-10)+'px',
-          height: (currentThemeConfig.item_height-10)+'px' }">
-        <div class="image" :style="{ height: (currentThemeConfig.item_height-14)+'px' }">
-          <div class="a" :style="{
-            transform : 'scale('+currentThemeConfig.item_height/50*1.3+', '+currentThemeConfig.item_height/50*1.3+')'
-          }">{{ item.tabs.length}}</div>
-          <div class="b" :style="{
-            transform : 'scale('+currentThemeConfig.item_height/50/2+', '+currentThemeConfig.item_height/50/2+')',
-            marginTop : currentThemeConfig.item_height > 50
-                      ? ((currentThemeConfig.item_height-50)/5) + 'px'
-                      : 0,
-          }">{{ lang('temporaryTabTip') }}</div>
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/10)+'px', }">
+        <div class="image">
+          <div class="a" :style="{ fontSize: (currentThemeConfig.item_height*2/5)+'px' }">{{ item.tabs.length}}</div>
+          <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div>
         </div>
       </span>
 
@@ -1119,16 +1112,22 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   align-items: center;
 }
 .list >>> .list-item .left {
-  padding: 5px;
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 5px; */
   text-align: center;
   cursor: default;
 }
 .list >>> .list-item .image {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   /* background-color: #c0c4cb; */
-  border-radius: 5px;
+  /* border-radius: 5px; */
+  border-radius: 2px;
   border: 2px solid #c0c4cb;
   text-align: center;
-  line-height: normal;
+  /* line-height: normal; */
 
   display: flex;
   /* box-shadow: 1px 1px 2px 2px #ebeef5; */
@@ -1137,6 +1136,7 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   justify-content: center;
 }
 .image .a {
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

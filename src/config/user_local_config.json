@@ -157,7 +157,12 @@
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
-            "statusbar_show": true
+            "statusbar_show": true,
+
+            "position_horizontal_align": "center",
+            "position_horizontal_distance": 0,
+            "position_vertical_align": "top",
+            "position_vertical_distance": 50
         }
     },
     "theme_inject": {
@@ -217,6 +222,7 @@
 
             "border_color": "#ffffff",
             "background_color": "#ffffff",
+            "carousel_indicators_color": "#C0C4CC",
 
             "item_height": 50,
             "width": 500,

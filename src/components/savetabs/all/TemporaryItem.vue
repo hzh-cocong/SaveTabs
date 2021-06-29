@@ -24,7 +24,7 @@
         padding: (currentThemeConfig.item_height*1/10)+'px', }">
       <div class="image">
         <div class="a" :style="{ fontSize: (currentThemeConfig.item_height*2/5)+'px' }">{{ item.tabs.length}}</div>
-        <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div>
+        <!-- <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div> -->
       </div>
       <svg-icon
         class="workspace-logo"

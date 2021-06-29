@@ -404,17 +404,13 @@ console.log('currentIndex', newVal, oldVal)
       // 防溢出
       // 无限滚动会出现浮点数的情况
       // 根据滚动方向判断是进位还是退位
-      // let scrollLines = this.$el.scrollTop/this.itemHeight;
-      // let scrollLines = 0;
+      // 在一些浏览器有可能出现列表高度和设定的不一样，如在 chromium ，高度设置为 51，实际高度为 50.99，这是浏览器的 bug，尽可能兼容一下
+      // 用这种方法也没法兼容，因为问题出在 w.isScrolling 上，一直为 true
       // if(this.w.flag) { // 向上滚动
-      //   scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
+      //   this.scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
       // } else {
-      //   scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
+      //   this.scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
       // }
-      // if(index < scrollLines)
-      //   index = scrollLines;
-      // else if(index >= scrollLines+this.itemShowCount)
-      //   index = scrollLines+this.itemShowCount-1;
 
       // 鼠标在靠近边界时会触发下一个而非当前个，所以这里要限制一下
       if(index < this.scrollLines)
@@ -430,6 +426,8 @@ console.log('currentIndex', newVal, oldVal)
       if(this.w.isScrolling) {
         return;
       }
+
+      console.log('mouseSelect3', this.mouseIndex, this.scrollLines, this.$el.scrollTop);
 
       if(this.mouseStart == true) {
         this.$emit('change', index);
@@ -541,7 +539,8 @@ console.log('a')
             // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
             // 就会让当前鼠标所指向的项目选中
             if( ! (self.mouseIndex == -1 || self.mouseStart == false)){
-              self.mouseSelect(self.mouseIndex);
+              console.log('mouseSelect0', self.mouseIndex);
+              self.mouseSelect(self.mouseIndex, e.target.scrollTop%self.itemHeight);
               self.$emit('scrollEnd');
               return;
             }

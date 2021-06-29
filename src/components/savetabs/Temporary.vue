@@ -45,7 +45,9 @@
           padding: (currentThemeConfig.item_height*1/10)+'px', }">
         <div class="image">
           <div class="a" :style="{ fontSize: (currentThemeConfig.item_height*2/5)+'px' }">{{ item.tabs.length}}</div>
-          <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div>
+          <!-- 中文浏览器最小 12px，但是英文可以 1px -->
+          <!-- 去掉就不会有这种问题了，而且感觉更纯净 -->
+          <!-- <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div> -->
         </div>
       </span>
 
@@ -1122,6 +1124,7 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  /* padding: 2px; */
   /* background-color: #c0c4cb; */
   /* border-radius: 5px; */
   border-radius: 2px;
@@ -1134,6 +1137,8 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   flex-direction: column;
   /* justify-content: space-evenly; */
   justify-content: center;
+
+  -webkit-text-size-adjust: none;
 }
 .image .a {
   line-height: 1.2;
@@ -1146,6 +1151,7 @@ console.log('temporary:data_change', this.isActiveWorkspace)
 }
 .image .b {
   overflow: hidden;
+  /* text-overflow: ellipsis; */
   white-space: nowrap;
   /* font-size: 12px; */
   /* transform : scale(0.5,0.5); */

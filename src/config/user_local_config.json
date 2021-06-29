@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "all",
+    "active_workspace_type": "window",
     "pinned": false,
     "theme_mode": "light",
     "popup": true,
@@ -111,7 +111,8 @@
             "list_keymap_size": 16,
 
             "border_color": "#ffffff",
-            "background_color": "red",
+            "background_color": "#ffffff",
+            "carousel_indicators_color": "#C0C4CC",
 
             "item_height": 56,
             "width": 500,

@@ -6,6 +6,8 @@
     width: (currentThemeConfig.width
           + currentThemeConfig.border_width*2
           + currentThemeConfig.padding_width*2)+'px',
+
+    '--carousel-indicators-color': currentThemeConfig.carousel_indicators_color,
   }"
   @click.stop="focus">
 
@@ -1463,6 +1465,9 @@ img {
    /* 注意，这里还和列表选择事件有关，列表隐藏部分会有几px的误差，不过套在了跑马灯上后倒是不会了，有问题就改成 6px */
   padding-top: 8px !important;
   padding-bottom: 0px !important;
+}
+.el-carousel__indicators .el-carousel__button {
+  background-color: var(--carousel-indicators-color);
 }
 
 .product-box {

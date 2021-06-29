@@ -1141,13 +1141,13 @@ console.log('temporary:data_change', this.isActiveWorkspace)
   text-overflow: ellipsis;
   white-space: nowrap;
   /* font-size: 16px; */
-  font-size: 12px;
+  /* font-size: 12px; */
   /* transform : scale(16/12, 16/12); */
 }
 .image .b {
   overflow: hidden;
   white-space: nowrap;
-  font-size: 12px;
+  /* font-size: 12px; */
   /* transform : scale(0.5,0.5); */
 }
 .list >>> .list-item .main {

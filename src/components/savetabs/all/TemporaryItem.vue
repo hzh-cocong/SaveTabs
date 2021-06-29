@@ -20,18 +20,11 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-10)+'px',
-        height: (currentThemeConfig.item_height-10)+'px' }">
-      <div class="image" :style="{ height: (currentThemeConfig.item_height-14)+'px' }">
-        <div class="a" :style="{
-          transform : 'scale('+currentThemeConfig.item_height/50*1.3+', '+currentThemeConfig.item_height/50*1.3+')'
-        }">{{ item.tabs.length}}</div>
-        <div class="b" :style="{
-          transform : 'scale('+currentThemeConfig.item_height/50/2+', '+currentThemeConfig.item_height/50/2+')',
-          marginTop : currentThemeConfig.item_height > 50
-                    ? ((currentThemeConfig.item_height-50)/5) + 'px'
-                    : 0,
-        }">{{ lang('temporaryTabTip') }}</div>
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/10)+'px', }">
+      <div class="image">
+        <div class="a" :style="{ fontSize: (currentThemeConfig.item_height*2/5)+'px' }">{{ item.tabs.length}}</div>
+        <div class="b" :style="{ fontSize: (currentThemeConfig.item_height*1/8)+'px' }">{{ lang('temporaryTabTip') }}</div>
       </div>
       <svg-icon
         class="workspace-logo"
@@ -48,7 +41,6 @@
                   width: currentThemeConfig.item_height/4+'px',
                   height: currentThemeConfig.item_height/4+'px', }"></svg-icon>
     </span>
-
     <div
       class="main"
       :class="{ scroll: isActive }"
@@ -371,7 +363,9 @@ export default {
   align-items: center;
 }
 .temporary-item .left {
-  padding: 5px;
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 5px; */
   text-align: center;
   cursor: default;
 }
@@ -383,15 +377,18 @@ export default {
   border-width: 2px 0px 0px 2px;
   border-style: solid;
   border-radius: 2px 0 0 0;
-  margin-right: 2px
+  margin-right: 2px;
 }
 .temporary-item .image {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   /* background-color: #c0c4cb; */
-  border-radius: 5px;
+  /* border-radius: 5px; */
+  border-radius: 2px;
   border: 2px solid #c0c4cb;
   text-align: center;
-
-  line-height: normal;
+  /* line-height: normal; */
 
   display: flex;
   /* box-shadow: 1px 1px 2px 2px #ebeef5; */
@@ -400,17 +397,18 @@ export default {
   justify-content: center;
 }
 .image .a {
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   /* font-size: 16px; */
-  font-size: 12px;
+  /* font-size: 12px; */
   /* transform : scale(16/12, 16/12); */
 }
 .image .b {
   overflow: hidden;
   white-space: nowrap;
-  font-size: 12px;
+  /* font-size: 12px; */
   /* transform : scale(0.5,0.5); */
 }
 .temporary-item .main {

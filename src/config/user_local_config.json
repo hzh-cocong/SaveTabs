@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "temporary",
+    "active_workspace_type": "all",
     "pinned": false,
     "theme_mode": "light",
     "popup": true,
@@ -8,7 +8,7 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "tab",
+            "type": "temporary",
             "count": 3,
             "is_top": 0,
             "only_search": false
@@ -113,7 +113,7 @@
             "border_color": "#ffffff",
             "background_color": "red",
 
-            "item_height": 50,
+            "item_height": 56,
             "width": 500,
             "border_width": 0,
             "padding_width": 0,

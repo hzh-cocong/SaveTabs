@@ -20,9 +20,9 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-20)+'px',
-        height: (currentThemeConfig.item_height-20)+'px',
-        marginLeft: item.marginLeft+'px' }">
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/5)+'px',
+        marginLeft: (item.marginLeft*(currentThemeConfig.item_height*2/5))+'px' }">
       <template v-if="isLoad">
         <img
           v-if="item.children && item.children.length > 0"
@@ -34,7 +34,7 @@
           style="width:100%; height: 100%;" />
         <el-image
           v-else
-          :src="getIcon('', item.url, currentThemeConfig.item_height-20)"
+          :src="getIcon('', item.url, currentThemeConfig.item_height*3/5)"
           style="width:100%; height: 100%;"
           fit="cover"
           :scroll-container="$parent.$el"
@@ -207,8 +207,10 @@ export default {
   display:flex;
   align-items: center;
 }
-.bookmark-item .left {
-  padding: 10px;
+.bookmark-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .bookmark-item .left .workspace-logo {

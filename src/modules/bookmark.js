@@ -70,7 +70,9 @@ let bookmark = {
         currentBookmarkCount += childBookmarkCount;
       }
 
-      marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0); //
+      // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
+      // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+this.currentThemeConfig.item_height*2/5 || 0);
+      marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+1 || 0); // 按比例来，具体交由 vue 去计算
       path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
       itemCount[bookmark.id] = 0;
       itemCount[bookmark.parentId]++;
@@ -327,7 +329,9 @@ let bookmark = {
         // 展开
         let bookmarks = this.searchExpand(index).map((bookmark, index) => {
           bookmark.type = 'bookmark';
-          bookmark.marginLeft = currentBookmark.marginLeft+20;
+          // bookmark.marginLeft = currentBookmark.marginLeft+20;
+          // bookmark.marginLeft = currentBookmark.marginLeft+this.currentThemeConfig.item_height*2/5;
+          bookmark.marginLeft = currentBookmark.marginLeft+1; // 按比例来，具体交由 vue 去计算
           bookmark.subTitle = (this.tree.path[bookmark.parentId] ? this.tree.path[bookmark.parentId] : '')
                                 + ( bookmark.children ? ' | ' + this.tree.itemCount[ bookmark.id ]
                                   + ' | ' + this.tree.bookmarkCount[ bookmark.id ] : '')

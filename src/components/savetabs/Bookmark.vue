@@ -40,8 +40,8 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px',
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px',
           marginLeft: (storageKeyword == ''
                     ? tree.marginLeft[item.id]
                     : searchTree.marginLeft[index])+'px' }">
@@ -140,8 +140,8 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px' }">
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
@@ -315,7 +315,7 @@ export default {
       let a = new Date().getTime();
 
       let ss = this.list.map((item, index) => {
-        return this.getIcon('', item.url, this.currentThemeConfig.item_height-20);
+        return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -400,7 +400,8 @@ let a = new Date().getTime();
           currentBookmarkCount += childBookmarkCount;
         }
 
-        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0); //
+        // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
+        marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+this.currentThemeConfig.item_height*2/5 || 0);
         path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
         itemCount[bookmark.id] = 0;
         itemCount[bookmark.parentId]++;
@@ -464,7 +465,7 @@ let b = new Date().getTime();
         if(bookmark.count != undefined && bookmark.children.length <= 0) {
           console.log('searchTree:push', JSON.stringify(stack));
           stack.push([lastMarginLeft, count]);
-          lastMarginLeft += 20;
+          lastMarginLeft += this.currentThemeConfig.item_height*2/5; // 20;
           count = bookmark.count;
         }
 
@@ -1200,8 +1201,10 @@ console.warn('finish', b, (b-a)/1000)
   display:flex;
   align-items: center;
 }
-.list >>> .list-item .left {
-  padding: 10px;
+.list >>> .list-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .list >>> .list-item .main {

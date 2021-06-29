@@ -41,10 +41,10 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px',
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px',
           marginLeft: item.count == undefined
-                    ? 10+'px'
+                    ? currentThemeConfig.item_height*1/5+'px'
                     : 0 }">
         <el-image
           v-if="isLoad"
@@ -186,8 +186,8 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px' }">
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
@@ -396,7 +396,7 @@ export default {
                                   item.subFiles.length > 0
                                 ? item.subFiles[0].url
                                 : this.list[index+1].url
-                              ), this.currentThemeConfig.item_height-20);
+                              ), this.currentThemeConfig.item_height*3/5);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -1074,8 +1074,10 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
   display:flex;
   align-items: center;
 }
-.list >>> .list-item .left {
-  padding: 10px;
+.list >>> .list-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .list >>> .list-item .main {

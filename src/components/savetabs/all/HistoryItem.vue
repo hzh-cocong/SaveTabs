@@ -20,14 +20,14 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-20)+'px',
-        height: (currentThemeConfig.item_height-20)+'px',
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/5)+'px',
         marginLeft: item.count == undefined
-                  ? 10+'px'
+                  ? (currentThemeConfig.item_height*1/5)+'px'
                   : 0 }">
       <el-image
         v-if="isLoad"
-        :src="getIcon('', item.url, currentThemeConfig.item_height-20)"
+        :src="getIcon('', item.url, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"
@@ -221,8 +221,10 @@ export default {
   display:flex;
   align-items: center;
 }
-.history-item .left {
-  padding: 10px;
+.history-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .history-item .left .workspace-logo {

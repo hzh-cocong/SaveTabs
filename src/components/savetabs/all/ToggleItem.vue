@@ -20,8 +20,8 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-20)+'px',
-        height: (currentThemeConfig.item_height-20)+'px' }">
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/5)+'px' }">
       <svg-icon
           :name="projectConfig.allWorkspaces[ item.workspace ].svg"
           style="width:100%; height: 100%;"
@@ -145,8 +145,10 @@ export default {
   display:flex;
   align-items: center;
 }
-.toggle-item .left {
-  padding: 10px;
+.toggle-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .toggle-item .main {

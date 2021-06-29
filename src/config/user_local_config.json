@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "all",
+    "active_workspace_type": "window",
     "pinned": false,
     "theme_mode": "light",
     "popup": true,
@@ -113,7 +113,7 @@
             "border_color": "#ffffff",
             "background_color": "red",
 
-            "item_height": 50,
+            "item_height": 56,
             "width": 500,
             "border_width": 0,
             "padding_width": 0,

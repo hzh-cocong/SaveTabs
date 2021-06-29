@@ -20,11 +20,11 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-20)+'px',
-        height: (currentThemeConfig.item_height-20)+'px' }">
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/5)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="getIcon('', item.formate, currentThemeConfig.item_height-20)"
+        :src="getIcon('', item.formate, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
         lazy>
@@ -167,8 +167,10 @@ export default {
   display:flex;
   align-items: center;
 }
-.search-item .left {
-  padding: 10px;
+.search-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .search-item .left .workspace-logo {

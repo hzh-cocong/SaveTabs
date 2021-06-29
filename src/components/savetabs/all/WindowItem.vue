@@ -36,11 +36,11 @@
       class="left"
       style="position: relative"
       :style="{
-        width: (currentThemeConfig.item_height-20)+'px',
-        height: (currentThemeConfig.item_height-20)+'px' }">
+        width: currentThemeConfig.item_height+'px',
+        padding: (currentThemeConfig.item_height*1/5)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="getIcon(item.tabs[0].icon, item.tabs[0].url, currentThemeConfig.item_height-20)"
+        :src="getIcon(item.tabs[0].icon, item.tabs[0].url, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"
@@ -247,8 +247,10 @@ console.log('showTip');
   display:flex;
   align-items: center;
 }
-.window-item .left {
-  padding: 10px;
+.window-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .window-item .left .workspace-logo {

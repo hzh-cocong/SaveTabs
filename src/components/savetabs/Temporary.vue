@@ -240,10 +240,10 @@
       #default="{ index, item, isActive, isSelected }">
       <span
         class="left"
-        style="padding: 10px;"
+        style="height: 100%;box-sizing: border-box;"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px' }">
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"

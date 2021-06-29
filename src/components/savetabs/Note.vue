@@ -41,8 +41,8 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px' }">
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px' }">
         <el-image
           v-if="isLoad"
           :src="iconMap[index]"
@@ -188,8 +188,8 @@
       <span
         class="left"
         :style="{
-          width: (currentThemeConfig.item_height-20)+'px',
-          height: (currentThemeConfig.item_height-20)+'px' }">
+          width: currentThemeConfig.item_height+'px',
+          padding: (currentThemeConfig.item_height*1/5)+'px' }">
         <svg-icon
           :name="item.svg"
           style="width:100%; height: 100%;"
@@ -338,7 +338,7 @@ export default {
       let a = new Date().getTime();
 
       let ss = this.list.map((item, index) => {
-        return this.getIcon(item.icon, item.url, this.currentThemeConfig.item_height-20);
+        return this.getIcon(item.icon, item.url, this.currentThemeConfig.item_height*3/5);
       })
       let b = new Date().getTime();
       console.log('getIcon:iconMap', (b-a)/1000);
@@ -1004,8 +1004,10 @@ console.warn('finish', b, (b-a)/1000)
   display:flex;
   align-items: center;
 }
-.list >>> .list-item .left {
-  padding: 10px;
+.list >>> .list-item  .left {
+  height: 100%;
+  box-sizing: border-box;
+  /* padding: 10px; */
   text-align: center;
 }
 .list >>> .list-item .main {

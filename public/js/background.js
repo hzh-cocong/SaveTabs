@@ -66,8 +66,26 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
         let currentThemeConfig = items.config.theme_inject.config;
         let width = currentThemeConfig.width+currentThemeConfig.border_width*2+currentThemeConfig.padding_width*2;
         let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count+(currentThemeConfig.toolbar_height+10*2)+currentThemeConfig.padding_width*2+currentThemeConfig.border_width*2+10;
-        let left = w.left+(w.width-width)/2;
-        let top = w.top+120;
+        // let left = w.left+(w.width-width)/2;
+        // let top = w.top+120;
+
+        // 水平位置
+        // currentThemeConfig.position_horizontal_align='right';
+        let left;
+        if(currentThemeConfig.position_horizontal_align == 'center') left = w.left+(w.width-width)/2;
+        else if(currentThemeConfig.position_horizontal_align == 'left') left = w.left+currentThemeConfig.position_horizontal_distance;
+        else if(currentThemeConfig.position_horizontal_align == 'right') left = w.left+w.width-width-currentThemeConfig.position_horizontal_distance;
+        else left = w.left+(w.width-width)/2; // 不应该出现这种情况
+
+        // 垂直位置
+        // currentThemeConfig.position_vertical_align='center';
+        // currentThemeConfig.position_vertical_align='top';
+        // currentThemeConfig.position_vertical_distance=10;
+        let top;
+        if(currentThemeConfig.position_vertical_align == 'center') top = w.top+(w.height-height)/2;
+        else if(currentThemeConfig.position_vertical_align == 'top') top = w.top+currentThemeConfig.position_vertical_distance+70;
+        else if(currentThemeConfig.position_vertical_align == 'bottom') top = w.top+w.height-height-currentThemeConfig.position_vertical_distance-60;
+        else top = w.top+(w.height-height)/2; // 不应该出现这种情况
 
         height += 28; // 窗口标题栏
         height += 30; // 底部状态栏

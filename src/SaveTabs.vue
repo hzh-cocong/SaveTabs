@@ -381,6 +381,9 @@
         :key="index">
         <component
           v-if="isOpened[index]"
+
+          :total.sync="total"
+
           :is="workspace.type"
           :config="config"
           :localConfig="localConfig"
@@ -466,6 +469,8 @@ export default {
       isLoading: true,
       isComposition: false,
 
+      total: 0,
+
       keyword: '',
       activeWorkspaceIndex: -1,//0,
       workspaces: [],
@@ -524,6 +529,19 @@ export default {
         statusbarTipTimer: null,
         statusbarTipShowSpeed: 200,
       }
+    }
+  },
+  watch: {
+    total(newVal, oldVal) {
+      console.log('watch:total', newVal, oldVal)
+      // this.statusTip(newVal, true)
+
+      let title = this.lang(this.currentWorkspace.title);
+      title += this.keymap['open_workspace_'+this.currentWorkspace.type]
+            ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+')')
+            : '';
+      title += ' | '+newVal;
+      this.statusTip(title, true)
     }
   },
   computed: {

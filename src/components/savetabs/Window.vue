@@ -420,6 +420,11 @@ export default {
   name: 'Window',
   inject: ['focus', 'blur', 'input', 'statusTip'],
   props: {
+    total: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     config: {
       type: Object,
       required: require,
@@ -481,6 +486,12 @@ export default {
       w: {
         timer: null,
       }
+    }
+  },
+  watch: {
+    cacheList(newVal, oldVal) {
+      console.log('watch:cacheList', newVal, oldVal)
+      this.$emit('update:total', newVal.length)
     }
   },
   components: {

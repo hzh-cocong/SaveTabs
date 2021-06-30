@@ -52,12 +52,14 @@
     height += 30; // 底部状态栏
 
     // 水平位置
+    let horizontalPosition;
     if(currentThemeConfig.position_horizontal_align == 'center') horizontalPosition = "left: 0;right: 0;margin:auto auto";
     else if(currentThemeConfig.position_horizontal_align == 'left') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance}px`;
     else if(currentThemeConfig.position_horizontal_align == 'right') horizontalPosition = `right: ${currentThemeConfig.position_horizontal_distance}px`;
     else horizontalPosition = "left: 0;right: 0;margin:auto auto"; // 不应该出现这种情况
 
     // 垂直位置
+    let verticalPosition;
     if(currentThemeConfig.position_vertical_align == 'center') verticalPosition = "top: 0;bottom: 0;margin:auto auto";
     else if(currentThemeConfig.position_vertical_align == 'top') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance}px`;
     else if(currentThemeConfig.position_vertical_align == 'bottom') verticalPosition = `bottom: ${currentThemeConfig.position_vertical_distance}px`;

@@ -152,6 +152,9 @@ export default {
     SelectX,
   },
   mounted() {
+    // todo
+    window.th = this;
+
     console.log('mounted.theme');
     chrome.storage.local.get({'theme': {}}, items => {
       Object.assign(this.theme, items.theme);

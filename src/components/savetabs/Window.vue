@@ -26,7 +26,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="itemShowCount"
+    :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="currentThemeConfig.list_scrollbar_color"
     :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
@@ -420,16 +420,6 @@ export default {
   name: 'Window',
   inject: ['focus', 'blur', 'input', 'statusTip'],
   props: {
-    searchTotal: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    listCount: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     config: {
       type: Object,
       required: require,
@@ -498,6 +488,9 @@ export default {
       }
     }
   },
+  components: {
+    List,
+  },
   watch: {
     cacheList(newVal, oldVal) {
       console.log('watch:cacheList', newVal, oldVal)
@@ -508,20 +501,23 @@ export default {
       this.$emit('update:listCount', newVal.length)
     },
   },
-  components: {
-    List,
-  },
   computed: {
+    isNoSearch() {
+      return this.currentThemeConfig.height_auto
+          && this.storageKeyword == ''
+          && this.openWay == 'popup'
+    },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
       console.log('window.listPageCount')
 
-      return this.storageKeyword == '' && this.currentThemeConfig.height_auto && this.openWay == 'popup'
+      return  this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      return this.storageKeyword == '' && this.currentThemeConfig.height_auto && this.openWay == 'popup'
+      console.log('window.watch.itemShowCount', this.isNoSearch)
+      return  this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
     },
@@ -779,6 +775,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       // 列表赋值
       this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
       this.list = this.cacheList.slice(0, this.listPageCount);
+
       this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
       if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
         this.currentIndex = 1;

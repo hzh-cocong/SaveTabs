@@ -34,8 +34,10 @@
 
     // 创建容器
     // let containerBackgroundColor = "rgba(0, 0, 0, 0.2)";
+    // let containerBackgroundColor = 'transparent';
+    let containerBackgroundColor = currentThemeConfig.container_background_color;
     container = document.createElement('div');
-    container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: transparent;overflow:auto;transition: background-color 0.3s ease;`);
+    container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: ${containerBackgroundColor};overflow:auto;transition: background-color 0.3s ease;`);
     container.id = id;
     container.onclick = function() {
       chrome.runtime.sendMessage({ type: 'closeExtension',})

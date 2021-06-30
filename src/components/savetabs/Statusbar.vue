@@ -198,14 +198,14 @@ export default {
 
       return true;
     },
-    finishTip(callback) {
+    finishTip(callback, delay=1000) {
       // 过一会再恢复，体验更好
       this.w.tipTimer = setTimeout(() => {
         callback != undefined && callback();
 
         this.tip = this.storageTip;
         // this.storageTip = '';
-      }, 1000);
+      }, delay);
     },
 
     toLeft(keyType) {

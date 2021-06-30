@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "window",
+    "active_workspace_type": "history",
     "pinned": false,
     "theme_mode": "light",
     "popup": true,
@@ -133,13 +133,13 @@
 
             "toolbar_icon_color": "#C1C4CB",
             "toolbar_icon_focus_color": "#919398",
-            "toolbar_icon_auto_hide": false,
+            "toolbar_icon_auto_hide": true,
 
             "toolbar_menu_icon_color": "#C1C4CB",
             "toolbar_menu_icon_fixed_color": "gray",
             "toolbar_menu_font_color": "#909399",
             "toolbar_menu_show_workspace_name": true,
-            "toolbar_menu_auto_hide": true,
+            "toolbar_menu_auto_hide": false,
 
             "toolbar_input_font_size": 20,
             "toolbar_input_font_color": "#606266",
@@ -160,6 +160,7 @@
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
+            "statusbar_show_search_total": true,
             "statusbar_show": true,
 
             "position_horizontal_align": "center",
@@ -226,6 +227,7 @@
             "border_color": "#ffffff",
             "background_color": "#ffffff",
             "carousel_indicators_color": "#C0C4CC",
+            "container_background_color": "transparent",
 
             "item_height": 50,
             "width": 500,
@@ -271,6 +273,7 @@
             "statusbar_icon_color": "#c0c4cc",
             "statusbar_background_color": "#fbfbfb",
             "statusbar_image_opacity": 0.2,
+            "statusbar_show_search_total": true,
             "statusbar_show": true,
 
             "position_horizontal_align": "center",

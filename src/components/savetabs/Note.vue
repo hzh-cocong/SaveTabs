@@ -26,7 +26,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="currentThemeConfig.item_show_count"
+    :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="currentThemeConfig.list_scrollbar_color"
     :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
@@ -281,6 +281,11 @@ export default {
       type: Object,
       required: true,
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -313,7 +318,37 @@ export default {
   components: {
     List,
   },
+  watch: {
+    cacheList(newVal, oldVal) {
+      console.log('watch:cacheList', newVal, oldVal)
+      this.$emit('update:searchTotal', newVal.length)
+    },
+    list(newVal, oldVal) {
+      console.log('watch:list', newVal, oldVal)
+      this.$emit('update:listCount', newVal.length)
+    },
+  },
   computed: {
+    isNoSearch() {
+      return this.currentThemeConfig.height_auto
+          && this.storageKeyword == ''
+          && this.openWay == 'popup'
+    },
+    listPageCount() {
+      if(this.itemShowCount <= 0) return 0;
+      console.log('note.listPageCount')
+
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_list_page_count
+            : this.currentThemeConfig.list_page_count
+    },
+    itemShowCount() {
+      console.log('note.watch.itemShowCount', this.isNoSearch)
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count
+    },
+
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
               || this.config.workspace_change_word == undefined
@@ -517,9 +552,9 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       // 列表赋值
       this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
       // this.cacheList = currentList.concat(openedList).concat(closeList);
-      this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
+      this.list = this.cacheList.slice(0, this.listPageCount);
 
-      this.scrollDisabled = this.list.length >= this.cacheList.length;
+      this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
       if(this.isFirstSearch && this.list.length > 1 && this.list[0].url == this.currentTab.url) {
         this.currentIndex = 1;
         if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
@@ -554,20 +589,8 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
     load() {
       console.log('note.load')
       // 加载数据
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-
-      // let data = this.cacheList.slice(this.page*this.currentThemeConfig.list_page_count, (this.page+1)*this.currentThemeConfig.list_page_count);
-      // if(data.length <= 0) {
-      //   this.scrollDisabled = true;
-      //   return;
-      // }
-
-      // // 赋值
-      // this.list = this.list.concat(data);
-      // // this.list.push(...data);
-      // this.page++;
-      // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback) {
       if( ! this.isFinish) return;

@@ -387,9 +387,6 @@
         <component
           v-if="isOpened[index]"
 
-          :searchTotal.sync="searchTotal"
-          :listCount.sync="listCount"
-
           :is="workspace.type"
           :config="config"
           :localConfig="localConfig"
@@ -403,6 +400,9 @@
           :history="history"
           :bookmark="bookmark"
           :tab="tab"
+
+          @update:searchTotal="$set(searchTotal, currentWorkspace.type, $event)"
+          @update:listCount="$set(listCount, currentWorkspace.type, $event)"
 
           @finish="finish"
           ref="workspaces"></component>
@@ -476,14 +476,13 @@ export default {
       isLoading: true,
       isComposition: false,
 
-      searchTotal: 0,
-      listCount: 0,
-
       keyword: '',
       activeWorkspaceIndex: -1,//0,
       workspaces: [],
       isLoad: false,
       isOpened: {},
+      listCount: {},
+      searchTotal: {},
       things: { 0: []}, // 一开始没有切换事件
       lock: false,
       keyType: '',
@@ -540,20 +539,23 @@ export default {
     }
   },
   watch: {
-    searchTotal(newVal, oldVal) {
-      console.log('watch:searchTotal', newVal, oldVal)
-      // this.statusTip(newVal, true)
+    searchTotal: {
+      handler(newVal, oldVal) {
+        console.log('watch:searchTotal', newVal, oldVal,  ! this.currentThemeConfig.statusbar_show_search_total)
+        if( ! this.currentThemeConfig.statusbar_show_search_total) return;
 
-      let title = this.lang(this.currentWorkspace.title);
-      title += this.keymap['open_workspace_'+this.currentWorkspace.type]
-            ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+')')
-            : '';
-      title += ' | '+newVal;
-      this.statusTip(title, true)
+        let title = this.lang(this.currentWorkspace.title);
+        title += this.keymap['open_workspace_'+this.currentWorkspace.type]
+              ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+')')
+              : '';
+        if(this.searchTotal[this.currentWorkspace.type] != undefined) {
+          title += ' | '+this.searchTotal[this.currentWorkspace.type];
+        }
+        this.statusTip(title, true, 3000)
+      },
+      deep:true,
+      // immediate:true
     },
-    // listCount(newVal, oldVal) {
-
-    // }
   },
   computed: {
     activeWorkspaceRefIndex() {
@@ -588,21 +590,43 @@ export default {
       }
     },
 
+    isPopover() {
+      console.log('isPopover')
+      if(this.currentWorkspace == undefined) return false;
+
+      if(this.currentWorkspace.type == 'tab') return this.tab.visible;
+      else if(this.currentWorkspace.type == 'bookmark') return this.bookmark.visible;
+      else if(this.currentWorkspace.type == 'history') return this.history.visible;
+      else return this.other.visible;
+    },
+    isNoSearch() {
+      return this.keyword.trim() == ''
+          && this.isComposition == false
+          && ! this.isPopover;
+    },
     listHeight() {
-      if(this.openWay != 'popup' || ! this.currentThemeConfig.height_auto)
+      console.log('listHeight')
+      if( ! this.currentThemeConfig.height_auto || this.openWay != 'popup')
         return this.currentThemeConfig.item_show_count
               *this.currentThemeConfig.item_height;
 
-      if(this.keyword.trim() != '' || this.isComposition == true) {
-        return (this.listCount <= this.currentThemeConfig.item_show_count
-                      ? this.listCount
-                      : this.currentThemeConfig.item_show_count)
-            * this.currentThemeConfig.item_height;
+      console.log('listHeight2')
+      let listCount = this.currentWorkspace == undefined
+                    ? 1000
+                    : this.listCount[this.currentWorkspace.type];
+      if(this.isNoSearch) {
+        console.log('listHeight3')
+        return ( listCount <= this.currentThemeConfig.no_search_item_show_count
+              ? listCount
+              : this.currentThemeConfig.no_search_item_show_count)
+              * this.currentThemeConfig.item_height;
       } else {
-        return (this.listCount <= this.currentThemeConfig.no_search_item_show_count
-                      ? this.listCount
-                      : this.currentThemeConfig.no_search_item_show_count)
-            * this.currentThemeConfig.item_height;
+        console.log('listHeight4', listCount, this.listCount)
+        return ( listCount <= this.currentThemeConfig.item_show_count
+              && ! this.isPopover
+                ? listCount
+                : this.currentThemeConfig.item_show_count)
+              * this.currentThemeConfig.item_height;
       }
     },
 
@@ -684,10 +708,10 @@ export default {
     loading(visibility) {
       this.isLoading = visibility;
     },
-    statusTip(tip, lower=false) {
+    statusTip(tip, lower=false, delay=undefined) {
       if(this.currentThemeConfig.statusbar_show) {
         if(this.$refs.statusbar.showTip(tip, lower)) {
-          this.$refs.statusbar.finishTip();
+          this.$refs.statusbar.finishTip(undefined, delay);
         }
       }
     },
@@ -989,6 +1013,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       title += this.keymap['open_workspace_'+this.currentWorkspace.type]
             ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+') ')
             : '';
+      if(this.currentThemeConfig.statusbar_show_search_total
+      && this.searchTotal[this.currentWorkspace.type] != undefined) {
+        title += ' | '+this.searchTotal[this.currentWorkspace.type];
+      }
       this.statusTip(title, true);
     },
 
@@ -1094,11 +1122,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
           clearTimeout(this.w.statusbarTipTimer);
           this.w.statusbarTipTimer = setTimeout(() => {
-            let workspace = this.workspaces[ index ];
-            let title = this.lang(workspace.title)
-            title += this.keymap['open_workspace_'+workspace.type]
-                    ?  (' ('+this.keymap['open_workspace_'+workspace.type]+') ')
-                    : '';
             this.$refs.statusbar.showTip(title);
             this.w.statusbarTipShowSpeed = 0;
           }, this.w.statusbarTipShowSpeed)

@@ -26,7 +26,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="currentThemeConfig.item_show_count"
+    :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="currentThemeConfig.list_scrollbar_color"
     :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
@@ -306,6 +306,11 @@ export default {
       type: Object,
       required: true,
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -364,8 +369,40 @@ export default {
         });
       }
     },
+
+    // cacheList(newVal, oldVal) {
+    //   console.log('watch:cacheList', newVal, oldVal)
+    //   this.$emit('update:searchTotal', newVal.length)
+    // },
+    list(newVal, oldVal) {
+      console.log('history.watch:list', newVal.length, oldVal.length)
+      this.$emit('update:listCount', newVal.length)
+    },
   },
   computed: {
+    isNoSearch() {
+      return this.currentThemeConfig.height_auto
+          && this.storageKeyword == ''
+          && this.openWay == 'popup'
+          && ! this.history.visible;
+    },
+    listPageCount() {
+      if(this.itemShowCount <= 0) return 0;
+      console.log('history.listPageCount')
+
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_list_page_count
+            : this.currentThemeConfig.list_page_count
+    },
+    itemShowCount() {
+      console.log('history.watch.itemShowCount', this.isNoSearch, this.isNoSearch
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count)
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count
+    },
+
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
               || this.config.workspace_change_word == undefined
@@ -460,8 +497,8 @@ export default {
     },
 
     // list() {
-    //   return this.cacheList.slice(0, this.page*this.currentThemeConfig.list_page_count);
-    //   // this.list.concat(this.list.length, this.list.length+this.currentThemeConfig.list_page_count);
+    //   return this.cacheList.slice(0, this.page*this.listPageCount);
+    //   // this.list.concat(this.list.length, this.list.length+this.listPageCount);
     // },
     currentHistory() {
       if(this.list.length == 0) return null;
@@ -587,13 +624,17 @@ export default {
     },
 
     search(keyword) {
-
 console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
 
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword == keyword.trim()) return;
         this.storageKeyword = keyword.trim();
+      }
+
+      if(this.listPageCount <= 0) {
+        this.scrollDisabled = true;
+        return;
       }
 
       if(this.history.date == null || ! this.history.visible) {
@@ -659,7 +700,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         //   this.currentIndex = 0;
         // }
 
-        this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
+        this.list = this.cacheList.slice(0, this.listPageCount);
 
         this.currentIndex = 0;
 
@@ -692,14 +733,17 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
     },
     load() {
       console.log('history.load.test')
-      if(this.cacheList.length >= this.list.length+this.currentThemeConfig.list_page_count) {
+
+      let end = this.list.length+this.listPageCount;
+
+      if(this.cacheList.length >= end) {
         // 性能最高
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count));
+        this.list.push(...this.cacheList.slice(this.list.length, end));
         return;
       }
 
       if(this.queryDisabled) {
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
+        this.list.push(...this.cacheList.slice(this.list.length, end))
         this.scrollDisabled = true;
         return;
       }
@@ -708,7 +752,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       this.query((historys) => {
         console.log('history.load.test2')
         if(historys.length == 0) {
-          this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
+          this.list.push(...this.cacheList.slice(this.list.length, end))
 
           this.scrollDisabled = true;
           this.queryDisabled = true;
@@ -732,14 +776,13 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         }
 
         this.mergeHistory(this.cacheList, historys);
-        this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count));
+        this.list.push(...this.cacheList.slice(this.list.length, end));
       })
 
       // 不使用预加载，因为预加载过快，dom 反而会因此等待
     },
-    query(callback, lastVisitTime, max) {
-      max = max == undefined ? 55 : max;
-      max = max < this.currentThemeConfig.list_page_count ? this.currentThemeConfig.list_page_count : max;
+    query(callback, lastVisitTime, max=55) {
+      max = max < this.listPageCount ? this.listPageCount : max;
 
       // 防止并发问题
       lastVisitTime = lastVisitTime == undefined ? this.lastVisitTime : lastVisitTime;
@@ -749,13 +792,13 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         text: this.storageKeyword,
         startTime: this.startTime,
         endTime: lastVisitTime,
-        maxResults: max, // this.currentThemeConfig.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+        maxResults: max, // this.listPageCount, 每次尽可能查多一点，这样就可以大大减少错误结果
       }, (historys)=>{
         console.log('chrome.history.query', {
           text: this.storageKeyword,
           startTime: this.startTime,
           endTime: lastVisitTime,
-          maxResults: 10, //100, // this.currentThemeConfig.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
+          maxResults: max
         }, historys)
 
         // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下

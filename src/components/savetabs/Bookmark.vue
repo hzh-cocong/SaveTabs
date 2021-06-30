@@ -26,7 +26,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="currentThemeConfig.item_show_count"
+    :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
     :itemStyle="itemStyle"
     v-model="currentIndex"
@@ -238,6 +238,11 @@ export default {
       type: Object,
       required: true,
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -275,6 +280,10 @@ export default {
         this.positionRecord(newVal, newVal-this.$refs.list.scrollLines);
       }
     },
+    "bookmark.visible": function(newVal, oldVal) {
+      console.log('bookmark.visible', newVal, oldVal);
+      this.search();
+    },
     "bookmark.fold": function(newVal, oldVal) {
       console.log('bookmark.fold', newVal, oldVal);
       if( ! this.bookmark.fold) return;
@@ -289,8 +298,38 @@ export default {
       this.unfold();
       this.bookmark.unfold = false;
     },
+
+    // cacheList(newVal, oldVal) {
+    //   console.log('watch:cacheList', newVal, oldVal)
+    //   this.$emit('update:searchTotal', newVal.length)
+    // },
+    list(newVal, oldVal) {
+      console.log('watch:list', newVal, oldVal)
+      this.$emit('update:listCount', newVal.length)
+    },
   },
   computed: {
+    isNoSearch() {
+      return this.currentThemeConfig.height_auto
+          && this.storageKeyword == ''
+          && this.openWay == 'popup'
+          && ! this.bookmark.visible;
+    },
+    listPageCount() {
+      if(this.itemShowCount <= 0) return 0;
+      console.log('bookmark.listPageCount')
+
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_list_page_count
+            : this.currentThemeConfig.list_page_count
+    },
+    itemShowCount() {
+      console.log('bookmark.watch.itemShowCount', this.isNoSearch)
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count
+    },
+
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
               || this.config.workspace_change_word == undefined
@@ -685,6 +724,13 @@ console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
         return;
       }
 
+      if(this.listPageCount <= 0) {
+        this.scrollDisabled = true;
+        return;
+      }
+
+console.log('bookmark.search3', keyword, '|',  this.storageKeyword);
+
       if( ! this.isSearched) {
         // 避免第一次加载页面时重复 getTree
 console.log('chrome.bookmarks.getTree.first')
@@ -710,6 +756,8 @@ console.log('chrome.bookmarks.getTree.first')
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
+
+        this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
       } else if(this.storageKeyword.length == 0) {
         // 搜索是异步的，先用之前的填补，否则搜索列表数据会因为使用不同的 marginLeft 而错误，进而形成闪烁。
         this.list = this.originList;
@@ -727,7 +775,7 @@ console.log('chrome.bookmarks.getTree.first')
           // 倒着打开
           for(let i = this.originList.length-1; i >= 0; i--)
             this.expand(this.originList, i, false);
-          this.list = this.originList;
+          this.list = this.listPageCount <= 0 ? [] : this.originList;
 
           // 回到记住滚动的位置
           this.currentIndex = this.position.currentIndex;
@@ -740,12 +788,15 @@ console.log('chrome.bookmarks.getTree.first')
           // this.currentIndex = 0;
           this.scrollDisabled = true;
 
+          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
           this.isSearching = false;
+
+          this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
         })
       }
 
       if(this.storageKeyword.length > 0){
-        // 加上这个会山所问题
+        // 加上这个会有问题
         // this.isSearched = false;
         // this.list = [];
 
@@ -754,10 +805,12 @@ console.log('chrome.bookmarks.getTree.first')
         this.query(this.storageKeyword, (bookmarks) => {
 console.log('chrome.bookmarks.getTree.second')
           this.cacheList = bookmarks;
-          this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
+          this.list = this.cacheList.slice(0, this.listPageCount);
 
           this.currentIndex = this.list.length > 0 ? 0 : -1;
-          this.scrollDisabled = this.list.length >= this.cacheList.length;
+          this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
+
+          this.$emit('update:searchTotal', this.cacheList.length);
         })
       }
     },
@@ -781,9 +834,9 @@ console.log('chrome.bookmarks.getTree.second')
       this.currentIndex = 0;
     },
     load() {
-      console.warn('load----------------')
+      console.log('bookmark.load')
       // 加载数据
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     query(keyword, callback) {

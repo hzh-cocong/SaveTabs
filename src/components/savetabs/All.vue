@@ -28,7 +28,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="currentThemeConfig.item_show_count"
+    :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="currentThemeConfig.list_scrollbar_color"
     :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
@@ -122,6 +122,11 @@ export default {
       type: Object,
       required: true,
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -182,7 +187,37 @@ export default {
     SearchItem,
     ToggleItem,
   },
+  watch: {
+    // cacheList(newVal, oldVal) {
+    //   console.log('watch:cacheList', newVal, oldVal)
+    //   this.$emit('update:searchTotal', newVal.length)
+    // },
+    list(newVal, oldVal) {
+      console.log('watch:list', newVal, oldVal)
+      this.$emit('update:listCount', newVal.length)
+    },
+  },
   computed: {
+    isNoSearch() {
+      return this.currentThemeConfig.height_auto
+          && this.storageKeyword == ''
+          && this.openWay == 'popup'
+    },
+    listPageCount() {
+      if(this.itemShowCount <= 0) return 0;
+      console.log('all.listPageCount')
+
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_list_page_count
+            : this.currentThemeConfig.list_page_count
+    },
+    itemShowCount() {
+      console.log('all.watch.itemShowCount', this.isNoSearch)
+      return  this.isNoSearch
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count
+    },
+
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
               || this.config.workspace_change_word == undefined
@@ -281,6 +316,11 @@ console.log('all.search2', keyword, '|',  this.storageKeyword, this.isFirstSearc
       // 展示工作区
       if(this.workspaceSwitch) {
         this.showWorkspaceList();
+        return;
+      }
+
+      if(this.listPageCount <= 0) {
+        this.scrollDisabled = true;
         return;
       }
 

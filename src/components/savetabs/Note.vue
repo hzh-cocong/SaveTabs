@@ -552,6 +552,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       this.isFirstSearch = false;
     },
     load() {
+      console.log('note.load')
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
       this.scrollDisabled = this.list.length >= this.cacheList.length;

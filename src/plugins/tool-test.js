@@ -175,8 +175,8 @@ const tool = {
 
           keywords = keywords.split(/\s+/);
 
-          console.log('content', content.toUpperCase(), content.length);
-          console.log('keywords', keywords, keywords.length);
+          // console.log('content', content.toUpperCase(), content.length);
+          // console.log('keywords', keywords, keywords.length);
 
           // 查找所有位置
           let pos = [];
@@ -194,7 +194,7 @@ const tool = {
             }while(index != -1);
           }
 
-          console.log('pos', JSON.parse(JSON.stringify(pos)));
+          // console.log('pos', JSON.parse(JSON.stringify(pos)));
           // 无任何匹配
           if(pos.length <= 0) {
             return content.escape();
@@ -204,21 +204,21 @@ const tool = {
           if(pos.length > 1) {
             // alert('s')
             pos = pos.sort(function(a, b){return a[0] - b[0]});
-            console.log('sort', JSON.parse(JSON.stringify(pos)));
+            // console.log('sort', JSON.parse(JSON.stringify(pos)));
             let merge = [];
             for(let i = 0, k = 0; i < pos.length; i++) {
               if(i == 0 || merge[k-1][1] < pos[i][0]) {
                 merge.push(pos[i]);
                 k++;
-                console.log('1')
+                // console.log('1')
               } else {
                 merge[k-1][1] = Math.max(merge[k-1][1], pos[i][1]);
-                console.log('2')
+                // console.log('2')
               }
-              console.log('a', JSON.parse(JSON.stringify(merge)), JSON.parse(JSON.stringify(pos[i])))
+              // console.log('a', JSON.parse(JSON.stringify(merge)), JSON.parse(JSON.stringify(pos[i])))
             }
             pos = merge;
-            console.log('merge', pos)
+            // console.log('merge', pos)
           }
 
           // 字符替换（高亮）

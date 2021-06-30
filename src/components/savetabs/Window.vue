@@ -26,7 +26,7 @@
     :list="list"
     :listLength="list.length"
     :itemHeight="currentThemeConfig.item_height"
-    :itemShowCount="currentThemeConfig.item_show_count"
+    :itemShowCount="itemShowCount"
     :scrollDisabled="scrollDisabled"
     :scrollbarColor="currentThemeConfig.list_scrollbar_color"
     :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
@@ -456,6 +456,11 @@ export default {
       type: Object,
       required: true,
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -507,6 +512,20 @@ export default {
     List,
   },
   computed: {
+    listPageCount() {
+      if(this.itemShowCount <= 0) return 0;
+      console.log('window.listPageCount')
+
+      return this.storageKeyword == '' && this.currentThemeConfig.height_auto && this.openWay == 'popup'
+            ? this.currentThemeConfig.no_search_list_page_count
+            : this.currentThemeConfig.list_page_count
+    },
+    itemShowCount() {
+      return this.storageKeyword == '' && this.currentThemeConfig.height_auto && this.openWay == 'popup'
+            ? this.currentThemeConfig.no_search_item_show_count
+            : this.currentThemeConfig.item_show_count
+    },
+
     workspaceSwitch() {
       return ! ( this.storageKeyword == undefined
               || this.config.workspace_change_word == undefined
@@ -574,20 +593,6 @@ console.log('get_currentWindowStorageIndex2');
       })
 console.log('get_currentWindowStorageIndex3', index);
       return index;
-      //
-      // for(let i in this.storageList) {
-      //   if(this.storageList[i].windowId == this.currentWindowId) {
-      //     // console.log('iiiiiiiiiiiiiiiiii', i, this.storageList[i], this.storageList[i].windowId, this.currentWindowId)
-      //     // console.log('get_currentWindowStorageIndex2', this.storageList, this.currentWindowId, i)
-      //     return i;
-      //   }
-      //   // todo
-      //   // else if(i >= this.currentThemeConfig.list_page_count) {
-      //   //   return -1;
-      //   // }
-      // }
-      // console.log('get_currentWindowStorageIndex3');
-      // return -1;
     },
     isInCurrentWindow() {
       console.log('get_isInCurrentWindow', this.currentWindowStorageIndex)
@@ -731,7 +736,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
 
     search(keyword) {
-      console.log('window.search', keyword, '|', this.storageKeyword);
+      console.log('window.search', keyword, '|', this.storageKeyword, '|', this.scrollDisabled );
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword != keyword.trim()) {
@@ -740,7 +745,7 @@ console.log('get_currentWindowStorageIndex3', index);
           return;
         }
       }
-console.log('window.search2', keyword, '|',  this.storageKeyword);
+console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scrollDisabled );
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -773,9 +778,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 列表赋值
       this.cacheList = currentList; this.cacheList.push(...openedList, ...closeList);
-      this.list = this.cacheList.slice(0, this.currentThemeConfig.list_page_count);
-
-      this.scrollDisabled = this.list.length >= this.cacheList.length;
+      this.list = this.cacheList.slice(0, this.listPageCount);
+      this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
       if(this.isFirstSearch && this.list.length > 1 && this.list[0].windowId == this.currentWindowId) {
         this.currentIndex = 1;
         if(this.isSearched) this.$nextTick(() => this.$refs.list.currentTo(1));
@@ -786,6 +790,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
+      console.log('window.searchEnd')
     },
     showWorkspaceList() {
       let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
@@ -808,20 +813,10 @@ console.log('window.search2', keyword, '|',  this.storageKeyword);
       this.isFirstSearch = false;
     },
     load() {
+      console.log('window.load', this.scrollDisabled, this.list.length, this.cacheList.length, this.itemShowCount, this.listPageCount)
       // 加载数据
-      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.currentThemeConfig.list_page_count))
+      this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
-
-      // let data = this.cacheList.slice(this.page*this.currentThemeConfig.list_page_count, (this.page+1)*this.currentThemeConfig.list_page_count);
-      // if(data.length <= 0) {
-      //   this.scrollDisabled = true;
-      //   return;
-      // }
-
-      // // 赋值
-      // this.list.push(...data);
-      // // this.list = this.list.concat(data);
-      // this.scrollDisabled = this.list.length >= this.cacheList.length;
     },
     add(callback, keyword) {
       if( ! this.isFinish) return;

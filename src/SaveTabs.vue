@@ -121,7 +121,7 @@
               slot="dropdown"
               class="toolbar-menu"
               @mousedown.native.prevent
-              :style="{ maxHeight: ((listHeight == 0 ? currentThemeConfig.item_height : listHeight)
+              :style="{ maxHeight: ((listHeight == 0 ? currentThemeConfig.item_height-10 : listHeight)
                                   + currentThemeConfig.border_width
                                   + currentThemeConfig.padding_width
                                   + (currentThemeConfig.statusbar_show ? statusbarHeight : 0)
@@ -398,6 +398,7 @@
           :isLoad="isLoad"
           :keyType="keyType"
           :activeWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
+          :openWay="openWay"
 
           :history="history"
           :bookmark="bookmark"
@@ -588,15 +589,21 @@ export default {
     },
 
     listHeight() {
-      if(this.openWay == 'inject')
+      if(this.openWay != 'popup' || ! this.currentThemeConfig.height_auto)
         return this.currentThemeConfig.item_show_count
               *this.currentThemeConfig.item_height;
 
-      return ( this.currentThemeConfig.height_auto
-            && this.listCount <= this.currentThemeConfig.item_show_count
+      if(this.keyword.trim() != '' || this.isComposition == true) {
+        return (this.listCount <= this.currentThemeConfig.item_show_count
                       ? this.listCount
                       : this.currentThemeConfig.item_show_count)
             * this.currentThemeConfig.item_height;
+      } else {
+        return (this.listCount <= this.currentThemeConfig.no_search_item_show_count
+                      ? this.listCount
+                      : this.currentThemeConfig.no_search_item_show_count)
+            * this.currentThemeConfig.item_height;
+      }
     },
 
     keymap() {

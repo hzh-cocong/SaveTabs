@@ -120,10 +120,10 @@
             "border_width": 0,
             "padding_width": 0,
 
-            "item_show_count": 3,
-            "list_page_count": 4,
-            "search_item_show_count": 7,
-            "search_list_page_count": 8,
+            "item_show_count": 7,
+            "list_page_count": 8,
+            "no_search_item_show_count": 3,
+            "no_search_list_page_count": 4,
 
             "tag_line_count": 3,
 

@@ -64,8 +64,17 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
     chrome.storage.local.get({'config': {}}, items => {
       chrome.windows.getCurrent((w) => {
         let currentThemeConfig = items.config.theme_inject.config;
-        let width = currentThemeConfig.width+currentThemeConfig.border_width*2+currentThemeConfig.padding_width*2;
-        let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count+(currentThemeConfig.toolbar_height+10*2)+currentThemeConfig.padding_width*2+currentThemeConfig.border_width*2+10;
+        let width =  currentThemeConfig.width
+                    +currentThemeConfig.border_width*2
+                    +currentThemeConfig.padding_width*2;
+        let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count
+                    +(currentThemeConfig.toolbar_height+10*2)
+                    +currentThemeConfig.padding_width*2
+                    +currentThemeConfig.border_width*2+10;
+
+        if(currentThemeConfig.statusbar_show == true) height += 30; // 底部状态栏
+        height += 28; // 窗口标题栏
+
         // let left = w.left+(w.width-width)/2;
         // let top = w.top+120;
 
@@ -86,9 +95,6 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
         else if(currentThemeConfig.position_vertical_align == 'top') top = w.top+currentThemeConfig.position_vertical_distance+70;
         else if(currentThemeConfig.position_vertical_align == 'bottom') top = w.top+w.height-height-currentThemeConfig.position_vertical_distance-60;
         else top = w.top+(w.height-height)/2; // 不应该出现这种情况
-
-        height += 28; // 窗口标题栏
-        height += 30; // 底部状态栏
 
         window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);
       })

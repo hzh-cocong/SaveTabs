@@ -11,13 +11,15 @@
   }"
   @click.stop="focus">
 
+<!-- height: (currentThemeConfig.item_height*currentThemeConfig.item_show_count -->
   <div
     style="border-style:solid;overflow:hidden;"
     :style="{
-      height: (currentThemeConfig.item_height*currentThemeConfig.item_show_count
-          + currentThemeConfig.toolbar_height
-          + 20
-          + 10)+'px',
+      height: ( listHeight
+              + currentThemeConfig.toolbar_height
+              + 10
+              + (listHeight == 0 ? 0 : 10)
+              + 10)+'px',
       backgroundColor: currentThemeConfig.background_color,
       borderWidth: currentThemeConfig.border_width+'px',
       borderColor: currentThemeConfig.border_color,
@@ -27,6 +29,7 @@
     <div
       class="toolbar"
       :style="{  height: currentThemeConfig.toolbar_height+'px',
+                marginBottom: listHeight == 0 ? 0 : '10px',
 
                 '--toolbar_height': currentThemeConfig.toolbar_height+'px',
                 '--toolbar-background-color': currentThemeConfig.toolbar_background_color,
@@ -90,7 +93,6 @@
                   || menuVisible"
             trigger="hover"
             placement="bottom-start"
-            style="height: 100%;"
             :style="{ width: currentThemeConfig.toolbar_menu_show_workspace_name ? '140px' : 'auto' }"
             :hide-on-click="false"
             :show-timeout="0"
@@ -114,15 +116,17 @@
                 :class="{ 'is-reverse': menuVisible}"
                 :style="{ color: currentThemeConfig.toolbar_icon_color }"></i>
             </span>
+              <!-- :style="{ maxHeight: (currentThemeConfig.item_height*currentThemeConfig.item_show_count -->
             <el-dropdown-menu
               slot="dropdown"
               class="toolbar-menu"
               @mousedown.native.prevent
-              :style="{ maxHeight: (currentThemeConfig.item_height*currentThemeConfig.item_show_count
+              :style="{ maxHeight: ((listHeight == 0 ? currentThemeConfig.item_height : listHeight)
                                   + currentThemeConfig.border_width
                                   + currentThemeConfig.padding_width
-                                  + statusbarHeight
-                                  - 10)+'px' }">
+                                  + (currentThemeConfig.statusbar_show ? statusbarHeight : 0)
+                                  - 10
+                                  - 1 )+'px' }">
               <el-dropdown-item
                 v-for="(workspace, index) in workspaces"
                 :label="lang(workspace.title)"
@@ -364,6 +368,7 @@
       </el-button-group>
     </div>
 
+      <!-- :height="(currentThemeConfig.item_height*currentThemeConfig.item_show_count)+'px'" -->
     <el-carousel
       v-if="activeWorkspaceIndex != -1"
       indicator-position="outside"
@@ -371,7 +376,7 @@
       :autoplay="false"
       :loop="true"
       :initial-index="activeWorkspaceIndex"
-      :height="(currentThemeConfig.item_height*currentThemeConfig.item_show_count)+'px'"
+      :height="listHeight+'px'"
       :trigger="carouselTrigger"
       @change="workspaceChange"
       @mousedown.native.prevent
@@ -382,7 +387,8 @@
         <component
           v-if="isOpened[index]"
 
-          :total.sync="total"
+          :searchTotal.sync="searchTotal"
+          :listCount.sync="listCount"
 
           :is="workspace.type"
           :config="config"
@@ -469,7 +475,8 @@ export default {
       isLoading: true,
       isComposition: false,
 
-      total: 0,
+      searchTotal: 0,
+      listCount: 0,
 
       keyword: '',
       activeWorkspaceIndex: -1,//0,
@@ -532,8 +539,8 @@ export default {
     }
   },
   watch: {
-    total(newVal, oldVal) {
-      console.log('watch:total', newVal, oldVal)
+    searchTotal(newVal, oldVal) {
+      console.log('watch:searchTotal', newVal, oldVal)
       // this.statusTip(newVal, true)
 
       let title = this.lang(this.currentWorkspace.title);
@@ -542,7 +549,10 @@ export default {
             : '';
       title += ' | '+newVal;
       this.statusTip(title, true)
-    }
+    },
+    // listCount(newVal, oldVal) {
+
+    // }
   },
   computed: {
     activeWorkspaceRefIndex() {
@@ -575,6 +585,18 @@ export default {
         if(this.openWay == 'popup') return this.localConfig.theme_popup;
         else return this.localConfig.theme_inject;
       }
+    },
+
+    listHeight() {
+      if(this.openWay == 'inject')
+        return this.currentThemeConfig.item_show_count
+              *this.currentThemeConfig.item_height;
+
+      return ( this.currentThemeConfig.height_auto
+            && this.listCount <= this.currentThemeConfig.item_show_count
+                      ? this.listCount
+                      : this.currentThemeConfig.item_show_count)
+            * this.currentThemeConfig.item_height;
     },
 
     keymap() {
@@ -1348,6 +1370,7 @@ img {
   flex:1;
 }
 .toolbar .search-input .el-input-group__prepend {
+  width: var(--toolbar-input-prepend-border-width);
   border-width: var(--toolbar-input-prepend-border-width);
   background-color: var(--toolbar-background-color);
   border-radius: 0;
@@ -1414,9 +1437,10 @@ img {
 .toolbar .el-icon-arrow-down.is-reverse {
   transform: rotate(-180deg);
 }
-/* .toolbar .el-dropdown {
-  width: 140px;
-} */
+.toolbar .el-dropdown {
+  /* width: 140px; */
+  height: 100%;
+}
 .toolbar .el-dropdown-link {
   display: flex;
 
@@ -1430,6 +1454,7 @@ img {
 .toolbar-menu {
   overflow:auto;
   width: 140px;
+  margin: 0;
 }
 .toolbar-menu .el-dropdown-menu__item.selected {
   color: #409eff;
@@ -1510,6 +1535,9 @@ img {
   background: transparent;
 }
 
+.el-message-box__wrapper {
+  overflow: auto;
+}
 .window-message-box {
   min-width: 80% !important;
   max-width: 99% !important;

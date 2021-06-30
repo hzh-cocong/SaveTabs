@@ -115,7 +115,7 @@
         {
             "id": "2",
             "name": "SaveTabs Classic2",
-            "type": 1,
+            "type": 3,
             "config": {
                 "list_font_color": "red",
                 "list_background_color": "#ffffff",
@@ -167,12 +167,13 @@
                 "list_state_size": 12,
                 "list_keymap_size": 16,
 
-                "border_color": "#ffffff",
-                "background_color": "#ffffff",
-                "carousel_indicators_color": "#C0C4CC",
+                "border_color": "blue",
+                "background_color": "red",
+                "carousel_indicators_color": "#C0C4CC00",
 
                 "item_height": 50,
                 "width": 500,
+                "height_auto": true,
                 "border_width": 0,
                 "padding_width": 0,
 
@@ -183,7 +184,7 @@
 
                 "toolbar_height": 40,
                 "toolbar_background_color": "#ffffff",
-                "toolbar_border_color": "#dcdfe6",
+                "toolbar_border_color": "blue",
 
                 "toolbar_icon_color": "#C1C4CB",
                 "toolbar_icon_focus_color": "#919398",
@@ -197,7 +198,7 @@
 
                 "toolbar_input_font_size": 20,
                 "toolbar_input_font_color": "#606266",
-                "toolbar_input_focus_border_color": "#dcdfe6",
+                "toolbar_input_focus_border_color": "yellow",
                 "toolbar_input_selected_font_color": "#ffffff",
                 "toolbar_input_selected_background_color": "#7497de",
                 "toolbar_input_tip_show": false,
@@ -393,7 +394,8 @@
 
                 "item_height": 50,
                 "width": 500,
-                "border_width": 8,
+                "height_auto": true,
+                "border_width": 0,
                 "padding_width": 0,
 
                 "item_show_count": 7,

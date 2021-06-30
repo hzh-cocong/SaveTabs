@@ -47,9 +47,14 @@
 
     let shadow = '0 5px 20px 0 rgba(0, 0, 0, 0.25)';
     let iframeBackgroundColor = currentThemeConfig.background_color;
-    let width = currentThemeConfig.width+currentThemeConfig.border_width*2+currentThemeConfig.padding_width*2;
-    let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count+(currentThemeConfig.toolbar_height+10*2)+currentThemeConfig.padding_width*2+currentThemeConfig.border_width*2+10;
-    height += 30; // 底部状态栏
+    let width =  currentThemeConfig.width
+                +currentThemeConfig.border_width*2
+                +currentThemeConfig.padding_width*2;
+    let height = currentThemeConfig.item_height*currentThemeConfig.item_show_count
+                +(currentThemeConfig.toolbar_height+10*2)
+                +currentThemeConfig.padding_width*2
+                +currentThemeConfig.border_width*2+10;
+    if(currentThemeConfig.statusbar_show == true) height += 30; // 底部状态栏
 
     // 水平位置
     let horizontalPosition;

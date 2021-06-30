@@ -420,7 +420,12 @@ export default {
   name: 'Window',
   inject: ['focus', 'blur', 'input', 'statusTip'],
   props: {
-    total: {
+    searchTotal: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    listCount: {
       type: Number,
       required: false,
       default: 0,
@@ -491,8 +496,12 @@ export default {
   watch: {
     cacheList(newVal, oldVal) {
       console.log('watch:cacheList', newVal, oldVal)
-      this.$emit('update:total', newVal.length)
-    }
+      this.$emit('update:searchTotal', newVal.length)
+    },
+    list(newVal, oldVal) {
+      console.log('watch:list', newVal, oldVal)
+      this.$emit('update:listCount', newVal.length)
+    },
   },
   components: {
     List,

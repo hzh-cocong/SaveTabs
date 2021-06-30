@@ -1,7 +1,8 @@
 <template>
+<!-- height: (itemHeight*itemShowCount)+'px', -->
   <ul
     class="list"
-    :style="{ height: (itemHeight*itemShowCount)+'px',
+    :style="{ maxHeight: (itemHeight*itemShowCount)+'px',
               '--scrollbar_color': scrollbarColor,
               '--scrollbar_focus_color': scrollbarFocusColor }"
     :infinite-scroll-disabled="scrollDisabled"

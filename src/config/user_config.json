@@ -2,13 +2,11 @@
     "workspaces": [
         "all",
         "window",
-        "note",
-        "tab",
-        "temporary",
+        "window",
         "bookmark",
         "history"
     ],
-    "operateOrder": [ "window", "note", "temporary" ],
+    "operationButtons": [ "window", "note", "temporary" ],
 
     "workspace_change_word": ">"
 }

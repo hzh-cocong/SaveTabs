@@ -1,6 +1,6 @@
 {
     "active_workspace_type": "history",
-    "pinned": false,
+    "pinned": true,
     "theme_mode": "light",
     "popup": true,
     "keymap_left_and_right": true,
@@ -111,7 +111,7 @@
             "list_keymap_size": 16,
 
             "border_color": "#ffffff",
-            "background_color": "red",
+            "background_color": "#ffffff",
             "carousel_indicators_color": "#C0C4CC",
 
             "item_height": 50,

@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import Options from './Options.vue'
+
+import './plugins/svg-sprite.js'
 import './plugins/element3.js'
 //*
 import './plugins/tool-test.js'
@@ -11,6 +12,9 @@ import './plugins/svg-sprite.js'
 import routes from './components/options/routes.config.js'
 
 import VueRouter from 'vue-router'
+
+import Options from './Options.vue'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({

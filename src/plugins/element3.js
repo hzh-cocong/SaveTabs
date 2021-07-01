@@ -10,11 +10,11 @@ import {
     Submenu,
     MenuItem,
     // MenuItemGroup,
-    // Input,
+    Input,
     // InputNumber,
     // Radio,
-    // RadioGroup,
-    // RadioButton,
+    RadioGroup,
+    RadioButton,
     Checkbox,
     // CheckboxButton,
     // CheckboxGroup,
@@ -92,11 +92,11 @@ import {
   Vue.use(Submenu);
   Vue.use(MenuItem);
   // Vue.use(MenuItemGroup);
-  // Vue.use(Input);
+  Vue.use(Input);
   // Vue.use(InputNumber);
   // Vue.use(Radio);
-  // Vue.use(RadioGroup);
-  // Vue.use(RadioButton);
+  Vue.use(RadioGroup);
+  Vue.use(RadioButton);
   Vue.use(Checkbox);
   // Vue.use(CheckboxButton);
   // Vue.use(CheckboxGroup);

@@ -39,36 +39,17 @@
             {{ submenu.title }}
           </el-menu-item>
         </el-submenu>
-
-        <!-- <el-submenu index="workspaces">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>工作区</span>
-          </template>
-          <el-menu-item index="general">总览</el-menu-item>
-          <el-menu-item index="window">窗口</el-menu-item>
-          <el-menu-item index="note">便签</el-menu-item>
-          <el-menu-item index="temporary">临时窗口</el-menu-item>
-          <el-menu-item index="tab">活跃标签</el-menu-item>
-          <el-menu-item index="bookmark">书签</el-menu-item>
-          <el-menu-item index="history">历史记录</el-menu-item>
-          <el-menu-item index="import-export">导入导出</el-menu-item>
-        </el-submenu>
-        <el-submenu index="2">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>导航一</span>
-          </template>
-          <el-submenu index="2-1">
-            <template slot="title">选项4</template>
-            <el-menu-item index="2-1-1">选项1</el-menu-item>
-          </el-submenu>
-        </el-submenu> -->
       </el-menu>
     </el-aside>
 
-    <el-main style="padding: 0;">
-      <router-view></router-view>
+    <el-main style="padding: 0;height: 100vh;overflow: auto;">
+      <router-view
+        :syncConfig="syncConfig"
+        :localConfig="localConfig"
+        :projectConfig="projectConfig"
+
+        :theme="theme"
+      ></router-view>
     </el-main>
 
   </el-container>
@@ -82,23 +63,178 @@ import userConfig from './config/user_config.json'
 import userLocalConfig from './config/user_local_config.json'
 import projectConfig from './config/project_config.json'
 
-import user_theme from './config/user_theme.json'
+import userTheme from './config/user_theme.json'
 
 export default {
   name: 'app',
+  provide(){
+    return {
+      changeWorkspaceState: this.changeWorkspaceState,
+      toPin: this.toPin,
+      workspaceSort: this.workspaceSort,
+      OperateButtonSort: this.OperateButtonSort,
+      changeThemeMode: this.changeThemeMode,
+      popupChange: this.popupChange,
+      keymapLeftAndRightChange: this.keymapLeftAndRightChange,
+      workspaceChangeWordSync: this.workspaceChangeWordSync,
+      setWorkspaceChangeWord: this.setWorkspaceChangeWord,
+    }
+  },
   data() {
     return {
       menus: menus,
 
       syncConfig: userConfig,
       localConfig: userLocalConfig,
+      projectConfig: projectConfig,
 
-      theme: user_theme,
+      theme: userTheme,
 
       commands: [],
     }
   },
+  computed: {
+    allWorkspaces() {
+      return this.projectConfig.allWorkspaces;
+    },
+    allOperationButtons() {
+      return this.projectConfig.allOperationButtons;
+    }
+  },
   methods: {
+    store(type, tip=true) {
+      if(type != 'local' && type != 'sync') return;
+
+      chrome.storage[type].set({
+        'config': type == 'sync' ? this.syncConfig : this.localConfig,
+      }, () => {
+        if( ! tip) return;
+        this.$message({
+          type: 'success',
+          message: '修改成功',
+          duration: 1000,
+        });
+      });
+    },
+
+    changeWorkspaceState(type) {
+      let workspace = this.allWorkspaces[type];
+
+      workspace.isEnabled = ! workspace.isEnabled;
+
+      if(workspace.isEnabled) {
+        if(this.syncConfig.workspaces.indexOf(type) == -1) {
+          this.syncConfig.workspaces.push(type);
+        }
+        if(this.allOperationButtons.indexOf(type) != -1
+        && this.syncConfig.operationButtons.indexOf(type) == -1) {
+          this.syncConfig.operationButtons.push(type);
+        }
+        this.store('sync');
+        return;
+      }
+
+      if(this.syncConfig.workspaces.length <= 1) {
+        // 要在下一个事件队列中执行，因为 dom 依赖都是被放到下一个事件队列中执行的
+        this.$nextTick(() => {
+          this.$set(this.allWorkspaces[type], 'isEnabled', true);
+        });
+        this.$message({
+          type: 'warning',
+          message: this.lang('workspaceCountLimit'),
+        });
+        return;
+      }
+
+      let index = this.syncConfig.workspaces.indexOf(type);
+      this.syncConfig.workspaces.splice(index, 1);
+      if(this.localConfig.pinned && this.localConfig.active_workspace_type == type) {
+        this.localConfig.pinned = false;
+        this.store('local', false)
+      }
+
+      index = this.syncConfig.operationButtons.indexOf(type);
+      if(index != -1) {
+        this.syncConfig.operationButtons.splice(index, 1);
+      }
+
+      this.store('sync');
+    },
+    toPin(type) {
+      // 未启用则禁止操作
+      if(this.allWorkspaces[type].isEnabled == false) {
+        this.$message({
+          type: 'warning',
+          message: this.lang('workspaceEnable'),
+        });
+        return;
+      }
+
+      // 固定（之前未有任何固定）
+      if( ! this.localConfig.pinned) {
+        this.localConfig.active_workspace_type = type;
+        this.localConfig.pinned = true;
+        this.store('local');
+        return;
+      }
+
+      // 取消固定
+      if(this.localConfig.active_workspace_type == type) {
+        this.localConfig.pinned = false;
+        this.store('local');
+        return;
+      }
+
+      // 固定（之前是固定别的）
+      // this.config.pinned = true;
+      this.localConfig.active_workspace_type = type;
+
+      this.store('local');
+    },
+    workspaceSort({ newIndex, oldIndex }) {
+      if(newIndex == oldIndex) {
+        return;
+      }
+      if(newIndex >= this.syncConfig.workspaces.length) {
+        newIndex = this.syncConfig.workspaces.length-1;
+      }
+
+      this.syncConfig.workspaces.splice(newIndex, 0, this.syncConfig.workspaces.splice(oldIndex , 1)[0]);
+      this.store('sync');
+    },
+    OperateButtonSort({ newIndex, oldIndex }) {
+      if(newIndex == oldIndex) {
+        return;
+      }
+      if(newIndex >= this.syncConfig.operationButtons.length) {
+        newIndex = this.syncConfig.operationButtons.length-1;
+      }
+
+      this.syncConfig.operationButtons.splice(newIndex, 0, this.syncConfig.operationButtons.splice(oldIndex , 1)[0]);
+      this.store('sync');
+    },
+    changeThemeMode() {
+      this.localConfig.theme_mode = this.localConfig.theme_mode == 'light' ? 'dark' : 'light';
+      this.store('local');
+    },
+    popupChange() {
+      this.localConfig.popup = ! this.localConfig.popup;
+      this.store('local');
+    },
+    keymapLeftAndRightChange() {
+      this.localConfig.keymap_left_and_right = ! this.localConfig.keymap_left_and_right;
+      this.store('local');
+    },
+    workspaceChangeWordSync(value) {
+      this.syncConfig.workspace_change_word = value;
+      this.store('sync');
+    },
+    setWorkspaceChangeWord(value) {
+      if(this.syncConfig.workspace_change_word == value) return;
+      this.syncConfig.workspace_change_word = value;
+      this.store('sync');
+    },
+
     upgrade(syncItems, localItems) {
       // 老用户升级
       console.log('upgrade', syncItems, localItems);
@@ -110,14 +246,14 @@ export default {
         syncConfig.workspaces = syncItems.config.workspaces;
 
         if(syncItems.config.button_follow_workspace == true) {
-          syncConfig.operateOrder = [];
+          syncConfig.operationButtons = [];
           for(let type of syncItems.config.workspaces) {
-            if([ 'window', 'note', 'temporary' ].indexOf(type) != -1) {
-              syncConfig.operateOrder.push(type);
+            if(this.allOperationButtons.indexOf(type) != -1) {
+              syncConfig.operationButtons.push(type);
             }
           }
         } else {
-          syncConfig.operateOrder = [ 'window', 'note', 'temporary' ].filter(type => {
+          syncConfig.operationButtons = this.allOperationButtons.filter(type => {
             return syncItems.config.workspaces.indexOf(type) != -1;
           })
         }
@@ -252,6 +388,12 @@ export default {
       }
 
       this.commands = commands;
+
+      Object.keys(this.projectConfig.allWorkspaces).filter(type => {
+        if(this.syncConfig.workspaces.indexOf(type) == -1) {
+          this.projectConfig.allWorkspaces[type].isEnabled = false;
+        }
+      })
     })
   }
 }

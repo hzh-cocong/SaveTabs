@@ -354,9 +354,9 @@
       <el-button-group
         v-show=" ! currentThemeConfig.toolbar_button_auto_hide || showOperationButton"
         style="display: flex"
-        :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operateOrder.length)+'px' }">
+        :style="{ width: ((currentThemeConfig.toolbar_height/(40/(40+15)))*config.operationButtons.length)+'px' }">
         <el-button
-          v-for="(type, i) in config.operateOrder"
+          v-for="(type, i) in config.operationButtons"
           :key="i"
           type="default"
           :icon="allWorkspaces[type].icon_simple"
@@ -1204,7 +1204,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       });
 
       // 避免用户恶意修改
-      this.config.operateOrder = this.config.operateOrder.filter(type => {
+      this.config.operationButtons = this.config.operationButtons.filter(type => {
         return this.config.workspaces.indexOf(type) != -1;
       })
 

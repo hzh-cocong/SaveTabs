@@ -64,6 +64,7 @@
             "isEnabled": true
         }
     },
+    "allOperationButtons": [ "window", "note", "temporary" ],
     "colorAttributes": {
         "list_font_color": {
             "color": true

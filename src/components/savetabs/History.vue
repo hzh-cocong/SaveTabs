@@ -669,7 +669,10 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       // 查找历史
       this.query((historys) => {
         console.log('history.query', historys);
+console.log('history.search3', historys);
+
         if(historys.length == 0) {
+console.log('history.search4', historys);
           this.cacheList = [];
           this.list = [];
 
@@ -696,7 +699,7 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
-        console.log('history.search.end')
+        console.log('history.search.end', this.scrollDisabled, this.queryDisabled)
       }, lastVisitTime, 27)
     },
     showWorkspaceList() {

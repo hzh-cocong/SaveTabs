@@ -691,8 +691,8 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         this.currentIndex = 0;
 
         // query 并不精确，有可能这次只返回一条，下次却返回10条
-        // this.scrollDisabled = false;
-        // this.queryDisabled = false;
+        this.scrollDisabled = false;
+        this.queryDisabled = false;
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;

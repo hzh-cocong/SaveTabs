@@ -362,7 +362,7 @@ export default {
       return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
+      console.log('bookmark.highlightMap')
 
       let a = new Date().getTime();
 
@@ -378,7 +378,7 @@ export default {
 
       let b = new Date().getTime();
 
-      console.log('===h', (b-a)/1000);
+      console.log('bookmark.highlightMap', (b-a)/1000);
 
       return highlightMap;
     },
@@ -725,7 +725,10 @@ console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
       }
 
       if(this.listPageCount <= 0) {
+        this.cacheList = [];
+        this.list = [];
         this.scrollDisabled = true;
+        this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
         return;
       }
 
@@ -792,6 +795,7 @@ console.log('chrome.bookmarks.getTree.first')
           this.isSearching = false;
 
           this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
+          console.log('bookmark.search.end')
         })
       }
 
@@ -811,6 +815,7 @@ console.log('chrome.bookmarks.getTree.second')
           this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
 
           this.$emit('update:searchTotal', this.cacheList.length);
+          console.log('bookmark.search.end')
         })
       }
     },

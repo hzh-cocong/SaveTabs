@@ -420,7 +420,7 @@ export default {
       return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
+      console.log('tab.highlightMap')
 
       let a = new Date().getTime();
 
@@ -436,7 +436,7 @@ export default {
 
       let b = new Date().getTime();
 
-      console.log('===h', (b-a)/1000);
+      console.log('tab.highlightMap2', (b-a)/1000);
 
       return highlightMap;
     },
@@ -612,6 +612,8 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
+
+      console.log('tab.search.end')
     },
     showWorkspaceList() {
       let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];

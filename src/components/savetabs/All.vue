@@ -320,6 +320,7 @@ console.log('all.search2', keyword, '|',  this.storageKeyword, this.isFirstSearc
       }
 
       if(this.listPageCount <= 0) {
+        this.list = [];
         this.scrollDisabled = true;
         return;
       }

@@ -581,11 +581,13 @@ const tool = {
         callback != undefined && callback();
       },
       search: function(options, callback) {
-        if(options.text == '') {
-          callback != undefined && callback(history.slice(0, options.maxResults));
-        } else {
-          callback != undefined && callback(history.slice(0, 3));
-        }
+        setTimeout(() => {
+          if(options.text == '') {
+            callback != undefined && callback(history.slice(0, options.maxResults));
+          } else {
+            callback != undefined && callback(history.slice(0, 3));
+          }
+        }, 3000)
       },
       deleteRange: function(options, callback) {
         callback != undefined && callback();

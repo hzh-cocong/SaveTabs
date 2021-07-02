@@ -318,7 +318,7 @@ export default {
       cacheList: [],
 
       scrollDisabled: true,
-      queryDisabled: false,
+      queryDisabled: false, // true
       storageKeyword: null,
 
       currentIndex: -1,
@@ -395,9 +395,7 @@ export default {
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('history.watch.itemShowCount', this.isNoSearch, this.isNoSearch
-            ? this.currentThemeConfig.no_search_item_show_count
-            : this.currentThemeConfig.item_show_count)
+      console.log('history.watch.itemShowCount', this.isNoSearch)
       return  this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -441,7 +439,7 @@ export default {
       return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
+      console.log('history.highlightMap')
 
       let a = new Date().getTime();
 
@@ -472,7 +470,7 @@ export default {
 
       let b = new Date().getTime();
 
-      console.log('===h', (b-a)/1000);
+      console.log('history.highlightMap2', (b-a)/1000);
 
       return highlightMap;
     },
@@ -633,6 +631,8 @@ console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTi
       }
 
       if(this.listPageCount <= 0) {
+        this.cacheList = [];
+        this.list = [];
         this.scrollDisabled = true;
         return;
       }
@@ -662,8 +662,12 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       // 反正历史记录就不太对，不如将错就错
       // this.startTime = 0;
 
+      // 提高健壮性，虽然没什么用
+      // this.scrollDisabled = true;
+      // this.queryDisabled = true;
+
       // 查找历史
-      this.query((historys) => {console.warn('isSearched3');
+      this.query((historys) => {
         console.log('history.query', historys);
         if(historys.length == 0) {
           this.cacheList = [];
@@ -682,34 +686,17 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
         this.cacheList = [];
         this.mergeHistory(this.cacheList, historys);
 
-        // 交由 load 才准确
-        // 搜索结果只有一条时自动展开
-        // if(this.storageKeyword.length > 0 && this.cacheList.length == 1 && this.cacheList[0].count > 1) {
-        //   let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
-
-        //   this.cacheList.push(...historys);
-        //   // this.cacheList.splice(1, 0, ...historys);
-
-        //   this.currentIndex = 1;
-
-        //   // 不加这个，目录可能会被隐藏，即自动向上滚动了一行
-        //   this.$nextTick(() => {
-        //     this.$refs.list.currentTo(1);
-        //   });
-        // } else {
-        //   this.currentIndex = 0;
-        // }
-
         this.list = this.cacheList.slice(0, this.listPageCount);
 
         this.currentIndex = 0;
 
         // query 并不精确，有可能这次只返回一条，下次却返回10条
-        this.scrollDisabled = false;
-        this.queryDisabled = false;
+        // this.scrollDisabled = false;
+        // this.queryDisabled = false;
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
+        console.log('history.search.end')
       }, lastVisitTime, 27)
     },
     showWorkspaceList() {
@@ -743,6 +730,8 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       }
 
       if(this.queryDisabled) {
+        console.log('history.load.test1', this.list.length, this.cacheList.length, end)
+        if(this.list.length >= this.cacheList.length) return; // 避免引起不必要的计算
         this.list.push(...this.cacheList.slice(this.list.length, end))
         this.scrollDisabled = true;
         return;
@@ -752,13 +741,18 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       this.query((historys) => {
         console.log('history.load.test2')
         if(historys.length == 0) {
-          this.list.push(...this.cacheList.slice(this.list.length, end))
+          console.log('history.load.test3', this.list.length, this.list.length, end)
+          if(this.list.length < this.cacheList.length) { // 避免引起不必要的计算
+            console.log('history.load.test30', ...this.cacheList.slice(this.list.length, end));
+            this.list.push(...this.cacheList.slice(this.list.length, end))
+          }
 
           this.scrollDisabled = true;
           this.queryDisabled = true;
 
           // 结果只有一条时自动展开
           if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
+            console.log('history.load.test4')
             let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
 
             this.cacheList.push(...historys);

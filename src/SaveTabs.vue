@@ -605,7 +605,7 @@ export default {
           && ! this.isPopover;
     },
     listHeight() {
-      console.log('listHeight')
+      console.log('history.listHeight')
       if( ! this.currentThemeConfig.height_auto || this.openWay != 'popup')
         return this.currentThemeConfig.item_show_count
               *this.currentThemeConfig.item_height;

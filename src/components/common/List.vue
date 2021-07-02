@@ -292,6 +292,9 @@ console.log('currentIndex', newVal, oldVal)
     list: function (newVal, oldVal) {
       console.log('list.list', newVal.length, oldVal.length);
 
+      // 提供兼容性，在并发下 scrollDisabled = false，且 newVal.length = 0 hisotry 会导致死循环
+      if(newVal.length == oldVal.length) return;
+
       // 搜索时列表数量发生变化，可能不需要滚动条
       if(newVal.length <= this.itemShowCount
       && oldVal.length > this.itemShowCount) {
@@ -300,7 +303,7 @@ console.log('currentIndex', newVal, oldVal)
 
       // 解决由于列表被删除时触底加载问题（v-infinite-scroll 需要靠滚动事件，但这个并不会触发，所以需要我们自己处理）
       if(this.scrollDisabled == false
-      && newVal.length-this.scrollLines  <= this.itemShowCount) {
+      && newVal.length-this.scrollLines <= this.itemShowCount) {
       console.log('777777777777777777', newVal.length, oldVal.length)
         this.load();
       }

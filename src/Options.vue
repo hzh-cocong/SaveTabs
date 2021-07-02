@@ -232,6 +232,7 @@ export default {
     },
     popupChange() {
       this.localConfig.popup = ! this.localConfig.popup;
+      chrome.browserAction.setPopup({ popup: this.localConfig.popup ? chrome.extension.getURL("savetabs.html") : ''})
       this.store('local');
     },
     keymapLeftAndRightChange() {
@@ -239,12 +240,13 @@ export default {
       this.store('local');
     },
     workspaceChangeWordSync(value) {
-      this.syncConfig.workspace_change_word = value;
+      if(this.syncConfig.workspace_change_word == value.trim()) return;
+      this.syncConfig.workspace_change_word = value.trim();
       this.store('sync');
     },
     setWorkspaceChangeWord(value) {
-      if(this.syncConfig.workspace_change_word == value) return;
-      this.syncConfig.workspace_change_word = value;
+      if(this.syncConfig.workspace_change_word == value.trim()) return;
+      this.syncConfig.workspace_change_word = value.trim();
       this.store('sync');
     },
 

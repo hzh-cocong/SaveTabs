@@ -52,12 +52,18 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
     const error = chrome.runtime.lastError;
     if( ! (error && error.message)) return;
 
+    // 这里还是专心执行脚本吧，避免混乱
     // window.open toggle
-    let windows = chrome.extension.getViews({type: 'tab'});
-    if(windows.length > 0) {
-      windows.forEach(window => window.close());
-      return;
-    }
+    // let windows = chrome.extension.getViews({type: 'tab'});
+    // if(windows.length > 0) {
+    //   windows.forEach(window => {
+    //     // 避免把 options 页面也给关闭了
+    //     if(window.location.href == chrome.extension.getURL("savetabs.html")) {
+    //       window.close();
+    //     }
+    //   });
+    //   return;
+    // }
 
     if(onlyInjection) return;
 

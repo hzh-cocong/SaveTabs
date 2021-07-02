@@ -73,7 +73,7 @@ import {
     // Backtop,
     // PageHeader,
     // CascaderPanel,
-    // Loading,
+    Loading,
     MessageBox,
     Message,
     // Notification,
@@ -159,9 +159,9 @@ import {
   // Vue.use(InfiniteScroll);
   Vue.use(Popconfirm);
 
-  // Vue.use(Loading.directive);
+  Vue.use(Loading.directive);
 
-  // Vue.prototype.$loading = Loading.service;
+  Vue.prototype.$loading = Loading.service;
   Vue.prototype.$msgbox = MessageBox;
   Vue.prototype.$alert = MessageBox.alert;
   Vue.prototype.$confirm = MessageBox.confirm;

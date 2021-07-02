@@ -1,5 +1,9 @@
 <template>
-  <div class="workspace-all">
+  <div
+    class="workspace-all"
+    v-loading="syncConfig.workspaces.indexOf('all') == -1"
+    element-loading-text="请先开启该工作区"
+    @click="openWorkspaceAll">
     <el-card class="box-card" header="智能排序">
       <el-checkbox
         :value="localConfig.all_sort_auto"
@@ -400,6 +404,12 @@ export default {
     }
   },
   methods: {
+    openWorkspaceAll() {
+      if(this.syncConfig.workspaces.indexOf('all') != -1) return;
+
+      window.location.href="/options.html#/workspace-general";
+    },
+
     submitSearchEngineForm() {
       this.$refs.searchEngineForm.validate((valid) => {
         if( ! valid) return false;

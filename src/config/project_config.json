@@ -1,5 +1,14 @@
 {
     "allWorkspaces": {
+        "all": {
+            "type": "all",
+            "title": "all",
+            "icon": ["fab", "search"],
+            "icon_simple": "",
+            "svg": "search-solid",
+            "placeholder": "allPlaceholder",
+            "isEnabled": true
+        },
         "tab": {
             "type": "tab",
             "title": "tab",
@@ -7,15 +16,6 @@
             "icon_simple": "",
             "svg": "window-maximize-solid",
             "placeholder": "tabPlaceholder",
-            "isEnabled": true
-        },
-        "note": {
-            "type": "note",
-            "title": "note",
-            "icon": ["fas", "bookmark"],
-            "icon_simple": "el-icon-collection-tag",
-            "svg": "bookmark-regular",
-            "placeholder": "notePlaceholder",
             "isEnabled": true
         },
         "window": {
@@ -27,6 +27,15 @@
             "placeholder": "windowPlaceholder",
             "isEnabled": true
         },
+        "note": {
+            "type": "note",
+            "title": "note",
+            "icon": ["fas", "bookmark"],
+            "icon_simple": "el-icon-collection-tag",
+            "svg": "bookmark-regular",
+            "placeholder": "notePlaceholder",
+            "isEnabled": true
+        },
         "temporary": {
             "type": "temporary",
             "title": "temporary",
@@ -34,15 +43,6 @@
             "icon_simple": "el-icon-paperclip",
             "svg": "paperclip-solid",
             "placeholder": "temporaryPlaceholder",
-            "isEnabled": true
-        },
-        "history": {
-            "type": "history",
-            "title": "history",
-            "icon": ["fas", "history"],
-            "icon_simple": "",
-            "svg": "history-solid",
-            "placeholder": "historyPlaceholder",
             "isEnabled": true
         },
         "bookmark": {
@@ -54,13 +54,13 @@
             "placeholder": "bookmarkPlaceholder",
             "isEnabled": true
         },
-        "all": {
-            "type": "all",
-            "title": "all",
-            "icon": ["fab", "search"],
+        "history": {
+            "type": "history",
+            "title": "history",
+            "icon": ["fas", "history"],
             "icon_simple": "",
-            "svg": "search-solid",
-            "placeholder": "allPlaceholder",
+            "svg": "history-solid",
+            "placeholder": "historyPlaceholder",
             "isEnabled": true
         }
     },

@@ -78,6 +78,19 @@ export default {
       keymapLeftAndRightChange: this.keymapLeftAndRightChange,
       workspaceChangeWordSync: this.workspaceChangeWordSync,
       setWorkspaceChangeWord: this.setWorkspaceChangeWord,
+
+      changeAutoSort: this.changeAutoSort,
+      allIncludeRemove: this.allIncludeRemove,
+      allIncludeAdd: this.allIncludeAdd,
+      allIncludeCountChange: this.allIncludeCountChange,
+      allIncludeChangeTop: this.allIncludeChangeTop,
+      allIncludeChangeSearchState: this.allIncludeChangeSearchState,
+      allIncludeSort: this.allIncludeSort,
+      searchEngineEnabled: this.searchEngineEnabled,
+      addSearchEngine: this.addSearchEngine,
+      editSearchEngine: this.editSearchEngine,
+      deleteSearchEngine: this.deleteSearchEngine,
+      searchEngineSort: this.searchEngineSort,
     }
   },
   data() {
@@ -233,6 +246,139 @@ export default {
       if(this.syncConfig.workspace_change_word == value) return;
       this.syncConfig.workspace_change_word = value;
       this.store('sync');
+    },
+
+    changeAutoSort() {
+      this.localConfig.all_sort_auto = ! this.localConfig.all_sort_auto;
+      this.store('local');
+    },
+    allIncludeRemove(type) {
+      let index = this.localConfig.all_include.findIndex(item => {
+        return item.type == type;
+      })
+      if(index == -1) return;
+
+      this.localConfig.all_include.splice(index, 1);
+      this.store('local');
+    },
+    allIncludeAdd(type) {
+      let index = this.localConfig.all_include.findIndex(item => {
+        return item.type == type;
+      })
+      if(index != -1) return;
+
+      this.localConfig.all_include.push({
+        "type": type,
+        "count": 3,
+        "is_top": 0,
+        "only_search": false
+      });
+      this.store('local');
+    },
+    allIncludeCountChange(type, count = 3) {
+      let index = this.localConfig.all_include.findIndex(item => {
+        return item.type == type;
+      })
+      if(index == -1) return;
+      if(this.localConfig.all_include[index].count == count) return;
+
+      this.localConfig.all_include[index].count = count;
+      this.store('local');
+    },
+    allIncludeChangeTop(type, isTop) {
+      let index = this.localConfig.all_include.findIndex(item => {
+        return item.type == type;
+      })
+      if(index == -1) return;
+      if(this.localConfig.all_include[index].is_top == isTop) return;
+
+      this.localConfig.all_include[index].is_top = isTop;
+
+      // 重新排下序，体验更好。
+      this.localConfig.all_include.sort((item1, item2) => item2.is_top-item1.is_top);
+
+      this.store('local');
+    },
+    allIncludeChangeSearchState(type, onlySearch) {
+      let index = this.localConfig.all_include.findIndex(item => {
+        return item.type == type;
+      })
+      if(index == -1) return;
+      if(this.localConfig.all_include[index].only_search == onlySearch) return;
+
+      this.localConfig.all_include[index].only_search = onlySearch;
+      this.store('local');
+    },
+    allIncludeSort({newIndex, oldIndex }) {
+      console.log('allIncludeSort', newIndex, oldIndex)
+      if(newIndex == oldIndex) {
+        return;
+      }
+
+      if(newIndex >= this.localConfig.all_include.length) {
+        newIndex = this.localConfig.all_include.length-1;
+      }
+console.log('allIncludeSort2', newIndex, oldIndex)
+      this.localConfig.all_include.splice(newIndex, 0, this.localConfig.all_include.splice(oldIndex , 1)[0]);
+      this.store('local');
+    },
+    searchEngineEnabled(isEnabled) {
+      let index = this.localConfig.all_include.findIndex(item => item.type == 'search');
+
+      if(isEnabled) {
+        if(index != -1) return; // 不太可能出现
+
+        this.localConfig.all_include.push({
+          "type": "search",
+          "count": 1000,
+          "is_top": -2,
+          "only_search": true
+        })
+      } else {
+        if(index == -1) return; // 不太可能出现
+
+        this.localConfig.all_include.splice(index, 1);
+      }
+      this.store('local');
+    },
+    addSearchEngine(data) {
+      this.localConfig.all_search_engine.push({
+        name: data.name,
+        formate: data.formate
+      });
+      this.store('local');
+    },
+    editSearchEngine(index, data) {
+      this.localConfig.all_search_engine[index] = {
+        name: data.name,
+        formate: data.formate
+      };
+      this.store('local');
+    },
+    deleteSearchEngine(index) {
+      let engine = this.localConfig.all_search_engine[index];
+      this.$confirm(engine.name+' | '+engine.formate, '删除确认', {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true,
+        customClass: 'window-message-box'
+      }).then(() => {
+        this.localConfig.all_search_engine.splice(index, 1);
+        this.store('local');
+      }).catch(() => {
+      });
+    },
+    searchEngineSort({ newIndex, oldIndex }) {
+      if(newIndex == oldIndex) {
+        return;
+      }
+      if(newIndex >= this.localConfig.all_search_engine.length) {
+        newIndex = this.localConfig.all_search_engine.length-1;
+      }
+
+      this.localConfig.all_search_engine.splice(newIndex, 0, this.localConfig.all_search_engine.splice(oldIndex , 1)[0]);
+      this.store('local');
     },
 
     upgrade(syncItems, localItems) {
@@ -429,4 +575,9 @@ body {
   /* color: blue !important; */
   opacity: 1;
 }
+
+.el-dialog {
+  max-width: 600px;
+}
+
 </style>

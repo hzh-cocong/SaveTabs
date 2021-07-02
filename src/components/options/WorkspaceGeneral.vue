@@ -4,8 +4,8 @@
       <ul class="list workspaces">
         <li
           class="list-item"
-          v-for="type in sortedWrokspaces"
-          :key="type"
+          v-for="(type, index) in sortedWrokspaces"
+          :key="type+'|'+index"
           :class="{ disabled: ! allWorkspaces[type].isEnabled, enabled: allWorkspaces[type].isEnabled }">
           <el-checkbox
             :value="allWorkspaces[type].isEnabled"
@@ -14,14 +14,15 @@
           <svg-icon
             :name="allWorkspaces[type].svg"
             :style="{
-              color: syncConfig.pinned
-            && syncConfig.active_workspace_type == type
+              color: localConfig.pinned
+            && localConfig.active_workspace_type == type
             && allWorkspaces[type].isEnabled
             ? 'gray' : '#c0c4cc'}"
             style="width:16px;margin-right: 10px;vertical-align: -0.50em"
           ></svg-icon>
           <span
-            style="flex: 1; color:#606266">{{ lang(allWorkspaces[type].title) }}</span>
+            style="flex: 1;"
+            :style="{ color: allWorkspaces[type].isEnabled ? '#606266' : 'inherit' }">{{ lang(allWorkspaces[type].title) }}</span>
           <span
             :style="{
               color: localConfig.pinned
@@ -250,6 +251,7 @@ export default {
 /* .list-item.ghost {
 } */
 .list-item.chosen{
+  color: #3a8ee6;
   border-color: #66b1ff;
   background-color:#ecf5ff;
   opacity: 1;
@@ -261,9 +263,6 @@ export default {
   margin: 0 5px;
   padding: 10px 20px;
   /* border-left: 0; */
-}
-.list.button .list-item.chosen {
-  color: #3a8ee6;
 }
 
 .workspace-general >>> .svg-icon.popup {

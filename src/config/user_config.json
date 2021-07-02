@@ -2,7 +2,9 @@
     "workspaces": [
         "all",
         "window",
-        "window",
+        "note",
+        "tab",
+        "temporary",
         "bookmark",
         "history"
     ],

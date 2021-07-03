@@ -26,7 +26,6 @@ export default [{
     {
       'name': 'general',
       'title': ' 总览',
-      'params': [ 'type', 'ggg']
     },
     {
       'name': 'export',

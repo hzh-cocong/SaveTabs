@@ -8,46 +8,10 @@
     "all_sort_auto": false,
     "all_include": [
         {
-            "type": "temporary",
-            "count": 3,
-            "is_top": -1,
-            "only_search": true
-        },
-        {
             "type": "note",
             "count": 3,
             "is_top": 1,
             "only_search": false
-        },
-        {
-            "type": "window",
-            "count": 3,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "bookmark",
-            "count": 3,
-            "is_top": -1,
-            "only_search": true
-        },
-        {
-            "type": "history",
-            "count": 3,
-            "is_top": -1,
-            "only_search": true
-        },
-        {
-            "type": "tab",
-            "count": 3,
-            "is_top": 1,
-            "only_search": true
-        },
-        {
-            "type": "search",
-            "count": 3,
-            "is_top": -2,
-            "only_search": true
         }
     ],
     "all_search_engine": [
@@ -121,12 +85,12 @@
             "list_keymap_size": 16,
 
             "border_color": "#ffffff",
-            "background_color": "#ffffff",
+            "background_color": "red",
             "carousel_indicators_color": "#C0C4CC",
 
             "item_height": 50,
             "width": 500,
-            "height_auto": true,
+            "height_auto": false,
             "border_width": 0,
             "padding_width": 0,
 

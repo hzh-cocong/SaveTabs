@@ -1,10 +1,8 @@
 <template>
   <div class="all">
-<!--
+
   <el-alert
-    v-if="isSearched && list.length == 0" -->
-  <el-alert
-    v-if="false"
+    v-if="isSearched && list.length == 0"
     type="info"
     :closable="false"
     show-icon
@@ -15,8 +13,7 @@
       style="display:flex;align-items: center;"
       :style="{ width: (currentThemeConfig.width-70)+'px' }">
       <div style="flex:1;">
-        <!-- <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
-        <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div> -->
+        <div>查找不到，你可以使用空格分隔多个关键词进行搜索</div>
       </div>
       <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
       <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>

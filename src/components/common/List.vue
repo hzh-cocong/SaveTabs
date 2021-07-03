@@ -354,6 +354,9 @@ console.log('currentIndex', newVal, oldVal)
       // 缓冲地带，即当 scrollLines 超出 scrollRange 时，可能会出现空白，而缓冲就是为了填补这片空白的
       // 同样分为上方或者下方，只单独作用于对应的方向
       return Math.ceil(this.itemShowCount/2);
+      // 弄再大还是会有闪烁问题
+      // return this.itemShowCount;
+      // return this.itemShowCount+1000;
       // return 1;
     }
   },

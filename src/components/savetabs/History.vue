@@ -269,7 +269,7 @@ import List from '../common/List.vue'
 
 export default {
   name: 'History',
-  inject: ['focus', 'input'],
+  inject: ['focus', 'input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -310,6 +310,13 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    keymap: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {};
+      },
     },
   },
   data() {
@@ -377,6 +384,15 @@ export default {
     list(newVal, oldVal) {
       console.log('history.watch:list', newVal.length, oldVal.length)
       this.$emit('update:listCount', newVal.length)
+    },
+
+    workspaceSwitch(newVal, oldVal) {
+      if(newVal) {
+        let keymap = this.keymap['open_workspace_history']
+                    ? ' ('+this.keymap['open_workspace_history']+')'
+                    : ''
+        this.statusTip('history'+keymap, true, 3000);
+      }
     },
   },
   computed: {

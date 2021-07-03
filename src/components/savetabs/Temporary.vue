@@ -303,7 +303,7 @@ import { nanoid } from 'nanoid'
 
 export default {
   name: 'Temporary',
-  inject: ['statusTip', 'input'],
+  inject: ['input', 'statusTip'],
   props: {
     config: {
       type: Object,
@@ -335,6 +335,13 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    keymap: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {};
+      },
     },
   },
   data() {
@@ -369,6 +376,15 @@ export default {
     list(newVal, oldVal) {
       console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
+    },
+
+    workspaceSwitch(newVal, oldVal) {
+      if(newVal) {
+        let keymap = this.keymap['open_workspace_temporary']
+                    ? ' ('+this.keymap['open_workspace_temporary']+')'
+                    : ''
+        this.statusTip('temporary'+keymap, true, 3000);
+      }
     },
   },
   computed: {

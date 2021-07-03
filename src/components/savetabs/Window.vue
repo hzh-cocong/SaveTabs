@@ -451,6 +451,13 @@ export default {
       required: false,
       default: '',
     },
+    keymap: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -499,6 +506,17 @@ export default {
     list(newVal, oldVal) {
       console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
+    },
+
+    workspaceSwitch(newVal, oldVal) {
+        console.log('window.workspaceSwitch')
+      if(newVal) {
+        console.log('window.workspaceSwitch2')
+        let keymap = this.keymap['open_workspace_window']
+                    ? ' ('+this.keymap['open_workspace_window']+')'
+                    : ''
+        this.statusTip('window'+keymap, true, 3000);
+      }
     },
   },
   computed: {

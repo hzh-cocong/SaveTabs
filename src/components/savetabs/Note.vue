@@ -286,6 +286,13 @@ export default {
       required: false,
       default: '',
     },
+    keymap: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -326,6 +333,15 @@ export default {
     list(newVal, oldVal) {
       console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
+    },
+
+    workspaceSwitch(newVal, oldVal) {
+      if(newVal) {
+        let keymap = this.keymap['open_workspace_note']
+                    ? ' ('+this.keymap['open_workspace_note']+')'
+                    : ''
+        this.statusTip('note'+keymap, true, 3000);
+      }
     },
   },
   computed: {

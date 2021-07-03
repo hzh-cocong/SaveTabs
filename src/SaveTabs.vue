@@ -396,6 +396,7 @@
           :keyType="keyType"
           :activeWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
           :openWay="openWay"
+          :keymap="keymap"
 
           :history="history"
           :bookmark="bookmark"
@@ -493,7 +494,7 @@ export default {
       openWay: user_local_config.popup ? 'popup' : 'inject',
       projectConfig: project_config,
       allWorkspaces: project_config.allWorkspaces,
-      commands: {},
+      commands: [],
 
       menuVisible: false,
       themeDialogVisible: false,

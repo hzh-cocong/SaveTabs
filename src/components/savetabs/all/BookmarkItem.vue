@@ -71,7 +71,7 @@
         <span
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')"></span>
+          v-html="highlight(item.title, storageKeyword.replace(/([^0-9A-Za-z\s])/g, ' $1 '), '<strong>', '</strong>')"></span>
       </template>
 
       <div
@@ -81,8 +81,13 @@
           fontSize: currentThemeConfig.list_explain_font_size+'px',
           color: isSelected
                 ? currentThemeConfig.list_explain_focus_font_color
-                : currentThemeConfig.list_explain_font_color }">
-        {{ isSelected && keyType != '' ? getTip() : item.subTitle }}
+                : currentThemeConfig.list_explain_font_color }"
+        v-html="isSelected && keyType != ''
+                ? getTip()
+                : ( isSelected && storageKeyword != '' && ! item.children
+                  ? highlight(item.url, storageKeyword.replace(/([^0-9A-Za-z\s])/g, ' $1 '), '<strong>', '</strong>')
+                  : item.subTitle
+                )">
       </div>
     </div>
 

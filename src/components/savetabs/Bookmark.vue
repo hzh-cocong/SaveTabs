@@ -86,7 +86,7 @@
           <span
             class="title"
             :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-            v-html="highlightMap[index]"></span>
+            v-html="highlightMap[index].title"></span>
         </template>
 
           <!-- v-if="tree.path[item.parentId] && (isSelected || storageKeyword != '')" -->
@@ -99,12 +99,15 @@
             color: isSelected
                   ? currentThemeConfig.list_explain_focus_font_color
                   : currentThemeConfig.list_explain_font_color }"
-          v-text="isSelected && keyType != ''
+          v-html="isSelected && keyType != ''
                   ? getTip()
-                  : ( (tree.path[item.parentId] ? tree.path[item.parentId] : '')
+                  : ( isSelected && storageKeyword != '' && ! item.children
+                    ? highlightMap[index].url
+                    : (tree.path[item.parentId] ? tree.path[item.parentId] : '')
                     + (item.children
                       ? ' | '+tree.itemCount[item.id] + ' | ' + tree.bookmarkCount[item.id]
-                      : '')  )"></div>
+                      : '')
+                  )"></div>
       </div>
 
       <div class="right">
@@ -367,13 +370,18 @@ export default {
       let a = new Date().getTime();
 
       // 书签自带的搜索系统是按字搜索的，相邻的字存在顺序关系，空格隔开的则没有，这里暂时加空格处理
-      let storageKeyword = this.storageKeyword.split('').join(' ');
+      // let storageKeyword = this.storageKeyword.split('').join(' ');
+      // 上面说的不对，书签自带的搜索目前观察是英文连着但中文拆开
+      let storageKeyword = this.storageKeyword.replace(/([^0-9A-Za-z\s])/g, ' $1 ')
 
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = new Array(this.list.length);
       this.list.forEach((item, index) => {
-        highlightMap[ index ] = this.highlight(item.title, storageKeyword, '<strong>', '</strong>');
+        highlightMap[ index ] = {
+          title: this.highlight(item.title, storageKeyword, '<strong>', '</strong>'),
+          url: item.children ? '' : this.highlight(item.url, storageKeyword, '<strong>', '</strong>')
+        }
       });
 
       let b = new Date().getTime();
@@ -441,7 +449,7 @@ let a = new Date().getTime();
 
         // marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+20 || 0);
         marginLeft[bookmark.id] = (marginLeft[bookmark.parentId]+this.currentThemeConfig.item_height*2/5 || 0);
-        path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title;
+        path[bookmark.id] = (path[bookmark.parentId] != undefined ? path[bookmark.parentId] : '')+'/'+bookmark.title.escape(); // 防注入
         itemCount[bookmark.id] = 0;
         itemCount[bookmark.parentId]++;
         // itemCount[bookmark.parentId] == undefined ? itemCount[bookmark.parentId] = 1 : itemCount[bookmark.parentId]++;

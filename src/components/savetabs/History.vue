@@ -634,6 +634,7 @@ console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTi
         this.cacheList = [];
         this.list = [];
         this.scrollDisabled = true;
+        // this.queryDisabled = true;
         return;
       }
 

@@ -1248,7 +1248,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 监听特殊事件
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if(request.type == 'closeOther') {
-          if(tab.url == chrome.extension.getURL("savetabs.html")) {
+          if(tab.url.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
             // 弹出式窗口得自己关，closeExtension 会把所有 popup 都给关了
             // 无法区分 window.open，这里关闭也什么问题（有可能是 url 直接打开的，不会是 popup）
             window.close()

@@ -58,7 +58,7 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
     // if(windows.length > 0) {
     //   windows.forEach(window => {
     //     // 避免把 options 页面也给关闭了
-    //     if(window.location.href == chrome.extension.getURL("savetabs.html")) {
+    //     if(window.location.href.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
     //       window.close();
     //     }
     //   });
@@ -293,9 +293,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     // window.open 关闭整个窗口
     // if(sender.frameId == 0) { // 点击遮罩也是 frameId = 0，所以不能用这个做判断
-    if(sender.frameId == 0 && sender.url == chrome.extension.getURL("savetabs.html")) {
+    if(sender.frameId == 0 && sender.url.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
       let windows = chrome.extension.getViews({type: 'tab'});
-      windows.forEach(window => window.close());
+      windows.forEach(window => {
+        // 避免把 options 页面也给关闭了
+        if(window.location.href.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
+          window.close();
+        }
+      });
+      // 这个有可能关不了 Tabs cannot be edited right now (user may be dragging a tab)
+      // chrome.tabs.remove(sender.tab.id);
+      // 下面这个可能会把 options 页面也给关了
+      // let windows = chrome.extension.getViews({type: 'tab'});
+      // windows.forEach(window => window.close());
       console.log('close:window.open')
       return;
     }

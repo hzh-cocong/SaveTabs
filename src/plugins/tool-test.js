@@ -587,7 +587,7 @@ const tool = {
           } else {
             callback != undefined && callback(history.slice(0, 3));
           }
-        }, 3000)
+        }, 300)
       },
       deleteRange: function(options, callback) {
         callback != undefined && callback();

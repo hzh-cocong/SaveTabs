@@ -113,6 +113,13 @@ export default {
       required: false,
       default: true,
     },
+    all: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {}
+      },
+    },
     keyType: {
       type: String,
       required: false,
@@ -195,6 +202,11 @@ export default {
     ToggleItem,
   },
   watch: {
+    "all.visible": function(newVal, oldVal) {
+      console.log('all.visible', newVal, oldVal);
+      this.search();
+    },
+
     // cacheList(newVal, oldVal) {
     //   console.log('watch:cacheList', newVal, oldVal)
     //   this.$emit('update:searchTotal', newVal.length)
@@ -218,6 +230,7 @@ export default {
       return this.currentThemeConfig.height_auto
           && this.storageKeyword == ''
           && this.openWay == 'popup'
+          && ! this.all.visible;
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
@@ -430,7 +443,7 @@ console.log('all.search:lists');
       // 避免因为列表加载慢而重复 load，infinite-scroll-delay 默认节流时延为 200ms，但具体load要多久这个谁也说不准，所以干脆禁用，等有结果了再重新开启
       this.scrollDisabled = true;
       this.toLoad(0).then((list) => {
-        console.log('load:lists2', list);
+        console.log('all:load:lists2', list, this.list.length, list.length);
 
         this.scrollDisabled = list.length <= 0;
         this.list.push(...list);

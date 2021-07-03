@@ -437,6 +437,13 @@ export default {
       required: false,
       default: true,
     },
+    window: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {}
+      },
+    },
     keyType: {
       type: String,
       required: false,
@@ -499,6 +506,11 @@ export default {
     List,
   },
   watch: {
+    "window.visible": function(newVal, oldVal) {
+      console.log('window.visible', newVal, oldVal);
+      this.search();
+    },
+
     cacheList(newVal, oldVal) {
       console.log('watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
@@ -524,6 +536,7 @@ export default {
       return this.currentThemeConfig.height_auto
           && this.storageKeyword == ''
           && this.openWay == 'popup'
+          && ! this.window.visible;
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;

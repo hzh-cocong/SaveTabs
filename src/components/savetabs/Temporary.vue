@@ -322,6 +322,13 @@ export default {
       required: false,
       default: true,
     },
+    temporary: {
+      type: Object,
+      required: false,
+      default: function() {
+        return {}
+      },
+    },
     // keyType: {
     //   type: String,
     //   required: false,
@@ -369,6 +376,11 @@ export default {
     List,
   },
   watch: {
+    "temporary.visible": function(newVal, oldVal) {
+      console.log('temporary.visible', newVal, oldVal);
+      this.search();
+    },
+
     cacheList(newVal, oldVal) {
       console.log('watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
@@ -392,6 +404,7 @@ export default {
       return this.currentThemeConfig.height_auto
           && this.storageKeyword == ''
           && this.openWay == 'popup'
+          && ! this.temporary.visible;
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;

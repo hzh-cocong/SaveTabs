@@ -758,6 +758,7 @@ console.log('history.search4', historys);
       }
 
       // 查找历史
+      this.scrollDisabled = true;
       this.query((historys) => {
         console.log('history.load.test2')
         if(historys.length == 0) {
@@ -791,6 +792,7 @@ console.log('history.search4', historys);
 
         this.mergeHistory(this.cacheList, historys);
         this.list.push(...this.cacheList.slice(this.list.length, end));
+        this.scrollDisabled = false;
       })
 
       // 不使用预加载，因为预加载过快，dom 反而会因此等待

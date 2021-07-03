@@ -377,6 +377,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.browserAction.onClicked.addListener(() => {
   console.log('9999999999999999999999999')
+  // 在 window.open 模式下监听不到
   executeScript();
 })
 

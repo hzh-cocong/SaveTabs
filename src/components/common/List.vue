@@ -293,7 +293,8 @@ console.log('currentIndex', newVal, oldVal)
       console.log('list.list', newVal.length, oldVal.length);
 
       // 提供兼容性，在并发下 scrollDisabled = false，且 newVal.length = 0 hisotry 会导致死循环
-      if(newVal.length == oldVal.length) return;
+      // list.push 所产生的事件也是这个，所以要再加个长度限制
+      if(newVal.length == oldVal.length && newVal.length == 0) return;
 
       // 搜索时列表数量发生变化，可能不需要滚动条
       if(newVal.length <= this.itemShowCount

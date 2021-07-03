@@ -66,7 +66,7 @@
         :class="{ clearable: keyword !='' && showClearButton,
                   smaller: ! currentThemeConfig.toolbar_icon_auto_hide
                         || showClearButton
-                        || (other.visible || history.visible || bookmark.visible || tab.visible) }"
+                        || (other.visible || history.visible || bookmark.visible || tab.visible || window.visible || note.visible || temporary.visible || all.visible) }"
         spellcheck="false"
         :placeholder="currentWorkspace == undefined || ! currentThemeConfig.toolbar_input_tip_show
                     ? ''
@@ -200,7 +200,7 @@
           slot="prefix"
           v-if=" ! currentThemeConfig.toolbar_icon_auto_hide
                 || showClearButton
-                || (other.visible || history.visible || bookmark.visible || tab.visible)">
+                || (other.visible || history.visible || bookmark.visible || tab.visible || window.visible || note.visible || temporary.visible || all.visible)">
           <template v-if="currentWorkspace != undefined && currentWorkspace.type == 'history'">
             <el-popover
               v-model="history.visible"
@@ -322,6 +322,114 @@
                 @click="tab.visible = ! tab.visible"></i>
             </el-popover>
           </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'window'">
+            <el-popover
+              v-model="window.visible"
+              placement="top-start"
+              trigger="manual"
+              transition
+              popper-class="no-padding"
+              @after-leave="focus">
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <span>暂无其它功能</span>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  @click="window.visible = false;"></i>
+              </div>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: window.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
+                @mousedown.prevent
+                @click="window.visible = ! window.visible"></i>
+            </el-popover>
+          </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'note'">
+            <el-popover
+              v-model="note.visible"
+              placement="top-start"
+              trigger="manual"
+              transition
+              popper-class="no-padding"
+              @after-leave="focus">
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <span>暂无其它功能</span>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  @click="note.visible = false;"></i>
+              </div>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: note.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
+                @mousedown.prevent
+                @click="note.visible = ! note.visible"></i>
+            </el-popover>
+          </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'temporary'">
+            <el-popover
+              v-model="temporary.visible"
+              placement="top-start"
+              trigger="manual"
+              transition
+              popper-class="no-padding"
+              @after-leave="focus">
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <span>暂无其它功能</span>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  @click="temporary.visible = false;"></i>
+              </div>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: temporary.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
+                @mousedown.prevent
+                @click="temporary.visible = ! temporary.visible"></i>
+            </el-popover>
+          </template>
+          <template v-else-if="currentWorkspace != undefined && currentWorkspace.type == 'all'">
+            <el-popover
+              v-model="all.visible"
+              placement="top-start"
+              trigger="manual"
+              transition
+              popper-class="no-padding"
+              @after-leave="focus">
+              <div
+                style="padding: 12px;cursor: default;"
+                @mousedown.prevent>
+                <span>暂无其它功能</span>
+                <i
+                  class="el-icon-close hover"
+                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  @click="all.visible = false;"></i>
+              </div>
+              <i
+                class="el-icon-search"
+                slot="reference"
+                style="padding-left: 4px;cursor: pointer;"
+                :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
+                          color: all.visible ? currentThemeConfig.toolbar_icon_focus_color : currentThemeConfig.toolbar_icon_color }"
+                @mousedown.prevent
+                @click="all.visible = ! all.visible"></i>
+            </el-popover>
+          </template>
           <template v-else>
             <el-popover
               v-model="other.visible"
@@ -401,6 +509,10 @@
           :history="history"
           :bookmark="bookmark"
           :tab="tab"
+          :window="window"
+          :note="note"
+          :temporary="temporary"
+          :all="all"
 
           @update:searchTotal="$set(searchTotal, currentWorkspace.type, $event)"
           @update:listCount="$set(listCount, currentWorkspace.type, $event)"
@@ -523,6 +635,18 @@ export default {
         windowId: 0,
         windowFilter: [],
       },
+      window: {
+        visible: false,
+      },
+      note: {
+        visible: false,
+      },
+      temporary: {
+        visible: false,
+      },
+      all: {
+        visible: false,
+      },
       other: {
         visible: false,
       },
@@ -598,6 +722,10 @@ export default {
       if(this.currentWorkspace.type == 'tab') return this.tab.visible;
       else if(this.currentWorkspace.type == 'bookmark') return this.bookmark.visible;
       else if(this.currentWorkspace.type == 'history') return this.history.visible;
+      else if(this.currentWorkspace.type == 'window') return this.window.visible;
+      else if(this.currentWorkspace.type == 'note') return this.note.visible;
+      else if(this.currentWorkspace.type == 'temporary') return this.temporary.visible;
+      else if(this.currentWorkspace.type == 'all') return this.all.visible;
       else return this.other.visible;
     },
     isNoSearch() {
@@ -1004,6 +1132,14 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         if(this.tab.visible && this.tab.windowId == -1) this.tab.visible = false;
       } else if(this.currentWorkspace.type == 'bookmark') {
         if(this.bookmark.visible) this.bookmark.visible = false;
+      } else if(this.currentWorkspace.type == 'window') {
+        if(this.window.visible) this.window.visible = false;
+      } else if(this.currentWorkspace.type == 'note') {
+        if(this.note.visible) this.note.visible = false;
+      } else if(this.currentWorkspace.type == 'temporary') {
+        if(this.temporary.visible) this.temporary.visible = false;
+      } else if(this.currentWorkspace.type == 'all') {
+        if(this.all.visible) this.all.visible = false;
       } else if(this.other.visible){
         this.other.visible = false;
       }

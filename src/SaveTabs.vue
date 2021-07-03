@@ -545,9 +545,9 @@ export default {
         if( ! this.currentThemeConfig.statusbar_show_search_total) return;
 
         let title = this.lang(this.currentWorkspace.title);
-        title += this.keymap['open_workspace_'+this.currentWorkspace.type]
-              ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+')')
-              : '';
+        // title += this.keymap['open_workspace_'+this.currentWorkspace.type]
+        //       ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+')')
+        //       : '';
         if(this.searchTotal[this.currentWorkspace.type] != undefined) {
           title += ' | '+this.searchTotal[this.currentWorkspace.type];
         }
@@ -1010,9 +1010,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       this.search();
 
       let title = this.lang(this.currentWorkspace.title);
-      title += this.keymap['open_workspace_'+this.currentWorkspace.type]
-            ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+') ')
-            : '';
+      // title += this.keymap['open_workspace_'+this.currentWorkspace.type]
+      //       ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+') ')
+      //       : '';
       if(this.currentThemeConfig.statusbar_show_search_total
       && this.searchTotal[this.currentWorkspace.type] != undefined) {
         title += ' | '+this.searchTotal[this.currentWorkspace.type];

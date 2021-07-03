@@ -554,6 +554,8 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 <style>
 body {
   margin: 0;
+  /* 在插件模式下这个值是 12px，所以要强制一下 */
+  font-size: 16px;
 }
 
 .el-submenu__title, .el-submenu .el-menu-item {

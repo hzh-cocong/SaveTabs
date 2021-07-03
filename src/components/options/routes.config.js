@@ -26,6 +26,7 @@ export default menus.reduce((accumulator, menu) => {
                               + menu.name[0].toLocaleUpperCase().concat(menu.name.slice(1))
                               + submenu.name[0].toLocaleUpperCase().concat(submenu.name.slice(1))
                               + '.vue'),
+      children: submenu.children,
     }
   }))
   return accumulator;

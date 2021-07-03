@@ -17,6 +17,8 @@ import Options from './Options.vue'
 
 Vue.use(VueRouter)
 
+//todo
+console.log('routes', routes)
 const router = new VueRouter({
   routes: routes
 })

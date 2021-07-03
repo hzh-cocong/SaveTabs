@@ -92,7 +92,9 @@
             style="width:16px;margin-right: 10px;color:#c0c4cc;vertical-align: -0.50em"
           ></svg-icon>
           <span
-            class="handle">{{ lang(allWorkspaces[workspace.type].title) }}</span>
+            class="handle"
+            :title="localConfig.all_sort_auto ? '智能排序' : ''"
+            >{{ lang(allWorkspaces[workspace.type].title) }}</span>
 
           <i
             class="el-icon-top"

@@ -5,13 +5,43 @@
     "popup": true,
     "keymap_left_and_right": true,
 
-    "all_sort_auto": false,
+    "all_sort_auto": true,
     "all_include": [
+        {
+            "type": "tab",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
         {
             "type": "note",
             "count": 3,
-            "is_top": 1,
+            "is_top": 0,
             "only_search": false
+        },
+        {
+            "type": "window",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "bookmark",
+            "count": 3,
+            "is_top": 0,
+            "only_search": true
+        },
+        {
+            "type": "history",
+            "count": 3,
+            "is_top": -1,
+            "only_search": true
+        },
+        {
+            "type": "search",
+            "count": 3,
+            "is_top": -2,
+            "only_search": true
         }
     ],
     "all_search_engine": [

@@ -6,6 +6,12 @@ export default menus.reduce((accumulator, menu) => {
     let name = menu.name+'-'+submenu.name;
     let path = '/'+name;
 
+    if(submenu.params != undefined) {
+      path += submenu.params.reduce((accumulator, param) => {
+        return accumulator += '/:'+param;
+      }, '');
+    }
+
     if(submenu.redirect != undefined) {
       return {
         name: name,

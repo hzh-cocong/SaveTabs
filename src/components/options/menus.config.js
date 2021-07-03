@@ -26,18 +26,7 @@ export default [{
     {
       'name': 'general',
       'title': ' 总览',
-      'children': [
-        {
-          'name': 'test',
-          'path': 'test',
-          'component': () => import('@/components/options/Test.vue'),
-        },
-        {
-          'name': 'test2',
-          'path': 'test2',
-          'component': () => import('@/components/options/Test2.vue'),
-        },
-      ]
+      'params': [ 'type', 'ggg']
     },
     {
       'name': 'export',

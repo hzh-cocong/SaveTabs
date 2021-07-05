@@ -65,7 +65,7 @@
           <i
             v-show="isSelected"
             class="el-icon-check"
-            style="font-weight: 700"
+            style="font-weight: 700;margin: 0 5px;"
             :style="{ color:  item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }"></i>
         </div>
       </template>
@@ -184,7 +184,7 @@ export default {
 
 .theme-item {
   margin: 4px 4px 6px 4px;
-  padding: 0px 9px 0px 0px;
+  /* padding: 0px 9px 0px 0px; */
 
   border-radius: 2px;
 
@@ -204,7 +204,7 @@ export default {
 .theme-item.selected {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  font-weight: 700;
+  /* font-weight: 700; */
 }
 .theme-item .title {
   flex: 1;

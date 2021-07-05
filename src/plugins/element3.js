@@ -19,8 +19,8 @@ import {
     // CheckboxButton,
     // CheckboxGroup,
     Switch,
-    // Select,
-    // Option,
+    Select,
+    Option,
     // OptionGroup,
     Button,
     // ButtonGroup,
@@ -66,7 +66,7 @@ import {
     // Footer,
     // Timeline,
     // TimelineItem,
-    // Link,
+    Link,
     Divider,
     Image,
     // Calendar,
@@ -76,7 +76,7 @@ import {
     Loading,
     MessageBox,
     Message,
-    // Notification,
+    Notification,
     // Avatar,
     // InfiniteScroll,
     Popconfirm,
@@ -101,8 +101,8 @@ import {
   // Vue.use(CheckboxButton);
   // Vue.use(CheckboxGroup);
   Vue.use(Switch);
-  // Vue.use(Select);
-  // Vue.use(Option);
+  Vue.use(Select);
+  Vue.use(Option);
   // Vue.use(OptionGroup);
   Vue.use(Button);
   // Vue.use(ButtonGroup);
@@ -148,7 +148,7 @@ import {
   // Vue.use(Footer);
   // Vue.use(Timeline);
   // Vue.use(TimelineItem);
-  // Vue.use(Link);
+  Vue.use(Link);
   Vue.use(Divider);
   Vue.use(Image);
   // Vue.use(Calendar);

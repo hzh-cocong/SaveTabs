@@ -4,7 +4,7 @@
     "system_theme_list": [
         {
             "id": "1",
-            "name": "SaveTabs Classic",
+            "name": "SaveTabs gg",
             "type": 3,
             "config": {
                 "list_font_color": "#000000",
@@ -58,7 +58,7 @@
                 "list_keymap_size": 16,
 
                 "border_color": "#ffffff",
-                "background_color": "red",
+                "background_color": "#ff0000",
                 "carousel_indicators_color": "#C0C4CC",
 
                 "item_height": 50,
@@ -118,7 +118,7 @@
             "name": "SaveTabs Classic2",
             "type": 3,
             "config": {
-                "list_font_color": "red",
+                "list_font_color": "#ff0000",
                 "list_background_color": "#ffffff",
                 "list_highlight_color": "#f73131",
                 "list_highlight_weight": "400",
@@ -169,7 +169,7 @@
                 "list_keymap_size": 16,
 
                 "border_color": "blue",
-                "background_color": "red",
+                "background_color": "#ff0000",
                 "carousel_indicators_color": "#C0C4CC00",
 
                 "item_height": 50,

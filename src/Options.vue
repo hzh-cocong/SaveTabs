@@ -2,24 +2,35 @@
   <el-container id="app">
 
     <el-aside
-      width="200px"
+      :width="collapse ? '65px' : '200px'"
       style="display: flex;flex-direction: column;height: 100vh;">
       <div
         style="display: flex; flex-direction: column;justify-content: center;align-items: center;height: 120px;min-height: 120px;width: 100%;box-sizing: border-box;border-right:solid 1px #e6e6e6;text-align:center;">
         <img
           src="@/assets/icon-128.png"
-          style="wdith:32px;height: 32px;cursor: pointer;"
+          style="cursor: pointer;"
+          :style="{ width: collapse ? '20px' : '32px',
+                    height: collapse ? '20px' : '32px', }"
           @click="$open('http://www.cocong.cn', $event)" />
         <h3
+          class="hover"
           style="margin-bottom:0;"
-          class="hover">
+          :style="{ fontSize: collapse ? '12px' : '1.17em',
+                    fontWeight: collapse ? 'normal' : 'blod' }">
           <router-link
             style="color: #408DDC;text-decoration: none;"
             :to="{name: 'general'}">SaveTabs</router-link>
         </h3>
+        <i
+          :class="[ collapse ? 'el-icon-s-fold' : 'el-icon-s-unfold' ]"
+          class="collapse"
+          style="position: absolute;left: 0;top: 0;color:#6699CC;"
+          @click="collapseChange"></i>
       </div>
       <el-menu
         id="app"
+        :collapse="collapse"
+        :collapse-transition="false"
         :default-active="$route.name"
         style="flex: 1;overflow: auto;"
         :unique-opened="true"
@@ -48,7 +59,9 @@
         :localConfig="localConfig"
         :projectConfig="projectConfig"
 
-        :theme="theme"
+        :currentThemeList="currentThemeList"
+        :currentTheme.sync="currentTheme"
+        :openWay="openWay"
       ></router-view>
     </el-main>
 
@@ -64,6 +77,11 @@ import userLocalConfig from './config/user_local_config.json'
 import projectConfig from './config/project_config.json'
 
 import userTheme from './config/user_theme.json'
+
+const THEME_TYPWE = {
+  POPUP: 1,
+  INJECT: 2,
+}
 
 export default {
   name: 'app',
@@ -91,6 +109,10 @@ export default {
       editSearchEngine: this.editSearchEngine,
       deleteSearchEngine: this.deleteSearchEngine,
       searchEngineSort: this.searchEngineSort,
+
+      changeType: this.changeType,
+      changeThemeName: this.changeThemeName,
+      editTheme: this.editTheme,
     }
   },
   data() {
@@ -104,6 +126,9 @@ export default {
       theme: userTheme,
 
       commands: [],
+
+      // collapse: false,
+      collapse: !! localStorage.getItem('collapse'),
     }
   },
   computed: {
@@ -112,9 +137,73 @@ export default {
     },
     allOperationButtons() {
       return this.projectConfig.allOperationButtons;
+    },
+
+    currentThemeId() {
+      if(this.openWay == 'popup') return this.localConfig.theme_popup.id;
+      else return this.localConfig.theme_inject.id;
+    },
+    currentTheme: {
+      set(theme) {
+        console.log('uuuuuuuuuuu1')
+        if(this.openWay == 'popup') this.localConfig.theme_popup = theme;
+        else this.localConfig.theme_inject = theme;
+        this.storeTheme();
+        // this.store('local');
+      },
+      get() {
+        console.log('uuuuuuuuuuu2')
+        // 合并系统主题和用户主题
+        let currentTheme = this.themeList.find((theme) => theme.id == this.currentThemeId);
+
+        if(this.openWay == 'popup') this.localConfig.theme_popup = currentTheme;
+        else this.localConfig.theme_inject = currentTheme;
+
+        return currentTheme;
+
+        // 联系得还不够紧密
+        //  // 合并系统主题和用户主题
+        // let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
+        // return themeList.find((theme) => theme.id == this.currentThemeId)
+
+        // 不直接拿，否则会失去关联
+        // if(this.openWay == 'popup') return this.localConfig.theme_popup;
+        // else return this.localConfig.theme_inject;
+      }
+    },
+    currentThemeList() {
+      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
+      return this.themeList.filter(theme => themeType & theme.type );
+    },
+    themeList() {
+      // 合并系统主题和用户主题
+      let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
+
+      // 对主题排序（没有 rank 的排最后）
+      themeList.sort((theme1, theme2) => {
+        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
+        if(this.theme.rank[theme1.id] == undefined) return 1;
+        if(this.theme.rank[theme2.id] == undefined) return -1;
+
+        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
+      });
+
+      return themeList;
+    },
+    openWay() {
+      return this.localConfig.popup ? 'popup' : 'inject';
     }
   },
   methods: {
+    collapseChange() {
+      this.collapse = ! this.collapse;
+      if(this.collapse) {
+        localStorage.setItem('collapse', 1);
+      } else {
+        localStorage.removeItem('collapse');
+      }
+    },
+
     store(type, tip=true) {
       if(type != 'local' && type != 'sync') return;
 
@@ -124,10 +213,29 @@ export default {
         if( ! tip) return;
         this.$message({
           type: 'success',
-          message: '修改成功',
+          message: '修改成功|'+type,
           duration: 1000,
         });
       });
+    },
+    storeTheme(config = true, theme = true) {
+      let setting =
+      chrome.storage.local.set({
+        'config': this.localConfig || undefined,
+        'theme': this.theme || undefined,
+      }, () => {
+        this.$notify({
+          title: '主题',
+          message: '修改成功',
+          position: 'bottom-left',
+          duration: 1000,
+        });
+        // this.$message({
+        //   type: 'success',
+        //   message: '修改成功|theme',
+        //   duration: 1000,
+        // });
+      })
     },
 
     changeWorkspaceState(type) {
@@ -383,6 +491,57 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.store('local');
     },
 
+    changeType(type) {
+      let currentType = this.currentTheme.type;
+      if(currentType & type) {
+        currentType ^= type;
+      } else {
+        currentType |= type;
+      }
+
+      if(currentType == 0) {
+        this.$message({
+          type: 'warning',
+          message: '至少选择一种类型',
+          duration: 1000,
+        });
+        return;
+      }
+
+      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
+      console.log('ffffff', currentType, themeType, currentType & themeType)
+      if( ! (currentType & themeType)
+      && this.currentThemeList.length <= 1) {
+        this.$message({
+          type: 'warning',
+          message: '该类型只剩下这最后一个主题了',
+          duration: 1000,
+        });
+        return;
+      }
+
+      this.currentTheme.type = currentType;
+
+      // 重新选一个主题
+      if( ! (currentType & themeType)) {
+        // 当前主题改变会触发保存
+        this.currentTheme = this.currentThemeList[0];
+        return;
+      }
+
+      this.storeTheme();
+    },
+    changeThemeName(name, save) {
+      save && (name = name.trim());
+      this.currentTheme.name = name;
+      save && this.storeTheme();
+    },
+    editTheme(type, value) {
+      console.log('editTheme', type, value);
+      this.currentTheme.config[type] = value;
+      this.storeTheme();
+    },
+
     upgrade(syncItems, localItems) {
       // 老用户升级
       console.log('upgrade', syncItems, localItems);
@@ -497,7 +656,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
   mounted: function() {
     // todo
     window.o = this;
-
+    console.log('mounted:options.vue');
 
     Promise.all([
       new Promise((resolve) => {
@@ -549,6 +708,15 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.collapse {
+  opacity: 0.3;
+  /* cursor: pointer; */
+}
+.collapse:hover {
+  color: #0099CC !important;
+  opacity: 1;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 </style>
 
 <style>

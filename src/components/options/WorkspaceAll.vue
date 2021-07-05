@@ -465,6 +465,7 @@ export default {
   mounted() {
     // todo
     window.wa = this;
+    console.log('mounted:WorkspaceAll');
 
 
     //创建拖拽对象

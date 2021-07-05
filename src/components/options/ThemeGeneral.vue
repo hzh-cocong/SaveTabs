@@ -2,27 +2,28 @@
   <el-container>
     <el-aside
       width="250px"
-      style="display: flex;flex-direction: column;height: 100vh;border-right:solid 1px #e6e6e6">
+      style="border-right:solid 1px #e6e6e6;">
       <el-button
-        style="border-radius: 0;height: 56px;border: 0;"
-        @click="addTheme">创建主题</el-button>
+        style="border-radius: 0;height: 56px;width: 100%;border: 0;"
+        @click="addTheme(currentThemeFocus)">创建主题</el-button>
       <div
         style="padding: 10px 0 0 0;text-align:center;border-top:solid 1px #e6e6e6">
         <svg-icon
           name="fly-brands"
           class="environment hover"
           :class="{ active: this.openWay == 'popup' }"
-          @click.native="popupChange"
+          @click.native="popupChange();currentThemeFocus();"
         ></svg-icon>
         <svg-icon
           name="ship-solid"
           class="environment hover"
           :class="{ active: this.openWay == 'inject' }"
-          @click.native="popupChange"
+          @click.native="popupChange();currentThemeFocus();"
         ></svg-icon>
       </div>
       <ul
-        class="theme">
+        class="theme"
+        ref="theme">
         <li
           class="theme-item"
           :class="{ selected: item.id == currentTheme.id }"
@@ -75,13 +76,13 @@
           name="fly-brands"
           class="type hover"
           :class="{ active: currentTheme.type & 1, disabled: currentTheme.is_system }"
-          @click.native="changeThemeType(1)"
+          @click.native="changeThemeType(1);currentThemeFocus();"
         ></svg-icon>
         <svg-icon
           name="ship-solid"
           class="type hover"
           :class="{ active: currentTheme.type & 2, disabled: currentTheme.is_system }"
-          @click.native="changeThemeType(2)"
+          @click.native="changeThemeType(2);currentThemeFocus();"
         ></svg-icon>
         <div
           v-if="currentTheme.is_system"
@@ -108,13 +109,13 @@
           ref="themeNameInput"></el-input>
         <el-button
           type="text"
-          @click="cloneTheme">克隆</el-button>
+          @click="cloneTheme();currentThemeFocus();">克隆</el-button>
         <el-button
           type="text">导出</el-button>
         <el-button
           type="text"
           :disabled="currentTheme.is_system"
-          @click="deleteTheme">删除</el-button>
+          @click="deleteTheme(currentThemeFocus);">删除</el-button>
       </el-header>
       <el-main style="padding:0;">
         <el-tabs
@@ -430,6 +431,16 @@ export default {
     }
   },
   computed: {
+    currentThemeIndex() {
+      let index = -1;
+      for(let theme of this.currentThemeList) {
+        index++;
+        if(this.currentTheme.id == theme.id) {
+          return index;
+        }
+      }
+      return -1;
+    },
     currentThemeConfig() {
       return this.currentTheme.config;
     },
@@ -450,6 +461,10 @@ export default {
     }
   },
   methods: {
+    currentThemeFocus() {
+      this.$nextTick(()=> this.$refs.theme.scrollTop = this.currentThemeIndex * (56+10));
+    },
+
     tabClick() {
       console.log('tabClick', this.activeName);
       // this.$router.push('/theme-general?'+this.activeName);
@@ -468,6 +483,9 @@ export default {
       this.activeName = res[1];
     }
 
+    // this.$refs.theme.scrollTop = this.currentThemeIndex * (56+10);
+    // console.log('fff', this.currentThemeIndex)
+    this.currentThemeFocus();
 
     //创建拖拽对象
     // this.sortable =
@@ -499,6 +517,7 @@ export default {
 }
 
 .theme {
+  height: calc(100vh - 96px);
   padding: 0;
   margin: 0;
   overflow: auto;
@@ -510,16 +529,9 @@ export default {
   border-radius: 2px;
   background-color: #fff;
   cursor: pointer;
+  text-align: left;
   display: flex;
   align-items: center;
-
-  /* 禁止选择 */
-  /* 有了 @mousedown.prevent，不再需要这个了
-  /* -moz-user-select:none; */ /*火狐*/
-  /* -webkit-user-select:none; */ /*webkit浏览器*/
-  /* -ms-user-select:none; */ /*IE10*/
-  /* -khtml-user-select:none; */ /*早期浏览器*/
-  /* user-select:none; */
 }
 .theme-item.selected {
   background-color: #fff;

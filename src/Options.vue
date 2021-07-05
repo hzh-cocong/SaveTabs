@@ -640,7 +640,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
       this.storeTheme({ config: false, theme: true });
     },
-    addTheme() {
+    addTheme(callback) {
       this.$prompt('', '请输入主题名称', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -663,6 +663,8 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         this.localConfig['theme_'+type] = newTheme;
 
         this.storeTheme({tip: false});
+
+        callback && callback();
       }).catch(() => {
       });
     },
@@ -682,7 +684,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
       this.storeTheme({tip: false});
     },
-    deleteTheme() {
+    deleteTheme(callback) {
       this.$confirm(this.currentTheme.name, '删除确认', {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
@@ -719,6 +721,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         }, {});
 
         this.storeTheme();
+        callback && callback();
       }).catch(() => {
       });
     },

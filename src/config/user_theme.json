@@ -68,11 +68,14 @@
 
                 "item_height": 50,
                 "width": 500,
+                "height_auto": false,
                 "border_width": 8,
                 "padding_width": 0,
 
                 "item_show_count": 7,
                 "list_page_count": 8,
+                "no_search_item_show_count": 0,
+                "no_search_list_page_count": 10,
 
                 "tag_line_count": 3,
 
@@ -85,7 +88,7 @@
                 "toolbar_icon_auto_hide": true,
 
                 "toolbar_menu_icon_color": "#C1C4CB",
-                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_icon_fixed_color": "#808080",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
                 "toolbar_menu_auto_hide": true,
@@ -200,7 +203,7 @@
                 "toolbar_icon_auto_hide": true,
 
                 "toolbar_menu_icon_color": "#C1C4CB",
-                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_icon_fixed_color": "#808080",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
                 "toolbar_menu_auto_hide": true,
@@ -294,11 +297,14 @@
 
                 "item_height": 50,
                 "width": 500,
+                "height_auto": false,
                 "border_width": 8,
                 "padding_width": 0,
 
                 "item_show_count": 7,
                 "list_page_count": 8,
+                "no_search_item_show_count": 0,
+                "no_search_list_page_count": 10,
 
                 "tag_line_count": 3,
 
@@ -311,7 +317,7 @@
                 "toolbar_icon_auto_hide": false,
 
                 "toolbar_menu_icon_color": "#C1C4CB",
-                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_icon_fixed_color": "#808080",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
                 "toolbar_menu_show": true,
@@ -426,7 +432,7 @@
                 "toolbar_icon_auto_hide": false,
 
                 "toolbar_menu_icon_color": "#C1C4CB",
-                "toolbar_menu_icon_fixed_color": "gray",
+                "toolbar_menu_icon_fixed_color": "#808080",
                 "toolbar_menu_font_color": "#909399",
                 "toolbar_menu_show_workspace_name": true,
                 "toolbar_menu_auto_hide": true,

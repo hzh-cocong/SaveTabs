@@ -12,13 +12,13 @@
           name="fly-brands"
           class="environment hover"
           :class="{ active: this.openWay == 'popup' }"
-          @click.native="popupChange();currentThemeFocus();"
+          @click.native="popupChange(false);currentThemeFocus();"
         ></svg-icon>
         <svg-icon
           name="ship-solid"
           class="environment hover"
           :class="{ active: this.openWay == 'inject' }"
-          @click.native="popupChange();currentThemeFocus();"
+          @click.native="popupChange(false);currentThemeFocus();"
         ></svg-icon>
       </div>
       <ul
@@ -91,9 +91,22 @@
             style="width: 24px; height: 24px;margin-left: 20px;"
             src="@/assets/icon-128.png" />
         </div>
+        <div
+          v-else-if="JSON.stringify(currentTheme.config) != JSON.stringify(oldCurrentThemeConfig)"
+          style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;">
+          <el-tooltip
+            placement="right"
+            content="全部撤销">
+            <i
+            class="el-icon-refresh-right hover2"
+            style="margin-left: 20px;"
+            @click="editTheme('all', Object.assign({}, oldCurrentThemeConfig))"></i>
+          </el-tooltip>
+        </div>
         <span
           v-if=" ! showNameInput"
           style="flex: 1;margin: 0 10px;color: #606266;width:100%;height:100%;display:flex;flex-direction: column;justify-content: center;"
+          :title="currentTheme.is_system ? '' : '点击修改'"
           @click="currentTheme.is_system
                 || (showNameInput=true,
                     $nextTick(()=>$refs.themeNameInput.focus()))">{{ currentTheme.name }}</span>
@@ -363,13 +376,1854 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="列表" name="list">
-            列表
+            <el-divider>布局</el-divider>
+            <div class="box">
+              <span class="label">宽度</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.width"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('width', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.width != oldCurrentThemeConfig.width"
+                placement="top"
+                :content="oldCurrentThemeConfig.width+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('width', oldCurrentThemeConfig.width)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">列表项高度</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.item_height"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('item_height', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.item_height != oldCurrentThemeConfig.item_height"
+                placement="top"
+                :content="oldCurrentThemeConfig.item_height+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('item_height', oldCurrentThemeConfig.item_height)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">总高度自动</span>
+              <el-switch
+                :value="currentThemeConfig.height_auto"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('height_auto', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.height_auto != oldCurrentThemeConfig.height_auto"
+                placement="top"
+                :content="oldCurrentThemeConfig.height_auto ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('height_auto', oldCurrentThemeConfig.height_auto)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">列表个数</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.item_show_count"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('item_show_count', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.item_show_count != oldCurrentThemeConfig.item_show_count"
+                placement="top"
+                :content="oldCurrentThemeConfig.item_show_count+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('item_show_count', oldCurrentThemeConfig.item_show_count)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">每页缓存</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_page_count"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_page_count', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.list_page_count != oldCurrentThemeConfig.list_page_count"
+                placement="top"
+                :content="oldCurrentThemeConfig.list_page_count+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_page_count', oldCurrentThemeConfig.list_page_count)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label" title="菜单栏输入框为空时，列表显示的个数（仅在“总高度自动”时生效）">非搜索显示</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.no_search_item_show_count"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('no_search_item_show_count', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.no_search_item_show_count != oldCurrentThemeConfig.no_search_item_show_count"
+                placement="top"
+                :content="oldCurrentThemeConfig.no_search_item_show_count+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('no_search_item_show_count', oldCurrentThemeConfig.no_search_item_show_count)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="菜单栏输入框为空时，列表显示的个数（仅在“总高度自动”时生效）">非搜索缓存</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.no_search_list_page_count"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('no_search_list_page_count', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.no_search_list_page_count != oldCurrentThemeConfig.no_search_list_page_count"
+                placement="top"
+                :content="oldCurrentThemeConfig.no_search_list_page_count+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('no_search_list_page_count', oldCurrentThemeConfig.no_search_list_page_count)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>字体大小</el-divider>
+            <div class="box">
+              <span class="label">标题</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_font_size"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_font_size', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.list_font_size != oldCurrentThemeConfig.list_font_size"
+                placement="top"
+                :content="oldCurrentThemeConfig.list_font_size+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_font_size', oldCurrentThemeConfig.list_font_size)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">副标题</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_explain_font_size"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_font_size', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_font_size != oldCurrentThemeConfig.list_explain_font_size"
+                placement="top"
+                :content="oldCurrentThemeConfig.list_explain_font_size+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_font_size', oldCurrentThemeConfig.list_explain_font_size)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">状态栏</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_state_size"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_state_size', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.list_state_size != oldCurrentThemeConfig.list_state_size"
+                placement="top"
+                :content="oldCurrentThemeConfig.list_state_size+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_state_size', oldCurrentThemeConfig.list_state_size)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">快捷键</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_keymap_size"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_keymap_size', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.list_keymap_size != oldCurrentThemeConfig.list_keymap_size"
+                placement="top"
+                :content="oldCurrentThemeConfig.list_keymap_size+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_keymap_size', oldCurrentThemeConfig.list_keymap_size)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>列表项</el-divider>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_font_color != oldCurrentThemeConfig.list_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_font_color', oldCurrentThemeConfig.list_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_background_color != oldCurrentThemeConfig.list_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_background_color', oldCurrentThemeConfig.list_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">高亮颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_highlight_color != oldCurrentThemeConfig.list_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_highlight_color', oldCurrentThemeConfig.list_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">高亮加粗</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_highlight_weight != oldCurrentThemeConfig.list_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_highlight_weight', oldCurrentThemeConfig.list_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">副标题</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_explain_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_font_color != oldCurrentThemeConfig.list_explain_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_explain_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_font_color', oldCurrentThemeConfig.list_explain_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">副标题高亮</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_explain_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_highlight_color != oldCurrentThemeConfig.list_explain_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_explain_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_highlight_color', oldCurrentThemeConfig.list_explain_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_explain_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_highlight_weight != oldCurrentThemeConfig.list_explain_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_explain_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_highlight_weight', oldCurrentThemeConfig.list_explain_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">图标</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_icon_color != oldCurrentThemeConfig.list_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_icon_color', oldCurrentThemeConfig.list_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">状态栏</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_state_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_state_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_state_color != oldCurrentThemeConfig.list_state_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_state_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_state_color', oldCurrentThemeConfig.list_state_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">快捷键</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_keymap_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_keymap_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_keymap_color != oldCurrentThemeConfig.list_keymap_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_keymap_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_keymap_color', oldCurrentThemeConfig.list_keymap_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>列表项（选中时）</el-divider>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_font_color != oldCurrentThemeConfig.list_focus_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_font_color', oldCurrentThemeConfig.list_focus_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_background_color != oldCurrentThemeConfig.list_focus_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_background_color', oldCurrentThemeConfig.list_focus_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">高亮颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_highlight_color != oldCurrentThemeConfig.list_focus_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_highlight_color', oldCurrentThemeConfig.list_focus_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">高亮加粗</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_focus_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_highlight_weight != oldCurrentThemeConfig.list_focus_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_focus_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_highlight_weight', oldCurrentThemeConfig.list_focus_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">副标题</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_explain_focus_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_focus_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_focus_font_color != oldCurrentThemeConfig.list_explain_focus_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_explain_focus_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_focus_font_color', oldCurrentThemeConfig.list_explain_focus_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">副标题高亮</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_explain_focus_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_focus_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_focus_highlight_color != oldCurrentThemeConfig.list_explain_focus_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_explain_focus_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_focus_highlight_color', oldCurrentThemeConfig.list_explain_focus_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_explain_focus_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_explain_focus_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_explain_focus_highlight_weight != oldCurrentThemeConfig.list_explain_focus_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_explain_focus_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_explain_focus_highlight_weight', oldCurrentThemeConfig.list_explain_focus_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">图标</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_icon_color != oldCurrentThemeConfig.list_focus_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_icon_color', oldCurrentThemeConfig.list_focus_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">状态栏</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_state_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_state_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_state_color != oldCurrentThemeConfig.list_focus_state_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_state_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_state_color', oldCurrentThemeConfig.list_focus_state_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">快捷键</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_focus_keymap_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_focus_keymap_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_focus_keymap_color != oldCurrentThemeConfig.list_focus_keymap_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_focus_keymap_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_focus_keymap_color', oldCurrentThemeConfig.list_focus_keymap_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>当前窗口项</el-divider>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_font_color != oldCurrentThemeConfig.list_current_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_font_color', oldCurrentThemeConfig.list_current_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_background_color != oldCurrentThemeConfig.list_current_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_background_color', oldCurrentThemeConfig.list_current_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">高亮颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_highlight_color != oldCurrentThemeConfig.list_current_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_highlight_color', oldCurrentThemeConfig.list_current_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">高亮加粗</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_current_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_highlight_weight != oldCurrentThemeConfig.list_current_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_current_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_highlight_weight', oldCurrentThemeConfig.list_current_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">副标题</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_explain_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_font_color != oldCurrentThemeConfig.list_current_explain_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_explain_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_font_color', oldCurrentThemeConfig.list_current_explain_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">副标题高亮</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_explain_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_highlight_color != oldCurrentThemeConfig.list_current_explain_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_explain_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_highlight_color', oldCurrentThemeConfig.list_current_explain_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_current_explain_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_highlight_weight != oldCurrentThemeConfig.list_current_explain_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_current_explain_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_highlight_weight', oldCurrentThemeConfig.list_current_explain_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">图标</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_icon_color != oldCurrentThemeConfig.list_current_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_icon_color', oldCurrentThemeConfig.list_current_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">状态栏</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_state_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_state_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_state_color != oldCurrentThemeConfig.list_current_state_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_state_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_state_color', oldCurrentThemeConfig.list_current_state_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>当前窗口项（选中时）</el-divider>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_focus_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_font_color != oldCurrentThemeConfig.list_current_focus_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_focus_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_font_color', oldCurrentThemeConfig.list_current_focus_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_focus_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_background_color != oldCurrentThemeConfig.list_current_focus_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_focus_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_background_color', oldCurrentThemeConfig.list_current_focus_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">高亮颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_focus_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_highlight_color != oldCurrentThemeConfig.list_current_focus_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_focus_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_highlight_color', oldCurrentThemeConfig.list_current_focus_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">高亮加粗</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_current_focus_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_highlight_weight != oldCurrentThemeConfig.list_current_focus_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_current_focus_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_highlight_weight', oldCurrentThemeConfig.list_current_focus_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">副标题</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_explain_focus_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_focus_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_focus_font_color != oldCurrentThemeConfig.list_current_explain_focus_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_explain_focus_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_focus_font_color', oldCurrentThemeConfig.list_current_explain_focus_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">副标题高亮</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_explain_focus_highlight_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_focus_highlight_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_focus_highlight_color != oldCurrentThemeConfig.list_current_explain_focus_highlight_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_explain_focus_highlight_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_focus_highlight_color', oldCurrentThemeConfig.list_current_explain_focus_highlight_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <el-select
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.list_current_explain_focus_highlight_weight"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_explain_focus_highlight_weight', $event)">
+                <el-option
+                  v-for="align in highlightFontWeight"
+                  :value="align.value"
+                  :label="align.label"
+                  :key="align.value"></el-option>
+              </el-select>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_explain_focus_highlight_weight != oldCurrentThemeConfig.list_current_explain_focus_highlight_weight"
+                placement="top"
+                :content="highlightFontWeight.find(align => align.value == oldCurrentThemeConfig.list_current_explain_focus_highlight_weight).label">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_explain_focus_highlight_weight', oldCurrentThemeConfig.list_current_explain_focus_highlight_weight)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">图标</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_focus_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_icon_color != oldCurrentThemeConfig.list_current_focus_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_focus_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_icon_color', oldCurrentThemeConfig.list_current_focus_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">状态栏</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_current_focus_state_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_current_focus_state_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_current_focus_state_color != oldCurrentThemeConfig.list_current_focus_state_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_current_focus_state_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_current_focus_state_color', oldCurrentThemeConfig.list_current_focus_state_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>滚动条</el-divider>
+            <div class="box">
+              <span class="label">颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_scrollbar_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_scrollbar_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_scrollbar_color != oldCurrentThemeConfig.list_scrollbar_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_scrollbar_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_scrollbar_color', oldCurrentThemeConfig.list_scrollbar_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">选中时颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.list_scrollbar_focus_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('list_scrollbar_focus_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.list_scrollbar_focus_color != oldCurrentThemeConfig.list_scrollbar_focus_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.list_scrollbar_focus_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('list_scrollbar_focus_color', oldCurrentThemeConfig.list_scrollbar_focus_color)"></i>
+              </el-tooltip>
+            </div>
           </el-tab-pane>
           <el-tab-pane label="菜单栏" name="menu">
-            菜单栏
+            <el-divider>布局</el-divider>
+            <div class="box">
+              <span class="label">高度</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.toolbar_height"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_height', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_height != oldCurrentThemeConfig.toolbar_height"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_height+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_height', oldCurrentThemeConfig.toolbar_height)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_background_color != oldCurrentThemeConfig.toolbar_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_background_color', oldCurrentThemeConfig.toolbar_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">边框颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_border_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_border_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_border_color != oldCurrentThemeConfig.toolbar_border_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_border_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_border_color', oldCurrentThemeConfig.toolbar_border_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>图标</el-divider>
+            <div class="box">
+              <span class="label">自动隐藏</span>
+              <el-switch
+                :value="currentThemeConfig.toolbar_icon_auto_hide"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('toolbar_icon_auto_hide', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_icon_auto_hide != oldCurrentThemeConfig.toolbar_icon_auto_hide"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_icon_auto_hide ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_icon_auto_hide', oldCurrentThemeConfig.toolbar_icon_auto_hide)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_icon_color != oldCurrentThemeConfig.toolbar_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_icon_color', oldCurrentThemeConfig.toolbar_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">选中时颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_icon_focus_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_icon_focus_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_icon_focus_color != oldCurrentThemeConfig.toolbar_icon_focus_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_icon_focus_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_icon_focus_color', oldCurrentThemeConfig.toolbar_icon_focus_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>下拉菜单</el-divider>
+            <div class="box">
+              <span class="label">自动隐藏</span>
+              <el-switch
+                :value="currentThemeConfig.toolbar_menu_auto_hide"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('toolbar_menu_auto_hide', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_menu_auto_hide != oldCurrentThemeConfig.toolbar_menu_auto_hide"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_menu_auto_hide ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_menu_auto_hide', oldCurrentThemeConfig.toolbar_menu_auto_hide)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">工作区名称</span>
+              <el-switch
+                :value="currentThemeConfig.toolbar_menu_show_workspace_name"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('toolbar_menu_show_workspace_name', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_menu_show_workspace_name != oldCurrentThemeConfig.toolbar_menu_show_workspace_name"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_menu_show_workspace_name ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_menu_show_workspace_name', oldCurrentThemeConfig.toolbar_menu_show_workspace_name)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_menu_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_menu_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_menu_font_color != oldCurrentThemeConfig.toolbar_menu_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_menu_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_menu_font_color', oldCurrentThemeConfig.toolbar_menu_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">图标颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_menu_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_menu_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_menu_icon_color != oldCurrentThemeConfig.toolbar_menu_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_menu_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_menu_icon_color', oldCurrentThemeConfig.toolbar_menu_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">图标选中</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_menu_icon_fixed_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_menu_icon_fixed_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_menu_icon_fixed_color != oldCurrentThemeConfig.toolbar_menu_icon_fixed_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_menu_icon_fixed_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_menu_icon_fixed_color', oldCurrentThemeConfig.toolbar_menu_icon_fixed_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>输入框</el-divider>
+            <div class="box">
+              <span class="label">显示提示</span>
+              <el-switch
+                :value="currentThemeConfig.toolbar_input_tip_show"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('toolbar_input_tip_show', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_input_tip_show != oldCurrentThemeConfig.toolbar_input_tip_show"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_input_tip_show ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_input_tip_show', oldCurrentThemeConfig.toolbar_input_tip_show)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">边框选中</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_input_focus_border_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_input_focus_border_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_input_focus_border_color != oldCurrentThemeConfig.toolbar_input_focus_border_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_input_focus_border_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_input_focus_border_color', oldCurrentThemeConfig.toolbar_input_focus_border_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">背景选中</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_input_selected_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_input_selected_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_input_selected_background_color != oldCurrentThemeConfig.toolbar_input_selected_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_input_selected_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_input_selected_background_color', oldCurrentThemeConfig.toolbar_input_selected_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">字体大小</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.tag_line_count"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('tag_line_count', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.tag_line_count != oldCurrentThemeConfig.tag_line_count"
+                placement="top"
+                :content="oldCurrentThemeConfig.tag_line_count+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('tag_line_count', oldCurrentThemeConfig.tag_line_count)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_input_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_input_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_input_font_color != oldCurrentThemeConfig.toolbar_input_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_input_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_input_font_color', oldCurrentThemeConfig.toolbar_input_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">字体选中</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_input_selected_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_input_selected_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_input_selected_font_color != oldCurrentThemeConfig.toolbar_input_selected_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_input_selected_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_input_selected_font_color', oldCurrentThemeConfig.toolbar_input_selected_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <el-divider>操作按钮</el-divider>
+            <div class="box">
+              <span class="label">自动隐藏</span>
+              <el-switch
+                :value="currentThemeConfig.toolbar_button_auto_hide"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('toolbar_button_auto_hide', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_auto_hide != oldCurrentThemeConfig.toolbar_button_auto_hide"
+                placement="top"
+                :content="oldCurrentThemeConfig.toolbar_button_auto_hide ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_auto_hide', oldCurrentThemeConfig.toolbar_button_auto_hide)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">字体颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_font_color != oldCurrentThemeConfig.toolbar_button_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_font_color', oldCurrentThemeConfig.toolbar_button_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">滑过字体</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_hover_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_hover_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_hover_font_color != oldCurrentThemeConfig.toolbar_button_hover_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_hover_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_hover_font_color', oldCurrentThemeConfig.toolbar_button_hover_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">滑过边框</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_hover_border_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_hover_border_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_hover_border_color != oldCurrentThemeConfig.toolbar_button_hover_border_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_hover_border_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_hover_border_color', oldCurrentThemeConfig.toolbar_button_hover_border_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">滑过背景</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_hover_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_hover_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_hover_background_color != oldCurrentThemeConfig.toolbar_button_hover_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_hover_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_hover_background_color', oldCurrentThemeConfig.toolbar_button_hover_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">选中字体</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_active_font_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_active_font_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_active_font_color != oldCurrentThemeConfig.toolbar_button_active_font_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_active_font_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_active_font_color', oldCurrentThemeConfig.toolbar_button_active_font_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">选中边框</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_active_border_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_active_border_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_active_border_color != oldCurrentThemeConfig.toolbar_button_active_border_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_active_border_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_active_border_color', oldCurrentThemeConfig.toolbar_button_active_border_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">选中背景</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.toolbar_button_active_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('toolbar_button_active_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.toolbar_button_active_background_color != oldCurrentThemeConfig.toolbar_button_active_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.toolbar_button_active_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('toolbar_button_active_background_color', oldCurrentThemeConfig.toolbar_button_active_background_color)"></i>
+              </el-tooltip>
+            </div>
           </el-tab-pane>
           <el-tab-pane label="状态栏" name="status">
-            状态栏
+            <div class="box">
+              <span class="label">显示状态栏</span>
+              <el-switch
+                :value="currentThemeConfig.statusbar_show"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('statusbar_show', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.statusbar_show != oldCurrentThemeConfig.statusbar_show"
+                placement="top"
+                :content="oldCurrentThemeConfig.statusbar_show ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('statusbar_show', oldCurrentThemeConfig.statusbar_show)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">显示总数</span>
+              <el-switch
+                :value="currentThemeConfig.statusbar_show_search_total"
+                active-color="#13ce66"
+                inactive-color="gray"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('statusbar_show_search_total', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.statusbar_show_search_total != oldCurrentThemeConfig.statusbar_show_search_total"
+                placement="top"
+                :content="currentThemeConfig.statusbar_show_search_total ? '显示' : '隐藏'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('statusbar_show_search_total', oldCurrentThemeConfig.statusbar_show_search_total)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">背景色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.statusbar_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('statusbar_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.statusbar_background_color != oldCurrentThemeConfig.statusbar_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.statusbar_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('statusbar_background_color', oldCurrentThemeConfig.statusbar_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">图标颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.statusbar_icon_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('statusbar_icon_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.statusbar_icon_color != oldCurrentThemeConfig.statusbar_icon_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.statusbar_icon_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('statusbar_icon_color', oldCurrentThemeConfig.statusbar_icon_color)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">图片透明度</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.statusbar_image_opacity"
+                :min="0"
+                :step="0.1"
+                :max="1"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('statusbar_image_opacity', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.statusbar_image_opacity != oldCurrentThemeConfig.statusbar_image_opacity"
+                placement="top"
+                :content="oldCurrentThemeConfig.statusbar_image_opacity+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('statusbar_image_opacity', oldCurrentThemeConfig.statusbar_image_opacity)"></i>
+              </el-tooltip>
+            </div>
           </el-tab-pane>
         </el-tabs>
       </el-main>
@@ -424,6 +2278,21 @@ export default {
         { value: 'top', label: '置顶'},
         { value: 'bottom', label: '置底'},
       ],
+      highlightFontWeight: [
+        { value: 'normal', label: '正常'},
+        { value: 'bold', label: '粗'},
+        { value: 'bolder', label: '更粗'},
+        { value: 'lighter', label: '细'},
+        { value: '100', label: '100'},
+        { value: '200', label: '200'},
+        { value: '300', label: '300'},
+        { value: '400', label: '400'},
+        { value: '500', label: '500'},
+        { value: '600', label: '600'},
+        { value: '700', label: '700'},
+        { value: '800', label: '800'},
+        { value: '900', label: '900'},
+      ],
 
       w: {
         oldCurrentThemeConfig: {},
@@ -456,7 +2325,34 @@ export default {
       // 去重，否则会报错
       return Array.from(new Set([
         this.currentThemeConfig.border_color,
-        this.currentThemeConfig.background_color
+        this.currentThemeConfig.background_color,
+
+        this.currentThemeConfig.list_font_color,
+        this.currentThemeConfig.list_background_color,
+        this.currentThemeConfig.list_explain_font_color,
+        this.currentThemeConfig.list_highlight_color,
+        this.currentThemeConfig.list_icon_color,
+        this.currentThemeConfig.list_state_color,
+        this.currentThemeConfig.list_keymap_color,
+
+        this.currentThemeConfig.list_focus_font_color,
+        this.currentThemeConfig.list_focus_background_color,
+        this.currentThemeConfig.list_explain_focus_font_color,
+        this.currentThemeConfig.list_focus_highlight_color,
+        this.currentThemeConfig.list_focus_icon_color,
+        this.currentThemeConfig.list_focus_state_color,
+        this.currentThemeConfig.list_focus_keymap_color,
+
+        this.currentThemeConfig.toolbar_background_color,
+        this.currentThemeConfig.toolbar_border_color,
+        this.currentThemeConfig.toolbar_icon_color,
+        this.currentThemeConfig.toolbar_icon_focus_color,
+        this.currentThemeConfig.toolbar_menu_icon_color,
+        this.currentThemeConfig.toolbar_menu_icon_fixed_color,
+        this.currentThemeConfig.toolbar_menu_font_color,
+        this.currentThemeConfig.toolbar_input_font_color,
+        this.currentThemeConfig.toolbar_input_selected_font_color,
+        this.currentThemeConfig.toolbar_input_selected_background_color,
       ]))
     }
   },
@@ -571,6 +2467,8 @@ export default {
 .tabs >>> .el-tabs__content {
   height: 100%;
   padding: 0 20px;
+  padding-bottom: 25px;
+  box-sizing: border-box;
   overflow: auto;
 }
 .box {
@@ -582,10 +2480,10 @@ export default {
   align-items: center;
 }
 .box .label {
-  width: 56px;
-  margin-right: 20px;
-  font-size: 14px;
-  color: #606266;
+  width: 70px;
+  margin-right: 10px;
+  font-size: 13px;
+  color: #303133;
 }
 .box .el-icon-refresh-right {
   margin: 0 10px;

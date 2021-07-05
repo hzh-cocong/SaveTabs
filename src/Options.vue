@@ -394,10 +394,10 @@ export default {
       this.localConfig.theme_mode = this.localConfig.theme_mode == 'light' ? 'dark' : 'light';
       this.store('local');
     },
-    popupChange() {
+    popupChange(tip = true) {
       this.localConfig.popup = ! this.localConfig.popup;
       chrome.browserAction.setPopup({ popup: this.localConfig.popup ? chrome.extension.getURL("savetabs.html") : ''})
-      this.store('local');
+      this.store('local', tip);
     },
     keymapLeftAndRightChange() {
       this.localConfig.keymap_left_and_right = ! this.localConfig.keymap_left_and_right;
@@ -618,6 +618,22 @@ console.log('allIncludeSort2', newIndex, oldIndex)
     },
     editTheme(type, value) {
       console.log('editTheme', type, value);
+
+      if(type == 'all') {
+        this.$confirm('', '确定撤销全部修改？', {
+          confirmButtonText: this.lang('sure'),
+          cancelButtonText: this.lang('cancel'),
+          type: 'warning',
+          center: true,
+          customClass: 'window-message-box'
+        }).then(() => {
+          this.currentTheme.config = value;
+          this.storeTheme();
+        }).catch(() => {
+        });
+        return;
+      }
+
       this.currentTheme.config[type] = value;
       this.storeTheme();
     },

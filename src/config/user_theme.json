@@ -1,11 +1,15 @@
 {
-    "rank": {},
+    "rank": {
+        "popup": {},
+        "inject": {}
+    },
     "user_theme_list": [],
     "system_theme_list": [
         {
             "id": "1",
-            "name": "SaveTabs gg",
+            "name": "SaveTabs 1",
             "type": 3,
+            "is_system": true,
             "config": {
                 "list_font_color": "#000000",
                 "list_background_color": "#ffffff",
@@ -60,6 +64,7 @@
                 "border_color": "#ffffff",
                 "background_color": "#ff0000",
                 "carousel_indicators_color": "#C0C4CC",
+                "container_background_color": "#736f6f82",
 
                 "item_height": 50,
                 "width": 500,
@@ -115,8 +120,9 @@
         },
         {
             "id": "2",
-            "name": "SaveTabs Classic2",
+            "name": "SaveTabs 2",
             "type": 3,
+            "is_system": true,
             "config": {
                 "list_font_color": "#ff0000",
                 "list_background_color": "#ffffff",
@@ -229,7 +235,7 @@
         },
         {
             "id": "3",
-            "name": "SaveTabs Classic3",
+            "name": "SaveTabs 3",
             "type": 2,
             "config": {
                 "list_font_color": "#000000",
@@ -340,8 +346,9 @@
         },
         {
             "id": "4",
-            "name": "SaveTabs 透明",
+            "name": "SaveTabs 4",
             "type": 3,
+            "is_system": true,
             "config": {
                 "list_font_color": "#000000",
                 "list_background_color": "#ffffff",

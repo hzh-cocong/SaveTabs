@@ -3,8 +3,7 @@
 
     <div class="jumbotron">
       <div class="title">
-        <img
-          src="@/assets/icon-128.png" />
+        <img src="@/assets/icon-128.png" />
         <h1>SaveTabs - Window & Tab Manager</h1>
       </div>
       <div class="sub-title">

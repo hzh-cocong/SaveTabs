@@ -3,7 +3,9 @@
     <el-aside
       width="250px"
       style="display: flex;flex-direction: column;height: 100vh;border-right:solid 1px #e6e6e6">
-      <el-button style="border-radius: 0;height: 56px;border: 0;">创建主题</el-button>
+      <el-button
+        style="border-radius: 0;height: 56px;border: 0;"
+        @click="addTheme">创建主题</el-button>
       <div
         style="padding: 10px 0 0 0;text-align:center;border-top:solid 1px #e6e6e6">
         <svg-icon
@@ -25,32 +27,35 @@
           class="theme-item"
           :class="{ selected: item.id == currentTheme.id }"
           v-for="(item, index) in currentThemeList"
-          :key="index"
+          :key="item.id+'|'+index"
           @click="$emit('update:currentTheme', item)">
-          <span
-            style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
-            :style="{ borderColor: item.config.border_color,
-                      backgroundColor: item.config.background_color }"><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_background_color,
-                color: item.config.list_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_font_color,
-                color: item.config.list_font_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_background_color,
-                color: item.config.list_focus_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_font_color,
-                color: item.config.list_focus_font_color,
-              }">.</span></span>
+          <div class="color-box">
+            <span
+              style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;cursor:move;"
+              :style="{ borderColor: item.config.border_color,
+                        backgroundColor: item.config.background_color }"><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_background_color,
+                  color: item.config.list_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_font_color,
+                  color: item.config.list_font_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_background_color,
+                  color: item.config.list_focus_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_font_color,
+                  color: item.config.list_focus_font_color,
+                }">.</span>
+            </span>
+          </div>
           <span
             class="title"
             :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.name }}</span>
@@ -69,32 +74,47 @@
         <svg-icon
           name="fly-brands"
           class="type hover"
-          :class="{ active: currentTheme.type & 1 }"
-          @click.native="changeType(1)"
+          :class="{ active: currentTheme.type & 1, disabled: currentTheme.is_system }"
+          @click.native="changeThemeType(1)"
         ></svg-icon>
         <svg-icon
           name="ship-solid"
           class="type hover"
-          :class="{ active: currentTheme.type & 2 }"
-          @click.native="changeType(2)"
+          :class="{ active: currentTheme.type & 2, disabled: currentTheme.is_system }"
+          @click.native="changeThemeType(2)"
         ></svg-icon>
+        <div
+          v-if="currentTheme.is_system"
+          style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;">
+          <img
+            style="width: 24px; height: 24px;margin-left: 20px;"
+            src="@/assets/icon-128.png" />
+        </div>
         <span
           v-if=" ! showNameInput"
           style="flex: 1;margin: 0 10px;color: #606266;width:100%;height:100%;display:flex;flex-direction: column;justify-content: center;"
-          @click="showNameInput=true;
-                  $nextTick(()=>$refs.themeNameInput.focus())">{{ currentTheme.name }}</span>
+          @click="currentTheme.is_system
+                || (showNameInput=true,
+                    $nextTick(()=>$refs.themeNameInput.focus()))">{{ currentTheme.name }}</span>
         <el-input
           v-if="showNameInput"
           :value="currentTheme.name"
           style="flex: 1;margin: 0 10px;"
           clearable
+          :disabled="currentTheme.is_system"
           @blur="showNameInput=false"
           @input="changeThemeName($event, false)"
           @change="changeThemeName($event, true)"
           ref="themeNameInput"></el-input>
-        <el-link>删除</el-link>
-        <el-link style="margin: 0 10px;">导出</el-link>
-        <el-link>克隆</el-link>
+        <el-button
+          type="text"
+          @click="cloneTheme">克隆</el-button>
+        <el-button
+          type="text">导出</el-button>
+        <el-button
+          type="text"
+          :disabled="currentTheme.is_system"
+          @click="deleteTheme">删除</el-button>
       </el-header>
       <el-main style="padding:0;">
         <el-tabs
@@ -111,6 +131,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.border_width"
                 :min="0"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('border_width', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.border_width != oldCurrentThemeConfig.border_width"
@@ -128,12 +149,18 @@
                 size="mini"
                 :value="currentThemeConfig.border_color"
                 :predefine="predefine"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('border_color', $event)"
               ></el-color-picker>
               <el-tooltip
                 v-if="currentThemeConfig.border_color != oldCurrentThemeConfig.border_color"
                 placement="top"
-                :content="oldCurrentThemeConfig.border_color+''">
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.border_color }"></div>
+                </div>
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('border_color', oldCurrentThemeConfig.border_color)"></i>
@@ -146,12 +173,18 @@
                 size="mini"
                 :value="currentThemeConfig.container_background_color"
                 :predefine="predefine"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('container_background_color', $event)"
               ></el-color-picker>
               <el-tooltip
                 v-if="currentThemeConfig.container_background_color != oldCurrentThemeConfig.container_background_color"
                 placement="top"
-                :content="oldCurrentThemeConfig.container_background_color+''">
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.container_background_color }"></div>
+                </div>
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('container_background_color', oldCurrentThemeConfig.container_background_color)"></i>
@@ -165,6 +198,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.padding_width"
                 :min="0"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('padding_width', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.padding_width != oldCurrentThemeConfig.padding_width"
@@ -182,12 +216,18 @@
                 size="mini"
                 :value="currentThemeConfig.background_color"
                 :predefine="predefine"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('background_color', $event)"
               ></el-color-picker>
               <el-tooltip
                 v-if="currentThemeConfig.background_color != oldCurrentThemeConfig.background_color"
                 placement="top"
-                :content="oldCurrentThemeConfig.background_color+''">
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.background_color }"></div>
+                </div>
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('background_color', oldCurrentThemeConfig.background_color)"></i>
@@ -200,12 +240,18 @@
                 size="mini"
                 :value="currentThemeConfig.carousel_indicators_color"
                 :predefine="predefine"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('carousel_indicators_color', $event)"
               ></el-color-picker>
               <el-tooltip
                 v-if="currentThemeConfig.carousel_indicators_color != oldCurrentThemeConfig.carousel_indicators_color"
                 placement="top"
-                :content="oldCurrentThemeConfig.carousel_indicators_color+''">
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.carousel_indicators_color }"></div>
+                </div>
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('carousel_indicators_color', oldCurrentThemeConfig.carousel_indicators_color)"></i>
@@ -218,6 +264,7 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_align"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('position_horizontal_align', $event)">
                 <el-option
                   v-for="align in positionHorizontalOptions"
@@ -241,6 +288,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_distance"
                 :min="0"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('position_horizontal_distance', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_horizontal_distance != oldCurrentThemeConfig.position_horizontal_distance"
@@ -258,6 +306,7 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_align"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('position_vertical_align', $event)">
                 <el-option
                   v-for="align in positionVerticalOptions"
@@ -281,6 +330,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_distance"
                 :min="0"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('position_vertical_distance', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_vertical_distance != oldCurrentThemeConfig.position_vertical_distance"
@@ -299,6 +349,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.tag_line_count"
                 :min="0"
+                :disabled="currentTheme.is_system"
                 @change="editTheme('tag_line_count', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.tag_line_count != oldCurrentThemeConfig.tag_line_count"
@@ -327,13 +378,20 @@
 
 <script>
 
+import { nanoid } from 'nanoid'
+import Sortable from 'sortablejs';
+
 export default {
   name: 'ThemeGeneral',
   inject: [
     'popupChange',
-    'changeType',
+    'changeThemeType',
     'changeThemeName',
     'editTheme',
+    'themeSort',
+    'addTheme',
+    'cloneTheme',
+    'deleteTheme',
   ],
   props: {
     currentTheme: {
@@ -384,10 +442,11 @@ export default {
       return this.w.oldCurrentThemeConfig[this.currentTheme.id];
     },
     predefine() {
-      return [
+      // 去重，否则会报错
+      return Array.from(new Set([
         this.currentThemeConfig.border_color,
         this.currentThemeConfig.background_color
-      ]
+      ]))
     }
   },
   methods: {
@@ -410,6 +469,20 @@ export default {
     }
 
 
+    //创建拖拽对象
+    // this.sortable =
+    Sortable.create(document.querySelector('.theme'), {
+      // sort: this.isEditOrder, //是否可进行拖拽排序
+      animation: 150,
+      // 过滤器，不需要进行拖动的元素
+      // filter: ".disabled",
+      // ghostClass: 'ghost',
+      // draggable: '.enabled',
+      // handle: ".handle",
+      // chosenClass: 'chosen',
+      //拖拽完成，移除拖拽之前的位置上的元素，在拖拽之后的位置上添加拖拽元素
+      onEnd: this.themeSort,
+    })
   }
 }
 </script>
@@ -453,6 +526,9 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
   /* font-weight: 700; */
 }
+.theme-item .color-box {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+}
 .theme-item .title {
   flex: 1;
   margin-left: 8px;
@@ -473,6 +549,9 @@ export default {
 .type.active {
   color: #009966;
 }
+.type.disabled {
+  cursor: not-allowed;
+}
 
 .tabs {
   height: calc(100% - 56px);
@@ -491,6 +570,7 @@ export default {
   align-items: center;
 }
 .box .label {
+  width: 56px;
   margin-right: 20px;
   font-size: 14px;
   color: #606266;
@@ -500,6 +580,18 @@ export default {
   cursor: pointer;
 }
 
+.color-tip {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #999;
+  border-radius: 2px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+}
+.color-tip div {
+  width: 100%;
+  height: 100%;
+}
 </style>
 
 <style>

@@ -77,6 +77,7 @@ import userLocalConfig from './config/user_local_config.json'
 import projectConfig from './config/project_config.json'
 
 import userTheme from './config/user_theme.json'
+import { nanoid } from 'nanoid'
 
 const THEME_TYPWE = {
   POPUP: 1,
@@ -110,9 +111,13 @@ export default {
       deleteSearchEngine: this.deleteSearchEngine,
       searchEngineSort: this.searchEngineSort,
 
-      changeType: this.changeType,
+      changeThemeType: this.changeThemeType,
       changeThemeName: this.changeThemeName,
       editTheme: this.editTheme,
+      themeSort: this.themeSort,
+      addTheme: this.addTheme,
+      cloneTheme: this.cloneTheme,
+      deleteTheme: this.deleteTheme,
     }
   },
   data() {
@@ -139,7 +144,18 @@ export default {
       return this.projectConfig.allOperationButtons;
     },
 
+    currentThemeIndex() {
+      let index = -1;
+      for(let theme of this.currentThemeList) {
+        index++;
+        if(this.currentThemeId == theme.id) {
+          return index;
+        }
+      }
+      return -1;
+    },
     currentThemeId() {
+      console.log('computed:currentThemeId')
       if(this.openWay == 'popup') return this.localConfig.theme_popup.id;
       else return this.localConfig.theme_inject.id;
     },
@@ -171,22 +187,65 @@ export default {
         // else return this.localConfig.theme_inject;
       }
     },
+    popupThemeList() {
+      let themeList = this.themeList.filter(theme => THEME_TYPWE.POPUP & theme.type );
+
+      // 对主题排序（没有 rank 的排最后）
+      let rank = this.theme.rank.popup;
+      themeList.sort((theme1, theme2) => {
+        if(rank[theme1.id] == undefined && rank[theme2.id] == undefined) return 0;
+        if(rank[theme1.id] == undefined) return 1;
+        if(rank[theme2.id] == undefined) return -1;
+
+        return rank[theme2.id]-rank[theme1.id];
+      });
+
+      return themeList;
+    },
+    injectThemeList() {
+      let themeList =  this.themeList.filter(theme => THEME_TYPWE.INJECT & theme.type );
+
+      // 对主题排序（没有 rank 的排最后）
+      let rank = this.theme.rank.inject;
+      themeList.sort((theme1, theme2) => {
+        if(rank[theme1.id] == undefined && rank[theme2.id] == undefined) return 0;
+        if(rank[theme1.id] == undefined) return 1;
+        if(rank[theme2.id] == undefined) return -1;
+
+        return rank[theme2.id]-rank[theme1.id];
+      });
+
+      return themeList;
+    },
     currentThemeList() {
+      console.log('computed.currentThemeList')
       let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
-      return this.themeList.filter(theme => themeType & theme.type );
+      let themeList = this.themeList.filter(theme => themeType & theme.type );
+
+      // 对主题排序（没有 rank 的排最后）
+      let rank = this.openWay == 'popup' ? this.theme.rank.popup : this.theme.rank.inject;
+      themeList.sort((theme1, theme2) => {
+        if(rank[theme1.id] == undefined && rank[theme2.id] == undefined) return 0;
+        if(rank[theme1.id] == undefined) return 1;
+        if(rank[theme2.id] == undefined) return -1;
+
+        return rank[theme2.id]-rank[theme1.id];
+      });
+
+      return themeList;
     },
     themeList() {
       // 合并系统主题和用户主题
       let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
 
-      // 对主题排序（没有 rank 的排最后）
-      themeList.sort((theme1, theme2) => {
-        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
-        if(this.theme.rank[theme1.id] == undefined) return 1;
-        if(this.theme.rank[theme2.id] == undefined) return -1;
+      // // 对主题排序（没有 rank 的排最后）
+      // themeList.sort((theme1, theme2) => {
+      //   if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
+      //   if(this.theme.rank[theme1.id] == undefined) return 1;
+      //   if(this.theme.rank[theme2.id] == undefined) return -1;
 
-        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
-      });
+      //   return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
+      // });
 
       return themeList;
     },
@@ -218,23 +277,20 @@ export default {
         });
       });
     },
-    storeTheme(config = true, theme = true) {
+    storeTheme({config = true, theme = true, tip = true}={}) {
       let setting =
       chrome.storage.local.set({
-        'config': this.localConfig || undefined,
-        'theme': this.theme || undefined,
+        'config': config ? this.localConfig : undefined,
+        'theme': theme ? this.theme : undefined,
       }, () => {
+        if( ! tip) return;
+
         this.$notify({
           title: '主题',
-          message: '修改成功',
+          message: '保存成功',
           position: 'bottom-left',
           duration: 1000,
         });
-        // this.$message({
-        //   type: 'success',
-        //   message: '修改成功|theme',
-        //   duration: 1000,
-        // });
       })
     },
 
@@ -491,7 +547,9 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.store('local');
     },
 
-    changeType(type) {
+    changeThemeType(type) {
+      if(this.currentTheme.is_system) return;
+
       let currentType = this.currentTheme.type;
       if(currentType & type) {
         currentType ^= type;
@@ -508,26 +566,48 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         return;
       }
 
-      let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
-      console.log('ffffff', currentType, themeType, currentType & themeType)
-      if( ! (currentType & themeType)
-      && this.currentThemeList.length <= 1) {
+      if( ! (currentType & THEME_TYPWE.POPUP)
+      && this.popupThemeList.length <= 1) {
         this.$message({
           type: 'warning',
-          message: '该类型只剩下这最后一个主题了',
+          message: '弹出类型只剩下这最后一个主题了',
           duration: 1000,
         });
         return;
       }
 
+      if( ! (currentType & THEME_TYPWE.INJECT)
+      && this.injectThemeList.length <= 1) {
+        this.$message({
+          type: 'warning',
+          message: '注入类型只剩下这最后一个主题了',
+          duration: 1000,
+        });
+        return;
+      }
+
+      let currentThemeId = this.currentThemeId;
       this.currentTheme.type = currentType;
 
       // 重新选一个主题
-      if( ! (currentType & themeType)) {
-        // 当前主题改变会触发保存
-        this.currentTheme = this.currentThemeList[0];
-        return;
+      if( ! (currentType & THEME_TYPWE.POPUP)
+        && this.localConfig.theme_popup.id == currentThemeId) {
+        this.localConfig.theme_popup = this.popupThemeList[0];
       }
+      if( ! (currentType & THEME_TYPWE.INJECT)
+        && this.localConfig.theme_inject.id == currentThemeId) {
+        this.localConfig.theme_inject = this.injectThemeList[0];
+      }
+
+      // 重新排序
+      this.theme.rank.popup = this.popupThemeList.reduce((accumulator, key, index) => {
+        accumulator[key.id] = this.popupThemeList.length-index;
+        return accumulator;
+      }, {});
+      this.theme.rank.inject = this.injectThemeList.reduce((accumulator, key, index) => {
+        accumulator[key.id] = this.injectThemeList.length-index;
+        return accumulator;
+      }, {});
 
       this.storeTheme();
     },
@@ -540,6 +620,107 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       console.log('editTheme', type, value);
       this.currentTheme.config[type] = value;
       this.storeTheme();
+    },
+    themeSort({newIndex, oldIndex }) {
+      console.log('themeSort', newIndex, oldIndex)
+      if(newIndex == oldIndex) {
+          return;
+        }
+
+      if(newIndex >= this.currentThemeList.length) {
+        newIndex = this.currentThemeList.length-1;
+      }
+
+      this.currentThemeList.splice(newIndex, 0, this.currentThemeList.splice(oldIndex , 1)[0]);
+      let type = this.openWay == 'popup' ? 'popup' : 'inject';
+      this.theme.rank[type] = this.currentThemeList.reduce((accumulator, key, index) => {
+        accumulator[key.id] = this.currentThemeList.length-index;
+        return accumulator;
+      }, {});
+
+      this.storeTheme({ config: false, theme: true });
+    },
+    addTheme() {
+      this.$prompt('', '请输入主题名称', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPlaceholder: '',
+        inputValue: '',
+      }).then(({ value }) => {
+        let newTheme = Object.assign(
+          {},
+          JSON.parse(JSON.stringify(this.theme.system_theme_list[0])),
+          {
+            id: nanoid(),
+            name: value,
+            type: this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT,
+            is_system: undefined,
+          }
+        );
+        let type = this.openWay == 'popup' ? 'popup' : 'inject';
+
+        this.theme.user_theme_list.push(newTheme)
+        this.localConfig['theme_'+type] = newTheme;
+
+        this.storeTheme({tip: false});
+      }).catch(() => {
+      });
+    },
+    cloneTheme() {
+      let newTheme = Object.assign(
+        {},
+        JSON.parse(JSON.stringify(this.currentTheme)),
+        {
+          id: nanoid(),
+          is_system: undefined,
+        }
+      );
+      let type = this.openWay == 'popup' ? 'popup' : 'inject';
+
+      this.theme.user_theme_list.push(newTheme)
+      this.localConfig['theme_'+type] = newTheme;
+
+      this.storeTheme({tip: false});
+    },
+    deleteTheme() {
+      this.$confirm(this.currentTheme.name, '删除确认', {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true,
+        customClass: 'window-message-box'
+      }).then(() => {
+        let currentThemeType = this.currentTheme.type;
+        let currentThemeId = this.currentThemeId;
+
+        // 重新选一个主题
+        if((currentThemeType & THEME_TYPWE.POPUP)
+          && this.localConfig.theme_popup.id == currentThemeId) {
+          this.localConfig.theme_popup = this.popupThemeList[0];
+        }
+        if((currentThemeType & THEME_TYPWE.INJECT)
+          && this.localConfig.theme_inject.id == currentThemeId) {
+          this.localConfig.theme_inject = this.injectThemeList[0];
+        }
+
+        // 再删除上一个主题
+        this.theme.user_theme_list = this.theme.user_theme_list.filter(theme => {
+          return theme.id != currentThemeId
+        });
+
+        // 重新排序
+        this.theme.rank.popup = this.popupThemeList.reduce((accumulator, key, index) => {
+          accumulator[key.id] = this.popupThemeList.length-index;
+          return accumulator;
+        }, {});
+        this.theme.rank.inject = this.injectThemeList.reduce((accumulator, key, index) => {
+          accumulator[key.id] = this.injectThemeList.length-index;
+          return accumulator;
+        }, {});
+
+        this.storeTheme();
+      }).catch(() => {
+      });
     },
 
     upgrade(syncItems, localItems) {

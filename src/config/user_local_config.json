@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "all",
+    "active_workspace_type": "bookmark",
     "pinned": true,
     "theme_mode": "light",
     "popup": true,
@@ -109,43 +109,49 @@
             "list_scrollbar_color": "rgba(127, 127, 127, .6)",
             "list_scrollbar_focus_color": "rgba(127, 127, 127, .9)",
 
-            "list_font_size": 20,
+            "list_font_size": 12,
             "list_explain_font_size": 12,
             "list_state_size": 12,
-            "list_keymap_size": 16,
+            "list_keymap_size": 12,
 
             "border_color": "#ffffff",
             "background_color": "red",
             "carousel_indicators_color": "#C0C4CC",
 
-            "item_height": 50,
-            "width": 500,
-            "height_auto": false,
             "border_width": 0,
             "padding_width": 0,
 
+            "width": 500,
+            "width_fill": true,
+            "width_percentage": 100,
+
+            "height_auto": false,
+            "height_fill": true,
+            "height_percentage": 80,
+
+            "item_height": 26,
             "item_show_count": 7,
             "list_page_count": 8,
             "no_search_item_show_count": 0,
             "no_search_list_page_count": 4,
 
-            "tag_line_count": 3,
+            "tag_line_count": 1,
 
-            "toolbar_height": 40,
+            "toolbar_height": 30,
             "toolbar_background_color": "#ffffff",
             "toolbar_border_color": "#dcdfe6",
 
             "toolbar_icon_color": "#C1C4CB",
             "toolbar_icon_focus_color": "#919398",
-            "toolbar_icon_auto_hide": true,
+            "toolbar_icon_auto_hide": false,
 
             "toolbar_menu_icon_color": "#C1C4CB",
             "toolbar_menu_icon_fixed_color": "gray",
             "toolbar_menu_font_color": "#909399",
-            "toolbar_menu_show_workspace_name": true,
+            "toolbar_menu_show_workspace_name": false,
             "toolbar_menu_auto_hide": false,
 
-            "toolbar_input_font_size": 20,
+            "toolbar_input_font_size": 12,
             "toolbar_input_font_color": "#606266",
             "toolbar_input_focus_border_color": "#dcdfe6",
             "toolbar_input_selected_font_color": "#ffffff",
@@ -178,8 +184,8 @@
         "name": "SaveTabs Classic",
         "type": 3,
         "config": {
-            "list_font_color": "#000000",
-            "list_background_color": "#ffffff",
+            "list_font_color": "blue",
+            "list_background_color": "green",
             "list_highlight_color": "#f73131",
             "list_highlight_weight": "400",
             "list_explain_font_color": "#909399",
@@ -233,16 +239,22 @@
             "carousel_indicators_color": "#C0C4CC",
             "container_background_color": "transparent",
 
-            "item_height": 50,
-            "width": 500,
-            "height_auto": false,
-            "border_width": 8,
+            "border_width": 0,
             "padding_width": 0,
 
+            "width": 500,
+            "width_fill": true,
+            "width_percentage": 100,
+
+            "height_auto": false,
+            "height_fill": true,
+            "height_percentage": 80,
+
+            "item_height": 26,
             "item_show_count": 7,
             "list_page_count": 8,
-
-            "tag_line_count": 3,
+            "no_search_item_show_count": 0,
+            "no_search_list_page_count": 4,
 
             "toolbar_height": 40,
             "toolbar_background_color": "#ffffff",

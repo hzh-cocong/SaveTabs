@@ -62,20 +62,25 @@
                 "list_keymap_size": 16,
 
                 "border_color": "#ffffff",
-                "background_color": "#ff0000",
+                "background_color": "red",
                 "carousel_indicators_color": "#C0C4CC",
-                "container_background_color": "#736f6f82",
 
-                "item_height": 50,
-                "width": 500,
-                "height_auto": false,
-                "border_width": 8,
+                "border_width": 0,
                 "padding_width": 0,
 
+                "width": 500,
+                "width_fill": true,
+                "width_percentage": 100,
+
+                "height_auto": false,
+                "height_fill": true,
+                "height_percentage": 80,
+
+                "item_height": 26,
                 "item_show_count": 7,
                 "list_page_count": 8,
                 "no_search_item_show_count": 0,
-                "no_search_list_page_count": 10,
+                "no_search_list_page_count": 4,
 
                 "tag_line_count": 3,
 
@@ -177,20 +182,26 @@
                 "list_state_size": 12,
                 "list_keymap_size": 16,
 
-                "border_color": "blue",
-                "background_color": "#ff0000",
-                "carousel_indicators_color": "#C0C4CC00",
+                "border_color": "#ffffff",
+                "background_color": "red",
+                "carousel_indicators_color": "#C0C4CC",
 
-                "item_height": 50,
-                "width": 500,
-                "height_auto": true,
                 "border_width": 0,
                 "padding_width": 0,
 
+                "width": 500,
+                "width_fill": true,
+                "width_percentage": 100,
+
+                "height_auto": false,
+                "height_fill": true,
+                "height_percentage": 80,
+
+                "item_height": 26,
                 "item_show_count": 7,
                 "list_page_count": 8,
                 "no_search_item_show_count": 0,
-                "no_search_list_page_count": 10,
+                "no_search_list_page_count": 4,
 
                 "tag_line_count": 3,
 
@@ -292,19 +303,25 @@
                 "list_keymap_size": 16,
 
                 "border_color": "#ffffff",
-                "background_color": "#ffffff",
+                "background_color": "red",
                 "carousel_indicators_color": "#C0C4CC",
 
-                "item_height": 50,
-                "width": 500,
-                "height_auto": false,
-                "border_width": 8,
+                "border_width": 0,
                 "padding_width": 0,
 
+                "width": 500,
+                "width_fill": true,
+                "width_percentage": 100,
+
+                "height_auto": false,
+                "height_fill": true,
+                "height_percentage": 80,
+
+                "item_height": 26,
                 "item_show_count": 7,
                 "list_page_count": 8,
                 "no_search_item_show_count": 0,
-                "no_search_list_page_count": 10,
+                "no_search_list_page_count": 4,
 
                 "tag_line_count": 3,
 
@@ -407,19 +424,25 @@
                 "list_keymap_size": 16,
 
                 "border_color": "#ffffff",
-                "background_color": "#ffffff",
+                "background_color": "red",
                 "carousel_indicators_color": "#C0C4CC",
 
-                "item_height": 50,
-                "width": 500,
-                "height_auto": true,
                 "border_width": 0,
                 "padding_width": 0,
 
-                "item_show_count": 2,
-                "list_page_count": 3,
-                "no_search_item_show_count": 1,
-                "no_search_list_page_count": 2,
+                "width": 500,
+                "width_fill": true,
+                "width_percentage": 100,
+
+                "height_auto": false,
+                "height_fill": true,
+                "height_percentage": 80,
+
+                "item_height": 26,
+                "item_show_count": 7,
+                "list_page_count": 8,
+                "no_search_item_show_count": 0,
+                "no_search_list_page_count": 4,
 
                 "tag_line_count": 3,
 

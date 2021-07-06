@@ -136,7 +136,7 @@
           class="tabs"
           v-model="activeName"
           @tab-click="tabClick">
-          <el-tab-pane label="整体" name="global">
+          <el-tab-pane label="整体" name="global" lazy>
             <el-divider>布局</el-divider>
             <div class="box">
               <span class="label">外边框</span>
@@ -301,7 +301,6 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_distance"
-                :min="0"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('position_horizontal_distance', $event)"></el-input-number>
               <el-tooltip
@@ -343,7 +342,6 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_distance"
-                :min="0"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('position_vertical_distance', $event)"></el-input-number>
               <el-tooltip
@@ -375,7 +373,7 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="列表" name="list">
+          <el-tab-pane label="列表" name="list" lazy>
             <el-divider>布局</el-divider>
             <div class="box">
               <span class="label">宽度</span>
@@ -383,7 +381,7 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.width"
-                :min="0"
+                :min="280"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('width', $event)"></el-input-number>
               <el-tooltip
@@ -396,23 +394,43 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">列表项高度</span>
+              <span class="label">宽度百分比</span>
+              <el-switch
+                :value="currentThemeConfig.width_fill"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('width_fill', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.width_fill != oldCurrentThemeConfig.width_fill"
+                placement="top"
+                :content="oldCurrentThemeConfig.width_fill ? '开启' : '关闭'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('width_fill', oldCurrentThemeConfig.width_fill)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">宽度百分比</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
-                :value="currentThemeConfig.item_height"
-                :min="0"
-                :disabled="currentTheme.is_system"
-                @change="editTheme('item_height', $event)"></el-input-number>
+                :value="currentThemeConfig.width_percentage"
+                :min="1"
+                :max="100"
+                :disabled="currentTheme.is_system || ! currentThemeConfig.width_fill"
+                @change="editTheme('width_percentage', $event)"></el-input-number>
               <el-tooltip
-                v-if="currentThemeConfig.item_height != oldCurrentThemeConfig.item_height"
+                v-if="currentThemeConfig.width_percentage != oldCurrentThemeConfig.width_percentage"
                 placement="top"
-                :content="oldCurrentThemeConfig.item_height+''">
+                :content="oldCurrentThemeConfig.width_percentage+'%'">
                 <i
                 class="el-icon-refresh-right hover2"
-                @click="editTheme('item_height', oldCurrentThemeConfig.item_height)"></i>
+                @click="editTheme('width_percentage', oldCurrentThemeConfig.width_percentage)"></i>
               </el-tooltip>
             </div>
+            <br/>
             <div class="box">
               <span class="label">总高度自动</span>
               <el-switch
@@ -431,9 +449,64 @@
                 @click="editTheme('height_auto', oldCurrentThemeConfig.height_auto)"></i>
               </el-tooltip>
             </div>
+            <div class="box">
+              <span class="label">高度百分比</span>
+              <el-switch
+                :value="currentThemeConfig.height_fill"
+                :disabled="currentTheme.is_system"
+                active-color="#13ce66"
+                inactive-color="gray"
+                @change="editTheme('height_fill', $event)">
+              </el-switch>
+              <el-tooltip
+                v-if="currentThemeConfig.height_fill != oldCurrentThemeConfig.height_fill"
+                placement="top"
+                :content="oldCurrentThemeConfig.height_fill ? '开启' : '关闭'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('height_fill', oldCurrentThemeConfig.height_fill)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">高度百分比</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.height_percentage"
+                :min="1"
+                :max="100"
+                :disabled="currentTheme.is_system || ! currentThemeConfig.height_fill"
+                @change="editTheme('height_percentage', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.height_percentage != oldCurrentThemeConfig.height_percentage"
+                placement="top"
+                :content="oldCurrentThemeConfig.height_percentage+'%'">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('height_percentage', oldCurrentThemeConfig.height_percentage)"></i>
+              </el-tooltip>
+            </div>
             <br/>
             <div class="box">
-              <span class="label">列表个数</span>
+              <span class="label">列表项高度</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.item_height"
+                :min="26"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('item_height', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.item_height != oldCurrentThemeConfig.item_height"
+                placement="top"
+                :content="oldCurrentThemeConfig.item_height+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('item_height', oldCurrentThemeConfig.item_height)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">列表项个数</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -1548,7 +1621,7 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="菜单栏" name="menu">
+          <el-tab-pane label="菜单栏" name="menu" lazy>
             <el-divider>布局</el-divider>
             <div class="box">
               <span class="label">高度</span>
@@ -1556,7 +1629,7 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.toolbar_height"
-                :min="0"
+                :min="30"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('toolbar_height', $event)"></el-input-number>
               <el-tooltip
@@ -2117,7 +2190,7 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="状态栏" name="status">
+          <el-tab-pane label="状态栏" name="status" lazy>
             <div class="box">
               <span class="label">显示状态栏</span>
               <el-switch

@@ -856,6 +856,13 @@ console.log('allIncludeSort2', newIndex, oldIndex)
   mounted: function() {
     // todo
     window.o = this;
+    window.userConfig = userConfig;
+    window.userLocalConfig = userLocalConfig;
+    window.projectConfig = projectConfig;
+    window.userConfig2 = JSON.parse(JSON.stringify(userConfig));
+    window.userLocalConfig2 = JSON.parse(JSON.stringify(userLocalConfig));
+    window.projectConfig2 = JSON.parse(JSON.stringify(projectConfig));
+
     console.log('mounted:options.vue');
 
     Promise.all([
@@ -882,6 +889,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         console.log('新用户')
         chrome.storage.sync.set({'config': this.syncConfig});
         chrome.storage.local.set({'config': this.localConfig});
+        console.log({syncConfig: this.syncConfig, localConfig: this.localConfig})
       } else if(localItems.config.theme_popup == undefined) {
         // 老用户升级
         console.log('老用户升级')

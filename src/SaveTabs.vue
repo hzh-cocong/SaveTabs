@@ -3,19 +3,28 @@
   id="app"
   v-loading.fullscreen="isLoading"
   :style="{
-    width: (currentThemeConfig.width
-          + currentThemeConfig.border_width*2
-          + currentThemeConfig.padding_width*2)+'px',
+    width: openWay == 'inject' && currentThemeConfig.width_fill
+          ? '100%'
+          : ( currentThemeConfig.width
+            + currentThemeConfig.border_width*2
+            + currentThemeConfig.padding_width*2)+'px',
 
     '--carousel-indicators-color': currentThemeConfig.carousel_indicators_color,
   }"
   @click.stop="focus">
 
 <!-- height: (currentThemeConfig.item_height*currentThemeConfig.item_show_count -->
+    <!-- style="border-style:solid;overflow:hidden;" -->
   <div
-    style="border-style:solid;overflow:hidden;"
+    style="border-style:solid;overflow:auto;"
     :style="{
-      height: ( listHeight
+      height: openWay == 'inject' && currentThemeConfig.height_fill
+            ? `calc(100% - ${
+                                (currentThemeConfig.statusbar_show ? statusbarHeight : 0)
+                              + currentThemeConfig.border_width*2
+                              + currentThemeConfig.padding_width*2
+                            }px)`
+            : ( listHeight
               + currentThemeConfig.toolbar_height
               + 10
               + (listHeight == 0 ? 0 : 10)
@@ -1336,6 +1345,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         // this.filter = 'invert(1) hue-rotate(180deg)';
       }
 
+      if(this.openWay == 'inject' && this.currentThemeConfig.height_fill == true) {
+        document.documentElement.style.setProperty('--height', '100%');
+      }
+
       this.workspaces = this.config.workspaces.map((workspace) => {
         return this.allWorkspaces[workspace];
       });
@@ -1476,6 +1489,9 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
   /* 加这个在 statusbar 隐藏时底部会出现空白，使得高度超出计算范围 */
   /* display: inline-block; */
 
+  min-width: 280px;
+  height: 100%;
+
   /* 非常重要，可以避免因为字体的不同而导致的各种对齐问题 */
   line-height: 1;
 }
@@ -1508,6 +1524,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 <!-- 全局样式 -->
 <style>
 :root {
+  --height: auto;
+
   --animate-duration: 1.5s;
   /* --animate-delay: 0s; 没有用 */
 }
@@ -1516,6 +1534,8 @@ html, body {
   /* display: inline-block; */
   margin: 0;
   padding: 0;
+  /* popup 模式下会导致高度错误 */
+  height: var(--height);
 }
 
 img {

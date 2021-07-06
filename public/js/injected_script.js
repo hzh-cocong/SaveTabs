@@ -57,29 +57,84 @@
                 +currentThemeConfig.padding_width*2
                 +currentThemeConfig.border_width*2+10;
     if(currentThemeConfig.statusbar_show == true) height += 30; // 底部状态栏
+    width = width+'px';
+    height = height+'px';
+
+    // 最小宽度
+    let minWidth = (280
+      + currentThemeConfig.border_width*2
+      + currentThemeConfig.padding_width*2)+'px';
+    // 最小高度
+    let minHeight = (currentThemeConfig.item_height
+                  + (currentThemeConfig.toolbar_height+10*2)
+                  + currentThemeConfig.padding_width*2
+                  + currentThemeConfig.border_width*2+10
+                  + (currentThemeConfig.statusbar_show == true ? 30 : 0))
+                  +'px';//0;//height;
 
     // 水平位置
     let horizontalPosition;
-    if(currentThemeConfig.position_horizontal_align == 'center') horizontalPosition = "left: 0;right: 0;margin:auto auto";
+    if(currentThemeConfig.position_horizontal_align == 'center') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance*2}px;right: 0;margin:auto auto`;
     else if(currentThemeConfig.position_horizontal_align == 'left') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance}px`;
     else if(currentThemeConfig.position_horizontal_align == 'right') horizontalPosition = `right: ${currentThemeConfig.position_horizontal_distance}px`;
     else horizontalPosition = "left: 0;right: 0;margin:auto auto"; // 不应该出现这种情况
 
     // 垂直位置
     let verticalPosition;
-    if(currentThemeConfig.position_vertical_align == 'center') verticalPosition = "top: 0;bottom: 0;margin:auto auto";
+    if(currentThemeConfig.position_vertical_align == 'center') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance*2}px;bottom: 0;margin:auto auto`;
     else if(currentThemeConfig.position_vertical_align == 'top') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance}px`;
     else if(currentThemeConfig.position_vertical_align == 'bottom') verticalPosition = `bottom: ${currentThemeConfig.position_vertical_distance}px`;
     else verticalPosition = "top: 0;bottom: 0;margin:auto auto"; // 不应该出现这种情况
+
+    // 圆角
+    let leftRadius = '4px';
+    let rightRadius = '4px';
+    if(currentThemeConfig.position_horizontal_distance == 0
+    && (currentThemeConfig.position_horizontal_align == 'left'
+      || ( currentThemeConfig.width_fill == true
+        && currentThemeConfig.width_percentage == 100))) {
+      leftRadius = '0';
+    }
+    if(currentThemeConfig.position_horizontal_distance == 0
+    && (currentThemeConfig.position_horizontal_align == 'right'
+      || ( currentThemeConfig.width_fill == true
+        && currentThemeConfig.width_percentage == 100))) {
+      rightRadius = '0';
+    }
+    if(currentThemeConfig.position_vertical_distance == 0
+    && (currentThemeConfig.position_vertical_align == 'bottom'
+      || ( currentThemeConfig.height_fill == true
+        && currentThemeConfig.height_percentage == 100))) {
+      leftRadius = '0';
+      rightRadius = '0';
+    }
+    if(currentThemeConfig.height_fill == true
+      && currentThemeConfig.height_percentage == 100
+      && currentThemeConfig.position_vertical_align != 'bottom') {
+      leftRadius = '0';
+      rightRadius = '0';
+    }
+
+    // 使用百分比
+    if(currentThemeConfig.width_fill == true) {
+      // width = `calc(${currentThemeConfig.width_percentage}% - ${currentThemeConfig.position_horizontal_distance}px)`;
+      width = currentThemeConfig.width_percentage+'%';
+    }
+    if(currentThemeConfig.height_fill == true) {
+      // height = `calc(${currentThemeConfig.height_percentage}% - ${currentThemeConfig.position_vertical_distance}px)`;
+      height = currentThemeConfig.height_percentage+'%';
+    }
 
     iframe.src = chrome.extension.getURL("savetabs.html");
     iframe.setAttribute('style', `position: fixed;
                                   ${horizontalPosition};
                                   ${verticalPosition};
                                   display: block;
-                                  width: ${width}px;
-                                  height: ${height}px;
-                                  border-radius: 0 0 4px 4px;
+                                  width: ${width};
+                                  height: ${height};
+                                  min-width: ${minWidth};
+                                  min-height: ${minHeight};
+                                  border-radius: 0 0 ${rightRadius} ${leftRadius};
                                   background-color: ${iframeBackgroundColor};
                                   box-shadow: ${shadow};`);
     iframe.setAttribute('scrolling', 'no');

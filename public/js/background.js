@@ -84,10 +84,21 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
         // let left = w.left+(w.width-width)/2;
         // let top = w.top+120;
 
+        let offset = 79-28;// 浏览器标题栏 和 窗口标题栏 的编译叠加（不含书签栏）
+
+        // 使用百分比
+        if(currentThemeConfig.width_fill == true) {
+          width =  w.width*currentThemeConfig.width_percentage/100;
+        }
+        if(currentThemeConfig.height_fill == true) {
+          height = (w.height-offset-28)*currentThemeConfig.height_percentage/100;
+          height += 28; // 窗口标题栏
+        }
+
         // 水平位置
         // currentThemeConfig.position_horizontal_align='right';
         let left;
-        if(currentThemeConfig.position_horizontal_align == 'center') left = w.left+(w.width-width)/2;
+        if(currentThemeConfig.position_horizontal_align == 'center') left = w.left+(w.width-width)/2+currentThemeConfig.position_horizontal_distance;
         else if(currentThemeConfig.position_horizontal_align == 'left') left = w.left+currentThemeConfig.position_horizontal_distance;
         else if(currentThemeConfig.position_horizontal_align == 'right') left = w.left+w.width-width-currentThemeConfig.position_horizontal_distance;
         else left = w.left+(w.width-width)/2; // 不应该出现这种情况
@@ -97,9 +108,9 @@ function executeScript({tabId=null, onlyInjection=false} = {}) {
         // currentThemeConfig.position_vertical_align='top';
         // currentThemeConfig.position_vertical_distance=10;
         let top;
-        if(currentThemeConfig.position_vertical_align == 'center') top = w.top+(w.height-height)/2;
-        else if(currentThemeConfig.position_vertical_align == 'top') top = w.top+currentThemeConfig.position_vertical_distance+70;
-        else if(currentThemeConfig.position_vertical_align == 'bottom') top = w.top+w.height-height-currentThemeConfig.position_vertical_distance-60;
+        if(currentThemeConfig.position_vertical_align == 'center') top = w.top+(w.height-offset-height)/2+offset+currentThemeConfig.position_vertical_distance;
+        else if(currentThemeConfig.position_vertical_align == 'top') top = w.top+currentThemeConfig.position_vertical_distance+offset;
+        else if(currentThemeConfig.position_vertical_align == 'bottom') top = w.top+w.height-height-currentThemeConfig.position_vertical_distance;
         else top = w.top+(w.height-height)/2; // 不应该出现这种情况
 
         window.open(chrome.extension.getURL("savetabs.html"), "extension_popup", `width=${width},height=${height},left=${left},top=${top},menubar=no,status=no,scrollbars=no,resizable=no`);

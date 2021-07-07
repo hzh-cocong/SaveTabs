@@ -48,7 +48,11 @@
                                     background-color: ${containerBackgroundColor};
                                     overflow:auto;
                                     transition: background-color 0.3s ease;
-                                    backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);`);
+                                    backdrop-filter: ${currentThemeConfig.container_background_blur <= 0
+                                                      || currentThemeConfig.background_blur > 0
+                                                    ? 'none'
+                                                    : 'blur('+currentThemeConfig.container_background_blur+'px)'};
+                                  `);
     container.id = id;
     container.onclick = function() {
       chrome.runtime.sendMessage({ type: 'closeExtension',})
@@ -148,22 +152,26 @@
                                   border-radius: 0 0 ${rightRadius} ${leftRadius};
                                   background-color: ${iframeBackgroundColor};
                                   box-shadow: ${shadow};
-                                  backdrop-filter: blur(${currentThemeConfig.background_blur}px)`);
+                                  backdrop-filter: ${currentThemeConfig.background_blur <= 0
+                                                  ? 'none'
+                                                  : 'blur('+currentThemeConfig.background_blur+'px)'};
+                                `);
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');
 
-    // 设置蒙版磨砂效果
-    // let css = `#${id}:before{
-    //   content: '';
-    //   position: absolute;
-    //   top: 0px; right: 0px; bottom: 0; left: 0;
-    //   z-index: -1;
-    //   backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
-    // }`;
-    // console.log(css)
-    // let style = document.createElement("style");
-    // style.appendChild(document.createTextNode(css));
-    // document.getElementsByTagName('head')[0].appendChild(style);
+    // 设置蒙版磨砂效果（可和 iframe 蒙版叠加）
+    if(currentThemeConfig.container_background_blur > 0 && currentThemeConfig.background_blur > 0) {
+      let css = `#${id}:before{
+        content: '';
+        position: absolute;
+        top: 0px; right: 0px; bottom: 0; left: 0;
+        z-index: -1;
+        backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
+      }`;
+      let style = document.createElement("style");
+      style.appendChild(document.createTextNode(css));
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
 
     container.append(iframe);
     document.body.append(container);

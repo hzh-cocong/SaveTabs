@@ -1169,7 +1169,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     changeThemeMode() {
       this.localConfig.theme_mode = this.localConfig.theme_mode == 'light' ? 'dark' : 'light';
 
-      let htmlNode = document.querySelector('html');
+      // let htmlNode = document.querySelector('html');
+      let htmlNode = document.documentElement;
       htmlNode.style.filter = this.localConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '';
       htmlNode.style.setProperty("--filter", this.localConfig.theme_mode == 'dark' ? 'invert(1) hue-rotate(180deg)' : '');
 
@@ -1248,12 +1249,14 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
 
     finalWork() {
-      console.warn('isLoad');
-      this.isLoad = true;
-
       // 走马灯底部指示器提示
-      let carouselNode = document.querySelector('.el-carousel__indicators');
-      carouselNode.children.forEach((el, index) => {
+      let carouselNode = this.$refs.carousel.$el.children[1];
+      console.log('finalWork.carouselNode', carouselNode)
+      console.log('finalWork.carouselNode.children', carouselNode.children.length, carouselNode.children)
+
+      for(let index = 0; index < carouselNode.children.length; index++) {
+        let el = carouselNode.children[index];
+
         let workspace = this.workspaces[ index ];
         let title = this.lang(workspace.title)
         title += this.keymap['open_workspace_'+workspace.type]
@@ -1286,10 +1289,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         el.onclick = () => {
           this.carouselTrigger = 'hover';
         }
-      })
+      }
 
       // 输入框鼠标经过显示清除按钮
       this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
+      console.log('finalWork.originInputNode', this.originInputNode)
       this.originInputNode.addEventListener('mouseenter', (event) => {
         // event.stopPropagation();
         // event.preventDefault();
@@ -1339,7 +1343,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       this.commands = commands;
 
       if(this.localConfig.theme_mode == 'dark') {
-        let htmlNode = document.querySelector('html');
+        // let htmlNode = document.querySelector('html');
+        let htmlNode = document.documentElement;
         htmlNode.style.filter = 'invert(1) hue-rotate(180deg)';
         htmlNode.style.setProperty("--filter", 'invert(1) hue-rotate(180deg)');
         // this.filter = 'invert(1) hue-rotate(180deg)';
@@ -1371,11 +1376,18 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           'params': [type, this.keyword],
         });
       }
+
+      this.$nextTick(() => {
+        this.finalWork();
+      })
     })
 
-    // 等页面加载完了再加载图片，否则插件弹出的速度会变慢
+    // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     // 这个才是最对的
-    document.body.onload = this.finalWork;
+    document.body.onload=() => {
+      console.warn('isLoad');
+      this.isLoad = true;
+    };
 
     // window.oncontextmenu = function(e){
     //   // 取消默认的浏览器自带右键

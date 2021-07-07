@@ -428,54 +428,73 @@ const tool = {
     chrome.storage = {
       sync: {
         get: function(options, callback) {
-          callback != undefined && callback({temporary: temporary, config: {}});
+          setTimeout(() => {
+            callback != undefined && callback({temporary: temporary, config: {}});
+          }, 300)
         },
         set: function(options, callback) {
-          callback != undefined && callback();
+          setTimeout(() => {
+            callback != undefined && callback();
+          }, 300)
         },
         remove: function(options, callback) {
-          callback != undefined && callback();
+          setTimeout(() => {
+            callback != undefined && callback();
+          }, 300)
         },
       },
       local: {
         get: function(options, callback) {
           if(options.config) {
-            callback != undefined && callback({config: {}, info: {}});
+            setTimeout(() => {
+              callback != undefined && callback({config: {}, info: {}});
+            }, 300)
           } else if(options.list != undefined) {
-            callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+            setTimeout(() => {
+              callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+            }, 300)
+            // callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
             // callback != undefined && setTimeout(()=>{ callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88}); }, 1000);
           } else if(options.tabs != undefined) {
-            callback != undefined && callback({tabs: notes});
+            setTimeout(() => {
+              callback != undefined && callback({tabs: notes});
+            }, 300)
             // callback != undefined && setTimeout(()=>{ callback({tabs: notes}); }, 1000);
           } else if(options.temporary != undefined) {
-            callback != undefined && callback({temporary: temporary});
+            setTimeout(() => {
+              callback != undefined && callback({temporary: temporary});
+            }, 300)
           } else if(options.bookmark != undefined) {
-            callback != undefined && callback({
-              bookmark: {
-                state: {
-                  "1": true,
-                  "21": true,
-                  "735": true,
-                  "117": true,
-                  "119": true,
-                  "635": true,
-                  "125": true,
-                  "128": true,
-                  "130": true,
-                  "148": true,
-                  "2": true,
-                  "106": true,
-                  "108": true,
-                  "22": true,
-                },
-                position: {
-                  currentIndex: 12,
-                  visiualIndex: 2,
+            setTimeout(() => {
+              callback != undefined && callback({
+                bookmark: {
+                  state: {
+                    "1": true,
+                    "21": true,
+                    "735": true,
+                    "117": true,
+                    "119": true,
+                    "635": true,
+                    "125": true,
+                    "128": true,
+                    "130": true,
+                    "148": true,
+                    "2": true,
+                    "106": true,
+                    "108": true,
+                    "22": true,
+                  },
+                  position: {
+                    currentIndex: 12,
+                    visiualIndex: 2,
+                  }
                 }
-              }
-            });
+              });
+            }, 300)
           } else {
-            callback != undefined && callback({});
+            setTimeout(() => {
+              callback != undefined && callback({});
+            }, 300)
           }
         },
         set: function(options, callback) {
@@ -484,7 +503,9 @@ const tool = {
           }, 0)
         },
         remove: function(keys, callback) {
-          callback != undefined && callback();
+          setTimeout(() => {
+            callback != undefined && callback();
+          }, 300)
         },
       }
     }

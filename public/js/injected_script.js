@@ -37,7 +37,18 @@
     // let containerBackgroundColor = 'transparent';
     let containerBackgroundColor = currentThemeConfig.container_background_color;
     container = document.createElement('div');
-    container.setAttribute('style', `z-index: 2147483647; position: fixed; top: 0; left: 0;  margin: 0;  padding: 0; width: 100vw; height: 100vh; background-color: ${containerBackgroundColor};overflow:auto;transition: background-color 0.3s ease;`);
+    container.setAttribute('style', `z-index: 2147483647;
+                                    position: fixed;
+                                    top: 0;
+                                    left: 0;
+                                    margin: 0;
+                                    padding: 0;
+                                    width: 100vw;
+                                    height: 100vh;
+                                    background-color: ${containerBackgroundColor};
+                                    overflow:auto;
+                                    transition: background-color 0.3s ease;
+                                    backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);`);
     container.id = id;
     container.onclick = function() {
       chrome.runtime.sendMessage({ type: 'closeExtension',})
@@ -142,17 +153,17 @@
     iframe.setAttribute('frameborder', '0');
 
     // 设置蒙版磨砂效果
-    let css = `#${id}:before{
-      content: '';
-      position: absolute;
-      top: 0px; right: 0px; bottom: 0; left: 0;
-      z-index: -1;
-      backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
-    }`;
-    console.log(css)
-    let style = document.createElement("style");
-    style.appendChild(document.createTextNode(css));
-    document.getElementsByTagName('head')[0].appendChild(style);
+    // let css = `#${id}:before{
+    //   content: '';
+    //   position: absolute;
+    //   top: 0px; right: 0px; bottom: 0; left: 0;
+    //   z-index: -1;
+    //   backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
+    // }`;
+    // console.log(css)
+    // let style = document.createElement("style");
+    // style.appendChild(document.createTextNode(css));
+    // document.getElementsByTagName('head')[0].appendChild(style);
 
     container.append(iframe);
     document.body.append(container);

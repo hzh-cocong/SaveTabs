@@ -136,9 +136,23 @@
                                   min-height: ${minHeight};
                                   border-radius: 0 0 ${rightRadius} ${leftRadius};
                                   background-color: ${iframeBackgroundColor};
-                                  box-shadow: ${shadow};`);
+                                  box-shadow: ${shadow};
+                                  backdrop-filter: blur(${currentThemeConfig.background_blur}px)`);
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');
+
+    // 设置蒙版磨砂效果
+    let css = `#${id}:before{
+      content: '';
+      position: absolute;
+      top: 0px; right: 0px; bottom: 0; left: 0;
+      z-index: -1;
+      backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
+    }`;
+    console.log(css)
+    let style = document.createElement("style");
+    style.appendChild(document.createTextNode(css));
+    document.getElementsByTagName('head')[0].appendChild(style);
 
     container.append(iframe);
     document.body.append(container);

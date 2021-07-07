@@ -139,6 +139,92 @@
           <el-tab-pane label="整体" name="global" lazy>
             <el-divider>布局</el-divider>
             <div class="box">
+              <span class="label">页面背景</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.background_color != oldCurrentThemeConfig.background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('background_color', oldCurrentThemeConfig.background_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">页面模糊</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.background_blur"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('background_blur', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.background_blur != oldCurrentThemeConfig.background_blur"
+                placement="top"
+                :content="oldCurrentThemeConfig.background_blur+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('background_blur', oldCurrentThemeConfig.background_blur)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
+              <span class="label">蒙版颜色</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.container_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('container_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.container_background_color != oldCurrentThemeConfig.container_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.container_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('container_background_color', oldCurrentThemeConfig.container_background_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label">蒙版模糊</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.container_background_blur"
+                :min="0"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('container_background_blur', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.container_background_blur != oldCurrentThemeConfig.container_background_blur"
+                placement="top"
+                :content="oldCurrentThemeConfig.container_background_blur+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('container_background_blur', oldCurrentThemeConfig.container_background_blur)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
               <span class="label">外边框</span>
               <el-input-number
                 size="mini"
@@ -180,30 +266,6 @@
                 @click="editTheme('border_color', oldCurrentThemeConfig.border_color)"></i>
               </el-tooltip>
             </div>
-            <div class="box">
-              <span class="label">蒙版颜色</span>
-              <el-color-picker
-                show-alpha
-                size="mini"
-                :value="currentThemeConfig.container_background_color"
-                :predefine="predefine"
-                :disabled="currentTheme.is_system"
-                @change="editTheme('container_background_color', $event)"
-              ></el-color-picker>
-              <el-tooltip
-                v-if="currentThemeConfig.container_background_color != oldCurrentThemeConfig.container_background_color"
-                placement="top"
-                effect="light">
-                <div
-                  slot="content"
-                  class="color-tip">
-                  <div :style="{ backgroundColor: oldCurrentThemeConfig.container_background_color }"></div>
-                </div>
-                <i
-                class="el-icon-refresh-right hover2"
-                @click="editTheme('container_background_color', oldCurrentThemeConfig.container_background_color)"></i>
-              </el-tooltip>
-            </div>
             <br/>
             <div class="box">
               <span class="label">内边距</span>
@@ -221,30 +283,6 @@
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('padding_width', oldCurrentThemeConfig.padding_width)"></i>
-              </el-tooltip>
-            </div>
-            <div class="box">
-              <span class="label">页面背景</span>
-              <el-color-picker
-                show-alpha
-                size="mini"
-                :value="currentThemeConfig.background_color"
-                :predefine="predefine"
-                :disabled="currentTheme.is_system"
-                @change="editTheme('background_color', $event)"
-              ></el-color-picker>
-              <el-tooltip
-                v-if="currentThemeConfig.background_color != oldCurrentThemeConfig.background_color"
-                placement="top"
-                effect="light">
-                <div
-                  slot="content"
-                  class="color-tip">
-                  <div :style="{ backgroundColor: oldCurrentThemeConfig.background_color }"></div>
-                </div>
-                <i
-                class="el-icon-refresh-right hover2"
-                @click="editTheme('background_color', oldCurrentThemeConfig.background_color)"></i>
               </el-tooltip>
             </div>
             <div class="box">

@@ -63,7 +63,10 @@
 
                 "border_color": "#ffffff",
                 "background_color": "red",
+                "background_blur": 0,
                 "carousel_indicators_color": "#C0C4CC",
+                "container_background_color": "transparent",
+                "container_background_blur": 0,
 
                 "border_width": 0,
                 "padding_width": 0,
@@ -184,7 +187,10 @@
 
                 "border_color": "#ffffff",
                 "background_color": "red",
+                "background_blur": 0,
                 "carousel_indicators_color": "#C0C4CC",
+                "container_background_color": "transparent",
+                "container_background_blur": 0,
 
                 "border_width": 0,
                 "padding_width": 0,
@@ -304,7 +310,10 @@
 
                 "border_color": "#ffffff",
                 "background_color": "red",
+                "background_blur": 0,
                 "carousel_indicators_color": "#C0C4CC",
+                "container_background_color": "transparent",
+                "container_background_blur": 0,
 
                 "border_width": 0,
                 "padding_width": 0,
@@ -425,7 +434,10 @@
 
                 "border_color": "#ffffff",
                 "background_color": "red",
+                "background_blur": 0,
                 "carousel_indicators_color": "#C0C4CC",
+                "container_background_color": "transparent",
+                "container_background_blur": 0,
 
                 "border_width": 0,
                 "padding_width": 0,

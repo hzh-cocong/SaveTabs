@@ -28,6 +28,8 @@
     :itemHeight="currentThemeConfig.item_height"
     :itemShowCount="itemShowCount || 1"
     :scrollDisabled="scrollDisabled"
+    :scrollbarColor="currentThemeConfig.list_scrollbar_color"
+    :scrollbarFocusColor="currentThemeConfig.list_scrollbar_focus_color"
     :itemStyle="itemStyle"
     v-model="currentIndex"
     ref="list"

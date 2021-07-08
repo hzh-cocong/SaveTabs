@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "bookmark",
+    "active_workspace_type": "window",
     "pinned": true,
     "theme_mode": "light",
     "popup": true,
@@ -159,7 +159,7 @@
             "toolbar_input_focus_border_color": "#dcdfe6",
             "toolbar_input_selected_font_color": "#ffffff",
             "toolbar_input_selected_background_color": "#7497de",
-            "toolbar_input_tip_show": false,
+            "toolbar_input_tip_show": true,
 
             "toolbar_button_font_color": "#606266",
             "toolbar_button_hover_font_color": "#409eff",

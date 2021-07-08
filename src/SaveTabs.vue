@@ -77,9 +77,7 @@
                         || showClearButton
                         || (other.visible || history.visible || bookmark.visible || tab.visible || window.visible || note.visible || temporary.visible || all.visible) }"
         spellcheck="false"
-        :placeholder="currentWorkspace == undefined || ! currentThemeConfig.toolbar_input_tip_show
-                    ? ''
-                    : lang(currentWorkspace.placeholder)"
+        :placeholder="placeholder"
         :clearable="false"
         @keyup.native="keyType=getKeyType($event)"
         @keydown.native="keydown"
@@ -778,6 +776,16 @@ export default {
 
       return keymap;
     },
+    placeholder() {
+      if( ! this.currentThemeConfig.toolbar_input_tip_show) return '';
+      if(this.currentWorkspace == undefined) return '';
+
+      return (this.config.workspace_change_word ? this.config.workspace_change_word+' ' : '')
+            + this.lang(this.currentWorkspace.type)
+            + (this.keymap['open_workspace_'+this.currentWorkspace.type]
+              ?  (' ('+this.keymap['open_workspace_'+this.currentWorkspace.type]+') ')
+              : '');
+    }
   },
   components: {
     Window,

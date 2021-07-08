@@ -1257,6 +1257,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
 
     finalWork() {
+      console.log('finalWork.$refs', this.$refs)
+      console.log('finalWork.$refs.carousel', this.$refs.carousel)
       // 走马灯底部指示器提示
       let carouselNode = this.$refs.carousel.$el.children[1];
       console.log('finalWork.carouselNode', carouselNode)

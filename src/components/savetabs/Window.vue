@@ -170,22 +170,14 @@
             v-else-if="_device.platform != ''"
             :style="{
               fontSize: currentThemeConfig.list_keymap_size+'px',
-              color: currentThemeConfig.list_keymap_color }">
-            <font>{{
-              ( currentThemeConfig.item_show_count > 9 && index-$refs.list.scrollLines+1 > 9)
-              ? ''
-              : (_device.platform == 'Mac' ? '⌘' : 'Alt+')
-            }}</font>
-            <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
+              color: currentThemeConfig.item_show_count > 9 && index-$refs.list.scrollLines+1 > 9
+                    ? 'transparent'
+                    : currentThemeConfig.list_keymap_color }">
+            <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
             <font
               style="display:inline-block;text-align:left;"
-              :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{
-                9 >= currentThemeConfig.item_show_count
-              ? Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9)
-              : ( index-$refs.list.scrollLines+1 > 9
-                ? ''
-                : index-$refs.list.scrollLines+1)
-            }}</font>
+              :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
+              >{{ Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
           </span>
         </template>
       </div>

@@ -139,56 +139,15 @@
           <el-tab-pane label="整体" name="global" lazy>
             <el-divider>布局</el-divider>
             <div class="box">
-              <span class="label">页面背景</span>
-              <el-color-picker
-                show-alpha
-                size="mini"
-                :value="currentThemeConfig.background_color"
-                :predefine="predefine"
-                :disabled="currentTheme.is_system"
-                @change="editTheme('background_color', $event)"
-              ></el-color-picker>
-              <el-tooltip
-                v-if="currentThemeConfig.background_color != oldCurrentThemeConfig.background_color"
-                placement="top"
-                effect="light">
-                <div
-                  slot="content"
-                  class="color-tip">
-                  <div :style="{ backgroundColor: oldCurrentThemeConfig.background_color }"></div>
-                </div>
-                <i
-                class="el-icon-refresh-right hover2"
-                @click="editTheme('background_color', oldCurrentThemeConfig.background_color)"></i>
-              </el-tooltip>
-            </div>
-            <div class="box">
-              <span class="label">页面模糊</span>
-              <el-input-number
-                size="mini"
-                style="width: 100px;"
-                :value="currentThemeConfig.background_blur"
-                :min="0"
-                :disabled="currentTheme.is_system"
-                @change="editTheme('background_blur', $event)"></el-input-number>
-              <el-tooltip
-                v-if="currentThemeConfig.background_blur != oldCurrentThemeConfig.background_blur"
-                placement="top"
-                :content="oldCurrentThemeConfig.background_blur+''">
-                <i
-                class="el-icon-refresh-right hover2"
-                @click="editTheme('background_blur', oldCurrentThemeConfig.background_blur)"></i>
-              </el-tooltip>
-            </div>
-            <br/>
-            <div class="box">
               <span class="label">蒙版颜色</span>
               <el-color-picker
                 show-alpha
                 size="mini"
                 :value="currentThemeConfig.container_background_color"
                 :predefine="predefine"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('container_background_color', $event)"
               ></el-color-picker>
               <el-tooltip
@@ -212,7 +171,10 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.container_background_blur"
                 :min="0"
-                :disabled="currentTheme.is_system"
+                :max="1000"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('container_background_blur', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.container_background_blur != oldCurrentThemeConfig.container_background_blur"
@@ -225,12 +187,59 @@
             </div>
             <br/>
             <div class="box">
+              <span class="label" title="透明时会和蒙版叠加">页面背景</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.background_color != oldCurrentThemeConfig.background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('background_color', oldCurrentThemeConfig.background_color)"></i>
+              </el-tooltip>
+            </div>
+            <div class="box">
+              <span class="label" title="透明时会和蒙版叠加">页面模糊</span>
+              <el-input-number
+                size="mini"
+                style="width: 100px;"
+                :value="currentThemeConfig.background_blur"
+                :min="0"
+                :max="1000"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                @change="editTheme('background_blur', $event)"></el-input-number>
+              <el-tooltip
+                v-if="currentThemeConfig.background_blur != oldCurrentThemeConfig.background_blur"
+                placement="top"
+                :content="oldCurrentThemeConfig.background_blur+''">
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('background_blur', oldCurrentThemeConfig.background_blur)"></i>
+              </el-tooltip>
+            </div>
+            <br/>
+            <div class="box">
               <span class="label">外边框</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.border_width"
                 :min="0"
+                :max="200"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('border_width', $event)"></el-input-number>
               <el-tooltip
@@ -274,6 +283,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.padding_width"
                 :min="0"
+                :max="200"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('padding_width', $event)"></el-input-number>
               <el-tooltip
@@ -316,7 +326,9 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_align"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('position_horizontal_align', $event)">
                 <el-option
                   v-for="align in positionHorizontalOptions"
@@ -339,7 +351,11 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_distance"
-                :disabled="currentTheme.is_system"
+                :min="currentThemeConfig.position_horizontal_align == 'center' ? -1000 : 0"
+                :max="1000"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('position_horizontal_distance', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_horizontal_distance != oldCurrentThemeConfig.position_horizontal_distance"
@@ -357,7 +373,9 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_align"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('position_vertical_align', $event)">
                 <el-option
                   v-for="align in positionVerticalOptions"
@@ -380,7 +398,11 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_distance"
-                :disabled="currentTheme.is_system"
+                :min="currentThemeConfig.position_vertical_align == 'center' ? -1000 : 0"
+                :max="1000"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('position_vertical_distance', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_vertical_distance != oldCurrentThemeConfig.position_vertical_distance"
@@ -398,7 +420,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.tag_line_count"
-                :min="0"
+                :min="1"
+                :max="40"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('tag_line_count', $event)"></el-input-number>
               <el-tooltip
@@ -420,6 +443,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.width"
                 :min="280"
+                :max="2000"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('width', $event)"></el-input-number>
               <el-tooltip
@@ -435,7 +459,9 @@
               <span class="label">宽度百分比</span>
               <el-switch
                 :value="currentThemeConfig.width_fill"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('width_fill', $event)">
@@ -457,7 +483,10 @@
                 :value="currentThemeConfig.width_percentage"
                 :min="1"
                 :max="100"
-                :disabled="currentTheme.is_system || ! currentThemeConfig.width_fill"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)
+                        || ! currentThemeConfig.width_fill"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('width_percentage', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.width_percentage != oldCurrentThemeConfig.width_percentage"
@@ -473,7 +502,9 @@
               <span class="label">总高度自动</span>
               <el-switch
                 :value="currentThemeConfig.height_auto"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 1)"
+                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('height_auto', $event)">
@@ -491,7 +522,9 @@
               <span class="label">高度百分比</span>
               <el-switch
                 :value="currentThemeConfig.height_fill"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('height_fill', $event)">
@@ -513,7 +546,10 @@
                 :value="currentThemeConfig.height_percentage"
                 :min="1"
                 :max="100"
-                :disabled="currentTheme.is_system || ! currentThemeConfig.height_fill"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 2)
+                        || ! currentThemeConfig.height_fill"
+                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
                 @change="editTheme('height_percentage', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.height_percentage != oldCurrentThemeConfig.height_percentage"
@@ -532,6 +568,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.item_height"
                 :min="26"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('item_height', $event)"></el-input-number>
               <el-tooltip
@@ -549,7 +586,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.item_show_count"
-                :min="0"
+                :min="1"
+                :max="38"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('item_show_count', $event)"></el-input-number>
               <el-tooltip
@@ -567,7 +605,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.list_page_count"
-                :min="0"
+                :min="2"
+                :max="1000"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('list_page_count', $event)"></el-input-number>
               <el-tooltip
@@ -587,7 +626,11 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.no_search_item_show_count"
                 :min="0"
-                :disabled="currentTheme.is_system"
+                :max="38"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 1)
+                        || ! currentThemeConfig.height_auto"
+                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
                 @change="editTheme('no_search_item_show_count', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_item_show_count != oldCurrentThemeConfig.no_search_item_show_count"
@@ -605,7 +648,11 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.no_search_list_page_count"
                 :min="0"
-                :disabled="currentTheme.is_system"
+                :max="1000"
+                :disabled="currentTheme.is_system
+                        || ! (currentTheme.type & 1)
+                        || ! currentThemeConfig.height_auto"
+                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
                 @change="editTheme('no_search_list_page_count', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_list_page_count != oldCurrentThemeConfig.no_search_list_page_count"
@@ -623,7 +670,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.list_font_size"
-                :min="0"
+                :min="12"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('list_font_size', $event)"></el-input-number>
               <el-tooltip
@@ -641,7 +689,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.list_explain_font_size"
-                :min="0"
+                :min="12"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('list_explain_font_size', $event)"></el-input-number>
               <el-tooltip
@@ -659,7 +708,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.list_state_size"
-                :min="0"
+                :min="12"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('list_state_size', $event)"></el-input-number>
               <el-tooltip
@@ -677,7 +727,8 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.list_keymap_size"
-                :min="0"
+                :min="12"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('list_keymap_size', $event)"></el-input-number>
               <el-tooltip
@@ -1668,6 +1719,7 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.toolbar_height"
                 :min="30"
+                :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('toolbar_height', $event)"></el-input-number>
               <el-tooltip
@@ -1977,17 +2029,18 @@
               <el-input-number
                 size="mini"
                 style="width: 100px;"
-                :value="currentThemeConfig.tag_line_count"
-                :min="0"
+                :value="currentThemeConfig.toolbar_input_font_size"
+                :min="12"
+                :max="Math.floor((currentThemeConfig.toolbar_height-2)/1.15)"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('tag_line_count', $event)"></el-input-number>
+                @change="editTheme('toolbar_input_font_size', $event)"></el-input-number>
               <el-tooltip
-                v-if="currentThemeConfig.tag_line_count != oldCurrentThemeConfig.tag_line_count"
+                v-if="currentThemeConfig.toolbar_input_font_size != oldCurrentThemeConfig.toolbar_input_font_size"
                 placement="top"
-                :content="oldCurrentThemeConfig.tag_line_count+''">
+                :content="oldCurrentThemeConfig.toolbar_input_font_size+''">
                 <i
                 class="el-icon-refresh-right hover2"
-                @click="editTheme('tag_line_count', oldCurrentThemeConfig.tag_line_count)"></i>
+                @click="editTheme('toolbar_input_font_size', oldCurrentThemeConfig.toolbar_input_font_size)"></i>
               </el-tooltip>
             </div>
             <div class="box">
@@ -2253,7 +2306,8 @@
                 :value="currentThemeConfig.statusbar_show_search_total"
                 active-color="#13ce66"
                 inactive-color="gray"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! currentThemeConfig.statusbar_show"
                 @change="editTheme('statusbar_show_search_total', $event)">
               </el-switch>
               <el-tooltip
@@ -2273,7 +2327,8 @@
                 size="mini"
                 :value="currentThemeConfig.statusbar_background_color"
                 :predefine="predefine"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! currentThemeConfig.statusbar_show"
                 @change="editTheme('statusbar_background_color', $event)"
               ></el-color-picker>
               <el-tooltip
@@ -2297,7 +2352,8 @@
                 size="mini"
                 :value="currentThemeConfig.statusbar_icon_color"
                 :predefine="predefine"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! currentThemeConfig.statusbar_show"
                 @change="editTheme('statusbar_icon_color', $event)"
               ></el-color-picker>
               <el-tooltip
@@ -2321,10 +2377,11 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.statusbar_image_opacity"
-                :min="0"
+                :min="0.1"
                 :step="0.1"
                 :max="1"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ! currentThemeConfig.statusbar_show"
                 @change="editTheme('statusbar_image_opacity', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.statusbar_image_opacity != oldCurrentThemeConfig.statusbar_image_opacity"
@@ -2347,6 +2404,10 @@
 import { nanoid } from 'nanoid'
 import Sortable from 'sortablejs';
 
+const THEME_TYPWE = {
+  POPUP: 1,
+  INJECT: 2,
+}
 export default {
   name: 'ThemeGeneral',
   inject: [

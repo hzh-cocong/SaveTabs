@@ -632,6 +632,68 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         }).catch(() => {
         });
         return;
+      } else if(type == 'background_blur') {
+        if(this.currentTheme.config.container_background_blur > 0) {
+          this.currentTheme.config.container_background_blur = 0;
+          this.$message({
+            type: 'warning',
+            message: '暂不支持同时开启“页面模糊”和“蒙版模糊”',
+          });
+        }
+      } else if(type == 'container_background_blur') {
+        if(this.currentTheme.config.background_blur > 0) {
+          this.currentTheme.config.background_blur = 0;
+          this.$message({
+            type: 'warning',
+            message: '暂不支持同时开启“页面模糊”和“蒙版模糊”',
+          });
+        }
+      } else if(type == 'position_horizontal_align') {
+        if(value != 'center'
+        && this.currentTheme.config.position_horizontal_distance < 0) {
+          this.currentTheme.config.position_horizontal_distance = 0;
+        }
+      } else if(type == 'position_vertical_align') {
+        if(value != 'center'
+        && this.currentTheme.config.position_vertical_distance < 0) {
+          this.currentTheme.config.position_vertical_distance = 0;
+        }
+      } else if(type == 'position_horizontal_distance') {
+        if(value < 0) {
+          this.currentTheme.config.position_horizontal_align = 'center';
+        }
+      } else if(type == 'position_vertical_distance') {
+        if(value < 0) {
+          this.currentTheme.config.position_vertical_align = 'center';
+        }
+      } else if(type == 'item_show_count') {
+        if(this.currentTheme.config.list_page_count <= value) {
+          this.currentTheme.config.list_page_count = value+1;
+        }
+      } else if(type == 'list_page_count') {
+        if(this.currentTheme.config.item_show_count >= value) {
+          this.currentTheme.config.item_show_count = value-1;
+        }
+      } else if(type == 'no_search_item_show_count') {
+        if(value == 0) {
+          this.currentTheme.config.no_search_list_page_count = 0;
+        } else if(this.currentTheme.config.no_search_list_page_count <= value) {
+          this.currentTheme.config.no_search_list_page_count = value+1;
+        }
+      } else if(type == 'no_search_list_page_count') {
+        if(value == 0) {
+          this.currentTheme.config.no_search_item_show_count = 0;
+        } else if(this.currentTheme.config.no_search_item_show_count >= value) {
+          this.currentTheme.config.no_search_item_show_count = value-1;
+        }
+      } else if(type == 'toolbar_height') {
+        if(this.currentTheme.config.toolbar_input_font_size > Math.floor((value-2)/1.15)) {
+          this.currentTheme.config.toolbar_input_font_size = Math.floor((value-2)/1.15);
+        }
+      } else if(type == 'toolbar_input_font_size') {
+        if(this.currentTheme.config.toolbar_height < Math.ceil(value*1.15)+2) {
+          this.currentTheme.config.toolbar_height = Math.ceil(value*1.15)+2;
+        }
       }
 
       this.currentTheme.config[type] = value;

@@ -99,7 +99,7 @@
             content="全部撤销">
             <i
             class="el-icon-refresh-right hover2"
-            style="margin-left: 20px;"
+            style="margin-left: 20px;line-height: 24px;"
             @click="editTheme('all', Object.assign({}, oldCurrentThemeConfig))"></i>
           </el-tooltip>
         </div>

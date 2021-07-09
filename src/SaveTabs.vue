@@ -869,10 +869,10 @@ export default {
           return parseInt(index);
         }
       }
-      // 找不到则返回 -1
-      return -1;
-      // // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
-      // return 0;
+      // // 找不到则返回 -1
+      // return -1;
+      // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
+      return 0;
     },
 
     finish() {

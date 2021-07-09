@@ -299,6 +299,7 @@ export default {
 
       workspace.isEnabled = ! workspace.isEnabled;
 
+      // 启用
       if(workspace.isEnabled) {
         if(this.syncConfig.workspaces.indexOf(type) == -1) {
           this.syncConfig.workspaces.push(type);
@@ -311,6 +312,7 @@ export default {
         return;
       }
 
+      // 撤销（只剩最后一个）
       if(this.syncConfig.workspaces.length <= 1) {
         // 要在下一个事件队列中执行，因为 dom 依赖都是被放到下一个事件队列中执行的
         this.$nextTick(() => {
@@ -323,13 +325,19 @@ export default {
         return;
       }
 
+      // 关闭
       let index = this.syncConfig.workspaces.indexOf(type);
       this.syncConfig.workspaces.splice(index, 1);
-      if(this.localConfig.pinned && this.localConfig.active_workspace_type == type) {
-        this.localConfig.pinned = false;
+
+      // 重选 active_workspace_type
+      if(this.localConfig.active_workspace_type == type) {
+        // 取消固定
+        if(this.localConfig.pinned) this.localConfig.pinned = false;
+        // 重选 active_workspace_type
+        this.localConfig.active_workspace_type = this.syncConfig.workspaces[0];
         this.store('local', false)
       }
-
+      // 去除对应的操作按钮
       index = this.syncConfig.operationButtons.indexOf(type);
       if(index != -1) {
         this.syncConfig.operationButtons.splice(index, 1);

@@ -52,11 +52,10 @@
         :showIndex="(index-$refs.list.scrollLines+1) <= 9
                   ? ( 1 > index-$refs.list.scrollLines+1
                     ? 1
-                    : (index-$refs.list.scrollLines+1 > currentThemeConfig.item_show_count
-                      ? currentThemeConfig.item_show_count
-                      : index-$refs.list.scrollLines+1)
-                    )
-                  : -1"
+                    : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count))
+                  : ( currentThemeConfig.item_show_count <= 9
+                    ? currentThemeConfig.item_show_count
+                    : 0)"
         :keyType="keyType"></component>
     </template>
   </list>

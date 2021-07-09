@@ -54,34 +54,17 @@
           color: currentThemeConfig.list_focus_keymap_color,
         }">↩</span>
       <span
-        v-else-if="showIndex > 0"
+        v-else
         :style="{
           fontSize: currentThemeConfig.list_keymap_size+'px',
-          color: currentThemeConfig.list_keymap_color }">
+          color: showIndex <= 0
+              ? 'transparent'
+              : currentThemeConfig.list_keymap_color }">
         <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
-        <!-- <font style="font-family: Consolas, Monaco, monospace;">{{ -->
         <font
           style="display:inline-block;text-align:left;"
           :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
       </span>
-      <!-- <template v-if=" ! isActive">
-        <span
-          v-if="isSelected"
-          :style="{
-            fontSize: currentThemeConfig.list_keymap_size+'px',
-            color: currentThemeConfig.list_focus_keymap_color,
-          }">↩</span>
-        <span
-          v-else-if="showIndex > 0"
-          :style="{
-            fontSize: currentThemeConfig.list_keymap_size+'px',
-            color: currentThemeConfig.list_keymap_color }">
-          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
-          <font
-            style="display:inline-block;text-align:left;"
-            :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>
-        </span>
-      </template> -->
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 {
-    "active_workspace_type": "window",
+    "active_workspace_type": "all",
     "pinned": true,
     "theme_mode": "light",
     "popup": true,
@@ -124,7 +124,7 @@
             "border_width": 0,
             "padding_width": 0,
 
-            "width": 500,
+            "width": 400,
             "width_fill": true,
             "width_percentage": 100,
 
@@ -132,13 +132,13 @@
             "height_fill": true,
             "height_percentage": 80,
 
-            "item_height": 26,
-            "item_show_count": 7,
-            "list_page_count": 8,
+            "item_height": 34,
+            "item_show_count": 11,
+            "list_page_count": 13,
             "no_search_item_show_count": 0,
             "no_search_list_page_count": 4,
 
-            "tag_line_count": 1,
+            "tag_line_count": 5,
 
             "toolbar_height": 30,
             "toolbar_background_color": "#ffffff",

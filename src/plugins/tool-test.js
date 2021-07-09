@@ -462,6 +462,9 @@ const tool = {
             // callback != undefined && setTimeout(()=>{ callback({tabs: notes}); }, 1000);
           } else if(options.temporary != undefined) {
             setTimeout(() => {
+              temporary.push(...JSON.parse(JSON.stringify(temporary)));
+              temporary.push(...JSON.parse(JSON.stringify(temporary)));
+              temporary.forEach((t, index)=>t.id=index)
               callback != undefined && callback({temporary: temporary});
             }, 300)
           } else if(options.bookmark != undefined) {

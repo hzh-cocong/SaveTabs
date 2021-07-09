@@ -60,13 +60,6 @@
                         : ( isSelected
                           ? currentThemeConfig.list_focus_background_color
                           : currentThemeConfig.list_background_color),
-                  borderColor: index == 0 && item.isCurrent
-                        ? ( isSelected
-                          ? currentThemeConfig.list_current_focus_background_color
-                          : currentThemeConfig.list_current_background_color)
-                        : ( isSelected
-                          ? currentThemeConfig.list_focus_background_color
-                          : currentThemeConfig.list_background_color),
                   color: index == 0 && item.isCurrent
                         ? ( isSelected
                           ? currentThemeConfig.list_current_focus_icon_color
@@ -278,11 +271,9 @@ export default {
   position: absolute;
   right: 0;
   bottom: 0;
-  padding: 2px;
-  border-width: 2px 0px 0px 2px;
-  border-style: solid;
+  padding: 4px 2px 2px 4px;
   border-radius: 2px 0 0 0;
-  margin-right: 2px
+  margin-right: 2px;
 }
 .note-item .main {
   flex: 1;

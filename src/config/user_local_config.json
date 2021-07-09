@@ -115,7 +115,7 @@
             "list_keymap_size": 12,
 
             "border_color": "#ffffff",
-            "background_color": "red",
+            "background_color": "#ffffff",
             "background_blur": 0,
             "carousel_indicators_color": "#C0C4CC",
             "container_background_color": "transparent",
@@ -151,7 +151,7 @@
             "toolbar_menu_icon_color": "#C1C4CB",
             "toolbar_menu_icon_fixed_color": "gray",
             "toolbar_menu_font_color": "#909399",
-            "toolbar_menu_show_workspace_name": false,
+            "toolbar_menu_show_workspace_name": true,
             "toolbar_menu_auto_hide": false,
 
             "toolbar_input_font_size": 12,

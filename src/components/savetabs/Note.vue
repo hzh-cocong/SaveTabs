@@ -627,7 +627,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         }), 1);
 
         chrome.storage.local.set({tabs: this.storageList}, () => {
-          this.statusTip('便签已被删除');
+          this.statusTip('便签已被删除', false, 3000);
 
           // 这样列表才会刷新
           this.isFirstSearch = true;
@@ -701,7 +701,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
         this.storageKeyword = ' ';
 
-        this.statusTip('便签添加成功');
+        this.statusTip('便签添加成功', false, 3000);
 
         // 由于在添加的时候还顺带着切换，从而导致搜索，这两个是并行的，会有影响
         // 这里放到定时队列里，相当于排最后，避免冲突，会出现损坏的图片

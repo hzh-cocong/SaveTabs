@@ -942,7 +942,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
             });
           }
 
-          this.statusTip('窗口添加成功');
+          this.statusTip('窗口添加成功', false, 3000);
 
           // 让 all 保持数据同步
           chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'add'});
@@ -1234,7 +1234,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         this.differenceVisible = false;
 
 
-        this.statusTip('窗口更新成功');
+        this.statusTip('窗口更新成功', false, 3000);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'update'});
@@ -1265,7 +1265,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         // 关闭 dialog
         this.differenceVisible = false;
 
-        this.statusTip('窗口绑定成功');
+        this.statusTip('窗口绑定成功', false, 3000);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'bind'});
@@ -1353,7 +1353,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         // 关闭 dialog
         this.differenceVisible = false;
 
-        this.statusTip('窗口已还原');
+        this.statusTip('窗口已还原', false, 3000);
       });
     },
 

@@ -960,7 +960,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
         this.$msgbox.close();
         this.isOperating = false;
 
-        this.statusTip('临时窗口添加成功');
+        this.statusTip('临时窗口添加成功', false, 3000);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'add'});

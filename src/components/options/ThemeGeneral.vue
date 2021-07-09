@@ -122,7 +122,10 @@
           ref="themeNameInput"></el-input>
         <el-button
           type="text"
-          @click="cloneTheme();currentThemeFocus();">克隆</el-button>
+          @click="cloneTheme();
+                  currentThemeFocus();
+                  showNameInput=true;
+                  $nextTick(()=>$refs.themeNameInput.focus());">克隆</el-button>
         <el-button
           type="text">导出</el-button>
         <el-button

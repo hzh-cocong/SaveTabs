@@ -689,10 +689,13 @@ console.log('allIncludeSort2', newIndex, oldIndex)
           this.currentTheme.config.no_search_list_page_count = value+1;
         }
       } else if(type == 'no_search_list_page_count') {
-        if(value == 0) {
+        if(value <= 1) {
+          value = 0;
           this.currentTheme.config.no_search_item_show_count = 0;
         } else if(this.currentTheme.config.no_search_item_show_count >= value) {
           this.currentTheme.config.no_search_item_show_count = value-1;
+        } else if(this.currentTheme.config.no_search_item_show_count <= 0) {
+          this.currentTheme.config.no_search_item_show_count = 1;
         }
       } else if(type == 'toolbar_height') {
         if(this.currentTheme.config.toolbar_input_font_size > Math.floor((value-2)/1.15)) {

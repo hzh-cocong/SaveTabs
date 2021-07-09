@@ -652,6 +652,7 @@
                 :value="currentThemeConfig.no_search_list_page_count"
                 :min="0"
                 :max="1000"
+                :step="currentThemeConfig.no_search_list_page_count == 0 ? 2 : 1"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)
                         || ! currentThemeConfig.height_auto"

@@ -53,14 +53,7 @@
       <svg-icon
         class="workspace-logo"
         :name="projectConfig.allWorkspaces[ 'window' ].svg"
-        :style="{ backgroundColor: index == 0 && item.isCurrent
-                        ? ( isSelected
-                          ? currentThemeConfig.list_current_focus_background_color
-                          : currentThemeConfig.list_current_background_color)
-                        : ( isSelected
-                          ? currentThemeConfig.list_focus_background_color
-                          : currentThemeConfig.list_background_color),
-                  color: index == 0 && item.isCurrent
+        :style="{ color: index == 0 && item.isCurrent
                         ? ( isSelected
                           ? currentThemeConfig.list_current_focus_icon_color
                           : currentThemeConfig.list_current_icon_color)
@@ -254,6 +247,7 @@ console.log('showTip');
   padding: 4px 2px 2px 4px;
   border-radius: 2px 0 0 0;
   margin-right: 2px;
+  background-color: transparent;
 }
 .window-item .main {
   flex: 1;

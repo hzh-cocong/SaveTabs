@@ -570,7 +570,7 @@
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.item_height"
-                :min="26"
+                :min="30"
                 :max="600"
                 :disabled="currentTheme.is_system"
                 @change="editTheme('item_height', $event)"></el-input-number>

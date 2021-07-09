@@ -96,6 +96,7 @@
                 type="warning"
                 icon="el-icon-refresh"
                 circle
+                :size="buttonSize"
                 @click.stop="showDifference"></el-button>
             </el-badge>
             <el-button
@@ -103,21 +104,25 @@
               type="warning"
               icon="el-icon-refresh"
               circle
+              :size="buttonSize"
               @click.stop="showDifference"></el-button>
             <el-button
               type="success"
               icon="el-icon-folder-opened"
               circle
+              :size="buttonSize"
               @click.stop="openGroup"></el-button>
             <el-button
               type="primary"
               icon="el-icon-edit"
               circle
+              :size="buttonSize"
               @click.stop="changeGroupName"></el-button>
             <el-button
               type="danger"
               icon="el-icon-delete"
               circle
+              :size="buttonSize"
               @click.stop="deleteGroup"></el-button>
           </div>
           <div
@@ -525,6 +530,21 @@ export default {
     },
   },
   computed: {
+    buttonSize() {
+      if(this.currentThemeConfig.item_height >= 56) {
+        return 'large'; // 40
+      } else if(this.currentThemeConfig.item_height >= 44) {
+        return 'medium'; // 36
+      } else if(this.currentThemeConfig.item_height >= 36) {
+        return 'small'; // 32
+      } else {
+        return 'mini'; // 28
+      }
+      // else if(this.currentThemeConfig.item_height >= 30) {
+      //   return 'mini';
+      // }
+    },
+
     isNoSearch() {
       return this.currentThemeConfig.height_auto
           && this.storageKeyword == ''

@@ -29,10 +29,7 @@
       <svg-icon
         class="workspace-logo"
         :name="projectConfig.allWorkspaces[ 'temporary' ].svg"
-        :style="{ backgroundColor: isSelected
-                                  ? currentThemeConfig.list_focus_background_color
-                                  : currentThemeConfig.list_background_color,
-                  color: isSelected
+        :style="{ color: isSelected
                         ? currentThemeConfig.list_focus_icon_color
                         : currentThemeConfig.list_icon_color,
                   width: currentThemeConfig.item_height/4+'px',
@@ -374,6 +371,7 @@ export default {
   padding: 4px 2px 2px 4px;
   border-radius: 2px 0 0 0;
   margin-right: 2px;
+  background-color: transparent;
 }
 .temporary-item .image {
   width: 100%;

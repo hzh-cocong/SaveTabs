@@ -545,13 +545,12 @@
     ref="statusbar"></Statusbar>
 
   <theme
-    v-if="menuVisible || themeDialogVisible || ! themeDialogFinish"
+    v-if="themeDialogOpened"
     v-model="currentTheme"
     :visible.sync="themeDialogVisible"
     :localConfig="localConfig"
     :openWay="openWay"
-    @open="themeDialogFinish=false"></theme>
-    <!-- @closed="themeDialogFinish=false" -->
+    :autoOpen="themeDialogAutoOpen"></theme>
 
 </div>
 </template>
@@ -651,7 +650,8 @@ export default {
 
       menuVisible: false,
       themeDialogVisible: false,
-      themeDialogFinish: true,
+      themeDialogOpened: false,
+      themeDialogAutoOpen: false,
       themeScrollPosition: 0,
 
       limited: false,
@@ -722,6 +722,13 @@ export default {
       deep:true,
       // immediate:true
     },
+    menuVisible() {
+      if( ! this.themeDialogOpened) this.themeDialogOpened = true;
+    },
+    themeDialogAutoOpen() {
+      console.log('themeDialogAutoOpen')
+      if( ! this.themeDialogOpened) this.themeDialogOpened = true;
+    }
   },
   computed: {
     activeWorkspaceRefIndex() {
@@ -747,6 +754,11 @@ export default {
           // this.$nextTick(() => {
           //   this.statusTip(theme.name);
           // })
+
+          if(this.openWay != 'popup') {
+            // 重启
+            chrome.runtime.sendMessage({ type: 'restartExtension',})
+          }
         });
       },
       get() {
@@ -1423,10 +1435,17 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       this.isConfigLoad = true;
 
+      // if(localItems.info.show_theme == true) {
+      //   this.themeDialogAutoOpen = true;
+      // }
+
       // 必须放最后面
       this.$nextTick(() => {
         this.focus();
         this.finalWork();
+
+        // 较小压力，但愿有用
+        if(localItems.info.show_theme == true) this.themeDialogAutoOpen = true;
       })
     })
 

@@ -10,9 +10,12 @@
     width="250px"
     class="theme"
     @mousedown.native.prevent
-    @open="$emit('open')"
-    @closed="$emit('closed')">
-    <div slot="title" style="font-size: 16px;position: relative;">
+    @open="visible2=true"
+    @closed="visible2=false">
+    <div
+      v-if="visible2"
+      slot="title"
+      style="font-size: 16px;position: relative;">
       <svg-icon
         :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
         class="hover"
@@ -26,6 +29,7 @@
         @click="$open('./options.html?type=themes', getKeyType($event))"></i>
     </div>
     <SelectX
+      v-if="visible2"
       v-model="currentThemeIndex"
       :list="currentThemeList"
       :itemHeight="65"
@@ -97,6 +101,11 @@ export default {
       type: Boolean,
       required: true
     },
+    autoOpen: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     localConfig: {
       type: Object,
       required: require,
@@ -113,6 +122,7 @@ export default {
   data() {
     return {
       theme: user_theme,
+      visible2: false,
     }
   },
   computed: {
@@ -173,9 +183,15 @@ export default {
     // todo
     window.th = this;
 
-    console.log('mounted.theme');
+    console.log('mounted.theme', this.openWay, this.autoOpen);
     chrome.storage.local.get({'theme': {}}, items => {
       Object.assign(this.theme, items.theme);
+      if(this.autoOpen) {
+        console.log('mounted.theme2')
+
+        // 不要直接赋值，那是不符合规范的，而且会有很多问题，如开启后自动关闭，或者是手动关闭不了等
+        this.$emit('update:visible', true);
+      }
     })
   }
 }

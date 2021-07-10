@@ -139,6 +139,8 @@ export default {
     this.ulNode = this.$el.children[0];
     if(this.ulNode.clientHeight >= this.ulNode.scrollHeight) return;
 
+    console.log('selectX', this.list.length, this.ulNode, this.ulNode.clientHeight, this.ulNode.scrollHeight)
+
     // 创建滚动条
     this.createScroll(this.ulNode.clientHeight, this.ulNode.scrollHeight);
 

@@ -46,11 +46,14 @@ function download(filename, data, path)
 }
 
 // 新建窗口，如果窗口存在，则关闭窗口
-function executeScript({tabId=null, onlyInjection=false} = {}) {
+function executeScript({tabId=null, onlyInjection=false, callback=undefined} = {}) {
   chrome.tabs.executeScript(tabId, { file: "js/injected_script.js" }, () => {
     // 捕获错误，这样插件就不会显示错误
     const error = chrome.runtime.lastError;
-    if( ! (error && error.message)) return;
+    if( ! (error && error.message)) {
+      callback != undefined && callback();
+      return;
+    }
 
     // 这里还是专心执行脚本吧，避免混乱
     // window.open toggle
@@ -383,6 +386,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } finally {
       input.remove();
     }
+  } else if(request.type == 'restartExtension') {
+    console.log('restartExtension222', sender, sender.tab && sender.tab.id)
+
+    // 弹出菜单没有tab
+    // 不应该出现
+    if(sender.tab == undefined) {
+      return;
+    }
+
+    // window.open 关闭整个窗口
+    // if(sender.frameId == 0) { // 点击遮罩也是 frameId = 0，所以不能用这个做判断
+    if(sender.frameId == 0 && sender.url.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
+      let windows = chrome.extension.getViews({type: 'tab'});
+      windows.forEach(window => {
+        // 避免把 options 页面也给关闭了
+        if(window.location.href.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
+          window.close();
+        }
+      });
+
+      // 重启
+      chrome.storage.local.set({'info': {
+        show_theme: true,
+      }}, () => {
+        executeScript({tabId: sender.tab.id});
+      })
+
+      return;
+    }
+
+    executeScript({tabId: sender.tab.id, callback: () => {
+      // 重启
+      chrome.storage.local.set({'info': {
+        show_theme: true,
+      }}, () => {
+        executeScript({tabId: sender.tab.id});
+      })
+    }});
   }
 })
 

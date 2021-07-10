@@ -129,21 +129,36 @@ export default {
       }
     },
     currentThemeList() {
+      // let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
+      // return this.themeList.filter(theme => themeType & theme.type );
+
       let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
-      return this.themeList.filter(theme => themeType & theme.type );
+      let themeList = this.themeList.filter(theme => themeType & theme.type );
+
+      // 对主题排序（没有 rank 的排最后）
+      let rank = this.openWay == 'popup' ? this.theme.rank.popup : this.theme.rank.inject;
+      themeList.sort((theme1, theme2) => {
+        if(rank[theme1.id] == undefined && rank[theme2.id] == undefined) return 0;
+        if(rank[theme1.id] == undefined) return 1;
+        if(rank[theme2.id] == undefined) return -1;
+
+        return rank[theme2.id]-rank[theme1.id];
+      });
+
+      return themeList;
     },
     themeList() {
       // 合并系统主题和用户主题
       let themeList = this.theme.system_theme_list.concat(this.theme.user_theme_list);
 
-      // 对主题排序（没有 rank 的排最后）
-      themeList.sort((theme1, theme2) => {
-        if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
-        if(this.theme.rank[theme1.id] == undefined) return 1;
-        if(this.theme.rank[theme2.id] == undefined) return -1;
+      // // 对主题排序（没有 rank 的排最后）
+      // themeList.sort((theme1, theme2) => {
+      //   if(this.theme.rank[theme1.id] == undefined && this.theme.rank[theme2.id] == undefined) return 0;
+      //   if(this.theme.rank[theme1.id] == undefined) return 1;
+      //   if(this.theme.rank[theme2.id] == undefined) return -1;
 
-        return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
-      });
+      //   return this.theme.rank[theme2.id]-this.theme.rank[theme1.id];
+      // });
 
       return themeList;
     },

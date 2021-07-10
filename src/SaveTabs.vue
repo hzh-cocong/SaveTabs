@@ -556,6 +556,12 @@
 </template>
 
 <script>
+
+import user_config from './config/user_config.json'
+import user_local_config from './config/user_local_config.json'
+import project_config from './config/project_config.json'
+
+/*
 import Window from './components/savetabs/Window.vue'
 import History from './components/savetabs/History.vue'
 import Tab from './components/savetabs/Tab.vue'
@@ -565,10 +571,35 @@ import Temporary from './components/savetabs/Temporary.vue'
 import All from './components/savetabs/All.vue'
 import Theme from './components/savetabs/Theme.vue'
 import Statusbar from './components/savetabs/Statusbar.vue'
-
-import user_config from './config/user_config.json'
-import user_local_config from './config/user_local_config.json'
-import project_config from './config/project_config.json'
+/*/
+import Vue from 'vue'
+const Window = Vue.component('Window', function (resolve) {
+    require(['./components/savetabs/Window.vue'], resolve)
+});
+const History = Vue.component('History', function (resolve) {
+    require(['./components/savetabs/History.vue'], resolve)
+});
+const Tab = Vue.component('Tab', function (resolve) {
+    require(['./components/savetabs/Tab.vue'], resolve)
+});
+const Bookmark = Vue.component('Bookmark', function (resolve) {
+    require(['./components/savetabs/Bookmark.vue'], resolve)
+});
+const Note = Vue.component('Note', function (resolve) {
+    require(['./components/savetabs/Note.vue'], resolve)
+});
+const Temporary = Vue.component('Temporary', function (resolve) {
+    require(['./components/savetabs/Temporary.vue'], resolve)
+});
+const All = Vue.component('All', function (resolve) {
+    require(['./components/savetabs/All.vue'], resolve)
+});
+const Theme = Vue.component('Theme', function (resolve) {
+    require(['./components/savetabs/Theme.vue'], resolve)
+});
+const Statusbar = Vue.component('Statusbar', function (resolve) {
+    require(['./components/savetabs/Statusbar.vue'], resolve)
+});//*/
 
 export default {
   name: 'app',

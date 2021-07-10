@@ -120,6 +120,7 @@
             "carousel_indicators_color": "rgba(192, 196, 204, 1)",
             "container_background_color": "rgba(0, 0, 0, 0)",
             "container_background_blur": 0,
+            "loading_background_color": "rgba(255, 255, 255, 1)",
 
             "border_width": 8,
             "padding_width": 0,
@@ -242,6 +243,7 @@
             "carousel_indicators_color": "rgba(192, 196, 204, 1)",
             "container_background_color": "rgba(0, 0, 0, 0)",
             "container_background_blur": 0,
+            "loading_background_color": "rgba(255, 255, 255, 1)",
 
             "border_width": 8,
             "padding_width": 0,

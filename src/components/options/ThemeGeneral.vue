@@ -324,6 +324,30 @@
                 @click="editTheme('carousel_indicators_color', oldCurrentThemeConfig.carousel_indicators_color)"></i>
               </el-tooltip>
             </div>
+            <div class="box">
+              <span class="label">加载时背景</span>
+              <el-color-picker
+                show-alpha
+                size="mini"
+                :value="currentThemeConfig.loading_background_color"
+                :predefine="predefine"
+                :disabled="currentTheme.is_system"
+                @change="editTheme('loading_background_color', $event)"
+              ></el-color-picker>
+              <el-tooltip
+                v-if="currentThemeConfig.loading_background_color != oldCurrentThemeConfig.loading_background_color"
+                placement="top"
+                effect="light">
+                <div
+                  slot="content"
+                  class="color-tip">
+                  <div :style="{ backgroundColor: oldCurrentThemeConfig.loading_background_color }"></div>
+                </div>
+                <i
+                class="el-icon-refresh-right hover2"
+                @click="editTheme('loading_background_color', oldCurrentThemeConfig.loading_background_color)"></i>
+              </el-tooltip>
+            </div>
             <el-divider>位置</el-divider>
             <div class="box">
               <span class="label">水平对齐</span>

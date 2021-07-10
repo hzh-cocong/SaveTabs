@@ -281,7 +281,10 @@ export default {
       let setting =
       chrome.storage.local.set({
         'config': config ? this.localConfig : undefined,
-        'theme': theme ? this.theme : undefined,
+        'theme': theme ? {
+          rank: this.theme.rank,
+          user_theme_list: this.theme.user_theme_list,
+        } : undefined,
       }, () => {
         if( ! tip) return;
 
@@ -972,7 +975,13 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         console.log('新版')
         Object.assign(this.syncConfig, syncItems.config);
         Object.assign(this.localConfig, localItems.config);
-        Object.assign(this.theme, localItems.theme);
+
+        // 防止一些恶意行为
+        delete localItems.theme.system_theme_list;
+        if(Array.isArray(localItems.theme.user_theme_list)) {
+          localItems.theme.user_theme_list.forEach(theme => delete theme.is_system );
+          Object.assign(this.theme, localItems.theme);
+        }
       }
 
       this.commands = commands;

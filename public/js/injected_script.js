@@ -45,13 +45,21 @@
                                     padding: 0;
                                     width: 100vw;
                                     height: 100vh;
-                                    background-color: ${containerBackgroundColor};
+                                    background-color: transparent;
                                     overflow:auto;
                                     transition: background-color 0.3s ease;
                                     backdrop-filter: ${currentThemeConfig.container_background_blur <= 0
                                                       || currentThemeConfig.background_blur > 0
                                                     ? 'none'
                                                     : 'blur('+currentThemeConfig.container_background_blur+'px)'};
+                                    opacity: ${currentThemeConfig.container_background_blur <= 0
+                                            || currentThemeConfig.background_blur > 0
+                                            ? 1
+                                            : 0};
+                                    transition-property: background-color,opacity;
+                                    transition-duration: 0.3s;
+                                    transition-timing-function: ease;
+                                    transition-delay: 0s;
                                   `);
     container.id = id;
     container.onclick = function() {
@@ -155,27 +163,38 @@
                                   backdrop-filter: ${currentThemeConfig.background_blur <= 0
                                                   ? 'none'
                                                   : 'blur('+currentThemeConfig.background_blur+'px)'};
+                                  opacity: 0;
+                                  transition-property: opacity;
+                                  transition-duration: 0.15s;
+                                  transition-timing-function: ease-out;
+                                  transition-delay: .15s;
                                 `);
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');
 
     // 设置蒙版磨砂效果（可和 iframe 蒙版叠加）
-    if(currentThemeConfig.container_background_blur > 0 && currentThemeConfig.background_blur > 0) {
-      let css = `#${id}:before{
-        content: '';
-        position: absolute;
-        top: 0px; right: 0px; bottom: 0; left: 0;
-        z-index: -1;
-        backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
-      }`;
-      let style = document.createElement("style");
-      style.appendChild(document.createTextNode(css));
-      document.getElementsByTagName('head')[0].appendChild(style);
-    }
+    // if(currentThemeConfig.container_background_blur > 0 && currentThemeConfig.background_blur > 0) {
+    //   let css = `#${id}:before{
+    //     content: '';
+    //     position: absolute;
+    //     top: 0px; right: 0px; bottom: 0; left: 0;
+    //     z-index: -1;
+    //     backdrop-filter: blur(${currentThemeConfig.container_background_blur}px);
+    //   }`;
+    //   let style = document.createElement("style");
+    //   style.appendChild(document.createTextNode(css));
+    //   document.getElementsByTagName('head')[0].appendChild(style);
+    // }
 
     container.append(iframe);
     document.body.append(container);
     document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      container.style.opacity = 1;
+      container.style.backgroundColor = containerBackgroundColor;
+      iframe.style.opacity = 1;
+    }, 0);
 
     iframe.contentWindow.focus();
 

@@ -2,7 +2,8 @@
 <div
   id="app"
   v-loading.fullscreen="isLoading"
-  v-if="isConfigLoad"
+  :element-loading-background="currentThemeConfig.loading_background_color"
+  v-show="isConfigLoad"
   :style="{
     width: openWay == 'inject' && currentThemeConfig.width_fill
           ? '100%'

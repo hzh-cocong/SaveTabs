@@ -1,7 +1,7 @@
 <template>
 <div
   id="app"
-  v-loading.fullscreen="isLoading"
+  v-loading.fullscreen="isConfigLoad && isLoading"
   :element-loading-background="currentThemeConfig.loading_background_color"
   v-show="isConfigLoad"
   :style="{
@@ -562,7 +562,7 @@ import user_config from './config/user_config.json'
 import user_local_config from './config/user_local_config.json'
 import project_config from './config/project_config.json'
 
-/*
+//*
 import Window from './components/savetabs/Window.vue'
 import History from './components/savetabs/History.vue'
 import Tab from './components/savetabs/Tab.vue'

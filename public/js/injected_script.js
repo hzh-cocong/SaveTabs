@@ -196,7 +196,8 @@
       iframe.style.opacity = 1;
     }, 0);
 
-    iframe.contentWindow.focus();
+    // 没用
+    // iframe.contentWindow.focus();
 
     // 没用
     // iframe.focus();

@@ -86,7 +86,8 @@
         ></svg-icon>
         <div
           v-if="currentTheme.is_system"
-          style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;">
+          style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;"
+          title="此为系统主题，无法修改，建议克隆">
           <img
             style="width: 24px; height: 24px;margin-left: 20px;"
             src="@/assets/icon-128.png" />
@@ -447,7 +448,13 @@
                 :value="currentThemeConfig.width"
                 :min="280"
                 :max="2000"
-                :disabled="currentTheme.is_system"
+                :disabled="currentTheme.is_system
+                        || ( currentThemeConfig.width_fill
+                          && currentTheme.type == 2)"
+                :title="( currentThemeConfig.width_fill
+                        && currentTheme.type == 2)
+                        ? '请看宽度百分比'
+                        : '' "
                 @change="editTheme('width', $event)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.width != oldCurrentThemeConfig.width"
@@ -2455,17 +2462,13 @@ export default {
         { value: 'bottom', label: '置底'},
       ],
       highlightFontWeight: [
-        { value: 'normal', label: '正常'},
-        { value: 'bold', label: '粗'},
-        { value: 'bolder', label: '更粗'},
-        { value: 'lighter', label: '细'},
         { value: '100', label: '100'},
         { value: '200', label: '200'},
         { value: '300', label: '300'},
-        { value: '400', label: '400'},
+        { value: '400', label: '400(normal)'},
         { value: '500', label: '500'},
         { value: '600', label: '600'},
-        { value: '700', label: '700'},
+        { value: '700', label: '700(blod)'},
         { value: '800', label: '800'},
         { value: '900', label: '900'},
       ],

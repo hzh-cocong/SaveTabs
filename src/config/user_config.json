@@ -1,12 +1,10 @@
 {
     "workspaces": [
         "all",
+        "tab",
         "window",
         "note",
-        "tab",
-        "temporary",
-        "bookmark",
-        "history"
+        "temporary"
     ],
     "operationButtons": [ "window", "note", "temporary" ],
 

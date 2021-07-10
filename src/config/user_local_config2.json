@@ -1,0 +1,306 @@
+{
+    "active_workspace_type": "all",
+    "pinned": true,
+    "theme_mode": "light",
+    "popup": true,
+    "keymap_left_and_right": true,
+
+    "all_sort_auto": true,
+    "all_include": [
+        {
+            "type": "tab",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "window",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "note",
+            "count": 3,
+            "is_top": 0,
+            "only_search": false
+        },
+        {
+            "type": "bookmark",
+            "count": 3,
+            "is_top": 0,
+            "only_search": true
+        },
+        {
+            "type": "history",
+            "count": 3,
+            "is_top": -1,
+            "only_search": true
+        },
+        {
+            "type": "search",
+            "count": 3,
+            "is_top": -2,
+            "only_search": true
+        }
+    ],
+    "all_search_engine": [
+        {
+            "formate": "https://www.google.com/search?q={query}",
+            "name": "Google"
+        },
+        {
+            "formate": "https://cn.bing.com/search?q={query}",
+            "name": "Bing"
+        },
+        {
+            "formate": "https://www.baidu.com/s?ie=utf-8&wd={query}",
+            "name": "Baidu"
+        }
+    ],
+
+    "theme_popup": {
+        "id": "1",
+        "name": "经典",
+        "type": 3,
+        "config": {
+            "list_font_color": "transparent",
+            "list_background_color": "transparent",
+            "list_highlight_color": "transparent",
+            "list_highlight_weight": "400",
+            "list_explain_font_color": "transparent",
+            "list_explain_highlight_color": "transparent",
+            "list_explain_highlight_weight": "400",
+            "list_icon_color": "transparent",
+            "list_state_color": "transparent",
+            "list_keymap_color": "transparent",
+
+            "list_focus_font_color": "transparent",
+            "list_focus_background_color": "transparent",
+            "list_focus_highlight_color": "transparent",
+            "list_focus_highlight_weight": "400",
+            "list_explain_focus_font_color": "transparent",
+            "list_explain_focus_highlight_color": "transparent",
+            "list_explain_focus_highlight_weight": "400",
+            "list_focus_icon_color": "transparent",
+            "list_focus_state_color": "transparent",
+            "list_focus_keymap_color": "transparent",
+
+            "list_current_font_color": "transparent",
+            "list_current_background_color": "transparent",
+            "list_current_highlight_color": "transparent",
+            "list_current_highlight_weight": "400",
+            "list_current_explain_font_color": "transparent",
+            "list_current_explain_highlight_color": "transparent",
+            "list_current_explain_highlight_weight": "400",
+            "list_current_icon_color": "transparent",
+            "list_current_state_color": "transparent",
+
+            "list_current_focus_font_color": "transparent",
+            "list_current_focus_background_color": "transparent",
+            "list_current_focus_highlight_color": "transparent",
+            "list_current_focus_highlight_weight": "400",
+            "list_current_explain_focus_font_color": "transparent",
+            "list_current_explain_focus_highlight_color": "transparent",
+            "list_current_explain_focus_highlight_weight": "400",
+            "list_current_focus_icon_color": "transparent",
+            "list_current_focus_state_color": "transparent",
+
+            "list_scrollbar_color": "transparent",
+            "list_scrollbar_focus_color": "transparent",
+
+            "list_font_size": 20,
+            "list_explain_font_size": 12,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+
+            "border_color": "transparent",
+            "background_color": "transparent",
+            "background_blur": 0,
+            "carousel_indicators_color": "transparent",
+            "container_background_color": "transparent",
+            "container_background_blur": 0,
+
+            "border_width": 0,
+            "padding_width": 0,
+
+            "width": 0,
+            "width_fill": false,
+            "width_percentage": 0,
+
+            "height_auto": false,
+            "height_fill": false,
+            "height_percentage": 0,
+
+            "item_height": 0,
+            "item_show_count": 1,
+            "list_page_count": 2,
+            "no_search_item_show_count": 0,
+            "no_search_list_page_count": 0,
+
+            "tag_line_count": 3,
+            "toolbar_height": 40,
+            "toolbar_background_color": "transparent",
+            "toolbar_border_color": "transparent",
+
+            "toolbar_icon_color": "transparent",
+            "toolbar_icon_focus_color": "transparent",
+            "toolbar_icon_auto_hide": true,
+
+            "toolbar_menu_icon_color": "transparent",
+            "toolbar_menu_icon_fixed_color": "transparent",
+            "toolbar_menu_font_color": "transparent",
+            "toolbar_menu_show_workspace_name": false,
+            "toolbar_menu_auto_hide": true,
+
+            "toolbar_input_font_size": 20,
+            "toolbar_input_font_color": "transparent",
+            "toolbar_input_focus_border_color": "transparent",
+            "toolbar_input_selected_font_color": "transparent",
+            "toolbar_input_selected_background_color": "transparent",
+            "toolbar_input_tip_show": false,
+
+            "toolbar_button_font_color": "transparent",
+            "toolbar_button_hover_font_color": "transparent",
+            "toolbar_button_hover_border_color": "transparent",
+            "toolbar_button_hover_background_color": "transparent",
+            "toolbar_button_active_font_color": "transparent",
+            "toolbar_button_active_border_color": "transparent",
+            "toolbar_button_active_background_color": "transparent",
+            "toolbar_button_auto_hide": true,
+
+            "statusbar_icon_color": "transparent",
+            "statusbar_background_color": "transparent",
+            "statusbar_image_opacity": 0.2,
+            "statusbar_show_search_total": false,
+            "statusbar_show": false,
+
+            "position_horizontal_align": "center",
+            "position_horizontal_distance": 0,
+            "position_vertical_align": "top",
+            "position_vertical_distance": 0
+        }
+    },
+    "theme_inject": {
+        "id": "1",
+        "name": "经典",
+        "type": 3,
+        "config": {
+            "list_font_color": "rgba(0, 0, 0, 1)",
+            "list_background_color": "rgba(255, 255, 255, 1)",
+            "list_highlight_color": "rgba(247, 49, 49, 1)",
+            "list_highlight_weight": "400",
+            "list_explain_font_color": "rgba(144, 147, 153, 1)",
+            "list_explain_highlight_color": "rgba(247, 49, 49, 1)",
+            "list_explain_highlight_weight": "400",
+            "list_icon_color": "rgba(193, 196, 203, 1)",
+            "list_state_color": "rgba(51, 153, 102, 1)",
+            "list_keymap_color": "rgba(0, 102, 204, 1)",
+
+            "list_focus_font_color": "rgba(255, 255, 255, 1)",
+            "list_focus_background_color": "rgba(116, 151, 222, 1)",
+            "list_focus_highlight_color": "rgba(255, 0, 0, 1)",
+            "list_focus_highlight_weight": "400",
+            "list_explain_focus_font_color": "rgba(228, 231, 237, 1)",
+            "list_explain_focus_highlight_color": "rgba(255, 0, 0, 1)",
+            "list_explain_focus_highlight_weight": "400",
+            "list_focus_icon_color": "rgba(228, 231, 237, 1)",
+            "list_focus_state_color": "rgba(51, 255, 102, 1)",
+            "list_focus_keymap_color": "rgba(51, 255, 102, 1)",
+
+            "list_current_font_color": "rgba(255, 255, 255, 1)",
+            "list_current_background_color": "rgba(192, 196, 204, 1)",
+            "list_current_highlight_color": "rgba(247, 49, 49, 1)",
+            "list_current_highlight_weight": "400",
+            "list_current_explain_font_color": "rgba(255, 255, 255, 1)",
+            "list_current_explain_highlight_color": "rgba(247, 49, 49, 1)",
+            "list_current_explain_highlight_weight": "400",
+            "list_current_icon_color": "rgba(255, 255, 255, 1)",
+            "list_current_state_color": "rgba(255, 255, 255, 1)",
+
+            "list_current_focus_font_color": "rgba(255, 255, 255, 1)",
+            "list_current_focus_background_color": "rgba(144, 147, 153, 1)",
+            "list_current_focus_highlight_color": "rgba(255, 0, 0, 1)",
+            "list_current_focus_highlight_weight": "400",
+            "list_current_explain_focus_font_color": "rgba(255, 255, 255, 1)",
+            "list_current_explain_focus_highlight_color": "rgba(255, 0, 0, 1)",
+            "list_current_explain_focus_highlight_weight": "400",
+            "list_current_focus_icon_color": "rgba(255, 255, 255, 1)",
+            "list_current_focus_state_color": "rgba(255, 255, 255, 1)",
+
+            "list_scrollbar_color": "rgba(127, 127, 127, 0.6)",
+            "list_scrollbar_focus_color": "rgba(127, 127, 127, 0.9)",
+
+            "list_font_size": 20,
+            "list_explain_font_size": 12,
+            "list_state_size": 12,
+            "list_keymap_size": 16,
+
+            "border_color": "rgba(255, 255, 255, 1)",
+            "background_color": "rgba(255, 255, 255, 1)",
+            "background_blur": 0,
+            "carousel_indicators_color": "rgba(192, 196, 204, 1)",
+            "container_background_color": "rgba(0, 0, 0, 0)",
+            "container_background_blur": 0,
+
+            "border_width": 8,
+            "padding_width": 0,
+
+            "width": 540,
+            "width_fill": false,
+            "width_percentage": 50,
+
+            "height_auto": false,
+            "height_fill": false,
+            "height_percentage": 80,
+
+            "item_height": 56,
+            "item_show_count": 7,
+            "list_page_count": 8,
+            "no_search_item_show_count": 3,
+            "no_search_list_page_count": 4,
+
+            "tag_line_count": 3,
+            "toolbar_height": 40,
+            "toolbar_background_color": "rgba(255, 255, 255, 1)",
+            "toolbar_border_color": "rgba(220, 223, 230, 1)",
+
+            "toolbar_icon_color": "rgba(193, 196, 203, 1)",
+            "toolbar_icon_focus_color": "rgba(145, 147, 152, 1)",
+            "toolbar_icon_auto_hide": false,
+
+            "toolbar_menu_icon_color": "rgba(193, 196, 203, 1)",
+            "toolbar_menu_icon_fixed_color": "rgba(128, 128, 128, 1)",
+            "toolbar_menu_font_color": "rgba(144, 147, 153, 1)",
+            "toolbar_menu_show_workspace_name": true,
+            "toolbar_menu_auto_hide": false,
+
+            "toolbar_input_font_size": 20,
+            "toolbar_input_font_color": "rgba(96, 98, 102, 1)",
+            "toolbar_input_focus_border_color": "rgba(220, 223, 230, 1)",
+            "toolbar_input_selected_font_color": "rgba(255, 255, 255, 1)",
+            "toolbar_input_selected_background_color": "rgba(116, 151, 222, 1)",
+            "toolbar_input_tip_show": false,
+
+            "toolbar_button_font_color": "rgba(96, 98, 102, 1)",
+            "toolbar_button_hover_font_color": "rgba(64, 158, 255, 1)",
+            "toolbar_button_hover_border_color": "rgba(198, 226, 255, 1)",
+            "toolbar_button_hover_background_color": "rgba(236, 245, 255, 1)",
+            "toolbar_button_active_font_color": "rgba(58, 142, 230, 1)",
+            "toolbar_button_active_border_color": "rgba(58, 142, 230, 1)",
+            "toolbar_button_active_background_color": "rgba(236, 245, 255, 1)",
+            "toolbar_button_auto_hide": false,
+
+            "statusbar_icon_color": "rgba(192, 196, 204, 1)",
+            "statusbar_background_color": "rgba(251, 251, 251, 1)",
+            "statusbar_image_opacity": 0.2,
+            "statusbar_show_search_total": true,
+            "statusbar_show": true,
+
+            "position_horizontal_align": "center",
+            "position_horizontal_distance": 0,
+            "position_vertical_align": "top",
+            "position_vertical_distance": 50
+        }
+    }
+}

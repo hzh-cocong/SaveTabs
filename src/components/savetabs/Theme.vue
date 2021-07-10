@@ -35,30 +35,33 @@
         <div
           class="theme-item"
           :class="{ selected: isSelected }">
-          <span
-            style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
-            :style="{ borderColor: item.config.border_color,
-                      backgroundColor: item.config.background_color }"><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_background_color,
-                color: item.config.list_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_font_color,
-                color: item.config.list_font_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_background_color,
-                color: item.config.list_focus_background_color,
-              }">.</span><span
-              style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
-              :style="{
-                backgroundColor: item.config.list_focus_font_color,
-                color: item.config.list_focus_font_color,
-              }">.</span></span>
+          <div class="color-box">
+            <span
+              style="display:inline-block;border-width: 5px;border-style: solid; padding: 6px;"
+              :style="{ borderColor: item.config.border_color,
+                        backgroundColor: item.config.background_color }"><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_background_color,
+                  color: item.config.list_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_font_color,
+                  color: item.config.list_font_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_background_color,
+                  color: item.config.list_focus_background_color,
+                }">.</span><span
+                style="display:inline-block;padding:0;margin:0;width: 8px;height:34px;"
+                :style="{
+                  backgroundColor: item.config.list_focus_font_color,
+                  color: item.config.list_focus_font_color,
+                }">.</span>
+            </span>
+          </div>
           <span
             class="title"
             :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.name }}</span>
@@ -231,5 +234,8 @@ export default {
 .theme-item:hover:not(.selected) {
   background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.theme-item .color-box {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
 }
 </style>

@@ -2,6 +2,7 @@
 <div
   id="app"
   v-loading.fullscreen="isLoading"
+  v-if="isConfigLoad"
   :style="{
     width: openWay == 'inject' && currentThemeConfig.width_fill
           ? '100%'
@@ -614,6 +615,7 @@ export default {
       projectConfig: project_config,
       allWorkspaces: project_config.allWorkspaces,
       commands: [],
+      isConfigLoad: false,
 
       menuVisible: false,
       themeDialogVisible: false,
@@ -1387,7 +1389,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         });
       }
 
+      this.isConfigLoad = true;
+
+      // 必须放最后面
       this.$nextTick(() => {
+        this.focus();
         this.finalWork();
       })
     })
@@ -1500,7 +1506,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     })
 
     // autofocus 只有在页面最开始接在的时候有用，所有这个还是要的
-    this.focus();
+    // this.focus();
   }
 }
 </script>

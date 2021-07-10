@@ -120,6 +120,7 @@
           @blur="showNameInput=false"
           @input="changeThemeName($event, false)"
           @change="changeThemeName($event, true)"
+          @keydown.native.enter="showNameInput=false"
           ref="themeNameInput"></el-input>
         <el-button
           type="text"
@@ -2522,16 +2523,16 @@ export default {
         this.currentThemeConfig.list_focus_state_color,
         this.currentThemeConfig.list_focus_keymap_color,
 
-        this.currentThemeConfig.toolbar_background_color,
-        this.currentThemeConfig.toolbar_border_color,
-        this.currentThemeConfig.toolbar_icon_color,
-        this.currentThemeConfig.toolbar_icon_focus_color,
-        this.currentThemeConfig.toolbar_menu_icon_color,
-        this.currentThemeConfig.toolbar_menu_icon_fixed_color,
-        this.currentThemeConfig.toolbar_menu_font_color,
-        this.currentThemeConfig.toolbar_input_font_color,
-        this.currentThemeConfig.toolbar_input_selected_font_color,
-        this.currentThemeConfig.toolbar_input_selected_background_color,
+        // this.currentThemeConfig.toolbar_background_color,
+        // this.currentThemeConfig.toolbar_border_color,
+        // this.currentThemeConfig.toolbar_icon_color,
+        // this.currentThemeConfig.toolbar_icon_focus_color,
+        // this.currentThemeConfig.toolbar_menu_icon_color,
+        // this.currentThemeConfig.toolbar_menu_icon_fixed_color,
+        // this.currentThemeConfig.toolbar_menu_font_color,
+        // this.currentThemeConfig.toolbar_input_font_color,
+        // this.currentThemeConfig.toolbar_input_selected_font_color,
+        // this.currentThemeConfig.toolbar_input_selected_background_color,
       ]))
     }
   },

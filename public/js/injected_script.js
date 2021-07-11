@@ -196,6 +196,10 @@
       iframe.style.opacity = 1;
     }, 0);
 
+    setTimeout(() => {
+      chrome.runtime.sendMessage({ type: 'pageZoom', data: window.outerWidth / window.innerWidth})
+    }, 1000)
+
     // 没用
     // iframe.contentWindow.focus();
 

@@ -1504,6 +1504,10 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
             offset: 69,
             duration: 1000,
           });
+        } else if(request.type == 'pageZoom') {
+          if(request.data == 1) return;
+
+          this.statusTip('注意：由于当前网页进行了缩放，可能导致列表滚动异常。', true, 3000);
         }
       })
 //*

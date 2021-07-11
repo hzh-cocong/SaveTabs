@@ -186,8 +186,9 @@ export default {
     showTip(tip, lower = false) {
       // 在低优先级下，如果提示栏已经有人在用时，就不插进去了
       // 低优先级可以被低优先级的覆盖
+      console.log('showTip', lower, ! this.lower, this.tip != this.storageTip, tip)
       if(lower && ! this.lower && this.tip != this.storageTip) {
-        this.lower = lower;
+        // this.lower = lower; // 会导致高优先级的被低优先级的覆盖（超过1次后）
         return false;
       }
       this.lower = lower;

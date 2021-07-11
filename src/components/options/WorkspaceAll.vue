@@ -58,6 +58,8 @@
           <el-input-number
             :value="workspace.count"
             :min="1"
+            :max="1000"
+            :precision="0"
             size="mini"
             title="每次展示多少行"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
@@ -108,6 +110,8 @@
           <el-input-number
             :value="workspace.count"
             :min="1"
+            :max="1000"
+            :precision="0"
             size="mini"
             title="每次展示多少行"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
@@ -154,6 +158,8 @@
           <el-input-number
             :value="workspace.count"
             :min="1"
+            :max="1000"
+            :precision="0"
             size="mini"
             title="每次展示多少行"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
@@ -198,7 +204,6 @@
           <el-input-number
             disabled
             size="mini"
-            title="每次展示多少行"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"></el-input-number>
           <el-switch
             disabled

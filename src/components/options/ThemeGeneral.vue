@@ -177,10 +177,11 @@
                 :value="currentThemeConfig.container_background_blur"
                 :min="0"
                 :max="1000"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('container_background_blur', $event)"></el-input-number>
+                @change="editTheme('container_background_blur', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.container_background_blur != oldCurrentThemeConfig.container_background_blur"
                 placement="top"
@@ -223,10 +224,11 @@
                 :value="currentThemeConfig.background_blur"
                 :min="0"
                 :max="1000"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('background_blur', $event)"></el-input-number>
+                @change="editTheme('background_blur', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.background_blur != oldCurrentThemeConfig.background_blur"
                 placement="top"
@@ -245,8 +247,9 @@
                 :value="currentThemeConfig.border_width"
                 :min="0"
                 :max="200"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('border_width', $event)"></el-input-number>
+                @change="editTheme('border_width', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.border_width != oldCurrentThemeConfig.border_width"
                 placement="top"
@@ -289,8 +292,9 @@
                 :value="currentThemeConfig.padding_width"
                 :min="0"
                 :max="200"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('padding_width', $event)"></el-input-number>
+                @change="editTheme('padding_width', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.padding_width != oldCurrentThemeConfig.padding_width"
                 placement="top"
@@ -382,10 +386,11 @@
                 :value="currentThemeConfig.position_horizontal_distance"
                 :min="currentThemeConfig.position_horizontal_align == 'center' ? -1000 : 0"
                 :max="1000"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('position_horizontal_distance', $event)"></el-input-number>
+                @change="editTheme('position_horizontal_distance', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_horizontal_distance != oldCurrentThemeConfig.position_horizontal_distance"
                 placement="top"
@@ -429,10 +434,11 @@
                 :value="currentThemeConfig.position_vertical_distance"
                 :min="currentThemeConfig.position_vertical_align == 'center' ? -1000 : 0"
                 :max="1000"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('position_vertical_distance', $event)"></el-input-number>
+                @change="editTheme('position_vertical_distance', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_vertical_distance != oldCurrentThemeConfig.position_vertical_distance"
                 placement="top"
@@ -451,8 +457,9 @@
                 :value="currentThemeConfig.tag_line_count"
                 :min="1"
                 :max="40"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('tag_line_count', $event)"></el-input-number>
+                @change="editTheme('tag_line_count', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.tag_line_count != oldCurrentThemeConfig.tag_line_count"
                 placement="top"
@@ -473,6 +480,7 @@
                 :value="currentThemeConfig.width"
                 :min="280"
                 :max="2000"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ( currentThemeConfig.width_fill
                           && currentTheme.type == 2)"
@@ -480,7 +488,7 @@
                         && currentTheme.type == 2)
                         ? '请看宽度百分比'
                         : '' "
-                @change="editTheme('width', $event)"></el-input-number>
+                @change="editTheme('width', $event || 280)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.width != oldCurrentThemeConfig.width"
                 placement="top"
@@ -518,11 +526,12 @@
                 :value="currentThemeConfig.width_percentage"
                 :min="1"
                 :max="100"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)
                         || ! currentThemeConfig.width_fill"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('width_percentage', $event)"></el-input-number>
+                @change="editTheme('width_percentage', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.width_percentage != oldCurrentThemeConfig.width_percentage"
                 placement="top"
@@ -581,11 +590,12 @@
                 :value="currentThemeConfig.height_percentage"
                 :min="1"
                 :max="100"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)
                         || ! currentThemeConfig.height_fill"
                 :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
-                @change="editTheme('height_percentage', $event)"></el-input-number>
+                @change="editTheme('height_percentage', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.height_percentage != oldCurrentThemeConfig.height_percentage"
                 placement="top"
@@ -604,8 +614,9 @@
                 :value="currentThemeConfig.item_height"
                 :min="30"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('item_height', $event)"></el-input-number>
+                @change="editTheme('item_height', $event || 30)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.item_height != oldCurrentThemeConfig.item_height"
                 placement="top"
@@ -623,8 +634,9 @@
                 :value="currentThemeConfig.item_show_count"
                 :min="1"
                 :max="38"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('item_show_count', $event)"></el-input-number>
+                @change="editTheme('item_show_count', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.item_show_count != oldCurrentThemeConfig.item_show_count"
                 placement="top"
@@ -642,8 +654,9 @@
                 :value="currentThemeConfig.list_page_count"
                 :min="2"
                 :max="1000"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('list_page_count', $event)"></el-input-number>
+                @change="editTheme('list_page_count', $event || 2)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.list_page_count != oldCurrentThemeConfig.list_page_count"
                 placement="top"
@@ -662,11 +675,12 @@
                 :value="currentThemeConfig.no_search_item_show_count"
                 :min="0"
                 :max="38"
+                :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)
                         || ! currentThemeConfig.height_auto"
                 :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
-                @change="editTheme('no_search_item_show_count', $event)"></el-input-number>
+                @change="editTheme('no_search_item_show_count', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_item_show_count != oldCurrentThemeConfig.no_search_item_show_count"
                 placement="top"
@@ -684,12 +698,13 @@
                 :value="currentThemeConfig.no_search_list_page_count"
                 :min="0"
                 :max="1000"
+                :precision="0"
                 :step="currentThemeConfig.no_search_list_page_count == 0 ? 2 : 1"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)
                         || ! currentThemeConfig.height_auto"
                 :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
-                @change="editTheme('no_search_list_page_count', $event)"></el-input-number>
+                @change="editTheme('no_search_list_page_count', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_list_page_count != oldCurrentThemeConfig.no_search_list_page_count"
                 placement="top"
@@ -708,8 +723,9 @@
                 :value="currentThemeConfig.list_font_size"
                 :min="12"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('list_font_size', $event)"></el-input-number>
+                @change="editTheme('list_font_size', $event || 12)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.list_font_size != oldCurrentThemeConfig.list_font_size"
                 placement="top"
@@ -727,8 +743,9 @@
                 :value="currentThemeConfig.list_explain_font_size"
                 :min="12"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('list_explain_font_size', $event)"></el-input-number>
+                @change="editTheme('list_explain_font_size', $event || 12)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.list_explain_font_size != oldCurrentThemeConfig.list_explain_font_size"
                 placement="top"
@@ -746,8 +763,9 @@
                 :value="currentThemeConfig.list_state_size"
                 :min="12"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('list_state_size', $event)"></el-input-number>
+                @change="editTheme('list_state_size', $event || 12)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.list_state_size != oldCurrentThemeConfig.list_state_size"
                 placement="top"
@@ -765,8 +783,9 @@
                 :value="currentThemeConfig.list_keymap_size"
                 :min="12"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('list_keymap_size', $event)"></el-input-number>
+                @change="editTheme('list_keymap_size', $event || 12)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.list_keymap_size != oldCurrentThemeConfig.list_keymap_size"
                 placement="top"
@@ -1756,8 +1775,9 @@
                 :value="currentThemeConfig.toolbar_height"
                 :min="30"
                 :max="600"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('toolbar_height', $event)"></el-input-number>
+                @change="editTheme('toolbar_height', $event || 30)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_height != oldCurrentThemeConfig.toolbar_height"
                 placement="top"
@@ -2068,8 +2088,9 @@
                 :value="currentThemeConfig.toolbar_input_font_size"
                 :min="12"
                 :max="Math.floor((currentThemeConfig.toolbar_height-2)/1.15)"
+                :precision="0"
                 :disabled="currentTheme.is_system"
-                @change="editTheme('toolbar_input_font_size', $event)"></el-input-number>
+                @change="editTheme('toolbar_input_font_size', $event || 12)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_input_font_size != oldCurrentThemeConfig.toolbar_input_font_size"
                 placement="top"
@@ -2414,11 +2435,12 @@
                 style="width: 100px;"
                 :value="currentThemeConfig.statusbar_image_opacity"
                 :min="0.1"
-                :step="0.1"
                 :max="1"
+                :step="0.1"
+                :precision="2"
                 :disabled="currentTheme.is_system
                         || ! currentThemeConfig.statusbar_show"
-                @change="editTheme('statusbar_image_opacity', $event)"></el-input-number>
+                @change="editTheme('statusbar_image_opacity', $event || 0.2)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.statusbar_image_opacity != oldCurrentThemeConfig.statusbar_image_opacity"
                 placement="top"

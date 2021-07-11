@@ -1,26 +1,28 @@
 <template>
   <div class="window">
 
-  <el-alert
+  <div
     v-if="isSearched && list.length == 0"
-    type="info"
-    :closable="false"
-    show-icon
-    style="margin: 0 10px;"
-    :style="{ width: (currentThemeConfig.width-20)+'px' }">
-    <div
-      slot="title"
-      style="display:flex;align-items: center;"
-      :style="{ width: (currentThemeConfig.width-70)+'px' }">
-      <div style="flex:1;">
-        <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
-        <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div>
+    style="margin: 0 10px;">
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon>
+      <div
+        slot="title"
+        style="display:flex;align-items: center;font-size:12px;">
+        <div style="flex:1;">
+          <div>{{ storageList.length == 0 ? lang('windowNoResult') : lang('windowNoResult2') }}</div>
+          <div v-if="storageList.length > 0">{{ lang('windowCountTip')+storageList.length+lang('windowCountTip2') }}</div>
+        </div>
+        <div style="margin-left: 8px;margin-right: -8px;">
+          <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=praise', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', getKeyType($event))"></el-button>
+        </div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', getKeyType($event))"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', getKeyType($event))"></el-button>
-    </div>
-  </el-alert>
+    </el-alert>
+  </div>
 
   <list
     :list="list"
@@ -1623,6 +1625,10 @@ console.warn('finish', b, (b-a)/1000)
 </style>
 
 <style>
+.window .el-alert .el-alert__content {
+  flex: 1;
+}
+
 /* .window strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);

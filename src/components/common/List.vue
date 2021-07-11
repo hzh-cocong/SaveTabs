@@ -409,17 +409,6 @@ console.log('currentIndex', newVal, oldVal)
     mouseSelect(index) {
       console.log('mouseSelect', index);
 
-      // 防溢出
-      // 无限滚动会出现浮点数的情况
-      // 根据滚动方向判断是进位还是退位
-      // 在一些浏览器有可能出现列表高度和设定的不一样，如在 chromium ，高度设置为 51，实际高度为 50.99，这是浏览器的 bug，尽可能兼容一下
-      // 用这种方法也没法兼容，因为问题出在 w.isScrolling 上，一直为 true
-      // if(this.w.flag) { // 向上滚动
-      //   this.scrollLines = Math.ceil(this.$el.scrollTop/this.itemHeight);
-      // } else {
-      //   this.scrollLines = Math.floor(this.$el.scrollTop/this.itemHeight);
-      // }
-
       // 鼠标在靠近边界时会触发下一个而非当前个，所以这里要限制一下
       if(index < this.scrollLines)
         index = this.scrollLines;
@@ -488,6 +477,7 @@ console.log('currentIndex', newVal, oldVal)
     scrollDeal(e) {
       // console.log('scrollDeal', e)
 
+      // 滚动开始（滚动过程中一直会调用这个方法）
       let self = this;
 
       // 真是奇葩，这个scrollTop并不一定正确，向上滚动会增大，但是到后面有可能会变小，无语
@@ -520,6 +510,8 @@ console.log('a')
             self.w.speed = 0;
             // self.w.moveStep = 2;
             self.w.moveStep = self.itemHeight*2/50 < 1 ? 1 : self.itemHeight*2/50;
+console.log('a2', self.w.moveStep, e.target.scrollTop)
+            let oldScrollTop = e.target.scrollTop;
             // console.log('8888888888')
             if(self.w.flag) { // 向上滚动
             //*
@@ -533,38 +525,61 @@ console.log('a')
                                   ? e.target.scrollTop%self.itemHeight
                                   : self.w.moveStep;/*/
               e.target.scrollTop -= 1;//*/
+            }console.log('a3', self.w.moveStep, e.target.scrollTop)
+            // 只有在网页被放大或缩小时会出现
+            if(oldScrollTop == e.target.scrollTop) {
+              console.log('a4', self.w.flag ? '向上滚动' : '向下滚动', self.w.moveStep, e.target.scrollTop, oldScrollTop)
+
+              // 不使用 self.w.flag，并不准确
+              let scrollTop = Math.round(e.target.scrollTop/self.itemHeight)*self.itemHeight;
+
+              // 改赋值无效，否则也不会运行到这里
+              // e.target.scrollTop = scrollTop;
+
+              console.log('a43', scrollTop, scrollTop/self.itemHeight, self.mouseIndex, e.target.scrollTop, oldScrollTop)
+
+              self.scrollEnd(scrollTop);
             }
-          } else {console.log(self.scrollLines,  e.target.scrollTop, e.target.scrollTop/self.itemHeight);
-            self.w.speed = 100;
-            self.scrollLines = e.target.scrollTop/self.itemHeight;
+          } else {
+            console.log(self.scrollLines,  e.target.scrollTop, e.target.scrollTop/self.itemHeight);
 
-            self.w.isScrolling = false;
-            if(self.w.ulEnter != true
-              || (self.mouseStart == false && self.mouseIndex != -1)) {
-              self.$el.className = "list";
-            }
-
-            // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
-            // 就会让当前鼠标所指向的项目选中
-            if( ! (self.mouseIndex == -1 || self.mouseStart == false)){
-              console.log('mouseSelect0', self.mouseIndex);
-              self.mouseSelect(self.mouseIndex, e.target.scrollTop%self.itemHeight);
-              self.$emit('scrollEnd');
-              return;
-            }
-
-            // 保持当前窗口有被选中
-            if(self.currentIndex < self.scrollLines)
-              self.$emit('change', self.scrollLines);
-            else if(self.currentIndex >= self.scrollLines+self.itemShowCount)
-              self.$emit('change', self.scrollLines+self.itemShowCount-1);
-
-            self.$emit('scrollEnd');
+            self.scrollEnd(e.target.scrollTop);
           }
         } else if(self.w.t2 == self.w.t1 && self.w.ulOn == true) {
+          self.w.speed = 100;
+          // 手动拖动滚动条，释放滚动条后触发
+          console.log('9999999999999999999', self.w.speed)
           self.w.timer = setTimeout(scrollWatch, self.w.speed);
         }
       }, self.w.speed);
+    },
+    scrollEnd(scrollTop) {
+      this.w.speed = 100;
+      this.scrollLines = scrollTop/this.itemHeight;
+
+      this.w.isScrolling = false;
+      if(this.w.ulEnter != true
+        || (this.mouseStart == false && this.mouseIndex != -1)) {
+        // 鼠标离开了插件，或者出现在插件中，但是并未触发选择
+        this.$el.className = "list";
+      }
+
+      // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
+      // 就会让当前鼠标所指向的项目选中
+      if( ! (this.mouseIndex == -1 || this.mouseStart == false)){
+        console.log('mouseSelect0', this.mouseIndex);
+        this.mouseSelect(this.mouseIndex, scrollTop%this.itemHeight);
+        this.$emit('scrollEnd');
+        return;
+      }
+
+      // 保持当前窗口有被选中
+      if(this.currentIndex < this.scrollLines)
+        this.$emit('change', this.scrollLines);
+      else if(this.currentIndex >= this.scrollLines+this.itemShowCount)
+        this.$emit('change', this.scrollLines+this.itemShowCount-1);
+
+      this.$emit('scrollEnd');
     },
 
     // index 为当前视图的行数而非整个列表

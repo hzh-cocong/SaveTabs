@@ -273,6 +273,7 @@ export default {
 
       w: {
         timer: null,
+        times: 0,
       },
     }
   },
@@ -754,6 +755,8 @@ console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
 
 console.log('bookmark.search3', keyword, '|',  this.storageKeyword);
 
+      let times = ++this.w.times;
+
       if( ! this.isSearched) {
         // 避免第一次加载页面时重复 getTree
 console.log('chrome.bookmarks.getTree.first')
@@ -794,6 +797,9 @@ console.log('chrome.bookmarks.getTree.first')
         this.getTree((bookmarks) => {
           console.log('getTree', bookmarks);
 
+          // 防止并发错误
+          if(times != this.w.times) return;
+
           this.originList = bookmarks;
           // 倒着打开
           for(let i = this.originList.length-1; i >= 0; i--)
@@ -811,7 +817,6 @@ console.log('chrome.bookmarks.getTree.first')
           // this.currentIndex = 0;
           this.scrollDisabled = true;
 
-          // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
           this.isSearching = false;
 
           this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
@@ -827,6 +832,10 @@ console.log('chrome.bookmarks.getTree.first')
         this.isSearching = true;
 
         this.query(this.storageKeyword, (bookmarks) => {
+
+          // 防止并发错误
+          if(times != this.w.times) return;
+
 console.log('chrome.bookmarks.getTree.second')
           this.cacheList = bookmarks;
           this.list = this.cacheList.slice(0, this.listPageCount);

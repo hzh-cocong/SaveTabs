@@ -2601,7 +2601,9 @@ export default {
     console.log('mounted:ThemeGeneral.vue', this.activeName)
 
     let res = window.location.href.match(/\?([^?]+)$/);
-    if(res != null) {
+    console.log('window.location.href.match', res);
+    if(res != null
+    && ['global', 'list', 'menu', 'status'].indexOf(res[1]) != -1) {
       this.activeName = res[1];
     }
 

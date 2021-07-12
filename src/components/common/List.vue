@@ -241,8 +241,8 @@ export default {
 
       // 鼠标移动事件
       if(this.mouseIndex != -1
-        && this.mouseIndex != this.list.length
-        && this.mouseIndex == newVal) return;
+      && this.mouseIndex != this.list.length
+      && this.mouseIndex == newVal) return;
 
       // 键盘触发的事件
 console.log('currentIndex', newVal, oldVal)
@@ -292,8 +292,9 @@ console.log('currentIndex', newVal, oldVal)
     list: function (newVal, oldVal) {
       console.log('list.list', newVal.length, oldVal.length);
 
-      // 提供兼容性，在并发下 scrollDisabled = false，且 newVal.length = 0 hisotry 会导致死循环
+      // 提供兼容性，在并发下 scrollDisabled = false，且 newVal.length = 0 hisotry 会导致死循环（该问题已被解决，但还是要预防着）
       // list.push 所产生的事件也是这个，所以要再加个长度限制
+      // splice 会触发变动，但是 newVal 和 oldVal 是一样的
       if(newVal.length == oldVal.length && newVal.length == 0) return;
 
       // 搜索时列表数量发生变化，可能不需要滚动条

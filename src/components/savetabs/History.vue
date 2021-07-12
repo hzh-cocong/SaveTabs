@@ -333,6 +333,10 @@ export default {
 
       range: 3600000,
       dialogVisible: false,
+
+      w: {
+        times: 0,
+      },
     }
   },
   components: {
@@ -662,6 +666,8 @@ console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTi
         return;
       }
 
+      let times = ++this.w.times;
+
       this.lastEndTime = this.endTime;
       let lastVisitTime = this.endTime;
 
@@ -681,6 +687,9 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
       this.query((historys) => {
         console.log('history.query', historys);
 console.log('history.search3', historys);
+
+        // 防止并发错误
+        if(times != this.w.times) return;
 
         if(historys.length == 0) {
 console.log('history.search4', historys);
@@ -734,6 +743,9 @@ console.log('history.search4', historys);
     },
     load() {
       console.log('history.load.test')
+
+      // 避免出现死循环（并发时会出现）
+      if(this.listPageCount <= 0) return;
 
       let end = this.list.length+this.listPageCount;
 

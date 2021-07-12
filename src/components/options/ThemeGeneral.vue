@@ -106,11 +106,15 @@
         </div>
         <span
           v-if=" ! showNameInput"
-          style="flex: 1;margin: 0 10px;color: #606266;width:100%;height:100%;display:flex;flex-direction: column;justify-content: center;"
-          :title="currentTheme.is_system ? '' : '点击修改'"
+          style="flex: 1;margin: 0 10px;width:100%;height:100%;display:flex;flex-direction: column;justify-content: center;"
+          :style="{ color: currentTheme.name == '' ? '#409EFF' : '#606266',
+                    cursor: currentTheme.name == '' ? 'pointer' : 'inherit', }"
+          :title="currentTheme.is_system || currentTheme.name == '' ? '' : '点击修改'"
           @click="currentTheme.is_system
                 || (showNameInput=true,
-                    $nextTick(()=>$refs.themeNameInput.focus()))">{{ currentTheme.name }}</span>
+                    $nextTick(()=>$refs.themeNameInput.focus()))">{{
+            currentTheme.name == '' ? '点此修改名称' : currentTheme.name
+          }}</span>
         <el-input
           v-if="showNameInput"
           :value="currentTheme.name"

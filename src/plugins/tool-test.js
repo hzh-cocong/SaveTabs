@@ -445,13 +445,23 @@ const tool = {
       },
       local: {
         get: function(options, callback) {
+          if(Object.keys(options).length == 3) {
+            setTimeout(() => {
+              callback != undefined && callback({
+                list: list88,
+                temporary: temporary,
+                tabs: notes});
+            }, 300)
+            return;
+          }
+
           if(options.config) {
             setTimeout(() => {
               callback != undefined && callback({config: {}, info: {}});
             }, 300)
           } else if(options.list != undefined) {
             setTimeout(() => {
-              callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
+              callback != undefined && callback({list: list88});
             }, 300)
             // callback != undefined && callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88});
             // callback != undefined && setTimeout(()=>{ callback({list: list88, fffff: 'kkkkkkkkkkkkkki', fff2: list88}); }, 1000);
@@ -687,6 +697,12 @@ const tool = {
     chrome.extension = {
       getURL: function() {
         return 'chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/savetabs.html';
+      }
+    }
+
+    chrome.downloads = {
+      download: function(options) {
+        console.log('chrome.downloads', options)
       }
     }
 

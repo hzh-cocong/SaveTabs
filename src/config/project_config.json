@@ -140,14 +140,22 @@
                                 "type": "string"
                             },
                             "title": {
-                                "presence": false,
+                                "presence": {
+                                    "allowEmpty": true
+                                },
                                 "type": "string"
                             },
                             "url": {
-                                "presence": false,
+                                "presence": {
+                                    "allowEmpty": true
+                                },
                                 "type": "string"
                             }
                         }
+                    },
+                    "lastVisitTime": {
+                        "presence": false,
+                        "type": "number"
                     }
                 }
             }
@@ -161,12 +169,20 @@
                         "type": "string"
                     },
                     "title": {
-                        "presence": false,
+                        "presence": {
+                            "allowEmpty": true
+                        },
                         "type": "string"
                     },
                     "url": {
-                        "presence": false,
+                        "presence": {
+                            "allowEmpty": false
+                        },
                         "type": "string"
+                    },
+                    "lastVisitTime": {
+                        "presence": false,
+                        "type": "number"
                     }
                 }
             }
@@ -186,11 +202,15 @@
                                 "type": "string"
                             },
                             "title": {
-                                "presence": false,
+                                "presence": {
+                                    "allowEmpty": true
+                                },
                                 "type": "string"
                             },
                             "url": {
-                                "presence": false,
+                                "presence": {
+                                    "allowEmpty": true
+                                },
                                 "type": "string"
                             }
                         }

@@ -133,7 +133,8 @@
                   showNameInput=true;
                   $nextTick(()=>$refs.themeNameInput.focus());">克隆</el-button>
         <el-button
-          type="text">导出</el-button>
+          type="text"
+          @click="leadOut">导出</el-button>
         <el-button
           type="text"
           :disabled="currentTheme.is_system"
@@ -2465,6 +2466,8 @@
 
 import { nanoid } from 'nanoid'
 import Sortable from 'sortablejs';
+import projectConfig from '@/config/project_config.json'
+var validate = require("validate.js");
 
 const THEME_TYPWE = {
   POPUP: 1,
@@ -2516,13 +2519,15 @@ export default {
         { value: '100', label: '100'},
         { value: '200', label: '200'},
         { value: '300', label: '300'},
-        { value: '400', label: '400(normal)'},
+        { value: '400', label: 'normal'},
         { value: '500', label: '500'},
         { value: '600', label: '600'},
-        { value: '700', label: '700(blod)'},
+        { value: '700', label: 'blod'},
         { value: '800', label: '800'},
         { value: '900', label: '900'},
       ],
+
+      themeAttribute: projectConfig.themeAttributes,
 
       w: {
         oldCurrentThemeConfig: {},
@@ -2597,6 +2602,32 @@ export default {
       let query = {};
       query[this.activeName]=null;
       this.$router.replace({ name: 'theme-general', query}).catch(()=>{});
+    },
+
+    leadOut() {
+console.log('leadOut.currentTheme', this.currentTheme)
+
+      let data = {
+        user_theme_list: [
+          validate.cleanAttributes(this.currentTheme, this.themeAttribute.user_theme_list.array)
+        ]
+      }
+
+console.log('leadOut.data', data)
+
+      this.download('SaveTabsSingleTheme.json', JSON.stringify(data));
+    },
+
+    download: function(filename, data) {
+      var urlObject = window.URL || window.webkitURL || window;
+      var blob = new Blob([data], {type: "application/json"});
+      var url = urlObject.createObjectURL(blob);
+
+      chrome.downloads.download({
+          url: url,
+          filename: filename,
+          //saveAs: false,
+      });
     }
   },
   mounted() {

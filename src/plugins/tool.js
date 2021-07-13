@@ -276,6 +276,12 @@ const tool = {
           return tagsToReplace[tag] || tag;
       });
     };
+    // 多值替换
+    String.prototype.strtr = function(map) {
+      let reStr = '(' + Object.keys(map).map(it => '\\' + it).join('|') + ')'
+      let re = new RegExp(reStr, 'g')
+      return this.replace(re, it => map[it]);
+    }
 
   }
 }

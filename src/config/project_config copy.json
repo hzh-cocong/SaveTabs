@@ -197,10 +197,9 @@
                     "type": "string"
                 },
                 "type": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 1,
-                        "lessThanOrEqualTo": 3
+                    "length": {
+                        "minimum": 1,
+                        "maximum": 3
                     }
                 },
                 "config.list_font_color": {
@@ -409,31 +408,27 @@
                 },
 
                 "config.list_font_size": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 12,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 12,
+                        "maximum": 600
                     }
                 },
                 "config.list_explain_font_size": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 12,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 12,
+                        "maximum": 600
                     }
                 },
                 "config.list_state_size": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 12,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 12,
+                        "maximum": 600
                     }
                 },
                 "config.list_keymap_size": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 12,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 12,
+                        "maximum": 600
                     }
                 },
 
@@ -444,10 +439,9 @@
                     "color": true
                 },
                 "config.background_blur": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 1000
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 1000
                     },
                     "association": {
                         "config.container_background_blur": " ! ([self] > 0 && [value] > 0)"
@@ -460,10 +454,9 @@
                     "color": true
                 },
                 "config.container_background_blur": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 1000
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 1000
                     },
                     "association": {
                         "config.background_blur": " ! ([self] > 0 && [value] > 0)"
@@ -474,35 +467,31 @@
                 },
 
                 "config.border_width": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 200
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 200
                     }
                 },
                 "config.padding_width": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 200
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 200
                     }
                 },
 
                 "config.width": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 280,
-                        "lessThanOrEqualTo": 2000
+                    "length": {
+                        "minimum": 280,
+                        "maximum": 2000
                     }
                 },
                 "config.width_fill": {
                     "type": "boolean"
                 },
                 "config.width_percentage": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 1,
-                        "lessThanOrEqualTo": 100
+                    "length": {
+                        "minimum": 1,
+                        "maximum": 100
                     }
                 },
 
@@ -513,55 +502,43 @@
                     "type": "boolean"
                 },
                 "config.height_percentage": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 1,
-                        "lessThanOrEqualTo": 100
+                    "length": {
+                        "minimum": 1,
+                        "maximum": 100
                     }
                 },
 
                 "config.item_height": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 30,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 30,
+                        "maximum": 600
                     }
                 },
                 "config.item_show_count": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 1,
-                        "lessThanOrEqualTo": 38
-                    },
-                    "association": {
-                        "config.list_page_count": "[self] < [value]"
+                    "length": {
+                        "minimum": 1,
+                        "maximum": 38
                     }
                 },
                 "config.list_page_count": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 2,
-                        "lessThanOrEqualTo": 1000
-                    },
-                    "association": {
-                        "config.item_show_count": "[self] > [value]"
+                    "length": {
+                        "minimum": 2,
+                        "maximum": 1000
                     }
                 },
                 "config.no_search_item_show_count": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 38
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 38
                     },
                     "association": {
                         "config.no_search_list_page_count": "[self] == 0 ? [value] == 0 : [self] < [value]"
                     }
                 },
                 "config.no_search_list_page_count": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 0,
-                        "lessThanOrEqualTo": 1000
+                    "length": {
+                        "minimum": 0,
+                        "maximum": 1000
                     },
                     "association": {
                         "config.no_search_item_show_count": "[self] == 0 ? [value] == 0 : [self] > [value]"
@@ -569,17 +546,15 @@
                 },
 
                 "config.tag_line_count": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 1,
-                        "lessThanOrEqualTo": 40
+                    "length": {
+                        "minimum": 1,
+                        "maximum": 40
                     }
                 },
                 "config.toolbar_height": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 30,
-                        "lessThanOrEqualTo": 600
+                    "length": {
+                        "minimum": 30,
+                        "maximum": 600
                     }
                 },
                 "config.toolbar_background_color": {
@@ -616,10 +591,6 @@
                 },
 
                 "config.toolbar_input_font_size": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": 12
-                    },
                     "association": {
                         "config.toolbar_height": "[self] <= Math.floor(([value]-2)/1.15)"
                     }
@@ -672,10 +643,9 @@
                     "color": true
                 },
                 "config.statusbar_image_opacity": {
-                    "numericality": {
-                        "onlyInteger": false,
-                        "greaterThanOrEqualTo": 0.10,
-                        "lessThanOrEqualTo": 1
+                    "length": {
+                        "minimum": 0.10,
+                        "maximum": 1
                     }
                 },
                 "config.statusbar_show_search_total": {
@@ -693,13 +663,12 @@
                     ]
                 },
                 "config.position_horizontal_distance": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": -1000,
-                        "lessThanOrEqualTo": 1000
+                    "length": {
+                        "minimum": -1000,
+                        "maximum": 1000
                     },
                     "association": {
-                        "config.position_horizontal_align": "[value] == 'center' ? true : [self] >= 0"
+                        "config.position_horizontal_align": "'[value]' == 'center' ? true : [self] >= 0"
                     }
                 },
                 "config.position_vertical_align": {
@@ -710,13 +679,12 @@
                     ]
                 },
                 "config.position_vertical_distance": {
-                    "numericality": {
-                        "onlyInteger": true,
-                        "greaterThanOrEqualTo": -1000,
-                        "lessThanOrEqualTo": 1000
+                    "length": {
+                        "minimum": -1000,
+                        "maximum": 1000
                     },
                     "association": {
-                        "config.position_vertical_align": "[value] == 'center' ? true : [self] >= 0"
+                        "config.position_vertical_align": "'[value]' == 'center' ? true : [self] >= 0"
                     }
                 }
             }

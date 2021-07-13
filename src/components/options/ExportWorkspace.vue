@@ -4,19 +4,39 @@
       <el-col :md="12">
         <el-card
           class="box-card"
-          :header="lang('windowData')">
-          <el-button icon="el-icon-delete" @click="clearData('window')">{{ lang('clearData') }}</el-button>
-          <el-button icon="el-icon-upload2" @click="leadIn('window')">{{ lang('import') }}</el-button>
-          <el-button icon="el-icon-download" @click="leadOut('window')">{{ lang('export') }}</el-button>
+          :header="lang('windowData')"
+          :body-style="{ paddingBottom: '10px' }">
+          <el-button
+            icon="el-icon-delete"
+            style="margin-bottom: 10px;margin-right: 10px;"
+            @click="clearData('window')">{{ lang('clearData') }}</el-button>
+          <el-button
+            icon="el-icon-upload2"
+            style="margin-bottom: 10px;margin-left: 0;margin-right: 10px;"
+            @click="leadIn('window')">{{ lang('import') }}</el-button>
+          <el-button
+            icon="el-icon-download"
+            style="margin-bottom: 10px;margin-left: 0;"
+            @click="leadOut('window')">{{ lang('export') }}</el-button>
         </el-card>
       </el-col>
       <el-col :md="12">
         <el-card
           class="box-card"
-          :header="lang('noteData')">
-          <el-button icon="el-icon-delete" @click="clearData('note')">{{ lang('clearData') }}</el-button>
-          <el-button icon="el-icon-upload2" @click="leadIn('note')">{{ lang('import') }}</el-button>
-          <el-button icon="el-icon-download" @click="leadOut('note')">{{ lang('export') }}</el-button>
+          :header="lang('noteData')"
+          :body-style="{ paddingBottom: '10px' }">
+          <el-button
+            icon="el-icon-delete"
+            style="margin-bottom: 10px;margin-right: 10px;"
+            @click="clearData('note')">{{ lang('clearData') }}</el-button>
+          <el-button
+            icon="el-icon-upload2"
+            style="margin-bottom: 10px;margin-left: 0;margin-right: 10px;"
+            @click="leadIn('note')">{{ lang('import') }}</el-button>
+          <el-button
+            icon="el-icon-download"
+            style="margin-bottom: 10px;margin-left: 0;"
+            @click="leadOut('note')">{{ lang('export') }}</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -24,27 +44,56 @@
       <el-col :md="12">
         <el-card
           class="box-card"
-          :header="lang('temporaryData')">
-          <el-button icon="el-icon-delete" @click="clearData('temporary')">{{ lang('clearData') }}</el-button>
-          <el-button icon="el-icon-upload2" @click="leadIn('temporary')">{{ lang('import') }}</el-button>
-          <el-button icon="el-icon-download" @click="leadOut('temporary')">{{ lang('export') }}</el-button>
+          :header="lang('temporaryData')"
+          :body-style="{ paddingBottom: '10px' }">
+          <el-button
+            icon="el-icon-delete"
+            style="margin-bottom: 10px;margin-right: 10px;"
+            @click="clearData('temporary')">{{ lang('clearData') }}</el-button>
+          <el-button
+            icon="el-icon-upload2"
+            style="margin-bottom: 10px;margin-left: 0;margin-right: 10px;"
+            @click="leadIn('temporary')">{{ lang('import') }}</el-button>
+          <el-button
+            icon="el-icon-download"
+            style="margin-bottom: 10px;margin-left: 0;"
+            @click="leadOut('temporary')">{{ lang('export') }}</el-button>
         </el-card>
       </el-col>
       <el-col :md="12">
         <el-card
           class="box-card"
-          :header="lang('allData')">
-          <el-button icon="el-icon-delete" @click="clearData('all')">{{ lang('clearData') }}</el-button>
-          <el-button icon="el-icon-upload2" @click="leadIn('all')">{{ lang('import') }}</el-button>
-          <el-button icon="el-icon-download" @click="leadOut(Object.keys(workspaceAttributes))">{{ lang('export') }}</el-button>
+          :header="lang('allData')"
+          :body-style="{ paddingBottom: '10px' }">
+          <el-button
+            icon="el-icon-delete"
+            style="margin-bottom: 10px;margin-right: 10px;"
+            @click="clearData('all')">{{ lang('clearData') }}</el-button>
+          <el-button
+            icon="el-icon-upload2"
+            style="margin-bottom: 10px;margin-left: 0;margin-right: 10px;"
+            @click="leadIn('all')">{{ lang('import') }}</el-button>
+          <el-button
+            icon="el-icon-download"
+            style="margin-bottom: 10px;margin-left: 0;"
+            @click="leadOut(Object.keys(workspaceAttributes))">{{ lang('export') }}</el-button>
         </el-card>
       </el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :md="12">
-        <el-card class="box-card" header="其它">
-          <el-button icon="el-icon-star-on" @click="$open('chrome://bookmarks')">{{ lang('bookmarkManagement') }}</el-button>
-          <el-button icon="el-icon-timer" @click="$open('chrome://history')">{{ lang('historyManagement') }}</el-button>
+        <el-card
+          class="box-card"
+          header="其它"
+          :body-style="{ paddingBottom: '10px' }">
+          <el-button
+            icon="el-icon-star-on"
+            style="margin-bottom: 10px;margin-right: 10px;"
+            @click="$open('chrome://bookmarks')">{{ lang('bookmarkManagement') }}</el-button>
+          <el-button
+            icon="el-icon-timer"
+            style="margin-bottom: 10px;margin-left: 0;"
+            @click="$open('chrome://history')">{{ lang('historyManagement') }}</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -141,7 +190,7 @@ console.log('leadOut.data', data)
   },
   mounted() {
     // 数组校验
-    validate.validators.array = (arrayItems, itemConstraints) => {
+    validate.validators.array = function (arrayItems, itemConstraints) {
       if( ! Array.isArray(arrayItems)) return { errors: 'not array' };
       if(arrayItems.length <= 0) return { errors: 'can\'t not be empty' };
       const arrayItemErrors = arrayItems.reduce((errors, item, index) => {

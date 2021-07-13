@@ -118,6 +118,7 @@ export default {
       addTheme: this.addTheme,
       cloneTheme: this.cloneTheme,
       deleteTheme: this.deleteTheme,
+      changeTheme: this.changeTheme,
     }
   },
   data() {
@@ -816,6 +817,10 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         callback && callback();
       }).catch(() => {
       });
+    },
+    changeTheme(theme) {
+      if(theme.rank) this.theme.rank = theme.rank;
+      if(theme.user_theme_list) this.theme.user_theme_list = theme.user_theme_list;
     },
 
     upgrade(syncItems, localItems) {

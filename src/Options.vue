@@ -819,7 +819,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       });
     },
     changeTheme(theme) {
-      if(theme.rank) this.theme.rank = theme.rank;
+      // if(theme.rank) this.theme.rank = theme.rank;
       if(theme.user_theme_list) this.theme.user_theme_list = theme.user_theme_list;
     },
 

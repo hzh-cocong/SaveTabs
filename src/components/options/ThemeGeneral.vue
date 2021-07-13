@@ -2615,7 +2615,14 @@ console.log('leadOut.currentTheme', this.currentTheme)
 
 console.log('leadOut.data', data)
 
-      this.download('SaveTabsSingleTheme.json', JSON.stringify(data));
+      let filename = this.currentTheme.name + '-SavetabsTheme.json';
+
+      let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
+      if( ! patt.test(filename)) {
+        filename = 'SaveTabsTheme.json';
+      }
+
+      this.download(filename, JSON.stringify(data));
     },
 
     download: function(filename, data) {

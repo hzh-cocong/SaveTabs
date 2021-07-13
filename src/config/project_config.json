@@ -164,30 +164,6 @@
         }
     },
     "themeAttributes": {
-        "rank.popup": {
-            "object_array": {
-                "key": {
-                    "presence": true,
-                    "type": "string"
-                },
-                "value": {
-                    "presence": true,
-                    "type": "integer"
-                }
-            }
-        },
-        "rank.inject": {
-            "object_array": {
-                "key": {
-                    "presence": true,
-                    "type": "string"
-                },
-                "value": {
-                    "presence": true,
-                    "type": "integer"
-                }
-            }
-        },
         "user_theme_list": {
             "array": {
                 "name": {

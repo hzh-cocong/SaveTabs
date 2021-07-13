@@ -1,7 +1,7 @@
 <template>
   <div class="export-theme">
     <el-row :gutter="20">
-      <el-col :md="12">
+      <el-col :xl="12">
         <el-card
           class="box-card"
           header="主题"
@@ -16,7 +16,7 @@
             @click="leadOut">导出所有用户主题（不含系统自带主题）</el-button>
         </el-card>
       </el-col>
-      <el-col :md="12">
+      <el-col :xl="12">
         <el-card
           class="box-card"
           header="旧版（来自颜色分享）"
@@ -70,7 +70,7 @@ console.log('leadOut.data', JSON.parse(JSON.stringify(data)))
 
 console.log('leadOut.data2', data)
 
-        this.download('SaveTabsThemeData.json', JSON.stringify(data));
+        this.download('SaveTabsThemes.json', JSON.stringify(data));
       })
     },
     leadIn() {
@@ -117,23 +117,24 @@ console.log('leadOut.data2', data)
       return arrayItemErrors.length == 0 ? null : { errors: arrayItemErrors }
     }
     // 对 对象 的 key 和 value 进行循环校验
-    validate.validators.object_array = function (value, options) {
-      if(value == undefined) return undefined; //return "can\'t not be empty";
-      if( ! (value instanceof Object) || Array.isArray(value)) return "not object";
+    // 暂时没用到
+    // validate.validators.object_array = function (value, options) {
+    //   if(value == undefined) return undefined; //return "can\'t not be empty";
+    //   if( ! (value instanceof Object) || Array.isArray(value)) return "not object";
 
-      let keys = Object.keys(value);
-      for(let key of keys) {
-        const error = validate({ key }, { key: options.key });
-        if(error) return error;
-      }
+    //   let keys = Object.keys(value);
+    //   for(let key of keys) {
+    //     const error = validate({ key }, { key: options.key });
+    //     if(error) return error;
+    //   }
 
-      let values = Object.values(value);
-      for(let value of values) {
-        const error = validate({ value }, { value: options.value });
-        if(error) return error;
-      }
-      return undefined;
-    }
+    //   let values = Object.values(value);
+    //   for(let value of values) {
+    //     const error = validate({ value }, { value: options.value });
+    //     if(error) return error;
+    //   }
+    //   return undefined;
+    // }
     // 关联校验
     validate.validators.association = function (self, options, _, attributes) {
       // Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script

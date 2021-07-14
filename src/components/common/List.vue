@@ -731,6 +731,8 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
   transition-duration: .4s;
   transition-timing-function: ease;
   transition-delay: .5s;
+
+  list-style: none;
 }
 /* 显示滚动条 */
 .list.scroll {
@@ -759,5 +761,9 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
 .list-item {
   overflow: hidden;
   /* scroll-snap-align: end; */
+
+  /* list-style-type: none;
+  margin: 0;
+  padding: 0; */
 }
 </style>

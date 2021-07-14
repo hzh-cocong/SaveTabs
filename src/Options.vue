@@ -890,18 +890,18 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         }
         return accumulator;
       }, {});
-      // 添加新增的属性，旧版虽然没有配置但有默认值
-      theme_popup.config.toolbar_input_tip_show = true;
-      theme_popup.config.toolbar_input_font_size = 14;
-      theme_popup.config.toolbar_input_font_color = '#606266';
-      theme_popup.config.toolbar_input_focus_border_color = '#ffffff';
-      theme_popup.config.toolbar_icon_color = '#C1C4CB';
-      theme_popup.config.toolbar_border_color = '#dcdfe6';
-      theme_popup.config.toolbar_input_focus_border_color = '#c0c4cc';
-      if(theme_popup.config.list_explain_font_color != undefined)
-        theme_popup.config.list_current_explain_font_color = theme_popup.config.list_explain_font_color;
-      if(theme_popup.config.list_explain_focus_font_color != undefined)
-        theme_popup.config.list_current_explain_focus_font_color = theme_popup.config.list_explain_focus_font_color;
+      // // 添加新增的属性，旧版虽然没有配置但有默认值
+      // theme_popup.config.toolbar_input_tip_show = true;
+      // theme_popup.config.toolbar_input_font_size = 14;
+      // theme_popup.config.toolbar_input_font_color = '#606266';
+      // theme_popup.config.toolbar_input_focus_border_color = '#ffffff';
+      // theme_popup.config.toolbar_icon_color = '#C1C4CB';
+      // theme_popup.config.toolbar_border_color = '#dcdfe6';
+      // theme_popup.config.toolbar_input_focus_border_color = '#c0c4cc';
+      // if(theme_popup.config.list_explain_font_color != undefined)
+      //   theme_popup.config.list_current_explain_font_color = theme_popup.config.list_explain_font_color;
+      // if(theme_popup.config.list_explain_focus_font_color != undefined)
+      //   theme_popup.config.list_current_explain_focus_font_color = theme_popup.config.list_explain_focus_font_color;
 
       theme_popup.config = Object.assign({}, this.localConfig.theme_popup.config, theme_popup.config);
 
@@ -928,6 +928,9 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       console.log('options.test2', this.syncConfig, '|', this.localConfig, '|', this.theme)
       chrome.storage.sync.set({'config': this.syncConfig});
       chrome.storage.local.set({'config': this.localConfig, 'theme': this.theme});
+
+      // 避免异常
+      chrome.browserAction.setPopup({ popup: chrome.extension.getURL("savetabs.html") })
     }
   },
   mounted: function() {

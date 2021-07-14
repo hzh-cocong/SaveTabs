@@ -62,6 +62,8 @@
         :currentThemeList="currentThemeList"
         :currentTheme.sync="currentTheme"
         :openWay="openWay"
+
+        :theme="theme"
       ></router-view>
     </el-main>
 
@@ -119,6 +121,8 @@ export default {
       cloneTheme: this.cloneTheme,
       deleteTheme: this.deleteTheme,
       changeTheme: this.changeTheme,
+
+      download: this.download,
     }
   },
   data() {
@@ -165,8 +169,8 @@ export default {
         console.log('uuuuuuuuuuu1')
         if(this.openWay == 'popup') this.localConfig.theme_popup = theme;
         else this.localConfig.theme_inject = theme;
-        this.storeTheme();
-        // this.store('local');
+        // this.storeTheme({ 'config': true, 'theme': false, 'tip': false });
+        this.store('local', false);
       },
       get() {
         console.log('uuuuuuuuuuu2')
@@ -823,6 +827,18 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       if(theme.user_theme_list) this.theme.user_theme_list = theme.user_theme_list;
     },
 
+    download: function(filename, data) {
+      var urlObject = window.URL || window.webkitURL || window;
+      var blob = new Blob([data], {type: "application/json"});
+      var url = urlObject.createObjectURL(blob);
+
+      chrome.downloads.download({
+          url: url,
+          filename: filename,
+          //saveAs: false,
+      });
+    },
+
     upgrade(syncItems, localItems) {
       // 老用户升级
       console.log('upgrade', syncItems, localItems);
@@ -853,41 +869,21 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         "name": "Old Version Sync",
         "type": 1,
       }
+
       theme_popup.config = [
-        "list_font_color",
-        "list_background_color",
-        "list_state_color",
-        "list_keymap_color",
         "list_font_size",
         "list_state_size",
         "list_keymap_size",
-        "list_page_count",
-
         "list_explain_font_size",
-        "list_explain_font_color",
-        "list_explain_focus_font_color",
-
-        "list_focus_background_color",
-        "list_focus_font_color",
-        "list_focus_state_color",
-        "list_focus_keymap_color",
-
-        "list_current_background_color",
-        "list_current_font_color",
-        "list_current_state_color",
-
-        "list_current_focus_background_color",
-        "list_current_focus_font_color",
-        "list_current_focus_state_color",
 
         "item_height",
         "item_show_count",
+        "list_page_count",
 
         "width",
-        "background_color",
-
         "border_width",
-        "border_color",
+
+        ... Object.keys(this.projectConfig.colorAttributes)
       ].reduce((accumulator, key) => {
         if(syncItems.config[key] != undefined) {
           accumulator[key] = syncItems.config[key]

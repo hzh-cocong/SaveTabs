@@ -8,6 +8,7 @@ import './plugins/tool-test.js'
 import './plugins/tool.js'
 //*/
 import './plugins/svg-sprite.js'
+import './plugins/validate.js'
 
 import routes from './components/options/routes.config.js'
 

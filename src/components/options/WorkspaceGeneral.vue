@@ -130,15 +130,15 @@ export default {
   props: {
     syncConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     localConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     projectConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
   },
   data() {

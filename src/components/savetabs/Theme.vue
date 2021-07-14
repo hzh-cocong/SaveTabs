@@ -108,11 +108,11 @@ export default {
     },
     localConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     currentTheme: {
       type: Object,
-      required: require,
+      required: true,
     },
     openWay: {
       type: String,

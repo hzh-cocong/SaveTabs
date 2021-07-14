@@ -107,10 +107,12 @@
 
 import { nanoid } from 'nanoid'
 import projectConfig from '@/config/project_config.json'
-var validate = require("validate.js");
 
 export default {
   name: 'ExportWorkspace',
+  inject: [
+    'download',
+  ],
   data() {
     return {
       workspaceAttributes: projectConfig.workspaceAttributes,
@@ -134,13 +136,13 @@ console.log('leadOut', type, types, keys)
           }, {});
 
           accumulator[ type ] = items[ key ].map(row => {
-            return validate.cleanAttributes(row, attributes);
+            return this.$validate.cleanAttributes(row, attributes);
           })
           return accumulator;
         }, {});
 console.log('leadOut.data', data)
         this.download('SaveTabs'
-                      +validate.capitalize(Array.isArray(type) ? 'all' : type)
+                      +this.$validate.capitalize(Array.isArray(type) ? 'all' : type)
                       +'Data.json'
                       , JSON.stringify(data));
       })
@@ -160,7 +162,7 @@ console.log('leadOut.data', data)
         keys.push(this.workspaceAttributes[type].key);
       }
 
-      this.$confirm(this.lang('clearDataConfirm')+validate.capitalize(this.lang(type))+this.lang('clearDataConfirm2'), this.lang(type), {
+      this.$confirm(this.lang('clearDataConfirm')+this.$validate.capitalize(this.lang(type))+this.lang('clearDataConfirm2'), this.lang(type), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -169,39 +171,14 @@ console.log('leadOut.data', data)
         chrome.storage.local.remove(keys, () => {
           this.$message({
             type: 'success',
-            message: validate.capitalize(this.lang(type))+this.lang('clearDataSuccess')
+            message: this.$validate.capitalize(this.lang(type))+this.lang('clearDataSuccess')
           });
         });
       }).catch(() => {
       });
     },
-
-    download: function(filename, data) {
-      var urlObject = window.URL || window.webkitURL || window;
-      var blob = new Blob([data], {type: "application/json"});
-      var url = urlObject.createObjectURL(blob);
-
-      chrome.downloads.download({
-          url: url,
-          filename: filename,
-          //saveAs: false,
-      });
-    }
   },
   mounted() {
-    // 数组校验
-    validate.validators.array = function (arrayItems, itemConstraints) {
-      if( ! Array.isArray(arrayItems)) return { errors: 'not array' };
-      if(arrayItems.length <= 0) return { errors: 'can\'t not be empty' };
-      const arrayItemErrors = arrayItems.reduce((errors, item, index) => {
-        const error = validate(item, itemConstraints)
-        if (error) errors[index] = { error: error }
-        return errors
-      }, [])
-
-      return arrayItemErrors.length == 0 ? null : { errors: arrayItemErrors }
-    }
-
     // 导入数据
     let fileInput = document.getElementById('upload');
     fileInput.addEventListener('change', (event) => {
@@ -264,8 +241,9 @@ console.log('upload', types)
         for(let type of types) {
           let attributes = {};
           attributes[ type ] = this.workspaceAttributes[ type ].attributes;
-          if(validate(data, attributes) != undefined){
-            console.log(attributes);
+          console.log('vvv', type, attributes[ type ])
+          if(this.$validate(data, attributes) != undefined){
+            console.log('vvv2', this.$validate(data, attributes));
             this.$message({
               type: 'warning',
               message: this.lang('invalidFileFormat')
@@ -282,7 +260,7 @@ console.log('upload', types)
               accumulator[ key ] = true;
               return accumulator;
             }, {});
-            let item2 = validate.cleanAttributes(item, attributes);
+            let item2 = this.$validate.cleanAttributes(item, attributes);
 
             if(attributesArray['tabs'] != undefined) {
               let attributesArray2 = attributesArray['tabs'].array;
@@ -291,7 +269,7 @@ console.log('upload', types)
                 return accumulator;
               }, {});
               item2['tabs'] = item.tabs.map((tabs) => {
-                return validate.cleanAttributes(tabs, attributes2);
+                return this.$validate.cleanAttributes(tabs, attributes2);
               })
             }
 

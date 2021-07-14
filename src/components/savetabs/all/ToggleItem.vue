@@ -75,15 +75,15 @@ export default {
   props: {
     config: {
       type: Object,
-      required: require,
+      required: true,
     },
     currentThemeConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     projectConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     isLoad: {
       type: Boolean,
@@ -92,15 +92,15 @@ export default {
     },
     item: {
       type: Object,
-      required: require,
+      required: true,
     },
     index: {
       type: Number,
-      required: require,
+      required: true,
     },
     showIndex: {
       type: Number,
-      required: require,
+      required: true,
     },
     isActive: {
       type: Boolean,

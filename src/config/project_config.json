@@ -71,28 +71,26 @@
             "attributes": {
                 "array": {
                     "name": {
-                        "presence": true,
-                        "type": "string",
-                        "length": {
-                            "minimum": 1
-                        }
+                        "presence": {
+                            "allowEmpty": false
+                        },
+                        "type": "string"
                     },
                     "tabs": {
+                        "presence": {
+                            "allowEmpty": false
+                        },
                         "array": {
                             "icon": {
                                 "presence": false,
                                 "type": "string"
                             },
                             "title": {
-                                "presence": {
-                                    "allowEmpty": true
-                                },
+                                "presence": true,
                                 "type": "string"
                             },
                             "url": {
-                                "presence": {
-                                    "allowEmpty": true
-                                },
+                                "presence": true,
                                 "type": "string"
                             }
                         }
@@ -113,9 +111,7 @@
                         "type": "string"
                     },
                     "title": {
-                        "presence": {
-                            "allowEmpty": true
-                        },
+                        "presence": true,
                         "type": "string"
                     },
                     "url": {
@@ -140,21 +136,20 @@
                         "type": "number"
                     },
                     "tabs": {
+                        "presence": {
+                            "allowEmpty": false
+                        },
                         "array": {
                             "icon": {
                                 "presence": false,
                                 "type": "string"
                             },
                             "title": {
-                                "presence": {
-                                    "allowEmpty": true
-                                },
+                                "presence": true,
                                 "type": "string"
                             },
                             "url": {
-                                "presence": {
-                                    "allowEmpty": true
-                                },
+                                "presence": true,
                                 "type": "string"
                             }
                         }
@@ -167,9 +162,7 @@
         "user_theme_list": {
             "array": {
                 "name": {
-                    "presence": {
-                        "allowEmpty": true
-                    },
+                    "presence": true,
                     "type": "string"
                 },
                 "type": {

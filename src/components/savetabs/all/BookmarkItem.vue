@@ -123,11 +123,11 @@ export default {
   props: {
     currentThemeConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     projectConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     isLoad: {
       type: Boolean,
@@ -136,15 +136,15 @@ export default {
     },
     index: {
       type: Number,
-      required: require,
+      required: true,
     },
     item: {
       type: Object,
-      required: require,
+      required: true,
     },
     showIndex: {
       type: Number,
-      required: require,
+      required: true,
     },
     isActive: {
       type: Boolean,

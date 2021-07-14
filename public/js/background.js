@@ -71,6 +71,16 @@ function executeScript({tabId=null, onlyInjection=false, callback=undefined} = {
     if(onlyInjection) return;
 
     chrome.storage.local.get({'config': {}}, items => {
+      if(items.config.theme_inject == undefined) {
+        window.open(chrome.extension.getURL("options.html"));
+        // window.open(chrome.extension.getURL("options.html"), "extension_popup", `width=200,height=200,left=0,top=0,menubar=no,status=no,scrollbars=no,resizable=no`);
+        // 不支持
+        // chrome.tabs.create({
+        //   url: chrome.extension.getURL("options.html"),
+        // });
+        return;
+      }
+
       chrome.windows.getCurrent((w) => {
         let currentThemeConfig = items.config.theme_inject.config;
         let width =  currentThemeConfig.width

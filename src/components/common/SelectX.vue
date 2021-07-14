@@ -41,7 +41,7 @@ export default {
     },
     currentIndex: {
       type: Number,
-      required: require,
+      required: true,
     },
   },
   data() {

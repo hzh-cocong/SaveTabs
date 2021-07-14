@@ -2488,11 +2488,11 @@ export default {
   props: {
     currentTheme: {
       type: Object,
-      required: require,
+      required: true,
     },
     currentThemeList: {
       type: Array,
-      required: require,
+      required: true,
     },
     openWay: {
       type: String,

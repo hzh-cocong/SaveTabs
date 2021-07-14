@@ -90,19 +90,19 @@ export default {
   props: {
     config: {
       type: Object,
-      required: require,
+      required: true,
     },
     localConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     currentThemeConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     projectConfig: {
       type: Object,
-      required: require,
+      required: true,
     },
     isLoad: {
       type: Boolean,

@@ -24,6 +24,7 @@ let search = {
       }).then(() => {
         this.cacheList = this.storageList.map((item, index) => {
           item.url = encodeURI(item.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));
+          // item.url = encodeURI(item.formate.replace(new RegExp('{query}', 'g'), encodeURIComponent(originKeyword)));
           // item.title = `Search ${item.name} for '<strong>${originKeyword.escape()}</strong>'`;
           // item.realIndex = index;
           return item;

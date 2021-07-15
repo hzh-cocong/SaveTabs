@@ -118,24 +118,65 @@
 
     <el-popover
       placement="top-end"
-      title="谢谢分享！"
-      width="200"
+      title="感谢分享"
+      width="210"
       trigger="hover"
+      style="text-align: center;"
       @hide="focus">
-      <div @mousedown.prevent>
+      <div
+        class="share-box"
+        @mousedown.prevent>
         <img
-          src="@/assets/images/logo/weibo_32x32.png"
-          width="32"
-          height="32"
-          style="cursor: pointer"
-          @click="$open('https://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.cocong.cn%2F&title=SaveTabs %E5%88%86%E4%BA%AB&pic=http%3A%2F%2Fwww.cocong.cn%2Fassets%2Fimages%2Fcocong-34.png&appkey=', $event)"/>
+          src="@/assets/images/logo/weibo_48x48.png"
+          title="分享到微博"
+          @click="$open(weiboUrl, getKeyType($event))"/>
+      </div>
+      <div
+        class="share-box"
+        @mousedown.prevent>
+        <el-tooltip
+          placement="top"
+          effect="light">
+          <img
+            src="@/assets/images/logo/wechat_48x48.png"
+            style="cursor: default;"
+            title="分享到微信" />
+          <div
+            slot="content"
+            class="qrcode-box"
+            @mousedown.prevent>
+            <img
+              src="@/assets/web-qrcode-200x200.png"
+              title="http://www.cocong.cn/savetabs"
+              style="cursor: pointer"
+              @click="$open('http://www.cocong.cn/savetabs', getKeyType($event))"/>
+            <div>使用微信“扫一扫”</div>
+            <div>打开网页后点击右上角分享至朋友圈</div>
+          </div>
+        </el-tooltip>
+      </div>
+      <div
+        class="share-box"
+        @mousedown.prevent>
+        <img
+          src="@/assets/images/logo/twitter_48x48.png"
+          title="分享到 twitter"
+          @click="$open(twitterUrl, getKeyType($event))"/>
+      </div>
+      <div
+        class="share-box"
+        @mousedown.prevent>
+        <img
+          src="@/assets/images/logo/facebook_48x48.png"
+          title="分享到 facebook"
+          @click="$open(facebookUrl, getKeyType($event))"/>
       </div>
       <svg-icon
         slot="reference"
         name="share-alt-solid"
         class="hover2"
         style="margin: 0 10px;margin-top: 3px;"
-        @click.native="$open('./options.html?type=workspace', $event)"
+        @click.native="$open('http://www.cocong.cn/savetabs', getKeyType($event))"
       ></svg-icon>
     </el-popover>
   </div>
@@ -180,6 +221,33 @@ export default {
       w: {
         tipTimer: null,
       }
+    }
+  },
+  computed: {
+    weiboUrl() {
+      let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
+      return format.strtr({
+        '{url}': encodeURIComponent('http://www.cocong.cn/savetabs'),
+        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/assets/images/cocong-34.png||http://www.cocong.cn/assets/images/cocong-34.png?a||http://www.cocong.cn/assets/images/cocong-34.png?b'),
+        '{ralateUid}': 5564314611,
+      });
+    },
+    twitterUrl() {
+      let format = 'https://twitter.com/intent/tweet?text={title}&url={url}&via={origin}';
+      return format.strtr({
+        '{url}': encodeURIComponent('http://www.cocong.cn/savetabs'),
+        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
+        '{origin}': encodeURIComponent("hzh_cocong"),
+      });
+    },
+    facebookUrl() {
+      let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
+      return format.strtr({
+        '{url}': encodeURIComponent('http://www.cocong.cn'),
+        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整软件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/assets/images/cocong-34.png'),
+      });
     }
   },
   methods: {
@@ -319,5 +387,25 @@ input[type=checkbox]:checked:after {
   border-right: 1px solid var(--statusbar-icon-color);
   height: 20px;
   opacity: 0.6;
+}
+
+.share-box {
+  display: inline-block;
+  margin: 10px;
+  width: 32px;
+  height: 32px;
+}
+.share-box img {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.qrcode-box {
+  text-align: center;
+  font-size: 12px;
+  color: #666666;
+  cursor: default;
+  zoom: 0.5;
 }
 </style>

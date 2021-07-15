@@ -1,0 +1,26 @@
+[
+    {
+        "name": "这是商品",
+        "description": "这是描述",
+        "recommend": "这个东西很不错",
+        "pic": "product-1.png",
+        "price": 23,
+        "platform": 1
+    },
+    {
+        "name": "这是商品2",
+        "description": "这是描述",
+        "recommend": "这个东西很不错",
+        "pic": "product-1.png",
+        "price": 23,
+        "platform": 1
+    },
+    {
+        "name": "这是商品3",
+        "description": "这是描述",
+        "recommend": "这个东西很不错",
+        "pic": "product-1.png",
+        "price": 23,
+        "platform": 1
+    }
+]

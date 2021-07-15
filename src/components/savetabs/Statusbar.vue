@@ -58,7 +58,7 @@
         <div
           style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
           @mousedown.prevent>
-          <span>点击购买<span class="hover" style="cursor:pointer">（广告）</span></span>
+          <span>商品推荐<span class="hover" style="cursor:pointer">（广告）</span></span>
           <i
             title="换一换"
             class="el-icon-refresh hover"
@@ -183,6 +183,9 @@
 </template>
 
 <script>
+
+import "@/config/advertising_config.json"
+
 export default {
   name: 'statusbar',
   inject: ['focus', 'prev', 'next', 'left', 'right', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
@@ -215,8 +218,8 @@ export default {
   },
   data() {
     return {
-      tip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
-      storageTip: '京东京造高端纯享 泰国乳胶枕礼盒93%乳胶含量 泰国原芯进口天然乳胶枕波浪乳胶枕头 橡胶枕颈椎枕',
+      tip: '泰国乳胶枕礼盒',
+      storageTip: '泰国乳胶枕礼盒',
 
       w: {
         tipTimer: null,

@@ -50,7 +50,7 @@
         title=""
         width="300"
         style="height: 30px;"
-        trigger="hover"
+        trigger="click"
         transition
         popper-class="product-box"
         :open-delay="450"
@@ -62,20 +62,58 @@
           <i
             title="换一换"
             class="el-icon-refresh hover"
-            style="float:right; margin-right: 10px;cursor: pointer"></i>
+            style="float:right; margin-right: 10px;cursor: pointer"
+            @click="changeGoods"></i>
         </div>
         <div
-          style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: pointer"
+          style="display: flex;align-items: center;height: 125px; overflow: hidden;cursor: default"
           @mousedown.prevent>
-          <span><img src="@/assets/images/shops/product-1.png" style="width: 120px; height: 120px" /></span>
-          <span style="flex: 1;padding: 10px;">
-            <div>{{ storageTip }}</div>
-            <div style="color:red;margin-top: 5px;">￥199</div>
+          <span>
+            <img
+              :src="'./img/'+goods.pic"
+              style="width: 120px; height: 120px;cursor: pointer;"
+              @click="$open(goods.url, getKeyType($event))" />
+          </span>
+          <span style="flex: 1;padding: 10px;height: 100%;display: flex;flex-direction: column;width: 160px;">
+            <div
+              id="goods-name"
+              @click="$open(goods.url, getKeyType($event))" >{{ storageTip }}</div>
+            <div
+              id="goods-description"
+              v-html="goods.description"></div>
+            <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
+              <span>{{ '￥'+goods.price }}</span>
+              <el-tooltip
+                placement="top"
+                effect="light">
+                <svg-icon
+                  name="qrcode-solid"
+                  class="hover2"
+                  style="width:17px;height: 17px;color: #606266;float:right;cursor: default;"></svg-icon>
+                <div
+                  slot="content"
+                  class="qrcode-box"
+                  @mousedown.prevent>
+                  <img
+                    src="@/assets/web-qrcode-200x200.png"
+                    :title="goods.url"
+                    style="cursor: pointer"
+                    @click="$open(goods.url, getKeyType($event))" />
+                  <div>使用微信“扫一扫”</div>
+                  <div>打开网页后点击右上角分享至朋友圈</div>
+                </div>
+              </el-tooltip>
+              <span
+                title="来自京东平台"
+                class="hover2"
+                style="color:white;background-color:#E1251B;border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
+                @click="$open(goods.url, getKeyType($event))">京东</span>
+            </div>
           </span>
         </div>
         <img
           slot="reference"
-          src="@/assets/images/shops/product-1.png"
+          :src="'./img/'+goods.pic"
           class="product-img" />
       </el-popover>
       <span style="display:inline-block;flex: 1;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 1;">{{ storageTip }}</span>
@@ -184,7 +222,7 @@
 
 <script>
 
-import "@/config/advertising_config.json"
+import advertising_config from "@/config/advertising_config.json"
 
 export default {
   name: 'statusbar',
@@ -218,8 +256,9 @@ export default {
   },
   data() {
     return {
-      tip: '泰国乳胶枕礼盒',
-      storageTip: '泰国乳胶枕礼盒',
+      goodsIndex: Math.floor(Math.random()*advertising_config.length),
+
+      tip: '',
 
       w: {
         tipTimer: null,
@@ -227,6 +266,13 @@ export default {
     }
   },
   computed: {
+    goods() {
+      return advertising_config[this.goodsIndex];
+    },
+    storageTip() {
+      return this.goods.name;
+    },
+
     weiboUrl() {
       let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
       return format.strtr({
@@ -251,6 +297,15 @@ export default {
         '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整软件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
         '{pic}': encodeURIComponent('http://www.cocong.cn/assets/images/cocong-34.png'),
       });
+    }
+  },
+  watch: {
+    storageTip: {
+      handler(newVal) {
+        this.tip = newVal;
+        console.log('fffffffff', newVal);
+      },
+      immediate: true
     }
   },
   methods: {
@@ -278,6 +333,18 @@ export default {
         this.tip = this.storageTip;
         // this.storageTip = '';
       }, delay);
+    },
+
+    changeGoods() {
+      let allGoods = advertising_config.slice(0, this.goodsIndex)
+                    .concat(advertising_config.slice(this.goodsIndex+1))
+      let max = allGoods.length-1;
+      let min = 0;
+      let index = Math.floor(Math.random()*(max-min+1)+min);
+
+      this.goodsIndex = index >= this.goodsIndex ? index+1 : index;
+
+      document.querySelector('#goods-description').scrollLeft = 0;
     },
 
     toLeft(keyType) {
@@ -410,5 +477,22 @@ input[type=checkbox]:checked:after {
   color: #666666;
   cursor: default;
   zoom: 0.5;
+}
+#goods-name {
+  font-weight: 300;
+  font-size: 14px;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+#goods-name:hover {
+  color: #E1251B;
+}
+#goods-description {
+  flex: 1;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: auto;
 }
 </style>

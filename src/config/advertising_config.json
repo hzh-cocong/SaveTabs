@@ -1,26 +1,20 @@
 [
     {
-        "name": "这是商品",
-        "description": "这是描述",
-        "recommend": "这个东西很不错",
-        "pic": "product-1.png",
-        "price": 23,
-        "platform": 1
+        "name": "泰国进口天然乳胶枕",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "description2": "泰国乳胶枕进口天然乳胶枕波浪乳胶枕头 - 睡眠博士（AiSleep）",
+        "pic": "pillow.jpg",
+        "price": 129,
+        "platform": 1,
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc"
     },
     {
-        "name": "这是商品2",
-        "description": "这是描述",
-        "recommend": "这个东西很不错",
+        "name": "泰国进口天然乳胶枕2",
+        "description": "睡眠博士（AiSleep）精选2<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "description2": "泰国乳胶枕进口天然乳胶枕波浪乳胶枕头 - 睡眠博士（AiSleep）",
         "pic": "product-1.png",
-        "price": 23,
-        "platform": 1
-    },
-    {
-        "name": "这是商品3",
-        "description": "这是描述",
-        "recommend": "这个东西很不错",
-        "pic": "product-1.png",
-        "price": 23,
-        "platform": 1
+        "price": 129,
+        "platform": 1,
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc"
     }
 ]

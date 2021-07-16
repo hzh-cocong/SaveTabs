@@ -647,6 +647,13 @@ export default {
   padding: 0;
   margin: 0;
   overflow: auto;
+
+  /* 禁止选择 */
+  -moz-user-select:none; /*火狐*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -ms-user-select:none; /*IE10*/
+  -khtml-user-select:none; /*早期浏览器*/
+  user-select:none;
 }
 .list-item {
   padding: 10px;
@@ -656,13 +663,6 @@ export default {
   display: flex;
   align-items: center;
   /* cursor: move; */
-
-  /* 禁止选择 */
-  -moz-user-select:none; /*火狐*/
-  -webkit-user-select:none; /*webkit浏览器*/
-  -ms-user-select:none; /*IE10*/
-  -khtml-user-select:none; /*早期浏览器*/
-  user-select:none;
 }
 .list-item:first-child {
   margin-top: 0;

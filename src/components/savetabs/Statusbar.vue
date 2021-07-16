@@ -112,7 +112,6 @@
                   <div
                     id="goods-qrcode"
                     style="width: 200px; height: 200px;margin-bottom: 10px;cursor: pointer"
-                    :title="goods.url"
                     @click="$open(goods.url, getKeyType($event))"></div>
                   <div>谢谢支持！</div>
                   <div>使用 京东APP “扫一扫” 即可购买。</div>
@@ -171,11 +170,26 @@
 
     <el-popover
       placement="top-end"
-      title="谢谢分享"
+      title=""
       width="210"
       trigger="hover"
       style="text-align: center;"
       @hide="focus">
+      <div
+        style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
+        @mousedown.prevent>
+        <span>谢谢分享</span>
+        <i
+          title="赞赏作者"
+          class="el-icon-chat-dot-square hover"
+          style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
+          @click="changeGoods"></i>
+        <i
+          title="给个好评或提点建议"
+          class="el-icon-coffee-cup hover"
+          style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
+          @click="changeGoods"></i>
+      </div>
       <div
         class="share-box"
         @mousedown.prevent>

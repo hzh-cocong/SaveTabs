@@ -180,15 +180,15 @@
         @mousedown.prevent>
         <span>谢谢分享</span>
         <i
-          title="赞赏作者"
+          title="给个好评或提点建议"
           class="el-icon-chat-dot-square hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
-          @click="changeGoods"></i>
+          @click="$open('./options.html?type=praise', getKeyType($event))"></i>
         <i
-          title="给个好评或提点建议"
+          title="赞赏作者"
           class="el-icon-coffee-cup hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
-          @click="changeGoods"></i>
+          @click="$open('./options.html?type=praise', getKeyType($event))"></i>
       </div>
       <div
         class="share-box"

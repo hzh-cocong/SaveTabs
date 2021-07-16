@@ -197,8 +197,48 @@
       if(zoom != 1) iframe.style.zoom = 1 / zoom;
     }, 0);
 
-    setTimeout(() => {
-      chrome.runtime.sendMessage({ type: 'pageZoom', zoom })
-    }, 150)
+    if(zoom != 1) {
+      let isReceived = false;
+      let intervalID = null;
+      let sendTimes = 0;
+      setTimeout(function send() {
+        sendTimes++;
+        console.log('zoom:send')
+        chrome.runtime.sendMessage({ type: 'pageZoom', zoom }, (result) => {
+          // 捕获错误，这样插件就不会显示错误
+          chrome.runtime.lastError;
+
+          if(result == undefined || result.received != true) {
+            console.log('zoom:send again', isReceived)
+            // 插件还未完全打开，无法接受消息，得重发
+            // setTimeout(send, 100);
+            return;
+          }
+
+          isReceived = true;
+          clearInterval(intervalID)
+          console.log('zoom:finish', isReceived)
+        })
+
+        // 不知道为啥，sendMessage 发送失败不会执行回调，但在 background.js 是会执行的，这里只能使用定时器进行检测
+        if(intervalID == null) {
+          console.log('zoom:add_monitor');
+          intervalID = setInterval(function(){
+            console.log('zoom:monitor', isReceived);
+            // 发送不超过 20 次，避免死循环（一般两次就ok了）
+            if(sendTimes >= 20) {
+              clearInterval(intervalID)
+              return;
+            }
+
+            if(isReceived == false) {
+              send();
+            } else {
+              clearInterval(intervalID)
+            }
+          }, 50);
+        }
+      }, 50)
+    }
   })
 }

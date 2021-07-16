@@ -81,7 +81,7 @@
         spellcheck="false"
         :placeholder="placeholder"
         :clearable="false"
-        @keyup.native="keyType=getKeyType($event)"
+        @keyup.native="keyup"
         @keydown.native="keydown"
         @keydown.native.down.prevent="selectDelay('down', getKeyType($event))"
         @keydown.native.up.prevent="selectDelay('up', getKeyType($event))"
@@ -1038,6 +1038,16 @@ export default {
       }, this.keyword);
     },
 
+    keyup(event) {
+      this.keyType = this.getKeyType(event);
+console.log('jjjjjjj2222222', event)
+      // windows 的 alt 键比较特殊，单独按下会使得输入款失去焦点，弹窗也会自动关闭，所以要屏蔽掉
+      if(this._device.platform != 'Mac' && event.keyCode == 18) {
+        console.log('jjjjjjjjjjjjjjjjjj');
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    },
     keydown(event) {
       console.log('keydown', event)
 
@@ -1085,15 +1095,16 @@ export default {
       if(index <= 0 || index > 9) return;
 
       // 数字快捷键，默认选中对应的行并点击，当 alt 也同时被按下则不点击
-      if((this._device.platform == 'Mac' && event.metaKey == true)
-      || (this._device.platform != 'Mac' && event.altKey == true)) {
+      if((this._device.platform == 'Mac' && (event.metaKey == true) || event.altKey == true)
+      || (this._device.platform != 'Mac' && (event.altKey == true) || event.ctrlKey == true)) {
         // shift 键被太多快捷键给包了，就不跟着起哄了
         if(event.shiftKey == true) return;
 
         event.stopPropagation();
         event.preventDefault();
 
-        if(event.altKey == true) {
+        if((this._device.platform == 'Mac' && event.altKey == true)
+        || (this._device.platform != 'Mac' && event.ctrlKey == true)) {
           this.$refs.workspaces[ this.activeWorkspaceRefIndex ].choice(index);
           return;
         }
@@ -1442,7 +1453,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 必须放最后面
       this.$nextTick(() => {
         this.focus();
-        if( ! document.hasFocus()) {
+        // popup 检查比较慢，很容易出错，所以直接不检查了，而且 popup 是肯定能获得焦点的
+        if(this.openWay != 'popup' && ! document.hasFocus()) {
           this.$message({
             type: 'warning',
             message: '当前无法自动获得焦点，需手动点击输入框才可输入内容。',
@@ -1515,11 +1527,20 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
             duration: 1000,
           });
         } else if(request.type == 'pageZoom') {
+          sendResponse({received: true});
+
+          console.log('zoom:savetabs', request.zoom, document.documentElement.style.zoom, 1 / request.zoom, document.documentElement.style.zoom == 1 / request.zoom)
+          if(this.w.isReceived) return;
+          else this.w.isReceived = true;
           if(request.zoom == 1) return;
+          // 可能会重复接收（这种方法不靠谱，因为精度会丢失导致不相等）
+          // if(document.documentElement.style.zoom == 1 / request.zoom) return;
 
           document.documentElement.style.zoom = 1 / request.zoom;
 
           this.statusTip('注意：当前网页进行了缩放，部分操作存在异常。', true, 3000);
+
+          console.log('zoom:savetabs2', document.documentElement.style.zoom)
         }
       })
 //*

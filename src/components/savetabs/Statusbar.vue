@@ -93,7 +93,10 @@
               @click="$open(goods.url, getKeyType($event))" >{{ storageTip }}</div>
             <div
               id="goods-description"
-              v-html="goods.description"></div>
+              v-html="goods.description"
+              @mouseenter="$refs.goods_description.className='beautify-scrollbar'"
+              @mouseleave="$refs.goods_description.className=''"
+              ref="goods_description"></div>
             <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
               <span title="因商家促销或其它原因，价格可能会有变化，以实际购买价格为准。">{{ '￥'+goods.price }}</span>
               <el-tooltip
@@ -559,6 +562,6 @@ input[type=checkbox]:checked:after {
   flex: 1;
   font-size: 12px;
   white-space: nowrap;
-  overflow: auto;
+  overflow: hidden;
 }
 </style>

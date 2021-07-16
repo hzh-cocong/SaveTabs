@@ -32,7 +32,7 @@
         :collapse="collapse"
         :collapse-transition="false"
         :default-active="$route.name"
-        style="flex: 1;overflow: auto;"
+        style="flex: 1;overflow-x:hidden;overflow-y:auto;"
         :unique-opened="true"
         router>
         <el-submenu

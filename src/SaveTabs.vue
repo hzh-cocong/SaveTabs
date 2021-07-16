@@ -128,7 +128,7 @@
               <!-- :style="{ maxHeight: (currentThemeConfig.item_height*currentThemeConfig.item_show_count -->
             <el-dropdown-menu
               slot="dropdown"
-              class="toolbar-menu"
+              class="toolbar-menu beautify-scrollbar"
               @mousedown.native.prevent
               :style="{ maxHeight: ((listHeight == 0 ? currentThemeConfig.item_height-10 : listHeight)
                                   + currentThemeConfig.border_width
@@ -875,7 +875,7 @@ export default {
 
       let index = this.getTypeIndex(type);
       if(index == -1) {
-        this.$confirm('活跃标签已被禁用，是否前往 设置中心 开启？', '提示', {
+        this.$confirm('标签已被禁用，是否前往 设置中心 开启？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1820,6 +1820,9 @@ img {
   padding: 0;
 }
 
+.beautify-scrollbar {
+  overflow: overlay !important;
+}
 .beautify-scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;

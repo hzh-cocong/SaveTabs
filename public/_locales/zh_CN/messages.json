@@ -13,7 +13,7 @@
     "hourAgo": {"message": "小时前"},
 
 
-    "tab": {"message": "活跃标签"},
+    "tab": {"message": "标签"},
     "note": {"message": "便签"},
     "window": {"message": "窗口"},
     "temporary": {"message": "临时"},

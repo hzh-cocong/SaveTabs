@@ -50,7 +50,7 @@
         title=""
         width="300"
         style="height: 30px;"
-        trigger="click"
+        trigger="hover"
         transition
         popper-class="product-box"
         :open-delay="450"
@@ -58,7 +58,18 @@
         <div
           style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
           @mousedown.prevent>
-          <span>商品推荐<span class="hover" style="cursor:pointer">（广告）</span></span>
+          <span>
+            <span>商品推荐</span>
+            <el-tooltip
+              placement="bottom"
+              effect="light">
+              <span class="hover" style="cursor:pointer">（广告）</span>
+              <div
+                slot="content"
+                style="width: 170px;">如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，感谢你的支持。</div>
+            </el-tooltip>
+            <!-- <span class="hover" style="cursor:pointer">（广告）</span> -->
+          </span>
           <i
             title="换一换"
             class="el-icon-refresh hover"
@@ -72,35 +83,39 @@
             <img
               :src="'./img/'+goods.pic"
               style="width: 120px; height: 120px;cursor: pointer;"
+              title="点击可查看更多商品信息"
               @click="$open(goods.url, getKeyType($event))" />
           </span>
           <span style="flex: 1;padding: 10px;height: 100%;display: flex;flex-direction: column;width: 160px;">
             <div
               id="goods-name"
+              title="点击可直接购买商品，谢谢支持！"
               @click="$open(goods.url, getKeyType($event))" >{{ storageTip }}</div>
             <div
               id="goods-description"
               v-html="goods.description"></div>
             <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
-              <span>{{ '￥'+goods.price }}</span>
+              <span title="因商家促销或其它原因，价格可能会有变化，以实际购买价格为准。">{{ '￥'+goods.price }}</span>
               <el-tooltip
                 placement="top"
-                effect="light">
+                effect="light"
+                transition="">
                 <svg-icon
                   name="qrcode-solid"
                   class="hover2"
-                  style="width:17px;height: 17px;color: #606266;float:right;cursor: default;"></svg-icon>
+                  style="width:17px;height: 17px;color: #606266;float:right;cursor: default;"
+                  @mouseenter.native="getQrcode"></svg-icon>
                 <div
                   slot="content"
                   class="qrcode-box"
                   @mousedown.prevent>
-                  <img
-                    src="@/assets/web-qrcode-200x200.png"
+                  <div
+                    id="goods-qrcode"
+                    style="width: 200px; height: 200px;margin-bottom: 10px;cursor: pointer"
                     :title="goods.url"
-                    style="cursor: pointer"
-                    @click="$open(goods.url, getKeyType($event))" />
-                  <div>使用微信“扫一扫”</div>
-                  <div>打开网页后点击右上角分享至朋友圈</div>
+                    @click="$open(goods.url, getKeyType($event))"></div>
+                  <div>谢谢支持！</div>
+                  <div>使用 京东APP “扫一扫” 即可购买。</div>
                 </div>
               </el-tooltip>
               <span
@@ -174,7 +189,8 @@
         @mousedown.prevent>
         <el-tooltip
           placement="top"
-          effect="light">
+          effect="light"
+          transition="">
           <img
             src="@/assets/images/logo/wechat_48x48.png"
             style="cursor: default;"
@@ -222,6 +238,8 @@
 
 <script>
 
+import '@/plugins/animate.js'
+import QRCode from 'qrcodejs2'
 import advertising_config from "@/config/advertising_config.json"
 
 export default {
@@ -259,6 +277,8 @@ export default {
       goodsIndex: Math.floor(Math.random()*advertising_config.length),
 
       tip: '',
+
+      qrcode: null,
 
       w: {
         tipTimer: null,
@@ -309,6 +329,35 @@ export default {
     }
   },
   methods: {
+    getQrcode() {
+      if(this.w.grcodeUrl == this.goods.url) return;
+      this.w.grcodeUrl = this.goods.url;
+      console.log('ffff');
+
+      if(this.qrcode == null) {
+        let self = this;
+        setTimeout(function initQrcode() {
+          console.log('kkkkkkkkkkk')
+          let dom = document.getElementById("goods-qrcode");
+          if(dom == null) {
+            console.log('kkkkkkkkkkk2')
+            setTimeout(initQrcode, 10);
+            return;
+          }
+
+          self.qrcode = new QRCode(dom, {
+            width : 200,
+            height : 200,
+            // colorDark : "#000000",
+            // colorLight : "#ffffff",
+            text: self.goods.url,
+            correctLevel: QRCode.CorrectLevel.L
+          });
+        }, 10);
+      } else {
+        this.qrcode.makeCode(this.goods.url);
+      }
+    },
     showTip(tip, lower = false) {
       // 在低优先级下，如果提示栏已经有人在用时，就不插进去了
       // 低优先级可以被低优先级的覆盖
@@ -361,6 +410,10 @@ export default {
         this.next();
       }
     }
+  },
+  mounted() {
+    // todo
+    window.statusbar = this;
   }
 }
 </script>
@@ -476,7 +529,7 @@ input[type=checkbox]:checked:after {
   font-size: 12px;
   color: #666666;
   cursor: default;
-  zoom: 0.5;
+  /* zoom: 0.5; */
 }
 #goods-name {
   font-weight: 300;

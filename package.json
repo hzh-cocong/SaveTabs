@@ -12,6 +12,7 @@
     "core-js": "^3.14.0",
     "element-ui": "^2.15.2",
     "nanoid": "^3.1.23",
+    "qrcodejs2": "0.0.2",
     "sortablejs": "^1.13.0",
     "svgo-loader": "^3.0.0",
     "validate.js": "^0.13.1",

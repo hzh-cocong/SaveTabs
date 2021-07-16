@@ -11,11 +11,6 @@
 
     if(config.theme_inject == undefined) {
       window.open(chrome.extension.getURL("options.html"));
-      // window.open(chrome.extension.getURL("options.html"), "extension_popup", `width=200,height=200,left=0,top=0,menubar=no,status=no,scrollbars=no,resizable=no`);
-      // 不支持
-      // chrome.tabs.create({
-      //   url: chrome.extension.getURL("options.html"),
-      // });
       return;
     }
 
@@ -25,8 +20,9 @@
     let container = document.getElementById(id);
 
     if(container != null) {
-      // document.body.style.position = 'inherit';
-      document.body.style.overflow = 'auto';
+      let overflow = document.body.getAttribute('data-savetabs-overflow');
+      document.body.style.overflow = overflow == null ? 'auto' : overflow;
+      document.body.removeAttribute('data-savetabs-overflow');
       container.remove();
 
       return;
@@ -188,6 +184,7 @@
 
     container.append(iframe);
     document.body.append(container);
+    document.body.setAttribute('data-savetabs-overflow', document.body.style.overflow);
     document.body.style.overflow = 'hidden';
 
     setTimeout(() => {
@@ -199,19 +196,5 @@
     setTimeout(() => {
       chrome.runtime.sendMessage({ type: 'pageZoom', data: window.outerWidth / window.innerWidth})
     }, 1000)
-
-    // 没用
-    // iframe.contentWindow.focus();
-
-    // 没用
-    // iframe.focus();
   })
-
-  // 没用
-  // chrome.tabs.getCurrent(tab => {
-  //   chrome.tabs.update(tab.id, {active: true})
-  // })
-
-  // 没用
-  // window.focus();
 }

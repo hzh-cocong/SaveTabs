@@ -187,14 +187,18 @@
     document.body.setAttribute('data-savetabs-overflow', document.body.style.overflow);
     document.body.style.overflow = 'hidden';
 
+    let zoom = window.outerWidth / window.innerWidth;
+
     setTimeout(() => {
       container.style.opacity = 1;
       container.style.backgroundColor = containerBackgroundColor;
       iframe.style.opacity = 1;
+
+      if(zoom != 1) iframe.style.zoom = 1 / zoom;
     }, 0);
 
     setTimeout(() => {
-      chrome.runtime.sendMessage({ type: 'pageZoom', data: window.outerWidth / window.innerWidth})
-    }, 1000)
+      chrome.runtime.sendMessage({ type: 'pageZoom', zoom })
+    }, 150)
   })
 }

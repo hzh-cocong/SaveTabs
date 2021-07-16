@@ -1505,9 +1505,11 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
             duration: 1000,
           });
         } else if(request.type == 'pageZoom') {
-          if(request.data == 1) return;
+          if(request.zoom == 1) return;
 
-          this.statusTip('注意：由于当前网页进行了缩放，可能导致列表滚动异常。', true, 3000);
+          document.documentElement.style.zoom = 1 / request.zoom;
+
+          this.statusTip('注意：当前网页进行了缩放，部分操作存在异常。', true, 3000);
         }
       })
 //*

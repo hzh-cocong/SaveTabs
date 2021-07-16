@@ -529,7 +529,6 @@ input[type=checkbox]:checked:after {
   font-size: 12px;
   color: #666666;
   cursor: default;
-  /* zoom: 0.5; */
 }
 #goods-name {
   font-weight: 300;

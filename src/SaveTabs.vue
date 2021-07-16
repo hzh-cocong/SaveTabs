@@ -1442,9 +1442,19 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       // 必须放最后面
       this.$nextTick(() => {
         this.focus();
+        if( ! document.hasFocus()) {
+          this.$message({
+            type: 'warning',
+            message: '当前无法自动获得焦点，需手动点击输入框才可输入内容。',
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 5000,
+          });
+        }
+
         this.finalWork();
 
-        // 较小压力，但愿有用
+        // 减小压力，但愿有用
         if(localItems.info.show_theme == true) this.themeDialogAutoOpen = true;
       })
     })

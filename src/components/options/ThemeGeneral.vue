@@ -87,7 +87,7 @@
         <div
           v-if="currentTheme.is_system"
           style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;"
-          title="此为系统主题，无法修改，建议克隆">
+          title="此为系统主题，无法修改，可以克隆">
           <img
             style="width: 24px; height: 24px;margin-left: 20px;"
             src="@/assets/icon-128.png" />

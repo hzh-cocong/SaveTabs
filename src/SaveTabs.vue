@@ -915,9 +915,8 @@ export default {
           return parseInt(index);
         }
       }
-      // // 找不到则返回 -1
-      // return -1;
       // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
+      // 换设备就有可能出现这个问题，因为 active_workspace_type 不会同步，但 workspaces 会
       return 0;
     },
 

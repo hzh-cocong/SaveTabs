@@ -5,6 +5,10 @@
     "popup": true,
     "keymap_left_and_right": true,
 
+    "adjust_window_width": 0,
+    "adjust_window_height": 28,
+    "adjust_window_top": 51,
+
     "all_sort_auto": true,
     "all_include": [
         {

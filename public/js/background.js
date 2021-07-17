@@ -92,12 +92,13 @@ function executeScript({tabId=null, onlyInjection=false, callback=undefined} = {
                     +currentThemeConfig.border_width*2+10;
 
         if(currentThemeConfig.statusbar_show == true) height += 30; // 底部状态栏
-        height += 28; // 窗口标题栏
+        // height += 28; // 窗口标题栏
 
         // let left = w.left+(w.width-width)/2;
         // let top = w.top+120;
 
-        let offset = 79-28;// 浏览器标题栏 和 窗口标题栏 的编译叠加（不含书签栏）
+        // let offset = 79-28;// 浏览器标题栏 和 窗口标题栏 的编译叠加（不含书签栏）
+        let offset = items.config.adjust_window_top; // 51
 
         // 使用百分比
         if(currentThemeConfig.width_fill == true) {
@@ -105,8 +106,11 @@ function executeScript({tabId=null, onlyInjection=false, callback=undefined} = {
         }
         if(currentThemeConfig.height_fill == true) {
           height = (w.height-offset-28)*currentThemeConfig.height_percentage/100;
-          height += 28; // 窗口标题栏
+          // height += 28; // 窗口标题栏
         }
+
+        height += items.config.adjust_window_height; // 28
+        width += items.config.adjust_window_width;
 
         // 水平位置
         // currentThemeConfig.position_horizontal_align='right';

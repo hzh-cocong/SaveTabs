@@ -28,6 +28,10 @@ export default [{
       'title': ' 总览',
     },
     {
+      'name': 'adjust',
+      'title': ' 矫正',
+    },
+    {
       'name': 'export',
       'title': '导入导出',
       'redirect': { 'name': 'export-theme' },

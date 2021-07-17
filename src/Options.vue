@@ -122,6 +122,8 @@ export default {
       deleteTheme: this.deleteTheme,
       changeTheme: this.changeTheme,
 
+      editLocalConfig: this.editLocalConfig,
+
       download: this.download,
     }
   },
@@ -827,6 +829,11 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       if(theme.user_theme_list) this.theme.user_theme_list = theme.user_theme_list;
     },
 
+    editLocalConfig(type, value) {
+      this.localConfig[type] = value;
+      this.store('local');
+    },
+
     download: function(filename, data) {
       var urlObject = window.URL || window.webkitURL || window;
       var blob = new Blob([data], {type: "application/json"});
@@ -917,6 +924,11 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         localConfig.theme_mode = syncItems.config.theme_mode;
       }
       localConfig.theme_popup = theme_popup;
+      if(this._device.platform == 'Win') {
+        localConfig.adjust_window_width = 16;
+        localConfig.adjust_window_height = 28+22;
+        localConfig.adjust_window_top = 37;
+      }
 
       console.log('options.test', syncConfig, '|', localConfig, '|', theme_popup)
 
@@ -967,6 +979,13 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       if(Object.keys(syncItems.config).length == 0) {
         // 新用户
         console.log('新用户')
+
+        if(this._device.platform == 'Win') {
+          this.localConfig.adjust_window_width = 16;
+          this.localConfig.adjust_window_height = 28+22;
+          this.localConfig.adjust_window_top = 37;
+        }
+
         chrome.storage.sync.set({'config': this.syncConfig});
         chrome.storage.local.set({'config': this.localConfig});
         console.log({syncConfig: this.syncConfig, localConfig: this.localConfig})

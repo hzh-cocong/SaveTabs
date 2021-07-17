@@ -1,7 +1,7 @@
 <template>
   <div class="export-adjust">
     <el-alert
-      type="success"
+      type="info"
       title="仅在注入模式下，并且弹窗才有效"
       style="margin-bottom: 20px"
       :closable="false">

@@ -14,7 +14,6 @@
     "nanoid": "^3.1.23",
     "qrcodejs2": "0.0.2",
     "sortablejs": "^1.13.0",
-    "svgo-loader": "^3.0.0",
     "validate.js": "^0.13.1",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1"

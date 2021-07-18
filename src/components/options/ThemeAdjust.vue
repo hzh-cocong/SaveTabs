@@ -3,8 +3,7 @@
     <el-alert
       type="info"
       title="仅在注入模式下，并且弹窗才有效"
-      style="margin-bottom: 20px"
-      :closable="false">
+      style="margin-bottom: 20px">
     </el-alert>
     <el-row :gutter="20">
       <el-col :sm="12" :md="8">

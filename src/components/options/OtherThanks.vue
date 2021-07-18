@@ -24,27 +24,27 @@
           </div>
           <div style="text-align: center;">
             <div>渐进式 JavaScript 框架</div>
-            <div style="margin-top: 20px; color: #42b983;">
+            <div style="margin-top: 20px; color: #42b983; cursor:default;">
               <el-tooltip
                 class="item"
                 effect="light"
                 content="已经会了 HTML、CSS、JavaScript？即刻阅读指南开始构建应用！"
                 placement="bottom">
-                <span style="cursor:default;">易用</span>
+                <span>易用</span>
               </el-tooltip>&nbsp;&nbsp;
               <el-tooltip
                 class="item"
                 effect="light"
                 content="不断繁荣的生态系统，可以在一个库和一套完整框架之间自如伸缩。"
                 placement="bottom">
-                <span style="cursor:default;">灵活</span>
+                <span>灵活</span>
               </el-tooltip>&nbsp;&nbsp;
               <el-tooltip
                 class="item"
                 effect="light"
                 content="20kB min+gzip 运行大小超快虚拟 DOM 最省心的优化"
                 placement="bottom">
-                <span style="cursor:default;">高效</span>
+                <span>高效</span>
               </el-tooltip>
             </div>
           </div>
@@ -268,6 +268,7 @@
                 <img src="@/assets/food.jpeg" style="width: 16px; height: 16px; border-radius: 2px; vertical-align: middle;" />
               </el-tooltip>
             </div>
+            <p>最后，一首我最喜欢的歌 <a href="https://www.google.com/search?q=DAN%20DAN%20%E5%BF%83%E9%AD%85%E3%81%8B%E3%82%8C%E3%81%A6%E3%81%8F" target="_blank">DAN DAN 心魅かれてく（渐渐被你吸引）</a> 分享给大家。</p>
           </div>
         </el-card>
       </el-col>
@@ -291,10 +292,14 @@ export default {
   margin-bottom: 20px;
 }
 
+.webpack-box {
+  border: 0;
+}
 .webpack-box  >>> .el-card__header {
   border-color: rgb(100, 100, 100);
 }
 .babel-box {
+  border: 0;
   background-color:#3b3c38;
   color:#f5da55;
 }
@@ -304,18 +309,22 @@ export default {
   content: "";
   display: block;
   position: absolute;
-  left: 12px;
-  bottom: 25px;
-  right: 12px;
-  top: 12px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   opacity: .1;
   /* z-index: 1; */
 }
 .babel-box >>> .el-card__header {
   display: flex;
-  border-color: #807542;
+  border-color: #645b38;
 }
 .sortablejs-box {
+  border: 0;
   background-color:rgb(244,215,201);
   background: -webkit-linear-gradient(top, rgb(244,215,201) 0%,rgb(244,226,201) 100%);
   background-color: linear-gradient(to bottom, rgb(244,215,201) 0%,rgb(244,226,201) 100%);
@@ -342,10 +351,6 @@ export default {
   top: 0;
   right: 0;
   bottom: 0;
-  /* left: 11px;
-  bottom: 21px;
-  right: 11px;
-  top: 1px; */
   opacity: .2;
   border-radius: 4px;
   transition: opacity 0.3s;

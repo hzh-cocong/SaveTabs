@@ -268,7 +268,7 @@
                 <img src="@/assets/food.jpeg" style="width: 16px; height: 16px; border-radius: 2px; vertical-align: middle;" />
               </el-tooltip>
             </div>
-            <p>最后，一首我最喜欢的歌 <a href="https://www.google.com/search?q=DAN%20DAN%20%E5%BF%83%E9%AD%85%E3%81%8B%E3%82%8C%E3%81%A6%E3%81%8F" target="_blank">DAN DAN 心魅かれてく（渐渐被你吸引）</a> 分享给大家。</p>
+            <p>最后，一首我最喜欢的歌 <a href="https://www.google.com/search?q=DAN%20DAN%20%E5%BF%83%E9%AD%85%E3%81%8B%E3%82%8C%E3%81%A6%E3%81%8F" style="color:inherit;" target="_blank">DAN DAN 心魅かれてく（渐渐被你吸引）</a> 分享给大家。</p>
           </div>
         </el-card>
       </el-col>
@@ -358,6 +358,20 @@ export default {
 }
 .thankyou-box:hover:before {
   opacity: .3;
+}
+.thankyou-box >>> .el-card__body {
+  color: #FF6699;
+  transition: color 0.3s;
+}
+.thankyou-box >>> .el-card__body:hover {
+  color: #FF0066;
+}
+.thankyou-box >>> img {
+  transition: opacity 0.3s;
+  opacity: 0.5;
+}
+.thankyou-box:hover >>> img {
+  opacity: 1;
 }
 
 .img-link {

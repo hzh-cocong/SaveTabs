@@ -64,6 +64,8 @@
         :openWay="openWay"
 
         :theme="theme"
+
+        :commands="commands"
       ></router-view>
     </el-main>
 

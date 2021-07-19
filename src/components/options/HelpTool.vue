@@ -1,6 +1,7 @@
 <template>
   <div
-    class="help-tool">
+    class="help-tool"
+    @click="focus">
     <el-card
       class="box-card"
       header="批量打开链接">
@@ -9,9 +10,10 @@
         autofocus
         :autosize="{ minRows: 10, maxRows: 20 }"
         :placeholder="'https://www.baidu.com\nhttps://www.google.com'"
-        v-model="urls">
+        v-model="urls"
+        ref="textarea">
       </el-input>
-      <div style="text-align: right;margin-top: 20px;">
+      <div style="text-align: right;margin-top: 20px;" @mousedown.prevent>
         <el-button
           :disabled="urls.length <= 0"
           @click="open(true)">当前窗口打开</el-button>
@@ -66,6 +68,10 @@ export default {
           tabs: tab.map(tab => tab.index)
         })
       })
+    },
+
+    focus() {
+      this.$refs.textarea.focus();
     }
   }
 }
@@ -75,6 +81,8 @@ export default {
 <style scoped>
 .help-tool {
   padding:20px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .box-card {

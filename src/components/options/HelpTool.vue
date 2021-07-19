@@ -49,6 +49,19 @@ export default {
             resolve(window);
           })
         }).then(window => {
+          // 捕获错误，这样插件就不会显示错误
+          const error = chrome.runtime.lastError;
+          if(error && error.message) {
+            this.$message({
+              type: 'warning',
+              message: '地址格式错误',
+              customClass: 'window-message-box',
+              offset: 69,
+              duration: 5000,
+            });
+            return;
+          }
+
           // 激活窗口
           chrome.windows.update(window.id, { focused: true});
         })
@@ -63,6 +76,19 @@ export default {
           });
         });
       })).then((tab) => {
+        // 捕获错误，这样插件就不会显示错误
+        const error = chrome.runtime.lastError;
+        if(error && error.message) {
+          this.$message({
+            type: 'warning',
+            message: '地址格式错误',
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 3000,
+          });
+          return;
+        }
+
         chrome.tabs.highlight({
           windowId: tab[0].windowId,
           tabs: tab.map(tab => tab.index)

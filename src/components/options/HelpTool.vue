@@ -73,6 +73,9 @@ export default {
     focus() {
       this.$refs.textarea.focus();
     }
+  },
+  mounted() {
+    this.focus();
   }
 }
 </script>

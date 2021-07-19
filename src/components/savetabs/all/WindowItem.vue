@@ -68,7 +68,7 @@
       <span
         class="title"
         :style="{fontSize: currentThemeConfig.list_font_size+'px'}"
-        v-html="highlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
+        v-html="toHighlight(item.name, storageKeyword, '<strong>', '</strong>')"></span>
       <div
         class="sub-title"
         v-if="isSelected && keyType != ''"

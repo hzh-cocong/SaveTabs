@@ -88,7 +88,7 @@ const tool = {
           if (r != null) return decodeURI(r[2]);
           return null; // 返回参数值
         },
-        highlight(content, keywords, leftTag, rightTag) {
+        toHighlight(content, keywords, leftTag, rightTag) {
           if(keywords == '') {
             return content.escape();
           }

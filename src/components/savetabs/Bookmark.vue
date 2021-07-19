@@ -156,7 +156,7 @@
         <div
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+          v-html="toHighlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
@@ -392,8 +392,8 @@ export default {
       let highlightMap = new Array(this.list.length);
       this.list.forEach((item, index) => {
         highlightMap[ index ] = {
-          title: this.highlight(item.title, storageKeyword, '<strong>', '</strong>'),
-          url: item.children ? '' : this.highlight(item.url, storageKeyword, '<strong>', '</strong>')
+          title: this.toHighlight(item.title, storageKeyword, '<strong>', '</strong>'),
+          url: item.children ? '' : this.toHighlight(item.url, storageKeyword, '<strong>', '</strong>')
         }
       });
 

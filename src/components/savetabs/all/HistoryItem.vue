@@ -56,11 +56,11 @@
           style="margin-right: 10px;"
           :class="{ 'el-icon-circle-plus-outline' : item.subFiles.length > 0,
                     'el-icon-remove-outline' : item.subFiles.length <= 0, }"></i>
-        <!-- <span v-html="(highlight(item.title, storageKeyword, '<strong>', '</strong>')
-                    || highlight(item.url, storageKeyword, '<strong>', '</strong>'))"></span> -->
+        <!-- <span v-html="(toHighlight(item.title, storageKeyword, '<strong>', '</strong>')
+                    || toHighlight(item.url, storageKeyword, '<strong>', '</strong>'))"></span> -->
         <span v-html="isSelected || storageKeyword != ''
-                    ? (highlight(item.title, storageKeyword, '<strong>', '</strong>')
-                      || highlight(item.url, storageKeyword, '<strong>', '</strong>'))
+                    ? (toHighlight(item.title, storageKeyword, '<strong>', '</strong>')
+                      || toHighlight(item.url, storageKeyword, '<strong>', '</strong>'))
                     : (beautifyTitle(item.title) || beautifyTitle(item.url))"></span>
       </div>
       <div
@@ -75,9 +75,9 @@
                 ? getTip()
                 : ( item.count == undefined || item.count == 1
                   ? (isSelected || storageKeyword != ''
-                    ? highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                    ? toHighlight(item.url, storageKeyword, '<strong>', '</strong>')
                     : getDomain(item.count == undefined ? item.url : item.subFiles[0].url))
-                  : (highlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count) )"></div>
+                  : (toHighlight(getDomain(item.url), storageKeyword, '<strong>', '</strong>')+' | '+item.count) )"></div>
     </div>
 
     <div

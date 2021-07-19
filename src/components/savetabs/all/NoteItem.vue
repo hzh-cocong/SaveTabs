@@ -68,14 +68,14 @@
       <!-- <div
         class="title"
         :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-        v-html="highlight(item.title, storageKeyword, '<strong>', '</strong>')
-              || highlight(item.url, storageKeyword, '<strong>', '</strong>')"></div> -->
+        v-html="toHighlight(item.title, storageKeyword, '<strong>', '</strong>')
+              || toHighlight(item.url, storageKeyword, '<strong>', '</strong>')"></div> -->
       <div
         class="title"
         :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
         v-html="isSelected || storageKeyword != ''
-              ? (highlight(item.title, storageKeyword, '<strong>', '</strong>')
-                || highlight(item.url, storageKeyword, '<strong>', '</strong>'))
+              ? (toHighlight(item.title, storageKeyword, '<strong>', '</strong>')
+                || toHighlight(item.url, storageKeyword, '<strong>', '</strong>'))
               : (beautifyTitle(item.title) || getDomain(item.url))"></div>
       <div
         class="sub-title"
@@ -94,7 +94,7 @@
         v-html="isSelected && keyType != ''
               ? getTip()
               : ( storageKeyword != ''
-                ? this.highlight(item.url, storageKeyword, '<strong>', '</strong>')
+                ? this.toHighlight(item.url, storageKeyword, '<strong>', '</strong>')
                 : (isSelected ? item.url : getDomain(item.url)) )"></div>
     </div>
 

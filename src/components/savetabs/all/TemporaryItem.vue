@@ -84,8 +84,8 @@
                             +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
                               + (isActive ? 20 : 0) )
                             +'px' }"
-            v-html="highlight(tab.title, storageKeyword, '<strong>', '</strong>')
-                  || highlight(tab.url, storageKeyword, '<strong>', '</strong>')"></div>
+            v-html="toHighlight(tab.title, storageKeyword, '<strong>', '</strong>')
+                  || toHighlight(tab.url, storageKeyword, '<strong>', '</strong>')"></div>
         </el-tag>
       </template>
       <template v-else>
@@ -109,8 +109,8 @@
           <span
             style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
             v-html="isSelected || storageKeyword != ''
-                  ? ( highlight(item.tabs[0].title, storageKeyword, '<strong>', '</strong>')
-                    || highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>'))
+                  ? ( toHighlight(item.tabs[0].title, storageKeyword, '<strong>', '</strong>')
+                    || toHighlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>'))
                   : (beautifyTitle(item.tabs[0].title) || getDomain(item.tabs[0].url))"></span>
         </div>
         <div
@@ -123,7 +123,7 @@
             marginLeft: (currentThemeConfig.list_font_size+5)+'px' }"
             v-html="storageKeyword == ''
                   ? getDomain(item.tabs[0].url)
-                  : highlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>')"></div>
+                  : toHighlight(item.tabs[0].url, storageKeyword, '<strong>', '</strong>')"></div>
       </template>
     </div>
 

@@ -66,6 +66,10 @@ export default [{
       'name': 'keymap',
       'title': '快捷键',
     },
+    {
+      'name': 'tool',
+      'title': '工具',
+    },
   ]
 },
 {

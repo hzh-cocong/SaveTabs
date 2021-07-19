@@ -211,7 +211,7 @@
         <div
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+          v-html="toHighlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
@@ -608,7 +608,7 @@ export default {
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = new Array(this.list.length);
       this.list.forEach((item, index) => {
-        highlightMap[ index ] = this.highlight(item.name, this.storageKeyword, '<strong>', '</strong>');
+        highlightMap[ index ] = this.toHighlight(item.name, this.storageKeyword, '<strong>', '</strong>');
       });
 
       let b = new Date().getTime();

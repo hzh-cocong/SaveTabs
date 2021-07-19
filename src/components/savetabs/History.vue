@@ -197,7 +197,7 @@
         <div
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+          v-html="toHighlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
         <div
           v-if="isSelected && item.tip != ''"
           class="sub-title"
@@ -476,9 +476,9 @@ export default {
                     : this.list[index+1].title
                   );
         highlightMap[ index ] = {
-          title: this.highlight(title, this.storageKeyword, '<strong>', '</strong>'),
-          url: this.highlight(url, this.storageKeyword, '<strong>', '</strong>'),
-          domain: this.highlight(this.getDomain(url), this.storageKeyword, '<strong>', '</strong>'),
+          title: this.toHighlight(title, this.storageKeyword, '<strong>', '</strong>'),
+          url: this.toHighlight(url, this.storageKeyword, '<strong>', '</strong>'),
+          domain: this.toHighlight(this.getDomain(url), this.storageKeyword, '<strong>', '</strong>'),
         }
       });
 

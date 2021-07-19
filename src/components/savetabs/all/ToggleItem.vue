@@ -34,7 +34,7 @@
       <div
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
+          v-html="toHighlight(item.name, storageKeyword.substr(config.workspace_change_word.length).trim().split(/\s+/)[0], '<strong>', '</strong>')"></div>
       <div
         v-if="isSelected && item.tip != ''"
         class="sub-title"

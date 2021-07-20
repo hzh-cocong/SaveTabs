@@ -41,6 +41,8 @@
       <div style="flex: 1;font-size:18px;color: #ffffffc9;">可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥</div>
     </div>
 
+    <!-- <div class="divider"></div> -->
+
   </div>
 </template>
 
@@ -56,6 +58,7 @@ export default {
 .general {
   text-align: center;
   background-color: #FFCCFF;
+  cursor: default;
 }
 .jumbotron {
   text-align: center;
@@ -92,6 +95,6 @@ export default {
 }
 
 .divider {
-  padding:5px;
+  padding:2px;
 }
 </style>

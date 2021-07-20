@@ -36,4 +36,6 @@ export default menus.reduce((accumulator, menu) => {
     }
   }))
   return accumulator;
-}, [{ name: 'general', path: '/', component: () => import('./General.vue') }])
+}, [
+  { name: 'general', path: '/', component: () => import('./General.vue') },
+  { name: '404', path: '*', component: () => import('./General.vue') }  ])

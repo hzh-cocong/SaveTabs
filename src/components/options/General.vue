@@ -14,6 +14,33 @@
       </div>
     </div>
 
+    <div class="divider"></div>
+
+    <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #50A2F4);">
+      <div style="width: 40%;">
+        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+      </div>
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">支持一键保存和打开所有网页，提高工作和学习效率</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display: flex;align-items: center;background: linear-gradient(to right, #CC66CC, #FFCCFF);">
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">支持书签、历史和标签页等的聚合搜索，避免多处查找</div>
+      <div style="width: 40%;">
+        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #538BD6);">
+      <div style="width: 40%;">
+        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+      </div>
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥</div>
+    </div>
+
   </div>
 </template>
 
@@ -28,6 +55,7 @@ export default {
 <style scoped>
 .general {
   text-align: center;
+  background-color: #FFCCFF;
 }
 .jumbotron {
   text-align: center;
@@ -63,4 +91,7 @@ export default {
   font-style:oblique
 }
 
+.divider {
+  padding:5px;
+}
 </style>

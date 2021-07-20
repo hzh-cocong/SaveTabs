@@ -58,10 +58,10 @@ export default [{
   title: '帮助',
   icon: 'el-icon-question',
   children: [
-    {
-      'name': 'workspace',
-      'title': '工作区',
-    },
+    // {
+    //   'name': 'workspace',
+    //   'title': '工作区',
+    // },
     {
       'name': 'keymap',
       'title': '快捷键',

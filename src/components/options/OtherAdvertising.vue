@@ -1,6 +1,7 @@
 <template>
   <div
     class="other-advertising">
+
     <el-alert
       type="info"
       style="margin-bottom: 20px">
@@ -110,11 +111,15 @@
               style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
               :style="{ backgroundColor: goods.platform.background_color,
                         color: goods.platform.color }"
-              @click="country == 'zh_CN' ? JDSearch(goods.name) : amazonSearch(goods.name)">{{ goods.platform.text }}</span>
+              @click="openPlatform(goods.platform.text, goods.name)">{{ goods.platform.text }}</span>
           </div>
         </span>
       </div>
     </el-card>
+
+    <el-backtop target=".el-main" :bottom="100">
+    </el-backtop>
+
   </div>
 </template>
 <script>
@@ -170,6 +175,13 @@ console.log(goods, this.qrcode[index]);
       }, 10);
     },
 
+    openPlatform(platform, name) {
+      if(platform == 'Amazon') {
+        this.amazonSearch(name);
+      } else if(platform == '京东') {
+        this.JDSearch(name);
+      }
+    },
     JDSearch(value) {
       let url = 'https://union-click.jd.com/jdc?type=union&p=JF8BAGoKGloXWwIKUlZeOE8nAl8JKx9KBVhdDxxtUQ5SQmQWBR1TGxlZAUEPVhcnV20AE14RDQZXBwtVDU1HVGYAGwwRWAYDBwkPCh5CAjg4RB9IADYBVV5ZCE0XBm4PK2sVXDYyZG5tOEonM184&t=W1dCFBBFC0RUQUpADgpQTFs=&e=&tu='+encodeURIComponent('http://search.jd.com/Search?keyword='+value+'&enc=utf-8');
       window.open(url);

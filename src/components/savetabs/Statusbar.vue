@@ -127,7 +127,7 @@
                 style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
                 :style="{ backgroundColor: goods.platform.background_color,
                           color: goods.platform.color }"
-                @click="country == 'zh_CN' ? JDSearch(goods.name) : amazonSearch(goods.name) ">{{ goods.platform.text }}</span>
+                @click="openPlatform(goods.platform.text, goods.name)">{{ goods.platform.text }}</span>
             </div>
           </span>
         </div>
@@ -449,6 +449,13 @@ console.log('changeGoods', this.goodsIndex, index, allGoods)
       }
     },
 
+    openPlatform(platform, name) {
+      if(platform == 'Amazon') {
+        this.amazonSearch(name);
+      } else if(platform == '京东') {
+        this.JDSearch(name);
+      }
+    },
     JDSearch(value) {
       let url = 'https://union-click.jd.com/jdc?type=union&p=JF8BAGoKGloXWwIKUlZeOE8nAl8JKx9KBVhdDxxtUQ5SQmQWBR1TGxlZAUEPVhcnV20AE14RDQZXBwtVDU1HVGYAGwwRWAYDBwkPCh5CAjg4RB9IADYBVV5ZCE0XBm4PK2sVXDYyZG5tOEonM184&t=W1dCFBBFC0RUQUpADgpQTFs=&e=&tu='+encodeURIComponent('http://search.jd.com/Search?keyword='+value+'&enc=utf-8');
       window.open(url);
@@ -456,7 +463,7 @@ console.log('changeGoods', this.goodsIndex, index, allGoods)
     amazonSearch(value) {
       let url = 'https://www.amazon.com/gp/search?ie=UTF8&tag=cocong-20&linkCode=ur2&linkId=17322288f8b3f551908623e03d8f3638&camp=1789&creative=9325&index=aps&keywords='+encodeURIComponent(value);
       window.open(url);
-    }
+    },
   },
   mounted() {
     // todo

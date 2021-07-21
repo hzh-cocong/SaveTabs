@@ -70,7 +70,7 @@ import {
     Divider,
     Image,
     // Calendar,
-    // Backtop,
+    Backtop,
     // PageHeader,
     // CascaderPanel,
     Loading,
@@ -152,7 +152,7 @@ import {
   Vue.use(Divider);
   Vue.use(Image);
   // Vue.use(Calendar);
-  // Vue.use(Backtop);
+  Vue.use(Backtop);
   // Vue.use(PageHeader);
   // Vue.use(CascaderPanel);
   // Vue.use(Avatar);

@@ -43,7 +43,7 @@
     <span class="divider"></span>
 
     <span
-      v-if="tip == storageTip"
+      v-if="tip == storageTip && goods"
       class="advertising animate__animated animate__flipInX">
       <el-popover
         placement="top"
@@ -71,6 +71,7 @@
             <!-- <span class="hover" style="cursor:pointer">（广告）</span> -->
           </span>
           <i
+            v-if="allGoods.length > 1"
             title="换一换"
             class="el-icon-refresh hover"
             style="float:right; margin-right: 10px;cursor: pointer"
@@ -98,7 +99,7 @@
               @mouseleave="$refs.goods_description.className=''"
               ref="goods_description"></div>
             <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
-              <span title="因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。">{{ '￥'+goods.price }}</span>
+              <span title="因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。">{{ goods.unit+goods.price }}</span>
               <el-tooltip
                 placement="top"
                 effect="light"
@@ -123,8 +124,10 @@
               <span
                 title="来自京东平台"
                 class="hover2"
-                style="color:white;background-color:#E1251B;border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
-                @click="$open(goods.url, getKeyType($event))">京东</span>
+                style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
+                :style="{ backgroundColor: goods.platform.background_color,
+                          color: goods.platform.color }"
+                @click="country == 'zh_CN' ? JDSearch(goods.name) : amazonSearch(goods.name) ">{{ goods.platform.text }}</span>
             </div>
           </span>
         </div>
@@ -259,6 +262,11 @@ import '@/plugins/animate.js'
 import QRCode from 'qrcodejs2'
 import advertising_config from "@/config/advertising_config.json"
 
+const COUNTRY = {
+  CHINA: 1,
+  OTHER: 2,
+}
+
 export default {
   name: 'statusbar',
   inject: ['focus', 'prev', 'next', 'left', 'right', 'changeThemeMode', 'toPin', 'popupChange', 'keymapLeftAndRightChange'],
@@ -291,11 +299,13 @@ export default {
   },
   data() {
     return {
-      goodsIndex: Math.floor(Math.random()*advertising_config.length),
+      goodsIndex: -1,
 
       tip: '',
 
       qrcode: null,
+
+      country: this.lang('@@ui_locale'), // 'zh_CN',
 
       w: {
         tipTimer: null,
@@ -303,11 +313,15 @@ export default {
     }
   },
   computed: {
+    allGoods() {
+      let country = this.country == 'zh_CN' ? COUNTRY.CHINA : COUNTRY.OTHER;
+      return advertising_config.filter(item => item.country == country);
+    },
     goods() {
-      return advertising_config[this.goodsIndex];
+      return this.allGoods[this.goodsIndex];
     },
     storageTip() {
-      return this.goods.name;
+      return this.goods ? this.goods.name : '';
     },
 
     weiboUrl() {
@@ -402,15 +416,22 @@ export default {
     },
 
     changeGoods() {
-      let allGoods = advertising_config.slice(0, this.goodsIndex)
-                    .concat(advertising_config.slice(this.goodsIndex+1))
+      if(this.allGoods.length == 0) return;
+      if(this.allGoods.length == 1 && this.goodsIndex != -1) return;
+
+      let allGoods = this.goodsIndex == -1
+                    ? this.allGoods
+                    : this.allGoods.slice(0, this.goodsIndex)
+                      .concat(this.allGoods.slice(this.goodsIndex+1))
       let max = allGoods.length-1;
       let min = 0;
       let index = Math.floor(Math.random()*(max-min+1)+min);
 
-      this.goodsIndex = index >= this.goodsIndex ? index+1 : index;
-
-      document.querySelector('#goods-description').scrollLeft = 0;
+      this.goodsIndex = this.goodsIndex != -1 && index >= this.goodsIndex ? index+1 : index;
+console.log('changeGoods', this.goodsIndex, index, allGoods)
+      this.$nextTick(() => {
+        document.querySelector('#goods-description').scrollLeft = 0;
+      })
     },
 
     toLeft(keyType) {
@@ -426,11 +447,22 @@ export default {
       } else if(keyType == '') {
         this.next();
       }
+    },
+
+    JDSearch(value) {
+      let url = 'https://union-click.jd.com/jdc?type=union&p=JF8BAGoKGloXWwIKUlZeOE8nAl8JKx9KBVhdDxxtUQ5SQmQWBR1TGxlZAUEPVhcnV20AE14RDQZXBwtVDU1HVGYAGwwRWAYDBwkPCh5CAjg4RB9IADYBVV5ZCE0XBm4PK2sVXDYyZG5tOEonM184&t=W1dCFBBFC0RUQUpADgpQTFs=&e=&tu='+encodeURIComponent('http://search.jd.com/Search?keyword='+value+'&enc=utf-8');
+      window.open(url);
+    },
+    amazonSearch(value) {
+      let url = 'https://www.amazon.com/gp/search?ie=UTF8&tag=cocong-20&linkCode=ur2&linkId=17322288f8b3f551908623e03d8f3638&camp=1789&creative=9325&index=aps&keywords='+encodeURIComponent(value);
+      window.open(url);
     }
   },
   mounted() {
     // todo
     window.statusbar = this;
+
+    this.changeGoods();
   }
 }
 </script>

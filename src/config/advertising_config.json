@@ -2,29 +2,288 @@
     {
         "name": "泰国进口天然乳胶枕",
         "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
-        "description2": "泰国乳胶枕进口天然乳胶枕波浪乳胶枕头 - 睡眠博士（AiSleep）",
         "pic": "pillow.jpg",
         "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
         "price": 129,
-        "platform": "京东",
-        "type": 1
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
     },
     {
         "name": "泰国进口天然乳胶枕2",
-        "description2": "睡眠博士（AiSleep）精选2<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
-        "description": "泰国乳胶枕进口天然乳胶枕波浪乳胶枕头 - 睡眠博士（AiSleep）睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>睡眠博士（AiSleep）精选<br/>",
-        "pic": "product-1.png",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
         "price": 129,
-        "platform": 1,
-        "url": "https://union-click.jd.com/jdc"
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
     },
     {
-        "name": "泰国进口天然乳胶枕2",
-        "description2": "睡眠博士（AiSleep）精选2<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
-        "description": "泰国乳胶枕进",
-        "pic": "product-1.png",
+        "name": "泰国进口天然乳胶枕3",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
         "price": 129,
-        "platform": 1,
-        "url": "https://union-click.jd.com/jdc"
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕4",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕5",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕6",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕7",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕8",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕9",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕10",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕11",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+    {
+        "name": "泰国进口天然乳胶枕12",
+        "description": "睡眠博士（AiSleep）精选<br/>原装进口内芯，ECO 认证 95% 天然乳胶！<br/>京仓直发，送花上门，试睡30天！",
+        "pic": "pillow.jpg",
+        "url": "https://union-click.jd.com/jdc?e=&p=JF8AAMEDIgZlGF0QBRcAURNTEDIQBVMcXhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UXABQAUBlETEdOWmVFCUFGUQBVcD5HYER5L0NSSHZsBRZrVxkyEzdWGlsRAhQHUBpcJTISAGVNNRUDEwZUGlsSAxo3VCtbEgEVBVEfWBQLEwRUK1wVCyJeHkJbHAsSN2UrWCUyIgdlGGtXbBFXXRMLQAFBVAYYXxACQgVcGwgXBBEFVBlbRlJHBAZMaxcDEwNc",
+        "price": 129,
+
+        "platform": {
+            "text": "京东",
+            "background_color": "#E1251B",
+            "color": "#ffffff"
+        },
+        "unit": "￥",
+        "country": 1
+    },
+
+
+    {
+        "name": "Apple AirPods Pro",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "https://www.amazon.com/gp/product/B07ZPC9QD4/ref=as_li_tl?ie=UTF8&tag=cocong-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=B07ZPC9QD4&linkId=fb49cfc391772cbf7addf0c0e14603d5",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro2",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "aaa",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro3",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro4",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "https://www.amazon.com/gp/product/B07ZPC9QD4/ref=as_li_tl?ie=UTF8&tag=cocong-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=B07ZPC9QD4&linkId=fb49cfc391772cbf7addf0c0e14603d5",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro5",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "https://www.amazon.com/gp/product/B07ZPC9QD4/ref=as_li_tl?ie=UTF8&tag=cocong-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=B07ZPC9QD4&linkId=fb49cfc391772cbf7addf0c0e14603d5",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro6",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "https://www.amazon.com/gp/product/B07ZPC9QD4/ref=as_li_tl?ie=UTF8&tag=cocong-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=B07ZPC9QD4&linkId=fb49cfc391772cbf7addf0c0e14603d5",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
+    },
+    {
+        "name": "Apple AirPods Pro7",
+        "description": "Active noise cancellation for immersive sound<br/>Transparency mode for hearing and connecting with the world around you<br/>Three sizes of soft, tapered silicone tips for a customizable fit",
+        "pic": "AirPods.png",
+        "url": "https://www.amazon.com/gp/product/B07ZPC9QD4/ref=as_li_tl?ie=UTF8&tag=cocong-20&camp=1789&creative=9325&linkCode=as2&creativeASIN=B07ZPC9QD4&linkId=fb49cfc391772cbf7addf0c0e14603d5",
+        "price": 189.99,
+
+        "platform": {
+            "text": "Amazon",
+            "background_color": "#232F3E",
+            "color": "#ffffff"
+        },
+        "unit": "$",
+        "country": 2
     }
 ]

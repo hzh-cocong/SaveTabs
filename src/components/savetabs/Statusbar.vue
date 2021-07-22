@@ -50,7 +50,7 @@
         title=""
         width="300"
         style="height: 30px;"
-        trigger="click"
+        trigger="hover"
         transition
         popper-class="product-box"
         :open-delay="450"
@@ -122,7 +122,7 @@
                     @click="$open(goods.url, getKeyType($event))"></canvas> -->
                   <img
                     id="goods-qrcode"
-                    :src="test"
+                    :src="qrcodeImgUrl"
                     @click="$open(goods.url, getKeyType($event))" />
                   <div>谢谢支持！</div>
                   <div>使用 京东APP “扫一扫” 即可购买。</div>
@@ -311,7 +311,7 @@ export default {
       tip: '',
 
       qrcode: null,
-      test: '',
+      qrcodeImgUrl: '',
 
       country: this.lang('@@ui_locale'), // 'zh_CN',
 
@@ -377,48 +377,19 @@ export default {
         errorCorrectionLevel: 'L',
         quality: 1,
         margin: 0,
-        width: 200
+        width: 200,
       },(error, url)=>{
         console.log(error, url);
 
-        if (error) console.error(error)
+        if(error) {
+          console.error(error)
+          this.qrcodeImgUrl = '';
+          this.w.grcodeUrl = '';
+          return;
+        }
 
-        this.test = url;
+        this.qrcodeImgUrl = url;
       })
-
-      // if(this.qrcode == null) {
-      //   let self = this;
-      //   setTimeout(function initQrcode() {
-      //     console.log('kkkkkkkkkkk')
-      //     let dom = document.getElementById("goods-qrcode");
-      //     if(dom == null) {
-      //       console.log('kkkkkkkkkkk2')
-      //       setTimeout(initQrcode, 10);
-      //       return;
-      //     }
-
-      //     QRCode.toCanvas(dom, self.goods.url, {
-      //       errorCorrectionLevel: 'L',
-      //       quality: 1,
-      //       margin: 0,
-      //       width: 200
-      //     }, function (error) {
-      //       if (error) console.error(error)
-      //       console.log('success!');
-      //     })
-
-      //     // self.qrcode = new QRCode(dom, {
-      //     //   width : 200,
-      //     //   height : 200,
-      //     //   // colorDark : "#000000",
-      //     //   // colorLight : "#ffffff",
-      //     //   text: self.goods.url,
-      //     //   correctLevel: QRCode.CorrectLevel.L
-      //     // });
-      //   }, 10);
-      // } else {
-      //   this.qrcode.makeCode(this.goods.url);
-      // }
     },
     showTip(tip, lower = false) {
       // 在低优先级下，如果提示栏已经有人在用时，就不插进去了

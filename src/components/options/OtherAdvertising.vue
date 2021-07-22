@@ -96,11 +96,15 @@
               <div
                 slot="content"
                 class="qrcode-box">
-                <div
+                <!-- <div
                   class="goods-qrcode"
                   :id="'goods-qrcode-'+index"
                   style="width: 200px; height: 200px;margin-bottom: 10px;cursor: pointer"
-                  @click="$open(goods.url, getKeyType($event))"></div>
+                  @click="$open(goods.url, getKeyType($event))"></div> -->
+                <img
+                  class="goods-qrcode"
+                  :src="qrcodeImgUrls[index]"
+                  @click="$open(goods.url, getKeyType($event))" />
                 <div>谢谢支持！</div>
                 <div>使用 京东APP “扫一扫” 即可购买。</div>
               </div>
@@ -124,7 +128,7 @@
 </template>
 <script>
 
-import QRCode from 'qrcodejs2'
+import QRCode from 'qrcode'
 import advertising_config from "@/config/advertising_config.json"
 
 const COUNTRY = {
@@ -139,7 +143,7 @@ export default {
       country: this.lang('@@ui_locale'), // 'zh_CN',
       amazonSearchValue: 'mobile',
       JDSearchValue: '',
-      qrcode: [],
+      qrcodeImgUrls: {},
     }
   },
   computed: {
@@ -150,29 +154,23 @@ export default {
   },
   methods: {
     getQrcode(index) {
+      if(this.qrcodeImgUrls[index]) return;
+      console.log('gggggggg')
+
       let goods  = this.allGoods[index];
-console.log(goods, this.qrcode[index]);
-      if(this.qrcode[index] != null) return;
+      QRCode.toDataURL(goods.url, {
+        errorCorrectionLevel: 'L',
+        quality: 1,
+        margin: 0,
+        width: 200,
+      },(error, url)=>{
+        console.log(error, url);
 
-      let self = this;
-      setTimeout(function initQrcode() {
-        console.log('kkkkkkkkkkk')
-        let dom = document.getElementById("goods-qrcode-"+index);
-        if(dom == null) {
-          console.log('kkkkkkkkkkk2')
-          setTimeout(initQrcode, 10);
-          return;
-        }
+        if(error) return;
 
-        self.qrcode[index] = new QRCode(dom, {
-          width : 200,
-          height : 200,
-          // colorDark : "#000000",
-          // colorLight : "#ffffff",
-          text: goods.url,
-          correctLevel: QRCode.CorrectLevel.L
-        });
-      }, 10);
+        // this.qrcodeImgUrls[index] = url;
+        this.$set(this.qrcodeImgUrls, index, url);
+      })
     },
 
     openPlatform(platform, name) {
@@ -192,11 +190,13 @@ console.log(goods, this.qrcode[index]);
     }
   },
   mounted() {
+    // todo
+    window.oa = this;
+
     if(this.allGoods.length > 0) {
       let index = Math.floor(Math.random()*this.allGoods.length);
       this.JDSearchValue = this.allGoods[index].name;
     }
-
   }
 }
 </script>
@@ -250,6 +250,12 @@ console.log(goods, this.qrcode[index]);
   flex: 1;
   font-size: 14px;
   white-space: nowrap;
+}
+.goods-qrcode {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .amazon-search >>> .el-input-group__append{

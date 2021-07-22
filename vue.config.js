@@ -68,6 +68,28 @@ module.exports = {
   },
 
   configureWebpack: {
+    output: {
+      filename: (pathData) => {
+        // console.log('ffffffffffffffffffff', pathData)
+        if(pathData.chunk.name == 'background') {
+          return 'js/background.js';
+        } else if(pathData.chunk.name == 'injected_script') {
+          return 'js/injected_script.js';
+        }
+        // return pathData.chunk.name === 'main' ? '[name].js' : '[name]/[name].js';
+
+        return 'js/[name].[contenthash:8].js';
+      }
+    },
+    entry: {
+      background: [
+        resolve('src/background.js')
+      ],
+      injected_script: [
+        resolve('src/injected_script.js')
+      ]
+    }
+
     // todo
     // plugins: [
     //   new UglifyJsPlugin({

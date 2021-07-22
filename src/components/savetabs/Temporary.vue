@@ -193,7 +193,7 @@
             :style="{
               color:currentThemeConfig.list_focus_font_color}"></i>
         </div>
-        <template v-if=" ! isActive">
+        <template v-if=" ! isActive && item.lastVisitTime != undefined">
           <span
             :style="{
               fontSize: currentThemeConfig.list_state_size+'px',

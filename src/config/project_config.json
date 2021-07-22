@@ -132,7 +132,7 @@
             "attributes": {
                 "array": {
                     "lastVisitTime": {
-                        "presence": true,
+                        "presence": false,
                         "type": "number"
                     },
                     "tabs": {

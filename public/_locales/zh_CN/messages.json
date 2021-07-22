@@ -1,5 +1,6 @@
 {
     "extension_name": {"message": "SaveTabs - 窗口标签管理器"},
+    "extension_short_name": {"message": "标签管理器"},
     "description": {"message": "网页窗口太多怎么办？SaveTabs 将给你带来新的思考和学习方式。"},
 
 

@@ -1,5 +1,6 @@
 {
     "extension_name": {"message": "SaveTabs - Window & Tab Manager"},
+    "extension_short_name": {"message": "SaveTabs"},
     "description": {"message": "What should I do if there are too many webpage windows? SaveTabs will bring you a new way of thinking and learning."},
 
 

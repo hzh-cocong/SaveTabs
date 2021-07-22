@@ -22,7 +22,14 @@
           ></svg-icon>
           <span
             style="flex: 1;"
-            :style="{ color: allWorkspaces[type].isEnabled ? '#606266' : 'inherit' }">{{ lang(allWorkspaces[type].title) }}</span>
+            :style="{
+              color: localConfig.active_workspace_type == type ? '#409eff' : '#606266',
+              'font-weight': localConfig.active_workspace_type == type ? '700' : 'normal'
+            }">{{ lang(allWorkspaces[type].title) }}</span>
+          <!-- <i
+            v-if="localConfig.active_workspace_type == type"
+            class="el-icon-check"
+            style="margin: 0 10px;color: #67c23a;font-weight: 900;"></i> -->
           <span
             :style="{
               color: localConfig.pinned

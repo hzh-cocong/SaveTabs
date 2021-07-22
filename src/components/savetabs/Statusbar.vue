@@ -327,9 +327,9 @@ export default {
     weiboUrl() {
       let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
       return format.strtr({
-        '{url}': encodeURIComponent('http://www.cocong.cn/savetabs'),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'),
         '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
-        '{pic}': encodeURIComponent('http://www.cocong.cn/assets/images/cocong-34.png||http://www.cocong.cn/assets/images/cocong-34.png?a||http://www.cocong.cn/assets/images/cocong-34.png?b'),
+        '{pic}': encodeURIComponent('https://www.cocong.cn/assets/images/cocong-34.png||https://www.cocong.cn/assets/images/cocong-34.png?a||https://www.cocong.cn/assets/images/cocong-34.png?b'),
         '{ralateUid}': 5564314611,
       });
     },

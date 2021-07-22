@@ -15,7 +15,10 @@
         </el-col>
         <el-col :span="8">
           <el-card style="border: 0" :body-style="{ padding: '10px 10px 0 10px' }">
-            <img src="@/assets/PayPal.png" style="width:100%;cursor: pointer;" @click="$open('https://www.paypal.com/paypalme/hzhcocong')" />
+            <a href="https://www.paypal.com/paypalme/hzhcocong" target="_blank">
+              <img src="@/assets/PayPal.png" style="width:100%;cursor: pointer;" />
+            </a>
+            <!-- <img src="@/assets/PayPal.png" style="width:100%;cursor: pointer;" @click="$open('https://www.paypal.com/paypalme/hzhcocong')" /> -->
           </el-card>
         </el-col>
         <el-col :span="8">

@@ -151,7 +151,7 @@ export default {
   },
   data() {
     return {
-      speed: localStorage.getItem('speed') == 'smooth' ? 'smooth' : 'fast',
+      speed: localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth',
     }
   },
   computed: {

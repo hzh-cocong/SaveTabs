@@ -657,7 +657,7 @@ export default {
 
       limited: false,
 
-      speed: localStorage.getItem('speed'),
+      speed: localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth',
 
       history: {
         visible: false,

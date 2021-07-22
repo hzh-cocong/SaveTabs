@@ -12,6 +12,7 @@
     "core-js": "^3.14.0",
     "element-ui": "^2.15.2",
     "nanoid": "^3.1.23",
+    "qrcode": "^1.4.4",
     "qrcodejs2": "0.0.2",
     "sortablejs": "^1.13.0",
     "validate.js": "^0.13.1",
@@ -76,9 +77,12 @@
       ],
       "vue/no-use-v-if-with-v-for": "off",
       "vue/no-side-effects-in-computed-properties": "off",
-      "vue/no-parsing-error": ["error", {
-        "invalid-first-character-of-tag-name": false
-      }]
+      "vue/no-parsing-error": [
+        "error",
+        {
+          "invalid-first-character-of-tag-name": false
+        }
+      ]
     }
   },
   "browserslist": [

@@ -88,7 +88,7 @@ module.exports = {
       injected_script: [
         resolve('src/injected_script.js')
       ]
-    }
+    },
 
     // todo
     // plugins: [

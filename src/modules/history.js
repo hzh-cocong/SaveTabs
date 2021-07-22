@@ -290,7 +290,7 @@ let history = {
     if(currentHistory.count == undefined || currentHistory.count == 1) {
       // 打开新标签
       return new Promise(resolve => {
-        $open(currentHistory.url, keyType, () => {
+        window.$open(currentHistory.url, keyType, () => {
           resolve();
         });
       })

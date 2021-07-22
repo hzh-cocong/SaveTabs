@@ -74,7 +74,11 @@
           "allowEmptyCatch": true
         }
       ],
-      "vue/no-use-v-if-with-v-for": "off"
+      "vue/no-use-v-if-with-v-for": "off",
+      "vue/no-side-effects-in-computed-properties": "off",
+      "vue/no-parsing-error": ["error", {
+        "invalid-first-character-of-tag-name": false
+      }]
     }
   },
   "browserslist": [

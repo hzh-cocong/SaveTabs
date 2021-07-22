@@ -74,7 +74,7 @@ let search = {
       console.log('search:openWindow', currentItem.url);
 
       return new Promise(resolve => {
-        $open(currentItem.url, keyType, (tab, type) => {
+        window.$open(currentItem.url, keyType, (tab, type) => {
           resolve();
         })
       })

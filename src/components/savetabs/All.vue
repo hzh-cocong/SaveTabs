@@ -146,7 +146,6 @@ export default {
 
       storageKeyword: undefined,
       isFirstSearch: true,
-      conditions: [],
 
       scrollDisabled: true, // 一定要为 true，否则会再一开始就触发 load，而此时 search 可能还未执行完，就会导致冲突
 

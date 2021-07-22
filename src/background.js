@@ -387,8 +387,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     input.focus();
     input.select();
     try {
-      let s = document.execCommand('Copy');
-      if(true) {
+      let res = document.execCommand('Copy');
+      if(res) {
         chrome.runtime.sendMessage({
           type: 'copySuccessfully',
           data: request.data,

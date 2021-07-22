@@ -317,7 +317,7 @@ let bookmark = {
     // 打开网页
     if( ! currentBookmark.children) {
       return new Promise(resolve => {
-        $open(currentBookmark.url, keyType, () => {
+        window.$open(currentBookmark.url, keyType, () => {
           resolve();
         });
       })

@@ -290,7 +290,7 @@ let note = {
           lastVisitTime: note.lastVisitTime,
         }
       })}, () => {
-        $open(currentNote.url, keyType, (tab, type) => {
+        window.$open(currentNote.url, keyType, (tab, type) => {
           // 去除末尾 /
           tab.url = tab.url == '' && tab.pendingUrl
                   ? tab.pendingUrl.replace(/(\/*$)/g,"")

@@ -740,9 +740,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
     choice(index) {
       return this.$refs.list.choice(index);
     },
-    choice(index) {
-      return this.$refs.list.choice(index);
-    },
     closeTab() {
       // 这个必须放外面，防止 onRemove 先执行而刷新列表
       this.originList.splice(this.selectedOriginIndex, 1);

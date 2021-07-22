@@ -3,6 +3,7 @@
   id="app"
   v-loading.fullscreen="isConfigLoad && isLoading"
   :element-loading-background="currentThemeConfig.loading_background_color"
+  v-if="speed == 'smooth' || isConfigLoad"
   v-show="isConfigLoad"
   :style="{
     width: openWay == 'inject' && currentThemeConfig.width_fill
@@ -655,6 +656,8 @@ export default {
       themeScrollPosition: 0,
 
       limited: false,
+
+      speed: localStorage.getItem('speed'),
 
       history: {
         visible: false,

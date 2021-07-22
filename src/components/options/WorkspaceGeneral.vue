@@ -108,6 +108,13 @@
 
     </el-card>
 
+    <el-card class="box-card" header="插件启动速度">
+      <el-select v-model="speed">
+        <el-option value="smooth" label="丝滑"></el-option>
+        <el-option value="fast" label="快速"></el-option>
+      </el-select>
+    </el-card>
+
   </div>
 </template>
 
@@ -126,6 +133,7 @@ export default {
     'keymapLeftAndRightChange',
     'workspaceChangeWordSync',
     'setWorkspaceChangeWord',
+    // 'editSyncConfig',
   ],
   props: {
     syncConfig: {
@@ -143,6 +151,7 @@ export default {
   },
   data() {
     return {
+      speed: localStorage.getItem('speed') == 'smooth' ? 'smooth' : 'fast',
     }
   },
   computed: {
@@ -176,7 +185,18 @@ export default {
     },
     sortedOperationButtons() {
       return this.syncConfig.operationButtons.concat(this.disabledOperationButtons);
-    },
+    }
+  },
+  watch: {
+    speed(newVal, oldValue) {
+      console.log('watch:newVal', newVal, oldValue)
+      localStorage.setItem('speed', newVal);
+      this.$message({
+        type: 'success',
+        message: '修改成功',
+        duration: 1000,
+      });
+    }
   },
   methods: {
   },

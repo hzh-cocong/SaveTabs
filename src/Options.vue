@@ -125,6 +125,7 @@ export default {
       changeTheme: this.changeTheme,
 
       editLocalConfig: this.editLocalConfig,
+      editSyncConfig: this.editSyncConfig,
 
       download: this.download,
     }
@@ -834,6 +835,11 @@ console.log('allIncludeSort2', newIndex, oldIndex)
     editLocalConfig(type, value) {
       this.localConfig[type] = value;
       this.store('local');
+    },
+    editSyncConfig(type, value) {
+      console.log('editSyncConfig', this.syncConfig, this.syncConfig[type], type, value);
+      this.syncConfig[type] = value;
+      this.store('sync');
     },
 
     download: function(filename, data) {

@@ -21,6 +21,13 @@
   "options_page": "options.html",
   "offline_enabled": true,
   "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "mac": "Command+Shift+Space",
+        "windows": "Alt+Shift+Space",
+        "linux": "Alt+Shift+Space"
+      }
+    },
     "open_workspace_all": {
       "description": "open_workspace_all"
     },

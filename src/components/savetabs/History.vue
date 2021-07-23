@@ -241,9 +241,13 @@
     width="420px"
     title="清除浏览数据"
     class="history-dialog"
-    @opened="$nextTick( $refs.select.focus )"
+    @opened="$nextTick(() => { $refs.clearButton.$el.focus() })"
     @close="focus">
-    <el-select v-model="range" style="width: 100%;" ref="select">
+    <el-select
+      v-model="range"
+      style="width: 100%;"
+      @change="$nextTick(() => { $refs.clearButton.$el.focus() })"
+      ref="select">
       <el-option :value="3600000" label="过去一小时"></el-option>
       <el-option :value="86400000" label="过去24小时"></el-option>
       <el-option :value="604800000" label="过去7天"></el-option>
@@ -252,7 +256,7 @@
     </el-select>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="clearRecent">确 定</el-button>
+      <el-button type="primary" @click="clearRecent" ref="clearButton">确 定</el-button>
     </span>
   </el-dialog>
 

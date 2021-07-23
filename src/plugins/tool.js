@@ -89,7 +89,9 @@ const tool = {
           return null; // 返回参数值
         },
         toHighlight(content, keywords, leftTag, rightTag) {
-          if(keywords == '') {
+          if(content == undefined) return '';
+
+          if(keywords == undefined || keywords == '') {
             return content.escape();
           }
 

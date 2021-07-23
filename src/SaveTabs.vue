@@ -1486,12 +1486,16 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
       this.isLoad = true;
     };
 
-    // window.oncontextmenu = function(e){
-    //   // 取消默认的浏览器自带右键
-    //   // 输入框也被屏蔽了
-    //   e.stopPropagation();
-    //   e.preventDefault();
-    // }
+    window.oncontextmenu = function(e){
+      console.log(e)
+
+      // 不屏蔽输入框
+      if(e.target.tagName == 'INPUT') return;
+
+      // 取消默认的浏览器自带右键
+      e.stopPropagation();
+      e.preventDefault();
+    }
 
     // 获取当前插件信息
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {

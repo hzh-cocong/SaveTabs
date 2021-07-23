@@ -45,10 +45,10 @@
         fit="cover"
         :scroll-container="$parent.$el"
         :lazy="index >= currentThemeConfig.item_show_count">
-        <div slot="error" class="image-slot">
+        <div slot="error">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
-        <div slot="placeholder" class="image-slot"></div>
+        <div slot="placeholder"></div>
       </el-image>
       <svg-icon
         class="workspace-logo"

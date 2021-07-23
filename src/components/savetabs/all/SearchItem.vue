@@ -27,11 +27,12 @@
         :src="getIcon('', item.formate, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
-        lazy>
-        <div slot="error" class="image-slot">
+        :scroll-container="$parent.$el"
+        :lazy="index >= currentThemeConfig.item_show_count">
+        <div slot="error">
           <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
         </div>
-        <div slot="placeholder" class="image-slot"></div>
+        <div slot="placeholder"></div>
       </el-image>
       <svg-icon
         class="workspace-logo"

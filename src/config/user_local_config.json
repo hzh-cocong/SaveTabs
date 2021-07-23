@@ -30,18 +30,6 @@
             "only_search": false
         },
         {
-            "type": "bookmark",
-            "count": 3,
-            "is_top": 0,
-            "only_search": true
-        },
-        {
-            "type": "history",
-            "count": 3,
-            "is_top": -1,
-            "only_search": true
-        },
-        {
             "type": "search",
             "count": 3,
             "is_top": -2,

@@ -96,12 +96,10 @@
                         marginRight: tagConfig.tag_padding_left+'px' }"
               fit="cover"
               :lazy="false">
-              <div slot="error" class="image-slot">
+              <div slot="error">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
-              <div slot="placeholder" class="image-slot">
-                <!-- <img src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
-              </div>
+              <div slot="placeholder"></div>
             </el-image>
             <!-- <div
               class="title"
@@ -136,12 +134,10 @@
                         height: currentThemeConfig.list_font_size+'px' }"
               :scroll-container="$refs.list.$el"
               :lazy="index >= currentThemeConfig.item_show_count">
-              <div slot="error" class="image-slot">
+              <div slot="error">
                 <img src="@/assets/fallback.png" style="width:100%; height: 100%;" />
               </div>
-              <div slot="placeholder" class="image-slot">
-                <!-- <img src="@/assets/fallback.png" style="width:100%; height: 100%;" /> -->
-              </div>
+              <div slot="placeholder"></div>
             </el-image>
             <span
               style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"

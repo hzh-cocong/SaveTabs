@@ -878,17 +878,7 @@ export default {
 
       let index = this.getTypeIndex(type);
       if(index == -1) {
-        this.$confirm('标签已被禁用，是否前往 设置中心 开启？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          customClass: 'window-message-box',
-          type: 'warning'
-        }).then(() => {
-          this.$open('./options.html?type=workspace');
-        }).catch(() => {
-          // 窗口关闭后会自动 foucs，无需这个
-          // this.focus();
-        });
+        this.workspacesTip(type);
         return;
       }
 
@@ -911,6 +901,19 @@ export default {
         }
       }
     },
+    workspacesTip(type) {
+      this.$confirm(this.lang(type)+'已被禁用，是否前往 设置中心 开启？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        customClass: 'window-message-box',
+        type: 'warning'
+      }).then(() => {
+        this.$open('./options.html?type=workspace');
+      }).catch(() => {
+        // 窗口关闭后会自动 foucs，无需这个
+        // this.focus();
+      });
+    },
 
     getTypeIndex(type) {
       for(let index in this.workspaces) {
@@ -919,9 +922,9 @@ export default {
           return parseInt(index);
         }
       }
-      // 找不到则返回第一个（pinned相关会需要这个避免出现问题）
-      // 换设备就有可能出现这个问题，因为 active_workspace_type 不会同步，但 workspaces 会
-      return 0;
+      // 找不到则返回 -1
+      return -1;
+      // 注意，换设备就有可能出现这个问题，因为 active_workspace_type 不会同步，但 workspaces 会，所以调用到这里的要自己去判断
     },
 
     finish() {
@@ -1420,13 +1423,27 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         return this.config.workspaces.indexOf(type) != -1;
       })
 
-      this.activeWorkspaceIndex = this.getTypeIndex(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
+      let index = this.getTypeIndex(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
+      if(index != -1) {
+        this.activeWorkspaceIndex = index;
+      } else {
+        this.workspacesTip(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
+        if(localItems.info.active_workspace_type) {
+          let index = this.getTypeIndex(this.localConfig.active_workspace_type);
+          console.log('aaaaaaaaaaa', index, index == -1, index == -1 ? 0 : index);
+          this.activeWorkspaceIndex = index == -1 ? 0 : index;
+          console.log('aaaaaaaaaaa2', this.activeWorkspaceIndex);
+        } else {
+          console.log('aaaaaaaaaaa3')
+          this.activeWorkspaceIndex = 0;
+        }
+      }
+
       this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
       this.search();
 
-      if(localItems.info.add_type != undefined) {
+      if(localItems.info.add_type != undefined && index != -1) {
         let type = localItems.info.add_type;
-        // let index = this.getTypeIndex(type);
 
         this.things[ this.activeWorkspaceRefIndex ].push({
           'method': 'add',
@@ -1502,11 +1519,18 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           let index = this.getTypeIndex(request.workspace);
           if(this.activeWorkspaceIndex == index) {
             chrome.runtime.sendMessage({ type: 'closeExtension',})
-          } else {
+          } else if(index != -1){
             this.$refs.carousel.setActiveItem(index);
+          } else {
+            this.workspacesTip(request.workspace);
           }
         } else if(request.type == 'to_add') {
-          this.add(request.workspace);
+          let index = this.getTypeIndex(request.workspace);
+          if(index != -1) {
+            this.add(request.workspace);
+          } else {
+            this.workspacesTip(request.workspace);
+          }
         } else if(request.type == 'copySuccessfully') {
           this.$message({
             type: 'success',

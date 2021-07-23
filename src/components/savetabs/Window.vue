@@ -252,7 +252,7 @@
   <el-dialog
     :visible.sync="groupVisible"
     :append-to-body="true"
-    width="80%"
+    width="420px"
     class="window-group"
     @open="groupVisible2=true;blur();"
     @closed="groupVisible2=false"
@@ -302,12 +302,13 @@
   </el-dialog>
 
   <!-- 由于该 dialog 绑定了一些比较耗时的 computed，会导致页面启动时多次 update，所以加多个 v-if -->
+    <!-- width="80%" -->
   <el-dialog
     v-if="isSearched"
     :visible.sync="differenceVisible"
     :append-to-body="true"
     :destroy-on-close="true"
-    width="80%"
+    width="420px"
     class="window-difference"
     @opened="addCompareEvent"
     @open="differenceVisible2=true;"
@@ -954,7 +955,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
           this.isOperating = false;
 
           // 虽然有了默认数据，但是用户有可能把数据全清了，这个依然有用
-          if(this.storageList.length == 1) {
+          if(this.storageList.length != 1) {
             this.$message({
               type: 'success',
               message: this.lang('windowFirstAdd'),
@@ -1126,6 +1127,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPlaceholder: this.lang('groupNameInput'),
+        customClass: 'window-message-box',
         inputValue: this.currentGroup.name,
         inputValidator: ( value ) => {
           value = value == null ? '' : value.trim();
@@ -1647,6 +1649,12 @@ console.warn('finish', b, (b-a)/1000)
   border-color: inherit !important;
 }
 
+.window-group .el-dialog,
+.window-difference .el-dialog {
+  /* min-width: 80% !important; */
+  max-width: 99% !important;
+  /* width: 420px; */
+}
 .window-group .el-dialog__header {
   padding: 16px 53px 0 16px !important;
   text-align: left;

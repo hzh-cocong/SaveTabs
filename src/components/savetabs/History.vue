@@ -238,8 +238,9 @@
   <el-dialog
     :visible.sync="dialogVisible"
     :append-to-body="true"
-    width="80%"
+    width="420px"
     title="清除浏览数据"
+    class="history-dialog"
     @opened="$nextTick( $refs.select.focus )"
     @close="focus">
     <el-select v-model="range" style="width: 100%;" ref="select">
@@ -1205,5 +1206,11 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
 .history .sub-title strong {
   color: var(--list-explain-highlight-color);
   font-weight: var(--list-explain-highlight-weight);
+}
+
+.history-dialog .el-dialog {
+  /* min-width: 80% !important; */
+  max-width: 99% !important;
+  /* width: 420px; */
 }
 </style>

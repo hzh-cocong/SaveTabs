@@ -1,7 +1,6 @@
 {
     "workspaces": [
         "all",
-        "tab",
         "window",
         "note",
         "temporary"

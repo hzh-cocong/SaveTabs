@@ -881,6 +881,7 @@ export default {
         this.$confirm('标签已被禁用，是否前往 设置中心 开启？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
+          customClass: 'window-message-box',
           type: 'warning'
         }).then(() => {
           this.$open('./options.html?type=workspace');
@@ -979,20 +980,6 @@ export default {
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, keyType);
     },
 
-    // operate(event, type) {
-    //   // 其它快捷键不管，以免混乱
-    //   if(event.shiftKey == true || event.altKey == true) return;
-
-    //   if((this._device.platform == 'Mac' && event.metaKey == true)
-    //   || (this._device.platform != 'Mac' && event.altKey == true)) {
-
-    //     let index = this.getTypeIndex(type);
-    //     this.$refs.carousel.setActiveItem(index);
-    //     return;
-    //   }
-
-    //   this.add(type);
-    // },
     operate(keyType, type) {
       if(keyType == 'meta/ctrl') {
         let index = this.getTypeIndex(type);
@@ -1309,6 +1296,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           showClose: true,
           type: this.localConfig.keymap_left_and_right ? 'success' : 'info',
           message: message,
+          customClass: 'window-message-box',
           offset: 69,
           duration: this.localConfig.keymap_left_and_right ? 3000 : 5000,
         });
@@ -1847,8 +1835,9 @@ img {
   overflow: auto;
 }
 .window-message-box {
-  min-width: 80% !important;
+  /* min-width: 80% !important; */
   max-width: 99% !important;
+  width: 420px;
 }
 .hover {
   /* color: red !important; */

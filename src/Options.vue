@@ -549,7 +549,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
         center: true,
-        customClass: 'window-message-box'
       }).then(() => {
         this.localConfig.all_search_engine.splice(index, 1);
         this.store('local');
@@ -646,7 +645,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
           cancelButtonText: this.lang('cancel'),
           type: 'warning',
           center: true,
-          customClass: 'window-message-box'
         }).then(() => {
           this.currentTheme.config = value;
           this.storeTheme();
@@ -792,7 +790,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
         center: true,
-        customClass: 'window-message-box'
       }).then(() => {
         let currentThemeType = this.currentTheme.type;
         let currentThemeId = this.currentThemeId;

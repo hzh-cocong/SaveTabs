@@ -19,13 +19,13 @@
       <svg-icon
         :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
         class="hover"
-        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;cursor: pointer;"
+        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;"
         @click.native="popupChange"
       ></svg-icon>
       <span>选择主题</span>
       <i
         class="el-icon-s-tools hover"
-        style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;cursor: pointer;"
+        style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;"
         @click="$open('./options.html?type=themes', getKeyType($event))"></i>
     </div>
     <SelectX

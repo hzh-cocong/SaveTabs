@@ -63,12 +63,11 @@
             <el-tooltip
               placement="bottom"
               effect="light">
-              <span class="hover" style="cursor:pointer">（广告）</span>
+              <span class="hover">（广告）</span>
               <div
                 slot="content"
                 style="width: 170px;">如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，谢谢你的支持。</div>
             </el-tooltip>
-            <!-- <span class="hover" style="cursor:pointer">（广告）</span> -->
           </span>
           <i
             v-if="allGoods.length > 1"

@@ -174,19 +174,19 @@
                 <svg-icon
                   name="cog-solid"
                   class="hover"
-                  style="cursor:pointer;height: 20px;color: #c0c4cc;margin-top: 4px;"
+                  style="height: 20px;color: #c0c4cc;margin-top: 4px;"
                   @click.native="$open('./options.html?type=workspace', getKeyType($event))"
                 ></svg-icon>
                 <svg-icon
                   :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
                   class="hover"
-                  style="cursor:pointer;height: 20px;margin: 0 10px;"
+                  style="height: 20px;margin: 0 10px;"
                   :style="{ color: localConfig.theme_mode == 'light' ? '#c0c4cc' : 'gray'}"
                   @click.native="changeThemeMode"></svg-icon>
                 <svg-icon
                   name="thumbtack-solid"
                   class="hover"
-                  style="cursor:pointer;height: 20px;"
+                  style="height: 20px;"
                   :style="{ transform: localConfig.pinned
                                     && currentWorkspace != undefined
                                     && localConfig.active_workspace_type == currentWorkspace.type
@@ -230,14 +230,14 @@
                 ref="date">
               </el-date-picker>
               <i
-                class="el-icon-delete"
+                class="el-icon-delete hover"
                 style="margin-left: 10px;cursor: pointer;"
                 :style="{ color: keyword.trim() != '' ? '#c0c4cc' : 'inherit',
                           cursor: keyword.trim() != '' ? 'not-allowed' : 'pointer' }"
                 @mousedown.prevent
                 @click="keyword.trim() != '' ? '' : history.isDel = true"></i>
               <i
-                class="el-icon-close"
+                class="el-icon-close hover"
                 style="margin-left: 10px; cursor: pointer;"
                 @mousedown.prevent
                 @click="history.visible = false;"></i>
@@ -274,11 +274,11 @@
                   @click="bookmark.unfold = true;">全部展开</el-button>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                  style="float: right;margin-top: 8px;margin-left: 10px;"
                   @click="bookmark.visible = false;"></i>
                 <i
                   class="el-icon-setting hover"
-                  style="float: right;margin-top: 8px;margin-left: 10px;cursor: pointer;"
+                  style="float: right;margin-top: 8px;margin-left: 10px;"
                   @click="$open('chrome://bookmarks', getKeyType($event))"></i>
               </div>
               <i
@@ -320,7 +320,7 @@
               </span>
               <i
                 class="el-icon-close hover"
-                style="float: right;margin-left: 10px;margin-top: 20px;cursor: pointer;"
+                style="float: right;margin-left: 10px;margin-top: 20px;"
                 @mousedown.prevent
                 @click="tab.visible = false;"></i>
               <i
@@ -347,7 +347,7 @@
                 <span>暂无其它功能</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  style="float: right;margin-top: 3px;"
                   @click="window.visible = false;"></i>
               </div>
               <i
@@ -374,7 +374,7 @@
                 <span>暂无其它功能</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  style="float: right;margin-top: 3px;"
                   @click="note.visible = false;"></i>
               </div>
               <i
@@ -401,7 +401,7 @@
                 <span>暂无其它功能</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  style="float: right;margin-top: 3px;"
                   @click="temporary.visible = false;"></i>
               </div>
               <i
@@ -428,7 +428,7 @@
                 <span>暂无其它功能</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  style="float: right;margin-top: 3px;"
                   @click="all.visible = false;"></i>
               </div>
               <i
@@ -455,7 +455,7 @@
                 <span>暂无其它功能</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;cursor: pointer;"
+                  style="float: right;margin-top: 3px;"
                   @click="other.visible = false;"></i>
               </div>
               <i

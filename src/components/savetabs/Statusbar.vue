@@ -185,7 +185,7 @@
       placement="top-end"
       title=""
       width="210"
-      trigger="hover"
+      trigger="click"
       style="text-align: center;"
       @hide="focus">
       <div
@@ -203,54 +203,48 @@
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
           @click="$open('./options.html?type=praise', getKeyType($event))"></i>
       </div>
-      <div
-        class="share-box"
-        @mousedown.prevent>
-        <img
-          src="@/assets/images/logo/weibo_48x48.png"
-          title="分享到微博"
-          @click="$open(weiboUrl, getKeyType($event))"/>
-      </div>
-      <div
-        class="share-box"
-        @mousedown.prevent>
-        <el-tooltip
-          placement="top"
-          effect="light"
-          transition="">
+      <div @mousedown.prevent>
+        <div class="share-box">
           <img
-            src="@/assets/images/logo/wechat_48x48.png"
-            style="cursor: default;"
-            title="分享到微信" />
-          <div
-            slot="content"
-            class="qrcode-box"
-            @mousedown.prevent>
+            src="@/assets/images/logo/weibo_48x48.png"
+            title="分享到微博"
+            @click="$open(weiboUrl, getKeyType($event))"/>
+        </div>
+        <div class="share-box">
+          <el-tooltip
+            placement="top"
+            effect="light"
+            transition="">
             <img
-              src="@/assets/web-qrcode-200x200.png"
-              title="http://www.cocong.cn/savetabs"
-              style="cursor: pointer"
-              @click="$open('http://www.cocong.cn/savetabs', getKeyType($event))"/>
-            <div>使用微信“扫一扫”</div>
-            <div>打开网页后点击右上角分享至朋友圈</div>
-          </div>
-        </el-tooltip>
-      </div>
-      <div
-        class="share-box"
-        @mousedown.prevent>
-        <img
-          src="@/assets/images/logo/twitter_48x48.png"
-          title="分享到 twitter"
-          @click="$open(twitterUrl, getKeyType($event))"/>
-      </div>
-      <div
-        class="share-box"
-        @mousedown.prevent>
-        <img
-          src="@/assets/images/logo/facebook_48x48.png"
-          title="分享到 facebook"
-          @click="$open(facebookUrl, getKeyType($event))"/>
+              src="@/assets/images/logo/wechat_48x48.png"
+              style="cursor: default;"
+              title="分享到微信" />
+            <div
+              slot="content"
+              class="qrcode-box"
+              @mousedown.prevent>
+              <img
+                src="@/assets/web-qrcode-200x200.png"
+                title="http://www.cocong.cn/savetabs"
+                style="cursor: pointer"
+                @click="$open('http://www.cocong.cn/savetabs', getKeyType($event))"/>
+              <div>使用微信“扫一扫”</div>
+              <div>打开网页后点击右上角分享至朋友圈</div>
+            </div>
+          </el-tooltip>
+        </div>
+        <div class="share-box">
+          <img
+            src="@/assets/images/logo/twitter_48x48.png"
+            title="分享到 twitter"
+            @click="$open(twitterUrl, getKeyType($event))"/>
+        </div>
+        <div class="share-box">
+          <img
+            src="@/assets/images/logo/facebook_48x48.png"
+            title="分享到 facebook"
+            @click="$open(facebookUrl, getKeyType($event))"/>
+        </div>
       </div>
       <svg-icon
         slot="reference"

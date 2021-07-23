@@ -3,8 +3,7 @@
         "all",
         "window",
         "note",
-        "temporary",
-        "history"
+        "temporary"
     ],
     "operationButtons": [ "window", "note", "temporary" ],
 

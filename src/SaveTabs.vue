@@ -82,6 +82,7 @@
         spellcheck="false"
         :placeholder="placeholder"
         :clearable="false"
+        :readonly="isLoading"
         @keyup.native="keyup"
         @keydown.native="keydown"
         @keydown.native.down.prevent="selectDelay('down', getKeyType($event))"

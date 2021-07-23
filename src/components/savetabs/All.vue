@@ -255,7 +255,7 @@ export default {
   },
   methods: {
     up(keyType) {
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+      if(this.list.length <= 0) return;
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
@@ -287,7 +287,7 @@ export default {
       });
     },
     down(keyType) {
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+      if(this.list.length <= 0) return;
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
@@ -317,7 +317,7 @@ export default {
       });
     },
     copy() {
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+      if(this.list.length <= 0) return;
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);
@@ -518,7 +518,7 @@ console.log('all.search:lists');
     _openWindow(keyType) {
       console.log('openWindow', keyType)
 
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return;
+      if(this.list.length <= 0) return;
 
       let item = this.list[ this.currentIndex ];
       let module = this.getModule(item.type);

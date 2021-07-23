@@ -659,7 +659,7 @@ console.log('get_currentWindowStorageIndex3', index);
     },
     currentGroup() {
       console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return null;
+      if(this.list.length <= 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {

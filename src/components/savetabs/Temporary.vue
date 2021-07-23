@@ -658,7 +658,7 @@ alert('空间不够')
     },
 
     currentTemporary() {
-      if(this.list.length <= 0 || this.currentIndex >= this.list.length) return null;
+      if(this.list.length <= 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {

@@ -957,6 +957,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
           // 虽然有了默认数据，但是用户有可能把数据全清了，这个依然有用
           if(this.storageList.length != 1) {
             this.$message({
+              showClose: true,
               type: 'success',
               message: this.lang('windowFirstAdd'),
               customClass: 'window-message-box',
@@ -975,7 +976,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
             message: '部分网页还未加载，请稍后重试',
             customClass: 'window-message-box',
             offset: 69,
-            duration: 5000,
+            duration: 3000,
           });
           this.isOperating = false;
         })

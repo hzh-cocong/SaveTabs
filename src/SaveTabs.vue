@@ -1468,7 +1468,7 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
             message: '当前无法自动获得焦点，需手动点击输入框才可输入内容。',
             customClass: 'window-message-box',
             offset: 69,
-            duration: 5000,
+            duration: 3000,
           });
         }
 

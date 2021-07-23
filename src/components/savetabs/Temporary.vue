@@ -970,7 +970,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
           message: '部分网页还未加载，请稍后重试',
           customClass: 'window-message-box',
           offset: 69,
-          duration: 5000,
+          duration: 3000,
         });
         this.isOperating = false;
       })

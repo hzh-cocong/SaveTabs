@@ -57,7 +57,7 @@ export default {
               message: '地址格式错误',
               customClass: 'window-message-box',
               offset: 69,
-              duration: 5000,
+              duration: 3000,
             });
             return;
           }

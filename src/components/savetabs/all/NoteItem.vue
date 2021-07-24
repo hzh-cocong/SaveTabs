@@ -40,7 +40,7 @@
         padding: (currentThemeConfig.item_height*1/5)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="this.getIcon(item.icon, item.url, currentThemeConfig.item_height*3/5)"
+        :src="getIcon(item.icon, item.url, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"

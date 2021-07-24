@@ -462,17 +462,31 @@ export default {
       //   highlightMap[index] = highlightMap2;
       // });
 
+      // // 速度非常非常快，无需再缓存优化
+      // // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
+      // let highlightMap = this.list.map(item => {
+      //   return item.tabs.map(tab => {
+      //     return {
+      //       title: this.toHighlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
+      //       url: this.toHighlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
+      //       domain: this.toHighlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
+      //     }
+      //   })
+      // })
+
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-      let highlightMap = this.list.map(item => {
-        return item.tabs.map(tab => {
+      let highlightMap = new Array(this.list.length);
+      this.list.forEach((item, index) => {
+        highlightMap[ index ] = item.tabs.map(tab => {
           return {
             title: this.toHighlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
             url: this.toHighlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
             domain: this.toHighlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
           }
         })
-      })
+      });
+
 
       let b = new Date().getTime();
 

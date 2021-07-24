@@ -184,7 +184,7 @@
       placement="top-end"
       title=""
       width="210"
-      trigger="click"
+      trigger="hover"
       style="text-align: center;"
       @hide="focus">
       <div

@@ -713,6 +713,12 @@ const tool = {
       }
     }
 
+    chrome.i18n = {
+      getMessage: function() {
+        return 'zh_CN';
+      }
+    }
+
     // 添加实例方法
     window.$open = Vue.prototype.$open = function (url, keyType, callback) {
       if(keyType == 'meta/ctrl') {

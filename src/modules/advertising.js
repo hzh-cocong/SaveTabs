@@ -1,16 +1,40 @@
-let search = {
+import advertising_config from "@/config/advertising_config.json"
+
+const COUNTRY = {
+  CHINA: 1,
+  OTHER: 2,
+}
+
+let advertising = {
     storageList: [],
     cacheList: [],
+
+    country: chrome.i18n.getMessage('@@ui_locale'),
+    searchAdvertising: [],
 
     isInit: false,
 
     init: function(localConfig) {
-      this.storageList = localConfig.all_search_engine
-                        ? localConfig.all_search_engine
-                        : [];
+      let country = this.country == 'zh_CN' ? COUNTRY.CHINA : COUNTRY.OTHER;
 
+      this.searchAdvertising = [{
+          "name": "京东",
+          "formate": "https://union-click.jd.com/jdc?type=union&p=JF8BAGoKGloXWwIKUlZeOE8nAl8JKx9KBVhdDxxtUQ5SQmQWBR1TGxlZAUEPVhcnV20AE14RDQZXBwtVDU1HVGYAGwwRWAYDBwkPCh5CAjg4RB9IADYBVV5ZCE0XBm4PK2sVXDYyZG5tOEonM184&t=W1dCFBBFC0RUQUpADgpQTFs=&e=&tu=http%3A%2F%2Fsearch.jd.com%2FSearch%3Fkeyword%3D{query}%26enc%3Dutf-8",
+          "pic": "JD.png",
+          "country": 1,
+      }, {
+          "name": "Amazon",
+          "formate": "https://www.amazon.com/gp/search?ie=UTF8&tag=cocong-20&linkCode=ur2&linkId=17322288f8b3f551908623e03d8f3638&camp=1789&creative=9325&index=aps&keywords={query}",
+          "pic": "amazon.png",
+          "country": 2,
+      }].filter(item => item.country == country);
+
+      this.storageList = advertising_config.filter(item => item.country == country);
+      this.storageList.unshift(...this.searchAdvertising);
+
+      // 小心，这里污染了广告
       this.storageList.forEach((item, index) => {
-        item.type = 'search';
+        item.type = 'advertising';
         item.realIndex = index;
       })
 
@@ -22,13 +46,24 @@ let search = {
         if(this.isInit) resolve();
         else resolve(this.init(localConfig))
       }).then(() => {
-        this.cacheList = this.storageList.map((item, index) => {
-          item.url = encodeURI(item.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));
-          // item.url = encodeURI(item.formate.replace(new RegExp('{query}', 'g'), encodeURIComponent(originKeyword)));
-          // item.title = `Search ${item.name} for '<strong>${originKeyword.escape()}</strong>'`;
-          // item.realIndex = index;
-          return item;
+        // 查找
+        let filterList = this.storageList.filter(advertising => {
+          if(advertising.formate != undefined) {
+            advertising.url = encodeURI(advertising.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));
+            return true;
+          }
+
+          let name = advertising.name.toUpperCase();
+          // 找出不匹配的过滤掉
+          return ! keywords.some((keyword) => {
+            // 不匹配则为 -1
+            return name.indexOf(keyword) == -1;
+          });
         })
+
+        // 列表赋值
+        this.cacheList = filterList;
+
         return this.cacheList.slice(0, length);
       })
     },
@@ -71,7 +106,7 @@ let search = {
 
     openWindow(index, keyType) {
       let currentItem = this.cacheList[index];
-      console.log('search:openWindow', currentItem.url);
+      console.log('advertising:openWindow', currentItem.url);
 
       return new Promise(resolve => {
         window.$open(currentItem.url, keyType, (tab, type) => {
@@ -82,4 +117,4 @@ let search = {
 
   }
 
-  export default search;
+  export default advertising;

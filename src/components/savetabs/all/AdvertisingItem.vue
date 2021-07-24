@@ -1,6 +1,6 @@
 <template>
   <div
-    class="search-item"
+    class="advertising-item"
     :style="{
       backgroundColor: isSelected
                       ? currentThemeConfig.list_focus_background_color
@@ -24,7 +24,7 @@
         padding: (currentThemeConfig.item_height*1/5)+'px' }">
       <el-image
         v-if="isLoad"
-        :src="getIcon('', item.formate, currentThemeConfig.item_height*3/5)"
+        :src="'./img/'+item.pic"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"
@@ -36,7 +36,7 @@
       </el-image>
       <svg-icon
         class="workspace-logo"
-        name="search-solid"
+        name="ad-solid"
         :style="{ color: isSelected
                         ? currentThemeConfig.list_focus_icon_color
                         : currentThemeConfig.list_icon_color,
@@ -45,26 +45,38 @@
     </span>
 
     <div class="main">
-      <!-- 由于列表长度未发生变化，无法及时更新 -->
-      <!-- <div
-        class="title"
-        :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-        v-html="storageKeyword != undefined && isSelected ? item.title : item.name"></div> -->
-      <div
+      <template v-if="item.formate">
+        <div
         class="title"
         :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
         v-text="item.name"></div>
-      <div
-        v-if="isSelected && (storageKeyword != '' || keyType != '')"
-        class="sub-title"
-        :style="{
-          fontSize: currentThemeConfig.list_explain_font_size+'px',
-          color: isSelected
-                ? currentThemeConfig.list_explain_focus_font_color
-                : currentThemeConfig.list_explain_font_color }"
-          v-html="isSelected && keyType != ''
-                  ? getTip()
-                  : ('Search '+item.name+' for \'<strong>'+storageKeyword.escape()+'</strong>\'')"></div>
+        <div
+          v-if="isSelected && (storageKeyword != '' || keyType != '')"
+          class="sub-title"
+          :style="{
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
+            color: isSelected
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color }"
+            v-html="isSelected && keyType != ''
+                    ? getTip()
+                    : ('Search '+item.name+' for \'<strong>'+storageKeyword.escape()+'</strong>\'')"></div>
+      </template>
+      <template v-else>
+        <div
+          class="title"
+          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
+          v-html="toHighlight(item.name, storageKeyword, '<strong>', '</strong>')"></div>
+        <div
+          v-if="isSelected && (storageKeyword != '' || keyType != '')"
+          class="sub-title"
+          :style="{
+            fontSize: currentThemeConfig.list_explain_font_size+'px',
+            color: isSelected
+                  ? currentThemeConfig.list_explain_focus_font_color
+                  : currentThemeConfig.list_explain_font_color }"
+          v-text="item.description.replaceAll('<br/>', ' | ')"></div>
+      </template>
     </div>
 
     <div class="right">
@@ -92,7 +104,7 @@
 
 <script>
 export default {
-  name: 'SearchItem',
+  name: 'AdvertisingItem',
   props: {
     currentThemeConfig: {
       type: Object,
@@ -155,7 +167,7 @@ export default {
 </script>
 
 <style scoped>
-.search-item {
+.advertising-item {
   /* margin: 0 11px; */
   border-top: 0;
   border-bottom: 0;
@@ -163,13 +175,13 @@ export default {
   display:flex;
   align-items: center;
 }
-.search-item  .left {
+.advertising-item  .left {
   height: 100%;
   box-sizing: border-box;
   /* padding: 10px; */
   text-align: center;
 }
-.search-item .left .workspace-logo {
+.advertising-item .left .workspace-logo {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -178,7 +190,7 @@ export default {
   margin-right: 2px;
   background-color: transparent;
 }
-.search-item .main {
+.advertising-item .main {
   flex: 1;
   text-align: left;
   overflow: hidden;
@@ -190,18 +202,18 @@ export default {
   justify-content: space-evenly;
   /* justify-content: center; */
 }
-.search-item .title {
+.advertising-item .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.search-item .sub-title {
+.advertising-item .sub-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   /* margin-right: 5px; */
 }
-.search-item .right {
+.advertising-item .right {
   /* border: 1px solid black; */
   /* border: 1px solid black; */
   /* margin-left: 10px;
@@ -218,7 +230,7 @@ export default {
 }
 </style>
 <style>
-.all .search-item strong {
+.all .advertising-item strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);
 }

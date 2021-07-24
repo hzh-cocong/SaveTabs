@@ -11,7 +11,7 @@
         border
         true-label="dark"
         false-label="light"
-        @change="changeAutoSort">除“置顶”和“置底”外，最后访问的列表所对应的工作区将排在最前面</el-checkbox>
+        @change="changeAutoSort">最后访问的列表所对应的工作区将排在该类型的最前面</el-checkbox>
     </el-card>
     <el-card class="box-card" :body-style="{paddingBottom: '10px'}">
       <template slot="header">
@@ -32,7 +32,9 @@
       </template>
       <ul class="list topWorkspaces" ref="topWorkspaces">
         <li
-          class="list-item enabled"
+          class="list-item"
+          :class="{ disabled: localConfig.all_sort_auto,
+                    enabled: ! localConfig.all_sort_auto, }"
           v-for="(workspace, index) in topWorkspaces"
           :key="workspace.type+'|'+index">
           <el-checkbox
@@ -132,7 +134,9 @@
       </ul>
       <ul class="list bottomWorkspaces" ref="bottomWorkspaces">
         <li
-          class="list-item enabled"
+          class="list-item"
+          :class="{ disabled: localConfig.all_sort_auto,
+                    enabled: ! localConfig.all_sort_auto, }"
           v-for="(workspace, index) in bottomWorkspaces"
           :key="workspace.type+'|'+index">
           <el-checkbox
@@ -704,7 +708,7 @@ export default {
 .list-item.disabled,
 .list-item.disabled .handle{
   color: #c0c4cc;
-  border-color: #ebeef5;
+  border-color: #ebeef5 !important;
   cursor: not-allowed !important;
 }
 

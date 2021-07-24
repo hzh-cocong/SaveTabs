@@ -74,6 +74,7 @@ import HistoryItem from './all/HistoryItem.vue'
 import BookmarkItem from './all/BookmarkItem.vue'
 import SearchItem from './all/SearchItem.vue'
 import ToggleItem from './all/ToggleItem.vue'
+import AdvertisingItem from './all/AdvertisingItem.vue'
 
 import Window from '../../modules/window.js'
 import Temporary from '../../modules/temporary.js'
@@ -83,6 +84,7 @@ import History from '../../modules/history.js'
 import Bookmark from '../../modules/bookmark.js'
 import Search from '../../modules/search.js'
 import Toggle from '../../modules/toggle.js'
+import Advertising from '../../modules/advertising.js'
 
 export default {
   name: 'All',
@@ -195,6 +197,7 @@ export default {
     BookmarkItem,
     SearchItem,
     ToggleItem,
+    AdvertisingItem,
   },
   watch: {
     "all.visible": function(newVal, oldVal) {
@@ -251,6 +254,22 @@ export default {
 
     isActiveWorkspace() {
       return this.activeWorkspace.type == 'all';
+    },
+
+    isSearchEngineEnabled() {
+      return this.localConfig.all_include.some((item) => {
+        return item.type == 'search';
+      })
+    },
+    advertisingOptions() {
+      return this.isSearchEngineEnabled
+            ? [{
+              "type": "advertising",
+              "count": 1000,
+              "is_top": -2,
+              "only_search": true
+            }]
+            : [];
     }
   },
   methods: {
@@ -380,7 +399,9 @@ console.log('all.search:lists');
 
       let condition = conditions[index];
 
-      return Promise.all(this.localConfig.all_include.filter(workspace => {
+      return Promise.all(this.localConfig.all_include.concat(
+        ...this.advertisingOptions
+      ).filter(workspace => {
         return Object.keys(condition).every((attr) => {
           return workspace[attr] == condition[attr];
         })
@@ -586,6 +607,7 @@ console.log('all.search:lists');
         case 'bookmark': return Bookmark;
         case 'search': return Search;
         case 'toggle': return Toggle;
+        case 'advertising': return Advertising;
       }
     },
   },
@@ -600,6 +622,7 @@ console.log('all.search:lists');
     window.bb = Bookmark;
     window.ss = Search;
     window.tto = Toggle;
+    window.ad = Advertising;
 
     // 保持数据同步
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

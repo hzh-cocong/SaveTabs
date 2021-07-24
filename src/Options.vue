@@ -114,6 +114,7 @@ export default {
       editSearchEngine: this.editSearchEngine,
       deleteSearchEngine: this.deleteSearchEngine,
       searchEngineSort: this.searchEngineSort,
+      resetSearchEngine: this.resetSearchEngine,
 
       changeThemeType: this.changeThemeType,
       changeThemeName: this.changeThemeName,
@@ -135,7 +136,7 @@ export default {
       menus: menus,
 
       syncConfig: userConfig,
-      localConfig: userLocalConfig,
+      localConfig: JSON.parse(JSON.stringify(userLocalConfig)),
       projectConfig: projectConfig,
 
       theme: userTheme,
@@ -529,6 +530,8 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.store('local');
     },
     addSearchEngine(data) {
+      data.name = data.name.trim();
+      data.formate = data.formate.trim();
       this.localConfig.all_search_engine.push({
         name: data.name,
         formate: data.formate
@@ -536,10 +539,10 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.store('local');
     },
     editSearchEngine(index, data) {
-      this.localConfig.all_search_engine[index] = {
-        name: data.name,
-        formate: data.formate
-      };
+      this.$set(this.localConfig.all_search_engine, index, {
+        name: data.name.trim(),
+        formate: data.formate.trim()
+      });
       this.store('local');
     },
     deleteSearchEngine(index) {
@@ -565,6 +568,18 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
       this.localConfig.all_search_engine.splice(newIndex, 0, this.localConfig.all_search_engine.splice(oldIndex , 1)[0]);
       this.store('local');
+    },
+    resetSearchEngine(data) {
+      this.$confirm('', '确定还原为默认设置？', {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        type: 'warning',
+        center: true,
+      }).then(() => {
+        this.localConfig.all_search_engine = data;
+        this.store('local');
+      }).catch(() => {
+      });
     },
 
     changeThemeType(type) {
@@ -953,12 +968,12 @@ console.log('allIncludeSort2', newIndex, oldIndex)
   mounted: function() {
     // todo
     window.o = this;
-    window.userConfig = userConfig;
-    window.userLocalConfig = userLocalConfig;
-    window.projectConfig = projectConfig;
-    window.userConfig2 = JSON.parse(JSON.stringify(userConfig));
-    window.userLocalConfig2 = JSON.parse(JSON.stringify(userLocalConfig));
-    window.projectConfig2 = JSON.parse(JSON.stringify(projectConfig));
+    // window.userConfig = userConfig;
+    // window.userLocalConfig = userLocalConfig;
+    // window.projectConfig = projectConfig;
+    // window.userConfig2 = JSON.parse(JSON.stringify(userConfig));
+    // window.userLocalConfig2 = JSON.parse(JSON.stringify(userLocalConfig));
+    // window.projectConfig2 = JSON.parse(JSON.stringify(projectConfig));
 
     console.log('mounted:options.vue');
 

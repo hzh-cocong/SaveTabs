@@ -12,36 +12,6 @@
     "all_sort_auto": true,
     "all_include": [
         {
-            "type": "temporary",
-            "count": 3,
-            "is_top": 1,
-            "only_search": false
-        },
-        {
-            "type": "window",
-            "count": 3,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "note",
-            "count": 3,
-            "is_top": 0,
-            "only_search": false
-        },
-        {
-            "type": "bookmark",
-            "count": 3,
-            "is_top": 0,
-            "only_search": true
-        },
-        {
-            "type": "history",
-            "count": 3,
-            "is_top": 1,
-            "only_search": false
-        },
-        {
             "type": "search",
             "count": 3,
             "is_top": -2,
@@ -50,16 +20,24 @@
     ],
     "all_search_engine": [
         {
-            "formate": "https://www.google.com/search?q={query}",
-            "name": "Google"
+            "name": "Google",
+            "formate": "https://www.google.com/search?q={query}"
         },
         {
-            "formate": "https://cn.bing.com/search?q={query}",
-            "name": "Bing"
+            "name": "Bing",
+            "formate": "https://cn.bing.com/search?q={query}"
         },
         {
-            "formate": "https://www.baidu.com/s?ie=utf-8&wd={query}",
-            "name": "Baidu"
+            "name": "Baidu",
+            "formate": "https://www.baidu.com/s?ie=utf-8&wd={query}"
+        },
+        {
+            "name": "JD",
+            "formate": "https://union-click.jd.com/jdc?type=union&p=JF8BAGoKGloXWwIKUlZeOE8nAl8JKx9KBVhdDxxtUQ5SQmQWBR1TGxlZAUEPVhcnV20AE14RDQZXBwtVDU1HVGYAGwwRWAYDBwkPCh5CAjg4RB9IADYBVV5ZCE0XBm4PK2sVXDYyZG5tOEonM184&t=W1dCFBBFC0RUQUpADgpQTFs=&e=&tu=http%3A%2F%2Fsearch.jd.com%2FSearch%3Fkeyword%3D{query}%26enc%3Dutf-8"
+        },
+        {
+            "name": "Amazon",
+            "formate": "https://www.amazon.com/gp/search?ie=UTF8&tag=cocong-20&linkCode=ur2&linkId=17322288f8b3f551908623e03d8f3638&camp=1789&creative=9325&index=aps&keywords={query}"
         }
     ],
 

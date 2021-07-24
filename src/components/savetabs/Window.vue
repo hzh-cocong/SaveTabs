@@ -947,7 +947,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
           this.isOperating = false;
 
           // 虽然有了默认数据，但是用户有可能把数据全清了，这个依然有用
-          if(this.storageList.length != 1) {
+          if(this.storageList.length == 1) {
             this.$message({
               showClose: true,
               type: 'success',

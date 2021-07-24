@@ -232,6 +232,18 @@
           circle size="mini"
           style="margin-left: 20px;"
           @click="searchEngineForm={name: '', formate: '', type:'add'}; searchEngineVisible=true"></el-button>
+        <span
+          v-if="isSearchEngineEnabled && isSearchEngineChange"
+          style="display:inline-block;border-left: 1px solid lightgray;height: 30px;margin: 0 20px;">
+          <el-tooltip
+            placement="right"
+            content="还原默认设置">
+            <i
+            class="el-icon-refresh-right hover2"
+            style="margin-left: 20px;line-height: 30px;"
+            @click="resetSearchEngine(JSON.parse(JSON.stringify(userLocalConfig.all_search_engine)))"></i>
+          </el-tooltip>
+        </span>
       </template>
       <ul class="list search" ref="searchEngineList">
         <li
@@ -315,6 +327,7 @@
 </template>
 
 <script>
+import userLocalConfig from '@/config/user_local_config.json'
 import Sortable from 'sortablejs';
 
 export default {
@@ -333,6 +346,7 @@ export default {
     'addSearchEngine',
     'editSearchEngine',
     'searchEngineSort',
+    'resetSearchEngine',
   ],
   props: {
     syncConfig: {
@@ -359,10 +373,15 @@ export default {
         formate: [
           { required: true, message: ' ', trigger: 'blur' },
         ],
-      }
+      },
+      userLocalConfig: userLocalConfig,
     }
   },
   computed: {
+    isSearchEngineChange() {
+      console.log('isSearchEngineChange')
+      return JSON.stringify(this.localConfig.all_search_engine) != JSON.stringify(userLocalConfig.all_search_engine);
+    },
     allWorkspaces() {
       return this.projectConfig.allWorkspaces;
     },

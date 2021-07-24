@@ -12,9 +12,9 @@
     "all_sort_auto": true,
     "all_include": [
         {
-            "type": "tab",
+            "type": "temporary",
             "count": 3,
-            "is_top": 0,
+            "is_top": 1,
             "only_search": false
         },
         {
@@ -38,8 +38,8 @@
         {
             "type": "history",
             "count": 3,
-            "is_top": -1,
-            "only_search": true
+            "is_top": 1,
+            "only_search": false
         },
         {
             "type": "search",

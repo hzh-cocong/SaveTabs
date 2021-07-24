@@ -89,7 +89,7 @@
           :name="projectConfig.allWorkspaces[ 'history' ].svg"
           @click.native.stop="switchTo(getKeyType($event))"></svg-icon>
         </template>
-      <template v-if=" ! isActive">
+      <template v-else>
         <span
           :style="{
             fontSize: currentThemeConfig.list_state_size+'px',

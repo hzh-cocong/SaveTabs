@@ -132,7 +132,7 @@
             :style="{
               color:currentThemeConfig.list_focus_font_color}"></i>
         </div>
-        <template v-if=" ! isActive">
+        <template v-else>
           <span
             :style="{
               fontSize: currentThemeConfig.list_state_size+'px',
@@ -149,8 +149,6 @@
                 : list[index+1].lastVisitTime
               ))
             }}</span>
-        </template>
-        <template v-if=" ! isActive">
           <span
             v-if="isSelected"
             :style="{

@@ -478,12 +478,13 @@
           v-for="(type, i) in config.operationButtons"
           :key="i"
           type="default"
+          :disabled="limited"
           :icon="allWorkspaces[type].icon_simple"
           :title="limited
                 ? '功能受限'
                 : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
           @mousedown.native.prevent
-          @click.stop="operate(getKeyType($event), type)"></el-button><!-- todo  :disabled="limited" -->
+          @click.stop="operate(getKeyType($event), type)"></el-button>
       </el-button-group>
     </div>
 
@@ -1347,9 +1348,6 @@ export default {
     console.warn('savetabs:updated');
   },
   mounted() {
-    // todo
-    window.s = this;
-
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {
@@ -1529,7 +1527,7 @@ export default {
           this.statusTip('注意：当前网页进行了缩放，部分操作存在异常。', true, 3000);
         }
       })
-//*
+
       // 模拟 popup 行为
 
       // 一旦失去焦点就会自己把自己给关了
@@ -1562,8 +1560,8 @@ export default {
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })//*/
     })
-/*
-    // 模拟 popup 行为（完美，调试都不行，哈哈）todo 最后上线再想想要不要开启
+
+    // 模拟 popup 行为（完美，调试都不行，哈哈）
     window.addEventListener('blur', (event)=>{
       // event.stopPropagation();
       // event.preventDefault();
@@ -1578,9 +1576,6 @@ export default {
         event.preventDefault();
       }
     })
-
-    // autofocus 只有在页面最开始接在的时候有用，所有这个还是要的
-    // this.focus();
   }
 }
 </script>

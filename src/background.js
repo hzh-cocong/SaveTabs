@@ -190,7 +190,6 @@ chrome.storage.local.get({'config': {}}, items => {
     chrome.browserAction.setPopup({ popup: '' });
   }
 
-  console.log('fff', items, Object.keys(items.config))
   // 这个新版本的都弹出，往后的才不弹出
   isFirstInstall = items.config.theme_popup == undefined;
 })
@@ -204,7 +203,6 @@ let activeTabs = new Set();
 let activeWindows = new Map();
 
 chrome.tabs.onCreated.addListener((tab)=>{
-  console.log('listener.tabs.onCreated', tab);
   activeTabs.add(tab.id);
   activeWindows.set(tab.windowId, tab.id);
 })
@@ -213,30 +211,26 @@ chrome.tabs.onActivated.addListener(({tabId, windowId})=>{
   let activeTabId = activeWindows.get(windowId);
 
   activeWindows.set(windowId, tabId);
-console.log('listener.tabs.onActivated', tabId, windowId, currentWindowId, activeTabId);
+
   if(activeTabId != undefined
     && currentWindowId != undefined
     && currentWindowId != windowId) return;
-console.log('listener.tabs.onActivated2', tabId, windowId, currentWindowId, activeTabId);
+
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
 })
 chrome.tabs.onRemoved.addListener((tabId)=>{
-  console.log('listener.tabs.onRemoved', tabId);
   activeTabs.delete(tabId);
 })
 chrome.tabs.onMoved.addListener((tabId) => {
-  console.log('listener.tabs.onMoved', tabId);
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
 })
 chrome.tabs.onDetached.addListener((tabId) => {
-  console.log('listener.tabs.onDetached', tabId);
   activeTabs.delete(tabId);
   activeTabs.add(tabId);
 })
 chrome.windows.onFocusChanged.addListener((windowId)=>{
-  console.log('listener.tabs.windows.onFocusChanged', windowId);
   let tabId = activeWindows.get(windowId);
   if(tabId != undefined) {
     activeTabs.delete(tabId);
@@ -247,7 +241,6 @@ chrome.windows.onFocusChanged.addListener((windowId)=>{
     activeWindows.set(windowId, tabId);
   }
 
-  // console.log('ffff', Array.from(activeWindows.keys()).reverse());
   // if(showTabIndex) {
   //   toHideIndex(
   //     windowId == -1 || activeWindows.size == 1
@@ -257,13 +250,10 @@ chrome.windows.onFocusChanged.addListener((windowId)=>{
   // }
 })
 chrome.windows.onRemoved.addListener((windowId)=>{
-  console.log('window.onRemoved', windowId)
   activeWindows.delete(windowId);
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('background.onMessage', request, sender)
-
   if(request.type == 'download') {
     var filename = request.filename;
     let tabs = request.tabs;
@@ -271,15 +261,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type == 'getActiveTabIds') {
     sendResponse([...activeTabs]);
   } else if(request.type == 'getActiveWindowIds') {
-    console.log('getActiveWindowIds', [...activeWindows.keys()])
     sendResponse([...activeWindows.keys()]);
   } else if(request.type == 'exchangeTab') {
     let target = request.target;
     let destination = request.destination;
-    console.log('exchangeTab', target, destination);
 
     if(target.windowId == destination.windowId) {
-      console.log('exchangeTab', '当前窗口内切换');
       // 当前窗口内切换
       chrome.tabs.move(destination.id, {index: target.index}, () => {
         chrome.tabs.move(target.id, {index: destination.index}, () => {
@@ -288,20 +275,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     } else {
       // 多个窗口间的切换
-      console.log('exchangeTab', '多个窗口间的切换');
 
       // 先查询被选中的标签的窗口信息
       chrome.windows.get(destination.windowId, {populate: true}, (window) => {
         // 新增标签，防止在交换过程中因为焦点变化而导致顺序混乱
-        console.log('exchangeTab', '新增标签，防止在交换过程中因为焦点变化而导致顺序混乱');
 
         chrome.tabs.create({windowId: target.windowId, index: target.index+1, active: false}, (tab) => {
-          console.log('exchangeTab', '空白页创建完成', target.index+1, destination.index+1, tab);
           // 直接交换
           chrome.tabs.move(target.id, {windowId: destination.windowId, index: destination.index+1}, () => {
             chrome.tabs.move(destination.id, {windowId: target.windowId, index: target.index+1}, () => {
               // 关闭空白页面
-              console.log('exchangeTab', '关闭空白页面', target.index+1, destination.index+1, tab);
               chrome.tabs.remove(tab.id);
             })
           })
@@ -309,13 +292,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
     }
   } else if(request.type == 'closeExtension') {
-    console.log('closeExtension', sender, sender.tab && sender.tab.id)
-
     // 弹出菜单没有tab
     if(sender.tab == undefined) {
       let windows = chrome.extension.getViews({type: 'popup'});
       windows.forEach(window => window.close());
-      console.log('close:popup', windows);
       return;
     }
 
@@ -334,11 +314,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       // 下面这个可能会把 options 页面也给关了
       // let windows = chrome.extension.getViews({type: 'tab'});
       // windows.forEach(window => window.close());
-      console.log('close:window.open')
       return;
     }
 
-    console.log('close:inject')
     executeScript({tabId: sender.tab.id});
 
     // 关闭 inject-script 创建的窗口
@@ -396,13 +374,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
       }
     } catch(e) {
-      console.log(e)
     } finally {
       input.remove();
     }
   } else if(request.type == 'restartExtension') {
-    console.log('restartExtension222', sender, sender.tab && sender.tab.id)
-
     // 弹出菜单没有tab
     // 不应该出现
     if(sender.tab == undefined) {
@@ -442,14 +417,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 })
 
 chrome.browserAction.onClicked.addListener(() => {
-  console.log('9999999999999999999999999')
   // 在 window.open 模式下监听不到
   executeScript();
 })
 
 chrome.commands.onCommand.addListener(command => {
-  console.log('command', command);
-
   if(command.startsWith('open_workspace_')) {
     chrome.runtime.sendMessage({ type: 'isActive',}, (result) => {
       // 捕获错误，这样插件就不会显示错误
@@ -466,8 +438,6 @@ chrome.commands.onCommand.addListener(command => {
       } else if(result.isActive){
         chrome.runtime.sendMessage({ type: 'to_open_workspace', workspace: type})
       }
-
-      console.log('mmmmmmmmmmmm', result);
     })
   } else if(command.startsWith('add_')) {
     chrome.runtime.sendMessage({ type: 'isActive',}, (result) => {
@@ -488,15 +458,11 @@ chrome.commands.onCommand.addListener(command => {
       } else if(result.isActive){
         chrome.runtime.sendMessage({ type: 'to_add', workspace: type})
       }
-
-      console.log('mmmmmmmmmmmm2', result);
     })
   }
 })
 
-console.log('a',isFirstInstall);
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('b',isFirstInstall);
   if(isFirstInstall) {
     chrome.tabs.create({
       url: chrome.extension.getURL("options.html"),

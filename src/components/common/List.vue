@@ -237,18 +237,14 @@ export default {
   },
   watch: {
     currentIndex: function (newVal, oldVal) {
-      console.log('currentIndex');
-
       // 鼠标移动事件
       if(this.mouseIndex != -1
       && this.mouseIndex != this.list.length
       && this.mouseIndex == newVal) return;
 
       // 键盘触发的事件
-console.log('currentIndex', newVal, oldVal)
 
       if(this.list.length == 0) {
-        console.log('list.watch3', this.currentIndex, this.scrollLines, this.$el.scrollTop)
         this.scrollLines = 0;
         this.$el.scrollTop = 0;
         this.$emit('change', -1);
@@ -290,8 +286,6 @@ console.log('currentIndex', newVal, oldVal)
       this.mouseRealMoveRegister();
     },
     list: function (newVal, oldVal) {
-      console.log('list.list', newVal.length, oldVal.length);
-
       // 提供兼容性，在并发下 scrollDisabled = false，且 newVal.length = 0 hisotry 会导致死循环（该问题已被解决，但还是要预防着）
       // list.push 所产生的事件也是这个，所以要再加个长度限制
       // splice 会触发变动，但是 newVal 和 oldVal 是一样的
@@ -306,52 +300,36 @@ console.log('currentIndex', newVal, oldVal)
       // 解决由于列表被删除时触底加载问题（v-infinite-scroll 需要靠滚动事件，但这个并不会触发，所以需要我们自己处理）
       if(this.scrollDisabled == false
       && newVal.length-this.scrollLines <= this.itemShowCount) {
-      console.log('777777777777777777', newVal.length, oldVal.length)
         this.load();
       }
 
       if(newVal.length == 0) {
-        console.log('list.watch', newVal.length, this.currentIndex, this.scrollLines, this.$el.scrollTop)
         if(this.currentIndex != -1) this.$emit('change', -1);
       } else if(this.currentIndex >= newVal.length) {
-        console.log('list.watch2', newVal.length, this.currentIndex, this.scrollLines, this.$el.scrollTop)
         this.$emit('change', newVal.length-1);
       }
     },
     scrollLines(newVal, oldVal) {
-      console.log('scrollLines', newVal, oldVal);
-
       if(newVal < this.rangeUp || newVal > this.rangeDown) {
-        console.log('scrollLines:getRange', this.rangeUp, this.rangeDown);
-
         this.rangeUp = this.getRangeUp();
         this.rangeDown = this.getRangeDown();
-
-        console.log('scrollLines:getRange2', this.rangeUp, this.rangeDown);
       }
     },
     itemShowCount(newVal, oldVal) {
-      console.log('itemShowCount:scrollLines', newVal, oldVal);
-
-      console.log('scrollLines:scrollLines:getRange', this.rangeUp, this.rangeDown);
       this.rangeUp = this.getRangeUp();
       this.rangeDown = this.getRangeDown();
-      console.log('scrollLines:scrollLines:getRange2', this.rangeUp, this.rangeDown);
     },
   },
   computed: {
     visiualIndex() {
-      console.log('visiualIndex', this.currentIndex-this.scrollLines)
       return this.currentIndex-this.scrollLines;
     },
     scrollRange() {
-      console.log('scrollRange');
       // 指 scrollLines 的上方活动访问，或者下方，即实际有两倍的 scrollRange
       return 2*this.itemShowCount;
       // return 1;
     },
     scrollCache() {
-      console.log('scrollCache');
       // 缓冲地带，即当 scrollLines 超出 scrollRange 时，可能会出现空白，而缓冲就是为了填补这片空白的
       // 同样分为上方或者下方，只单独作用于对应的方向
       return Math.ceil(this.itemShowCount/2);
@@ -370,7 +348,6 @@ console.log('currentIndex', newVal, oldVal)
         rangeUp = 0;
       else if(rangeUp+2*this.scrollRange >= this.list.length)
         rangeUp = this.list.length-this.itemShowCount-2*this.scrollRange;
-    console.log('scrollLines:getRangeUp', rangeUp);
       return rangeUp;
     },
     getRangeDown() {
@@ -379,10 +356,8 @@ console.log('currentIndex', newVal, oldVal)
       let rangeDown = this.rangeUp+2*this.scrollRange;
       // 由于 rangeUp 已经提前做了判断，所以到了这里这种事是不可能发生的
       if(this.rangeUp > 0 && rangeDown >= this.list.length) {
-        console.warn('scrollLines:isImpossible');
         rangeDown = this.list.length-this.itemShowCount;
       }
-  console.log('scrollLines:getRangeDown', this.rangeUp, rangeDown, this.scrollRange);
       return rangeDown;
     },
 
@@ -408,8 +383,6 @@ console.log('currentIndex', newVal, oldVal)
     },
 
     mouseSelect(index) {
-      console.log('mouseSelect', index);
-
       // 鼠标在靠近边界时会触发下一个而非当前个，所以这里要限制一下
       if(index < this.scrollLines)
         index = this.scrollLines;
@@ -418,14 +391,10 @@ console.log('currentIndex', newVal, oldVal)
 
       this.mouseIndex = index;
 
-      console.log('mouseSelect2', this.mouseIndex, this.scrollLines, this.$el.scrollTop);
-
       // 列表滚动时就不选择了，这样体验更好
       if(this.w.isScrolling) {
         return;
       }
-
-      console.log('mouseSelect3', this.mouseIndex, this.scrollLines, this.$el.scrollTop);
 
       if(this.mouseStart == true) {
         this.$emit('change', index);
@@ -476,8 +445,6 @@ console.log('currentIndex', newVal, oldVal)
       })
     },
     scrollDeal(e) {
-      // console.log('scrollDeal', e)
-
       // 滚动开始（滚动过程中一直会调用这个方法）
       let self = this;
 
@@ -503,17 +470,14 @@ console.log('currentIndex', newVal, oldVal)
       self.w.timer = setTimeout(function scrollWatch() {
         self.w.t2 = e.target.scrollTop;
 
-        // console.log('ff', self.w.t2, self.w.t1, self.w.ulOn)
         if(self.w.t2 == self.w.t1 && self.w.ulOn != true){
           if(e.target.scrollTop%self.itemHeight != 0) {
             // 注意，由于 scrollTop 改变，会再次触发 scoll 事件，所以 speed = 0 是为了其立即执行，不过由于js的事件循环，其依然是在最后运行的
-console.log('a')
             self.w.speed = 0;
-            // self.w.moveStep = 2;
             self.w.moveStep = self.itemHeight*2/50 < 1 ? 1 : self.itemHeight*2/50;
-console.log('a2', self.w.moveStep, e.target.scrollTop)
+
             let oldScrollTop = e.target.scrollTop;
-            // console.log('8888888888')
+
             if(self.w.flag) { // 向上滚动
             //*
               e.target.scrollTop += self.itemHeight-e.target.scrollTop%self.itemHeight < self.w.moveStep
@@ -526,30 +490,23 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
                                   ? e.target.scrollTop%self.itemHeight
                                   : self.w.moveStep;/*/
               e.target.scrollTop -= 1;//*/
-            }console.log('a3', self.w.moveStep, e.target.scrollTop)
+            }
             // 只有在网页被放大或缩小时会出现
             if(oldScrollTop == e.target.scrollTop) {
-              console.log('a4', self.w.flag ? '向上滚动' : '向下滚动', self.w.moveStep, e.target.scrollTop, oldScrollTop)
-
               // 不使用 self.w.flag，并不准确
               let scrollTop = Math.round(e.target.scrollTop/self.itemHeight)*self.itemHeight;
 
               // 改赋值无效，否则也不会运行到这里
               // e.target.scrollTop = scrollTop;
 
-              console.log('a43', scrollTop, scrollTop/self.itemHeight, self.mouseIndex, e.target.scrollTop, oldScrollTop)
-
               self.scrollEnd(scrollTop);
             }
           } else {
-            console.log(self.scrollLines,  e.target.scrollTop, e.target.scrollTop/self.itemHeight);
-
             self.scrollEnd(e.target.scrollTop);
           }
         } else if(self.w.t2 == self.w.t1 && self.w.ulOn == true) {
           self.w.speed = 100;
           // 手动拖动滚动条，释放滚动条后触发
-          console.log('9999999999999999999', self.w.speed)
           self.w.timer = setTimeout(scrollWatch, self.w.speed);
         }
       }, self.w.speed);
@@ -568,7 +525,6 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
       // 当列表滚动时，如果鼠标出现在列表中，则不触发更新，这样鼠标事件本身
       // 就会让当前鼠标所指向的项目选中
       if( ! (this.mouseIndex == -1 || this.mouseStart == false)){
-        console.log('mouseSelect0', this.mouseIndex);
         this.mouseSelect(this.mouseIndex, scrollTop%this.itemHeight);
         this.$emit('scrollEnd');
         return;
@@ -601,32 +557,17 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
     // 移动列表，使得当前被选中行处于窗口最顶部
     currentToTop() {
       this.currentTo(0);
-      // console.log('currentToTop', this.currentIndex, this.list.length, this.list.length-this.itemShowCount);
-      // this.scrollLines = this.currentIndex < this.list.length-this.itemShowCount
-      //                   ? this.currentIndex
-      //                   : this.list.length-this.itemShowCount;
-      // // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
-      // setTimeout(() => {
-      //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
-      //   console.log('currentToTop2', this.scrollLines, this.$el.scrollTop, this.scrollLines*this.itemHeight);
-      // }, 0)
     },
     // 移动列表，使得当前被选中行处于窗口的 index 位置（index 从 0 算起）
     currentTo(index) {
-      console.log('currentTo 00 ', index, this.visiualIndex, this.currentIndex, this.scrollLines, this.scrollLines*this.itemHeight, this.$el.scrollTop);
-
       // 超出表面则拉回表面
       if(index < 0) index = 0;
       else if(index >= this.itemShowCount) index = this.itemShowCount-1;
-
-      console.log('currentTo 01 ', index, this.visiualIndex);
 
       // 恰好，一开始 this.visiualIndex = -1，index 无论取何值都不会错过
       // 虽然如此，但一开始是不会调用这个的，因为很多依赖还未更新
       // 还是以最后的 $el.scrollTop 值为准
       // if(index == this.visiualIndex) return;
-
-      console.log('currentTo', index, this.visiualIndex, this.scrollLines);
 
       let scrollLines;
       if(index < this.visiualIndex) {
@@ -637,8 +578,6 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
         scrollLines = this.scrollLines-(index-this.visiualIndex);
       }
 
-      console.log('currentTo2', scrollLines, this.scrollLines);
-
       // 不得超出可视区域
       if(scrollLines < 0) {
         scrollLines = 0;
@@ -648,8 +587,6 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
         scrollLines = this.list.length-this.itemShowCount;
       }
 
-      console.log('currentTo3', scrollLines, this.scrollLines);
-
       // 一开始 this.scrollLines 从负值被强制变为 0，所以相等，被跳过了。
       // 还是以最后的 $el.scrollTop 值为准备
       // if(scrollLines == this.scrollLines) return;
@@ -658,31 +595,11 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
 
       // 列表长度可能发生变化，但此时 dom 还未更新，而 scrollTop 则是立刻更新 dom 的，使用定时器将会把任务放到最后面，即 list dom 更新后
       let scrollTop = this.scrollLines*this.itemHeight;
-      console.log('currentTo4', this.$el.scrollTop, scrollTop);
       if(this.$el.scrollTop != scrollTop) {
         this.$nextTick(() => {
-          console.log('list.currentTo', index);
           this.$el.scrollTop = scrollTop;
         });
       }
-      // setTimeout(() => {
-      //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
-      // }, 0)
-
-
-      // let scrollLines = this.currentIndex-index < this.list.length-this.itemShowCount
-      //                   ? this.currentIndex-index
-      //                   : this.list.length-this.itemShowCount;
-      // console.log('currentTo', index, scrollLines, this.scrollLines)
-      // if(scrollLines < 0 || scrollLines == this.scrollLines) {
-      //   return;
-      // }
-
-      // this.scrollLines = scrollLines;
-
-      // setTimeout(() => {
-      //   this.$el.scrollTop = this.scrollLines*this.itemHeight;
-      // }, 0)
     },
   },
   beforeUpdate() {
@@ -692,9 +609,6 @@ console.log('a2', self.w.moveStep, e.target.scrollTop)
     console.warn('list:updated', this.$el.scrollTop);
   },
   mounted() {
-    // todo
-    window.list = this;
-
     // 一开始尽量显示少一点，一半就行了，加快启动速度
     this.rangeDown = this.scrollRange;
 

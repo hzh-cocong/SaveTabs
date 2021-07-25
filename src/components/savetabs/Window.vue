@@ -40,8 +40,6 @@
     <template
       v-if=" ! workspaceSwitch"
       #default="{ index, item, isActive, isSelected }">
-          <!-- width: (currentThemeConfig.item_height*3/5)+'px',
-          height: (currentThemeConfig.item_height*3/5)+'px' }" -->
       <span
         class="left"
         :style="{
@@ -84,7 +82,9 @@
       <div
         class="right"
         @click.stop>
-        <template v-if="isActive || activeWindows[item.windowId] || (storageKeyword != '' && item.lastVisitTime != undefined)">
+        <template v-if="isActive
+                      || activeWindows[item.windowId]
+                      || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
             <el-badge
               v-if="isCurrentWindowChange && item.windowId == currentWindowId"
@@ -139,11 +139,11 @@
                   borderColor: isSelected
                               ? currentThemeConfig.list_current_focus_state_color
                               : currentThemeConfig.list_current_state_color }">
-                <span style="margin-right: 5px;">{{ lang('currentWindow') }}</span>
+                <span style="margin-right: 5px;">{{ lang('current') }}</span>
               </el-badge>
             </template>
             <template v-else>
-              <span>{{ lang('currentWindow') }}</span>
+              <span>{{ lang('current') }}</span>
             </template>
           </div>
           <div
@@ -256,16 +256,15 @@
     @closed="groupVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <!-- <el-link type="info" @click="download"><i class="el-icon-download"></i></el-link> -->
-      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="download"><i class="el-icon-download"></i></span>
+      <span class="hover" style="color:gray;margin-top:4px;" @click="download"><i class="el-icon-download"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{group.name}}</span>
         <span
           style="color:hsl(0, 0%, 66%);margin-left: 20px;"
-          v-if="group.tabs">{{ group.tabs.length+' '+(group.tabs.length>1?'tabs':'tab') }}</span>
+          v-if="group.tabs">{{ group.tabs.length+' '+lang('tabs') }}</span>
       </span>
     </div>
-    <!-- v-if="groupVisible" 减少不必要的调用 -->
+    <!-- v-if="groupVisible2" 减少不必要的调用 -->
     <ul
       v-if="groupVisible2"
       class="group-list beautify-scrollbar"
@@ -311,22 +310,22 @@
     @closed="differenceVisible2=false"
     @close="focus">
     <div slot="title" style="width: 100%;display:flex;">
-      <span style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindows(true)"><i class="el-icon-refresh"></i></span>
+      <span class="hover" style="color:gray;cursor:pointer;margin-top:4px;" @click="refreshWindows(true)"><i class="el-icon-refresh"></i></span>
       <span style="margin-left: 15px;font-size: 18px; flex: 1; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
         <span>{{oldGroup.name}}</span>
         <span
           style="color:hsl(0, 0%, 66%);margin-left: 20px;"
-          v-if=" ! haveDifference">{{ '无差别' }}</span>
+          v-if=" ! haveDifference">{{ lang('noDifference') }}</span>
       </span>
     </div>
     <!-- v-if="differenceVisible" 减少不必要的更新，如 getIcon 会因为别的变化而多次调用-->
     <div class="compare" v-if="differenceVisible2">
       <div class="left">
         <div style="text-align: center;padding: 5px 0;">
-          <span>旧</span>
+          <span>{{ lang('old') }}</span>
           <span
             style="margin-left: 20px;"
-            v-if="oldGroup.tabs">{{ oldGroup.tabs.length+' '+(oldGroup.tabs.length>1?'tabs':'tab') }}</span>
+            v-if="oldGroup.tabs">{{ oldGroup.tabs.length+' '+lang('tabs') }}</span>
         </div>
         <ul
           class="group-list"
@@ -359,10 +358,10 @@
       </div>
       <div class="right">
         <div style="text-align: center;padding: 5px 0;">
-          <span>新</span>
+          <span>{{ lang('new') }}</span>
           <span
             style="margin-left: 20px;"
-            v-if="currentWindow.tabs">{{ currentWindow.tabs.length+' '+(currentWindow.tabs.length>1?'tabs':'tab') }}</span>
+            v-if="currentWindow.tabs">{{ currentWindow.tabs.length+' '+lang('tabs') }}</span>
         </div>
         <ul
           class="group-list"
@@ -395,10 +394,10 @@
       </div>
     </div>
     <span slot="footer" v-if="differenceVisible2">
-      <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">还 原</el-button>
-      <el-button size="small" v-else style="float: left;" @click="bind">绑 定</el-button>
-      <el-button size="small" @click="differenceVisible = false">取 消</el-button>
-      <el-button class="autofocus" type="primary" size="small" @click="updateGroup">更 新</el-button>
+      <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">{{ lang('restore') }}</el-button>
+      <el-button size="small" v-else style="float: left;" @click="bind">{{ lang('bind') }}</el-button>
+      <el-button size="small" @click="differenceVisible = false">{{ lang('cancel') }}</el-button>
+      <el-button class="autofocus" type="primary" size="small" @click="updateGroup">{{ lang('update') }}</el-button>
     </span>
   </el-dialog>
 
@@ -500,23 +499,18 @@ export default {
   },
   watch: {
     "window.visible": function(newVal, oldVal) {
-      console.log('window.visible', newVal, oldVal);
       this.search();
     },
 
     cacheList(newVal, oldVal) {
-      console.log('watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
     },
     list(newVal, oldVal) {
-      console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
     workspaceSwitch(newVal, oldVal) {
-        console.log('window.workspaceSwitch')
       if(newVal) {
-        console.log('window.workspaceSwitch2')
         let keymap = this.keymap['open_workspace_window']
                     ? ' ('+this.keymap['open_workspace_window']+')'
                     : ''
@@ -535,9 +529,6 @@ export default {
       } else {
         return 'mini'; // 28
       }
-      // else if(this.currentThemeConfig.item_height >= 30) {
-      //   return 'mini';
-      // }
     },
 
     isNoSearch() {
@@ -548,14 +539,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('window.listPageCount')
 
       return  this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('window.watch.itemShowCount', this.isNoSearch)
       return  this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -581,22 +570,11 @@ export default {
     },
 
     iconMap() {
-      console.log('getIcon:iconMap');
-      let a = new Date().getTime();
-
-      let ss = this.list.map((item, index) => {
+      return this.list.map((item, index) => {
         return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.currentThemeConfig.item_height*3/5);
       })
-      let b = new Date().getTime();
-      console.log('getIcon:iconMap', (b-a)/1000);
-
-      return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
-
-      let a = new Date().getTime();
-
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = new Array(this.list.length);
@@ -604,43 +582,28 @@ export default {
         highlightMap[ index ] = this.toHighlight(item.name, this.storageKeyword, '<strong>', '</strong>');
       });
 
-      let b = new Date().getTime();
-
-      console.log('===h', (b-a)/1000);
-
       return highlightMap;
     },
 
     currentWindowId() {
-      console.log('get_current_window_id', this.currentWindow, this.currentWindow.id)
       return this.currentWindow.id;
     },
     currentWindowStorageIndex() {
       // 判断是否存在在当前分组
-      console.log('get_currentWindowStorageIndex', this.storageList, this.currentWindowId)
       if(this.currentWindowId == undefined) return -1;
-console.log('get_currentWindowStorageIndex2');
 
       // 这个非常高效（找到第一个就停止遍历
       let index = this.storageList.findIndex((group) => {
-        // console.log('a')
         return group.windowId == this.currentWindowId;
       })
-console.log('get_currentWindowStorageIndex3', index);
       return index;
     },
     isInCurrentWindow() {
-      console.log('get_isInCurrentWindow', this.currentWindowStorageIndex)
       return this.currentWindowStorageIndex != -1;
     },
     isCurrentWindowChange() {
-      console.log('get_isCurrentWindowChange', this.currentWindowStorageIndex)
       if(this.currentWindowStorageIndex == -1) return false;
 
-      console.log('get_isCurrentWindowChange2', this.currentWindowStorageIndex, this.isDifference(
-        this.storageList[ this.currentWindowStorageIndex ],
-        this.currentWindow
-      ))
       return this.isDifference(
         this.storageList[ this.currentWindowStorageIndex ],
         this.currentWindow
@@ -650,36 +613,20 @@ console.log('get_currentWindowStorageIndex3', index);
       return this.isDifference(this.oldGroup, this.currentWindow);
     },
     currentGroup() {
-      console.log('get_currentGroup', this.list, this.list[ this.currentIndex ])
       if(this.list.length <= 0) return null;
       return this.list[ this.currentIndex ];
     },
     currentStorageIndex() {
-      console.log('get_currentStorageIndex', this.currentGroup)
-      // let group = this.list[ this.currentIndex ];
       return this.storageList.findIndex(group => {
         return group.id == this.currentGroup.id;
       });
-      // for(let i in this.storageList) {
-      //   if(this.storageList[i].id == this.currentGroup.id) {
-      //     console.log('get_currentStorageIndex2', i)
-      //     return i;
-      //   }
-      // }
-      // console.log('get_currentStorageIndex3', -1)
-      // return -1;
     },
     currentTab() {
-      console.log('get_currentTab', this.currentWindow.tabs)
-
       for(let tab of this.currentWindow.tabs) {
         if(tab.active == true) {
-          console.log('get_currentTab2', tab)
           return tab;
         }
       }
-
-      console.log('get_currentTab3', {})
       return {};
     },
 
@@ -749,8 +696,6 @@ console.log('get_currentWindowStorageIndex3', index);
       }
     },
     copy() {
-      console.log('copy', this.currentGroup)
-
       if(this.currentGroup == null) return;
 
       // 工作区切换
@@ -760,7 +705,6 @@ console.log('get_currentWindowStorageIndex3', index);
         if(index == 0) return group.url;
         else return accumulator+"\n"+group.url;
       }, '');
-      console.log('copy2', urls, urls == '')
       if(urls == '') return;
 
       chrome.runtime.sendMessage({
@@ -771,7 +715,6 @@ console.log('get_currentWindowStorageIndex3', index);
     },
 
     search(keyword) {
-      console.log('window.search', keyword, '|', this.storageKeyword, '|', this.scrollDisabled );
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword != keyword.trim()) {
@@ -780,7 +723,6 @@ console.log('get_currentWindowStorageIndex3', index);
           return;
         }
       }
-console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scrollDisabled );
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -826,7 +768,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
-      console.log('window.searchEnd')
     },
     showWorkspaceList() {
       let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
@@ -849,7 +790,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       this.isFirstSearch = false;
     },
     load() {
-      console.log('window.load', this.scrollDisabled, this.list.length, this.cacheList.length, this.itemShowCount, this.listPageCount)
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -859,10 +799,13 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       if(this.isOperating) return;
       this.isOperating = true;
 
-      this.$prompt('', '添加'+(this.isInCurrentWindow ? '（重复）' : ''), {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPlaceholder: '请输入窗口名',
+      this.$prompt('', this.lang('add')
+                      +( this.isInCurrentWindow
+                        ? `（${this.lang('repeated')}）`
+                        : ''), {
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
+        inputPlaceholder: this.lang('groupNameInput'),
         customClass: 'window-message-box',
         inputValue: keyword.trim() == '' ? null : keyword.trim(),
         inputValidator: ( value ) => {
@@ -958,14 +901,14 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
             });
           }
 
-          this.statusTip('窗口添加成功', false, 3000);
+          this.statusTip(this.lang('windowAddSuccess'), false, 3000);
 
           // 让 all 保持数据同步
           chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'add'});
         }).catch(() => {
           this.$message({
             type: 'error',
-            message: '部分网页还未加载，请稍后重试',
+            message: this.lang('webRetry'),
             customClass: 'window-message-box',
             offset: 69,
             duration: 3000,
@@ -990,8 +933,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       this._openWindow(keyType);
     },
     _openWindow(keyType) {
-      console.log('openWindow', keyType)
-
       if(this.currentGroup == null) return;
 
       // 工作区切换
@@ -1117,8 +1058,8 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       // let index = this.getStorageIndex();
       // this.group = this.list[this.currentIndex];
       this.$prompt('', this.lang('updateGroupName'), {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
         inputPlaceholder: this.lang('groupNameInput'),
         customClass: 'window-message-box',
         inputValue: this.currentGroup.name,
@@ -1206,12 +1147,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
 
       // 获取当前窗口
       this.refreshWindows();
-      // chrome.windows.getCurrent({populate: true}, window => {
-      //   console.log(window)
-      //   // 重新获取，因为有些网页可能还未加载完
-      //   this.currentWindow = window;
-      //   // this.haveDifference = this.isDifference(this.oldGroup, window);
-      // })
 
       this.differenceVisible = true;
 
@@ -1250,8 +1185,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         // 关闭 dialog
         this.differenceVisible = false;
 
-
-        this.statusTip('窗口更新成功', false, 3000);
+        this.statusTip(this.lang('windowUpdateSuccess'), false, 3000);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'update'});
@@ -1282,7 +1216,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
         // 关闭 dialog
         this.differenceVisible = false;
 
-        this.statusTip('窗口绑定成功', false, 3000);
+        this.statusTip(this.lang('windowBindSuccess'), false, 3000);
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'window', operation: 'bind'});
@@ -1306,7 +1240,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       // 过滤掉当前标签
       currentTabIds.splice(currentTabIndex, 1);
       oldTabUrls.splice(currentTabIndex, 1);
-      console.log('ffff', this.currentWindow, this.oldGroup, currentTabIds, oldTabUrls)
 
       // 数据处理
       let coverTabs = currentTabIds.slice(0, oldTabUrls.length).map((tabId, index) => {
@@ -1317,7 +1250,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       });
       let createTabUrls = oldTabUrls.slice(currentTabIds.length);
       let removeTabIds = currentTabIds.slice(oldTabUrls.length);
-      console.log('eeeggg', coverTabs, createTabUrls, removeTabIds)
 
       // 覆盖当前标签页
       coverTabs.forEach(({tabId, url}) => {
@@ -1335,14 +1267,11 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
       // 存储新数据（更新顺序）
       this.storageList.unshift(this.storageList.splice(this.currentStorageIndex , 1)[0]);
       chrome.storage.local.set({list: this.storageList}, () => {
-        console.log('fffffffffffffffffff', this.currentWindow.tabs[currentTabIndex].id, removeTabIds);
         // 处理当前标签
         if(this.oldGroup.tabs[currentTabIndex] == undefined) {
-          console.log('a');
           // 移除当前标签
           chrome.tabs.remove(this.currentWindow.tabs[currentTabIndex].id)
         } else {
-          console.log('b');
           // 覆盖当前标签
           chrome.tabs.update(this.currentWindow.tabs[currentTabIndex].id, {url :this.oldGroup.tabs[currentTabIndex].url});
         }
@@ -1352,7 +1281,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
 
         // 更新 currentWindow
         this.currentWindow.tabs = this.oldGroup.tabs.map((tab, index) => {
-          console.log(index);
           // 只关心这几个值
           return {
             title: tab.title,
@@ -1365,12 +1293,11 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
             index: index,
           }
         })
-        console.log('change currentWindow', this.currentWindow);
 
         // 关闭 dialog
         this.differenceVisible = false;
 
-        this.statusTip('窗口已还原', false, 3000);
+        this.statusTip(this.lang('windowRestored'), false, 3000);
       });
     },
 
@@ -1379,7 +1306,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
 
       // 判断当前分组是否需要更新
       if(group.tabs.length != window.tabs.length) {
-        console.log('difference length')
         return true;
       }
       for(let i in group.tabs) {
@@ -1390,7 +1316,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
             || (window.tabs[i].favIconUrl != undefined
               // && window.tabs[i].favIconUrl != ''
               && tab.icon != window.tabs[i].favIconUrl))) {
-        console.log('difference 2', tab, window.tabs[i])
           return true;
         }
       }
@@ -1426,7 +1351,7 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
 
         this.$message({
           type: 'success',
-          message: '新窗口数据已更新',
+          message: this.lang('newWindowUpdated'),
           customClass: 'window-message-box',
           offset: 10,
           duration: 2000,
@@ -1437,17 +1362,16 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
     },
 
     getTip() {
-      console.log('showTip');
       if(this.activeWindows[this.currentGroup.windowId]) {
-        return '切换到对应的窗口';
+        return this.lang('switchWindow');
       }
 
       if(this.keyType == 'meta/ctrl') {
-        return  '当前窗口打开但不选中';
+        return  this.lang('openCurrentWindowButNotSelect');
       } else if(this.keyType == 'alt') {
-        return  '当前窗口打开并选中';
+        return  this.lang('openCurrentWindowAndSelect');
       } else if(this.keyType != '') {
-        return  '默认新窗口打开';
+        return  this.lang('openNewWindow');
       } else {
         return  '';
       }
@@ -1461,9 +1385,6 @@ console.log('window.search2', keyword, '|',  this.storageKeyword, '|', this.scro
     console.warn('window:updated');
   },
   mounted() {
-    // todo（删除该段代码）
-    window.w = this;let a = new Date().getTime();
-console.warn('mounted', a);
     // 并行执行，效率更高
     // 其实速度并没有多大提升，因为主要瓶颈在于获取本地数据，另外两个完全可以忽略不计
     // 更大的问题其实是 filter 和 currentWindowStorageIndex
@@ -1473,8 +1394,6 @@ console.warn('mounted', a);
         chrome.storage.local.get({'list': []}, items => {
           // resolve(items.list)
           this.storageList = items.list;
-          let b = new Date().getTime();
-          console.warn('获取本地数据', b, (b-a)/1000)
           resolve();
         });
       }),
@@ -1487,8 +1406,6 @@ console.warn('mounted', a);
             tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/(\/*$)/g,""));
           })
           this.currentWindow = window;
-          let b = new Date().getTime();
-          console.warn('获取当前窗口', b, (b-a)/1000)
           resolve();
         })
       }),
@@ -1501,8 +1418,6 @@ console.warn('mounted', a);
           for(let window of windows) {
             this.activeWindows[ window.id ] = true;
           }
-          let b = new Date().getTime();
-          console.warn('判断窗口是否已打开', b, (b-a)/1000)
           resolve();
         })
       }),
@@ -1518,9 +1433,6 @@ console.warn('mounted', a);
       //   this.activeWindows[ window.id ] = true;
       // }
 
-      let b = new Date().getTime();
-console.warn('finish', b, (b-a)/1000)
-
       this.isFinish = true;
       this.$emit('finish');
 
@@ -1533,7 +1445,6 @@ console.warn('finish', b, (b-a)/1000)
     // chrome.tabs.onCreated.addListener(() => {
     //   clearTimeout(this.w.timer);
     //   this.w.timer = setTimeout(() => {
-    //     console.log('window.refreshWindows')
     //     this.refreshWindows();
     //   }, 200);
     // })
@@ -1541,14 +1452,12 @@ console.warn('finish', b, (b-a)/1000)
       if(changeInfo.status != 'complete') return;
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('window.refreshWindows')
         this.refreshWindows();
       }, 200);
     })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('window.refreshWindows')
         this.refreshWindows();
       }, 200);
     })

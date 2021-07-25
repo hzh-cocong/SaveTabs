@@ -58,10 +58,6 @@ export default {
         this.scrollTool.style.top = (this.ulNode.clientHeight / this.ulNode.scrollHeight * this.ulNode.scrollTop)+'px';
       }
     },
-    // list: function(newVal, oldVal) {
-    //   alert('ss')
-    //   console.log('list', newVal, oldVal)
-    // }
   },
   methods: {
     createScroll(h1, h2) {
@@ -94,8 +90,6 @@ export default {
 
         let self = this;
         function mousemoveWatch(event){
-          console.log('ss')
-
           let top = event.clientY-startY+scrollToolY;
           if(top <= 0) top = 0;
           if(top >= h1-(h1 / h2 * h1)) top = h1-(h1 / h2 * h1);
@@ -107,7 +101,6 @@ export default {
           self.ulNode.scrollTop = Math.ceil(tt/self.itemHeight)*self.itemHeight;
         }
         function mouseupWatch(){
-          console.log('gg')
           document.removeEventListener('mousemove', mousemoveWatch);
           document.removeEventListener('mouseup', mouseupWatch);
         }
@@ -138,8 +131,6 @@ export default {
     // 内容未超出，无需滚动条
     this.ulNode = this.$el.children[0];
     if(this.ulNode.clientHeight >= this.ulNode.scrollHeight) return;
-
-    console.log('selectX', this.list.length, this.ulNode, this.ulNode.clientHeight, this.ulNode.scrollHeight)
 
     // 创建滚动条
     this.createScroll(this.ulNode.clientHeight, this.ulNode.scrollHeight);

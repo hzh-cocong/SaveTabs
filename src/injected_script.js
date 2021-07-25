@@ -1,5 +1,4 @@
 {
-  console.log('bbbbbbbbbbbbbbbbbbbbbbbb0')
   Promise.all([
     new Promise((resolve) => {
       chrome.storage.local.get({'config': {}}, items => {
@@ -7,8 +6,6 @@
       })
     })
   ]).then(([config]) => {
-    console.log('inject:storage.get', config);
-
     if(config.theme_inject == undefined) {
       window.open(chrome.extension.getURL("options.html"));
       return;
@@ -202,28 +199,22 @@
       let sendTimes = 0;
       setTimeout(function send() {
         sendTimes++;
-        console.log('zoom:send')
         chrome.runtime.sendMessage({ type: 'pageZoom', zoom }, (result) => {
           // 捕获错误，这样插件就不会显示错误
           chrome.runtime.lastError;
-          console.log('zoom:received')
 
           if(result == undefined || result.received != true) {
-            console.log('zoom:send again')
             // 插件还未完全打开，无法接受消息，得重发
             // setTimeout(send, 100);
             return;
           }
 
           clearInterval(intervalID)
-          console.log('zoom:finish')
         })
 
         // 不知道为啥，sendMessage 发送失败不会执行回调，但在 background.js 是会执行的，这里只能使用定时器进行检测
         if(intervalID == null) {
-          console.log('zoom:add_monitor');
           intervalID = setInterval(function(){
-            console.log('zoom:monitor');
             // 发送不超过 20 次，避免死循环（一般两次就ok了）
             if(sendTimes >= 20) {
               clearInterval(intervalID)

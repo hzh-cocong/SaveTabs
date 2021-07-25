@@ -7,11 +7,22 @@
     "tip": {"message": "Tip"},
     "cancel": {"message": "Cancel"},
     "sure": {"message": "OK"},
+    "update": {"message": "Update"},
+    "restore": {"message": "Restore"},
+    "bind": {"message": "Bind"},
 
     "justNow": {"message": " just now"},
-    "secondAgo": {"message": " seconds ago"},
-    "minuteAgo": {"message": " minutes ago"},
-    "hourAgo": {"message": " hours ago"},
+    "secondAgo": {"message": " second(s) ago"},
+    "minuteAgo": {"message": " minute(s) ago"},
+    "hourAgo": {"message": " hour(s) ago"},
+
+    "add": {"message": "Add"},
+    "repeated": {"message": "Repeated"},
+
+    "switchWindow": {"message": "Switch to the window"},
+    "openCurrentWindowButNotSelect": {"message": "Open in current window but not select"},
+    "openCurrentWindowAndSelect": {"message": "Open in current window and select"},
+    "openNewWindow": {"message": "Open in a new window"},
 
 
     "tab": {"message": "tab"},
@@ -22,28 +33,32 @@
     "bookmark": {"message": "bookmark"},
     "all": {"message": "all"},
 
-    "tabPlaceholder": {"message": "Please enter title or address"},
-    "notePlaceholder": {"message": "Please enter title or address"},
-    "windowPlaceholder": {"message": "Please enter the window name"},
-    "temporaryPlaceholder": {"message": "Please enter title or address"},
-    "historyPlaceholder": {"message": "Please enter title or address"},
-    "allPlaceholder": {"message": "Please enter title or address"},
+    "current": {"message": "Current"},
+    "opened": {"message": "Opened"},
+
+    "noDifference": {"message": "No Difference"},
+    "new": {"message": "New"},
+    "old": {"message": "Old"},
+    "tabs": {"message": "tab(s)"},
+    "webRetry": {"message": "Some pages have not been loaded, please try again later!"},
+
+
+    "windowAddSuccess": {"message": "Window Added Successfully"},
+    "windowBindSuccess": {"message": "Window Binding Successfully"},
+    "windowUpdateSuccess": {"message": "Window Updated Successfully"},
+    "windowRestored": {"message": "Window Restored"},
+    "newWindowUpdated": {"message": "New Window Data Updated"},
 
 
     "updateGroupName": {"message": "Window name modification"},
-    "deleteConfirm": {"message": "Are you sure to delete the window"},
+    "deleteConfirm": {"message": "Are you sure to delete the window?"},
     "groupNameRepeat": {"message": "The window name is not allowed to be repeated"},
     "groupNameInput": {"message": "Please enter the window name"},
-    "changeConfirm": {"message": "Are you sure to update the window"},
     "emptyGroupName": {"message": "The window name is not allowed to be empty"},
 
     "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
     "windowNoResult2": {"message": "You can use spaces to separate multiple keywords to search."},
     "windowFirstAdd": {"message": "The window is saved successfully. Clicking on the list will switch to the corresponding window. You can create a new window and save it so that you can see the effect."},
-    "currentWindow": {"message": "Current"},
-    "opened": {"message": "Opened"},
-    "saved": {"message": "It has been saved"},
-    "saved2": {"message": "The current window has been saved, you can click the last button of the first item in the list to update the window."},
     "windowCountTip": {"message": "A total of "},
     "windowCountTip2": {"message": " windows are stored."},
 
@@ -115,7 +130,6 @@
     "reset": {"message": "Reset"},
     "store": {"message": "Store"},
 
-    "restored": {"message": "Success"},
     "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
     "saveSuccess": {"message": "Saved successfully"},
 

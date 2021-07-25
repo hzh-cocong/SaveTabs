@@ -183,11 +183,9 @@ export default {
     // todo
     window.th = this;
 
-    console.log('mounted.theme', this.openWay, this.autoOpen);
     chrome.storage.local.get({'theme': {}}, items => {
       Object.assign(this.theme, items.theme);
       if(this.autoOpen) {
-        console.log('mounted.theme2')
 
         // 不要直接赋值，那是不符合规范的，而且会有很多问题，如开启后自动关闭，或者是手动关闭不了等
         this.$emit('update:visible', true);

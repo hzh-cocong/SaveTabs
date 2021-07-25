@@ -16,10 +16,17 @@ import VueRouter from 'vue-router'
 
 import Options from './Options.vue'
 
+
+// import enLocale from 'element-ui/lib/locale/lang/en'
+// import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+// import locale from 'element-ui/lib/locale'
+// // 设置语言
+// locale.use(chrome.i18n.getMessage('@@ui_locale') == 'zh_CN' ? zhLocale : enLocale);
+
+
+
 Vue.use(VueRouter)
 
-//todo
-console.log('routes', routes)
 const router = new VueRouter({
   routes: routes
 })

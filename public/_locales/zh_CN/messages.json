@@ -7,11 +7,22 @@
     "tip": {"message": "提示"},
     "cancel": {"message": "取 消"},
     "sure": {"message": "确 定"},
+    "update": {"message": "更 新"},
+    "restore": {"message": "还 原"},
+    "bind": {"message": "绑 定"},
 
     "justNow": {"message": "刚刚"},
     "secondAgo": {"message": "秒前"},
     "minuteAgo": {"message": "分钟前"},
     "hourAgo": {"message": "小时前"},
+
+    "add": {"message": "添加"},
+    "repeated": {"message": "重复"},
+
+    "switchWindow": {"message": "切换到对应的窗口"},
+    "openCurrentWindowButNotSelect": {"message": "当前窗口打开但不选中"},
+    "openCurrentWindowAndSelect": {"message": "当前窗口打开并选中"},
+    "openNewWindow": {"message": "新窗口打开"},
 
 
     "tab": {"message": "标签"},
@@ -22,29 +33,31 @@
     "bookmark": {"message": "书签"},
     "all": {"message": "全部"},
 
-    "tabPlaceholder": {"message": "请输入标题或地址"},
-    "notePlaceholder": {"message": "请输入标题或地址"},
-    "windowPlaceholder": {"message": "请输入窗口名"},
-    "temporaryPlaceholder": {"message": "请输入标题或地址"},
-    "historyPlaceholder": {"message": "请输入标题或地址"},
-    "bookmarkPlaceholder": {"message": "请输入标题或地址"},
-    "allPlaceholder": {"message": "请输入标题或地址"},
+    "current": {"message": "当前"},
+    "opened": {"message": "已打开"},
 
+    "noDifference": {"message": "无差别"},
+    "new": {"message": "新"},
+    "old": {"message": "旧"},
+    "tabs": {"message": "个标签页"},
+    "webRetry": {"message": "部分网页还未加载，请稍后重试！"},
+
+
+    "windowAddSuccess": {"message": "窗口添加成功"},
+    "windowBindSuccess": {"message": "窗口绑定成功"},
+    "windowUpdateSuccess": {"message": "窗口更新成功"},
+    "windowRestored": {"message": "窗口已还原"},
+    "newWindowUpdated": {"message": "新窗口数据已更新"},
 
     "updateGroupName": {"message": "窗口名修改"},
-    "deleteConfirm": {"message": "确定删除窗口"},
+    "deleteConfirm": {"message": "确定删除窗口?"},
     "groupNameRepeat": {"message": "窗口名不允许重复"},
     "groupNameInput": {"message": "请输入窗口名"},
-    "changeConfirm": {"message": "确定更新窗口"},
     "emptyGroupName": {"message": "窗口名不允许为空"},
 
     "windowNoResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口。"},
     "windowNoResult2": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
     "windowFirstAdd": {"message": "窗口保存成功，点击列表将切换到对应窗口。你可以再新建新的窗口并保存，这样就可以看到效果。"},
-    "currentWindow": {"message": "当前窗口"},
-    "opened": {"message": "已打开"},
-    "saved": {"message": "当前窗口已保存"},
-    "saved2": {"message": "当前窗口已保存，你可以点击列表第一项的最后一个按钮更新窗口"},
     "windowCountTip": {"message": "当前共存储 "},
     "windowCountTip2": {"message": " 个窗口。"},
 
@@ -118,7 +131,6 @@
     "reset": {"message": "重置"},
     "store": {"message": "保存"},
 
-    "restored": {"message": "已还原"},
     "resetConfirm": {"message": "确定还原默认配置？"},
     "saveSuccess": {"message": "保存成功"},
 

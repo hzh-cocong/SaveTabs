@@ -6,8 +6,12 @@ let search = {
 
     init: function(localConfig) {
       this.storageList = localConfig.all_search_engine
-                        ? JSON.parse(JSON.stringify(localConfig.all_search_engine)) // 防止被污染导致存储脏数据
+                        ? localConfig.all_search_engine
                         : [];
+      // todo 为了找出 bug
+      // this.storageList = localConfig.all_search_engine
+      // ? JSON.parse(JSON.stringify(localConfig.all_search_engine)) // 防止被污染导致存储脏数据
+      // : [];
 
       this.storageList.forEach((item, index) => {
         item.type = 'search';

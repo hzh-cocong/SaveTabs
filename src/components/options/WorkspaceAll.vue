@@ -456,8 +456,8 @@ export default {
         if( ! valid) return false;
 
         this.$prompt('', '请输入关键词进行测试', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.lang('sure'),
+          cancelButtonText: this.lang('cancel'),
           inputPlaceholder: '',
           inputValue: 'SaveTabs',
           inputValidator: ( value ) => {

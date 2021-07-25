@@ -711,7 +711,6 @@ export default {
   watch: {
     searchTotal: {
       handler(newVal, oldVal) {
-        console.log('watch:searchTotal', newVal, oldVal,  ! this.currentThemeConfig.statusbar_show_search_total)
         if( ! this.currentThemeConfig.statusbar_show_search_total) return;
 
         let title = this.lang(this.currentWorkspace.title);
@@ -730,7 +729,6 @@ export default {
       if( ! this.themeDialogOpened) this.themeDialogOpened = true;
     },
     themeDialogAutoOpen() {
-      console.log('themeDialogAutoOpen')
       if( ! this.themeDialogOpened) this.themeDialogOpened = true;
     }
   },
@@ -747,7 +745,6 @@ export default {
     },
     currentTheme: {
       set(theme) {
-        console.log('uuuuuuuuuuu1')
         if(this.openWay == 'popup') this.localConfig.theme_popup = theme;
         else this.localConfig.theme_inject = theme;
         chrome.storage.local.set({'config': this.localConfig}, () => {
@@ -766,14 +763,12 @@ export default {
         });
       },
       get() {
-        console.log('uuuuuuuuuuu2')
         if(this.openWay == 'popup') return this.localConfig.theme_popup;
         else return this.localConfig.theme_inject;
       }
     },
 
     isPopover() {
-      console.log('isPopover')
       if(this.currentWorkspace == undefined) return false;
 
       if(this.currentWorkspace.type == 'tab') return this.tab.visible;
@@ -791,23 +786,19 @@ export default {
           && ! this.isPopover;
     },
     listHeight() {
-      console.log('history.listHeight')
       if( ! this.currentThemeConfig.height_auto || this.openWay != 'popup')
         return this.currentThemeConfig.item_show_count
               *this.currentThemeConfig.item_height;
 
-      console.log('listHeight2')
       let listCount = this.currentWorkspace == undefined
                     ? 1000
                     : this.listCount[this.currentWorkspace.type];
       if(this.isNoSearch) {
-        console.log('listHeight3')
         return ( listCount <= this.currentThemeConfig.no_search_item_show_count
               ? listCount
               : this.currentThemeConfig.no_search_item_show_count)
               * this.currentThemeConfig.item_height;
       } else {
-        console.log('listHeight4', listCount, this.listCount)
         return ( listCount <= this.currentThemeConfig.item_show_count
               && ! this.isPopover
                 ? listCount
@@ -850,7 +841,6 @@ export default {
   },
   methods: {
     focus() {
-      console.log('focus', this.originInputNode, document.activeElement)
       // 已获得焦点则不再 focus，以免引起闪烁
       // 闪烁并非 focus 引起，而是要先 blur 再 focus 才会
       // if(this.originInputNode == document.activeElement) return;
@@ -904,8 +894,8 @@ export default {
     },
     workspacesTip(type) {
       this.$confirm(this.lang(type)+'已被禁用，是否前往 设置中心 开启？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
         customClass: 'window-message-box',
         type: 'warning'
       }).then(() => {
@@ -996,7 +986,7 @@ export default {
       // 先切换到对应的工作区
       let index = this.getTypeIndex(type);
       this.$refs.carousel.setActiveItem(index); // 注意切换是异步的
-      console.log('add', this.activeWorkspaceRefIndex);
+
       if(this.isOpened[ index ] == undefined) {
         // 若工作区还未创建，则由 finish 来处理 add
         let refIndex = Object.keys(this.isOpened).length;
@@ -1014,7 +1004,6 @@ export default {
       //   return;
       // }
       workspace.add((isSuccess)=>{
-        // alert('f', JSON.stringify(isSuccess))
         if(isSuccess) {
           this.keyword = '';
           this.search();
@@ -1022,7 +1011,6 @@ export default {
 
         // this.focus();
 
-        // console.log('add', refIndex, this.activeWorkspaceRefIndex)
         // if(refIndex == this.activeWorkspaceRefIndex) {
         //   // 添加完后当前窗口可能还没有完全切换过去，此时刷新的仍然是切换前的窗口，所以不需要刷新
         //   // 至于切换完后的刷新问题，这个完全不用担心，有专门的事件负责
@@ -1033,17 +1021,14 @@ export default {
 
     keyup(event) {
       this.keyType = this.getKeyType(event);
-console.log('jjjjjjj2222222', event)
+
       // windows 的 alt 键比较特殊，单独按下会使得输入款失去焦点，弹窗也会自动关闭，所以要屏蔽掉
       if(this._device.platform != 'Mac' && event.keyCode == 18) {
-        console.log('jjjjjjjjjjjjjjjjjj');
         event.stopPropagation();
         event.preventDefault();
       }
     },
     keydown(event) {
-      console.log('keydown', event)
-
       let keyType = this.getKeyType(event);
 
       // tab 和 shift+tab 左右切换
@@ -1168,13 +1153,10 @@ console.log('jjjjjjj2222222', event)
       })
     },
     workspaceChange(newIndex) {
-      console.log('workspaceChange', newIndex)
       this.activeWorkspaceIndex = newIndex;
       if( ! this.isOpened[this.activeWorkspaceIndex]) {
         // this.loading(true); // 会和 dropmenu 冲突
         this.$set(this.isOpened, this.activeWorkspaceIndex, Object.keys(this.isOpened).length+1);
-console.log('workspaceChange2', this.activeWorkspaceRefIndex)
-        console.log('99999999999999999999999999999999999', this.activeWorkspaceRefIndex)
         // add 会比这里先
         if( ! this.things[ this.activeWorkspaceRefIndex ]) {
           this.things[ this.activeWorkspaceRefIndex ] = [];
@@ -1308,12 +1290,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     },
 
     finalWork() {
-      console.log('finalWork.$refs', this.$refs)
-      console.log('finalWork.$refs.carousel', this.$refs.carousel)
       // 走马灯底部指示器提示
       let carouselNode = this.$refs.carousel.$el.children[1];
-      console.log('finalWork.carouselNode', carouselNode)
-      console.log('finalWork.carouselNode.children', carouselNode.children.length, carouselNode.children)
 
       for(let index = 0; index < carouselNode.children.length; index++) {
         let el = carouselNode.children[index];
@@ -1354,7 +1332,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
 
       // 输入框鼠标经过显示清除按钮
       this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
-      console.log('finalWork.originInputNode', this.originInputNode)
       this.originInputNode.addEventListener('mouseenter', (event) => {
         // event.stopPropagation();
         // event.preventDefault();
@@ -1390,8 +1367,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         })
       })
     ]).then(([syncItems, localItems, commands]) => {
-      console.log('savetabs:storage.get', syncItems, localItems)
-
       Object.assign(this.config, syncItems.config);
       Object.assign(this.localConfig, localItems.config);
 
@@ -1431,11 +1406,8 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         this.workspacesTip(localItems.info.active_workspace_type || this.localConfig.active_workspace_type);
         if(localItems.info.active_workspace_type) {
           let index = this.getTypeIndex(this.localConfig.active_workspace_type);
-          console.log('aaaaaaaaaaa', index, index == -1, index == -1 ? 0 : index);
           this.activeWorkspaceIndex = index == -1 ? 0 : index;
-          console.log('aaaaaaaaaaa2', this.activeWorkspaceIndex);
         } else {
-          console.log('aaaaaaaaaaa3')
           this.activeWorkspaceIndex = 0;
         }
       }
@@ -1487,8 +1459,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
     };
 
     window.oncontextmenu = function(e){
-      console.log(e)
-
       // 不屏蔽输入框
       if(e.target.tagName == 'INPUT') return;
 
@@ -1548,7 +1518,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
         } else if(request.type == 'pageZoom') {
           sendResponse({received: true});
 
-          console.log('zoom:savetabs', request.zoom, document.documentElement.style.zoom, 1 / request.zoom, document.documentElement.style.zoom == 1 / request.zoom)
           if(this.w.isReceived) return;
           else this.w.isReceived = true;
           if(request.zoom == 1) return;
@@ -1558,8 +1527,6 @@ console.log('workspaceChange2', this.activeWorkspaceRefIndex)
           document.documentElement.style.zoom = 1 / request.zoom;
 
           this.statusTip('注意：当前网页进行了缩放，部分操作存在异常。', true, 3000);
-
-          console.log('zoom:savetabs2', document.documentElement.style.zoom)
         }
       })
 //*

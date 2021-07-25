@@ -355,7 +355,6 @@ export default {
     storageTip: {
       handler(newVal) {
         this.tip = newVal;
-        console.log('fffffffff', newVal);
       },
       immediate: true
     }
@@ -364,7 +363,6 @@ export default {
     getQrcode() {
       if(this.w.grcodeUrl == this.goods.url) return;
       this.w.grcodeUrl = this.goods.url;
-      console.log('ffff');
 
       QRCode.toDataURL(this.goods.url, {
         errorCorrectionLevel: 'L',
@@ -372,10 +370,8 @@ export default {
         margin: 0,
         width: 200,
       },(error, url)=>{
-        console.log(error, url);
 
         if(error) {
-          console.error(error)
           this.qrcodeImgUrl = '';
           this.w.grcodeUrl = '';
           return;
@@ -387,7 +383,6 @@ export default {
     showTip(tip, lower = false) {
       // 在低优先级下，如果提示栏已经有人在用时，就不插进去了
       // 低优先级可以被低优先级的覆盖
-      console.log('showTip', lower, ! this.lower, this.tip != this.storageTip, tip)
       if(lower && ! this.lower && this.tip != this.storageTip) {
         // this.lower = lower; // 会导致高优先级的被低优先级的覆盖（超过1次后）
         return false;
@@ -423,7 +418,7 @@ export default {
       let index = Math.floor(Math.random()*(max-min+1)+min);
 
       this.goodsIndex = this.goodsIndex != -1 && index >= this.goodsIndex ? index+1 : index;
-console.log('changeGoods', this.goodsIndex, index, allGoods)
+
       this.$nextTick(() => {
         document.querySelector('#goods-description').scrollLeft = 0;
       })

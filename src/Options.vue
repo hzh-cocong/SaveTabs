@@ -757,9 +757,8 @@ console.log('allIncludeSort2', newIndex, oldIndex)
     },
     addTheme(callback) {
       this.$prompt('', '请输入主题名称', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPlaceholder: '',
+        confirmButtonText: this.lang('sure'),
+        cancelButtonText: this.lang('cancel'),
         inputValue: '',
       }).then(({ value }) => {
         let newTheme = Object.assign(

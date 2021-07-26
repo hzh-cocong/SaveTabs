@@ -103,7 +103,7 @@
             borderColor: isSelected
                   ? currentThemeConfig.list_current_focus_state_color
                   : currentThemeConfig.list_current_state_color }">
-          <span>{{ lang('currentWindow') }}</span>
+          <span>{{ lang('current') }}</span>
         </div>
         <div
           v-else-if="item.isOpened"
@@ -112,7 +112,7 @@
             color: isSelected
                 ? currentThemeConfig.list_focus_state_color
                 : currentThemeConfig.list_state_color }">
-          {{ item.isCurrent ? lang('currentWindow') : lang('opened') }}
+          {{ item.isCurrent ? lang('current') : lang('opened') }}
         </div>
         <div
           v-else-if="item.lastVisitTime != undefined"
@@ -208,17 +208,17 @@ export default {
     getTip() {
 console.log('showTip');
       if(this.item.isOpened) {
-        return '切换到对应的窗口';
+        return this.lang('switchWindow');
       }
 
       if(this.keyType == 'meta/ctrl') {
-        return  '当前窗口打开但不选中';
+        return this.lang('openCurrentWindowButNotSelect');
       } else if(this.keyType == 'alt') {
-        return  '当前窗口打开并选中';
+        return this.lang('openCurrentWindowAndSelect');
       } else if(this.keyType != '') {
-        return  '默认新窗口打开';
+        return this.lang('openNewWindow')
       } else {
-        return  '';
+        return '';
       }
     }
   },

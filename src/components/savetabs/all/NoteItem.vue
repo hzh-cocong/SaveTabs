@@ -120,7 +120,7 @@
             borderColor: isSelected
                   ? currentThemeConfig.list_current_focus_state_color
                   : currentThemeConfig.list_current_state_color }">
-            {{ lang('currentNote') +( item.count > 1 ? ' ('+item.count+')' : '') }}
+            {{ lang('current') +( item.count > 1 ? ' ('+item.count+')' : '') }}
         </div>
         <div
           v-else-if="item.isOpened"
@@ -129,7 +129,7 @@
             color: isSelected
                 ? currentThemeConfig.list_focus_state_color
                 : currentThemeConfig.list_state_color }">
-          {{  (item.isCurrent ? lang('currentNote') : lang('opened'))
+          {{  (item.isCurrent ? lang('current') : lang('opened'))
             + (isSelected && item.count > 1 ? ' ('+item.count+')' : '') }}
         </div>
         <div
@@ -226,17 +226,17 @@ export default {
     getTip() {
       console.log('showTip');
       if(this.item.isOpened) {
-        return '切换到对应的标签';
+        return this.lang('switchTab');
       }
 
       if(this.keyType == 'meta/ctrl') {
-        return '打开新标签但不切换';
+        return this.lang('openTabWithoutSwitch');
       } else if(this.keyType == 'shift') {
-        return '新窗口打开';
+        return this.lang('openNewWindow');
       } else if(this.keyType == 'alt') {
-        return '覆盖当前标签';
+        return this.lang('overwriteCurrentTab');
       } else if(this.keyType != '') {
-        return '打开新标签并切换';
+        return this.lang('openTabAndSwitch');
       } else {
         return '';
       }

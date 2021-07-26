@@ -24,6 +24,10 @@
     "openCurrentWindowAndSelect": {"message": "当前窗口打开并选中"},
     "openNewWindow": {"message": "新窗口打开"},
 
+    "switchTab": {"message": "切换到对应的标签"},
+    "openTabWithoutSwitch": {"message": "打开新标签但不切换"},
+    "overwriteCurrentTab": {"message": "覆盖当前标签"},
+    "openTabAndSwitch": {"message": "打开新标签并切换"},
 
     "tab": {"message": "标签"},
     "note": {"message": "便签"},
@@ -41,6 +45,7 @@
     "old": {"message": "旧"},
     "tabs": {"message": "个标签页"},
     "webRetry": {"message": "部分网页还未加载，请稍后重试！"},
+    "noResultTip": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
 
 
     "windowAddSuccess": {"message": "窗口添加成功"},
@@ -56,28 +61,22 @@
     "emptyGroupName": {"message": "窗口名不允许为空"},
 
     "windowNoResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口。"},
-    "windowNoResult2": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
     "windowFirstAdd": {"message": "窗口保存成功，点击列表将切换到对应窗口。你可以再新建新的窗口并保存，这样就可以看到效果。"},
-    "windowCountTip": {"message": "当前共存储 "},
-    "windowCountTip2": {"message": " 个窗口。"},
+    "windowCountTip": {"message": "当前共存储 [total] 个窗口。"},
 
 
-    "temporaryNoResult": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
-    "temporaryCountTip": {"message": "当前共存储 "},
-    "temporaryCountTip2": {"message": " 个临时窗口。"},
+    "noteDeleted": {"message": "便签已被删除"},
+    "noteAddSuccess": {"message": "便签添加成功"},
+    "noteSaved": {"message": "该便签已保存"},
+    "noteCountTip": {"message": "当前共存储 [total] 个便签。"},
+
+
+    "temporaryCountTip": {"message": "当前共存储 [total] 个临时窗口。"},
     "temporaryTabTip": {"message": "个标签"},
 
 
-    "currentNote": {"message": "当前便签"},
-    "noteSaved": {"message": "该便签已保存"},
-    "noteNoResult": {"message": "查找不到，你可以使用空格分割多个关键词进行搜索。"},
-    "noteCountTip": {"message": "当前共存储 "},
-    "noteCountTip2": {"message": " 个便签。"},
-
-
     "tabNoResult": {"message": "不存在该标签。"},
-    "tabCountTip": {"message": "当前共打开 "},
-    "tabCountTip2": {"message": " 个标签。"},
+    "tabCountTip": {"message": "当前共打开 [total] 个标签。"},
 
 
     "historyNoResult": {"message": "查无历史记录。"},
@@ -85,8 +84,7 @@
 
 
     "bookmarkNoResult": {"message": "不存在该书签。"},
-    "bookmarkCountTip": {"message": "当前共存储 "},
-    "bookmarkCountTip2": {"message": " 个书签。"},
+    "bookmarkCountTip": {"message": "当前共存储 [total] 个书签。"},
 
 
     "pageLayout": {"message": "页面布局"},

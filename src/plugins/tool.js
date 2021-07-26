@@ -34,7 +34,7 @@ const tool = {
 
           // 不安全的网址直接返回空
           if( ! (res[1] == 'http' || res[1] == 'https')) {
-            return  "chrome://favicon/size/"+size+"/"+res[0];
+            return "chrome://favicon/size/"+size+"/"+res[0];
           }
 
           // 不安全的图标直接返回空

@@ -1,26 +1,28 @@
 <template>
   <div class="temporary">
 
-  <el-alert
-    type="info"
-    :closable="false"
-    show-icon
+  <div
     v-if="isSearched && list.length == 0"
-    style="margin: 0 10px;"
-    :style="{ width: (currentThemeConfig.width-20)+'px' }">
-    <div
-      slot="title"
-      style="display:flex;align-items: center;"
-      :style="{ width: (currentThemeConfig.width-70)+'px' }">
-      <div style="flex:1;">
-        <div v-if="storageList.length > 0">{{ lang('temporaryNoResult') }}</div>
-        <div>{{ lang('temporaryCountTip')+storageList.length+lang('temporaryCountTip2') }}</div>
+    style="margin: 0 10px;">
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon>
+      <div
+        slot="title"
+        style="display:flex;align-items: center;font-size:12px;">
+        <div style="flex:1;">
+          <div v-if="storageList.length > 0">{{ lang('noResultTip') }}</div>
+          <div>{{ lang('temporaryCountTip').replace('[total]', storageList.length) }}</div>
+        </div>
+        <div style="margin-left: 8px;margin-right: -8px;">
+          <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=workspace#/workspace-general', getKeyType($event))"></el-button>
+        </div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
-    </div>
-  </el-alert>
+    </el-alert>
+  </div>
 
   <list
     :list="list"
@@ -400,13 +402,13 @@ export default {
       if(this.itemShowCount <= 0) return 0;
       console.log('temporary.listPageCount')
 
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
       console.log('temporary.watch.itemShowCount', this.isNoSearch)
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
     },
@@ -431,22 +433,11 @@ export default {
     },
 
     iconMap() {
-      console.log('getIcon:iconMap');
-      let a = new Date().getTime();
-
-      let ss = this.list.map((item, index) => {
+      return this.list.map((item, index) => {
         return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.currentThemeConfig.list_font_size);
       })
-      let b = new Date().getTime();
-      console.log('getIcon:iconMap', (b-a)/1000);
-
-      return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
-
-      let a = new Date().getTime();
-
       // 速度其实差不多
       // let highlightMap = new Array(this.list.length);
       // this.list.forEach((item, index) => {
@@ -486,11 +477,6 @@ export default {
           }
         })
       });
-
-
-      let b = new Date().getTime();
-
-      console.log('===h', (b-a)/1000);
 
       return highlightMap;
     },
@@ -977,7 +963,7 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '部分网页还未加载，请稍后重试',
+          message: this.lang('webRetry'),
           customClass: 'window-message-box',
           offset: 69,
           duration: 3000,
@@ -1331,6 +1317,10 @@ console.log('temporary:data_change', this.isActiveWorkspace)
 }
 </style>
 <style>
+.temporary .el-alert .el-alert__content {
+  flex: 1;
+}
+
 .temporary .el-tag .el-icon-close {
   top: 1px;
 }

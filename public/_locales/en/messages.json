@@ -24,6 +24,10 @@
     "openCurrentWindowAndSelect": {"message": "Open in current window and select"},
     "openNewWindow": {"message": "Open in a new window"},
 
+    "switchTab": {"message": "Switch to the tab"},
+    "openTabWithoutSwitch": {"message": "Open a new tab without switching"},
+    "overwriteCurrentTab": {"message": "Overwrite current tab"},
+    "openTabAndSwitch": {"message": "Open a new tab and switch"},
 
     "tab": {"message": "tab"},
     "note": {"message": "note"},
@@ -41,6 +45,7 @@
     "old": {"message": "Old"},
     "tabs": {"message": "tab(s)"},
     "webRetry": {"message": "Some pages have not been loaded, please try again later!"},
+    "noResultTip": {"message": "You can use spaces to separate multiple keywords to search."},
 
 
     "windowAddSuccess": {"message": "Window Added Successfully"},
@@ -57,35 +62,29 @@
     "emptyGroupName": {"message": "The window name is not allowed to be empty"},
 
     "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
-    "windowNoResult2": {"message": "You can use spaces to separate multiple keywords to search."},
     "windowFirstAdd": {"message": "The window is saved successfully. Clicking on the list will switch to the corresponding window. You can create a new window and save it so that you can see the effect."},
-    "windowCountTip": {"message": "A total of "},
-    "windowCountTip2": {"message": " windows are stored."},
+    "windowCountTip": {"message": "A total of [total] windows are stored."},
 
 
-    "temporaryNoResult": {"message": "You can use spaces to separate multiple keywords to search."},
-    "temporaryCountTip": {"message": "A total of "},
-    "temporaryCountTip2": {"message": " temporary windows are stored."},
+    "noteDeleted": {"message": "The Note has been deleted"},
+    "noteAddSuccess": {"message": "Note Added Successfully"},
+    "noteSaved": {"message": "The Note has been saved."},
+    "noteCountTip": {"message": "A total of [total] notes are stored."},
+
+
+    "temporaryCountTip": {"message": "A total of [total] temporary windows are stored."},
     "temporaryTabTip": {"message": "tabs"},
 
 
-    "currentNote": {"message": "Current"},
-    "noteSaved": {"message": "The note has been saved."},
-    "noteNoResult": {"message": "You can use spaces to separate multiple keywords to search."},
-    "noteCountTip": {"message": "A total of "},
-    "noteCountTip2": {"message": " notes are stored."},
-
 
     "tabNoResult": {"message": "The tab does not exist."},
-    "tabCountTip": {"message": "A total of "},
-    "tabCountTip2": {"message": " tabs are opened."},
+    "tabCountTip": {"message": "A total of [total] tabs are opened."},
 
     "historyNoResult": {"message": "The history cannot be found."},
     "historyCountTip": {"message": "Only display data within one day by default."},
 
     "bookmarkNoResult": {"message": "The bookmark does not exist."},
-    "bookmarkCountTip": {"message": "A total of "},
-    "bookmarkCountTip2": {"message": " bookmarks are stored."},
+    "bookmarkCountTip": {"message": "A total of [total] bookmarks are stored."},
 
 
     "pageLayout": {"message": "Page Layout"},

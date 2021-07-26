@@ -1,26 +1,28 @@
 <template>
   <div class="note">
 
-  <el-alert
-    type="info"
-    :closable="false"
-    show-icon
+  <div
     v-if="isSearched && list.length == 0"
-    style="margin: 0 10px;"
-    :style="{ width: (currentThemeConfig.width-20)+'px' }">
-    <div
-      slot="title"
-      style="display:flex;align-items: center;"
-      :style="{ width: (currentThemeConfig.width-70)+'px' }">
-      <div style="flex:1;">
-        <div v-if="storageList.length > 0">{{ lang('noteNoResult') }}</div>
-        <div>{{ lang('noteCountTip')+storageList.length+lang('noteCountTip2') }}</div>
+    style="margin: 0 10px;">
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon>
+      <div
+        slot="title"
+        style="display:flex;align-items: center;font-size:12px;">
+        <div style="flex:1;">
+          <div v-if="storageList.length > 0">{{ lang('noResultTip') }}</div>
+          <div>{{ lang('noteCountTip').replace('[total]', storageList.length) }}</div>
+        </div>
+        <div style="margin-left: 8px;margin-right: -8px;">
+          <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=workspace#/workspace-general', getKeyType($event))"></el-button>
+        </div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', getKeyType($event))"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', getKeyType($event))"></el-button>
-    </div>
-  </el-alert>
+    </el-alert>
+  </div>
 
   <list
     :list="list"
@@ -58,10 +60,6 @@
       </span>
 
       <div class="main">
-        <!-- <div
-          class="title"
-          :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
-          v-html="highlightMap[index].title || highlightMap[index].url"></div> -->
         <div
           class="title"
           :style="{ fontSize: currentThemeConfig.list_font_size+'px' }"
@@ -129,8 +127,7 @@
               borderColor: isSelected
                     ? currentThemeConfig.list_current_focus_state_color
                     : currentThemeConfig.list_current_state_color }">
-              {{ lang('currentNote') +( activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
-              <!-- <span>{{ lang('currentNote') }}</span> -->
+              {{ lang('current') +( activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
           </div>
           <div
             v-else-if="activeTabs[item.url]"
@@ -139,8 +136,6 @@
               color: isSelected
                   ? currentThemeConfig.list_focus_state_color
                   : currentThemeConfig.list_state_color }">
-            <!-- {{ lang('opened') }} -->
-            <!-- {{ lang('opened') + (activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }} -->
             {{ lang('opened') + (isSelected && activeTabs[item.url].count > 1 ? ' ('+activeTabs[item.url].count+')' : '') }}
           </div>
           <div
@@ -325,16 +320,13 @@ export default {
   },
   watch: {
     "note.visible": function(newVal, oldVal) {
-      console.log('note.visible', newVal, oldVal);
       this.search();
     },
 
     cacheList(newVal, oldVal) {
-      console.log('watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
     },
     list(newVal, oldVal) {
-      console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -356,15 +348,13 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('note.listPageCount')
 
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('note.watch.itemShowCount', this.isNoSearch)
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
     },
@@ -389,22 +379,11 @@ export default {
     },
 
     iconMap() {
-      console.log('getIcon:iconMap');
-      let a = new Date().getTime();
-
-      let ss = this.list.map((item, index) => {
+      return this.list.map((item, index) => {
         return this.getIcon(item.icon, item.url, this.currentThemeConfig.item_height*3/5);
       })
-      let b = new Date().getTime();
-      console.log('getIcon:iconMap', (b-a)/1000);
-
-      return ss;
     },
     highlightMap() {
-      console.log('===========================hh')
-
-      let a = new Date().getTime();
-
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = new Array(this.list.length);
@@ -414,10 +393,6 @@ export default {
           url: this.toHighlight(item.url, this.storageKeyword, '<strong>', '</strong>'),
         }
       });
-
-      let b = new Date().getTime();
-
-      console.log('===h', (b-a)/1000);
 
       return highlightMap;
     },
@@ -509,8 +484,6 @@ export default {
       }
     },
     copy() {
-      console.log('copy', this.currentNote)
-
       if(this.currentNote == null) return;
 
       // 工作区切换
@@ -527,7 +500,6 @@ export default {
     },
 
     search(keyword) {
-      console.log('note.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword != keyword.trim()) {
@@ -536,7 +508,6 @@ export default {
           return;
         }
       }
-console.log('note.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -607,7 +578,6 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       this.isFirstSearch = false;
     },
     load() {
-      console.log('note.load')
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -625,7 +595,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         }), 1);
 
         chrome.storage.local.set({tabs: this.storageList}, () => {
-          this.statusTip('便签已被删除', false, 3000);
+          this.statusTip(this.lang('noteDeleted'), false, 3000);
 
           // 这样列表才会刷新
           this.isFirstSearch = true;
@@ -699,7 +669,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
         // 这样列表才会被触发更新，不能为 undefined，否则会报错，不自动选择第二项
         this.storageKeyword = ' ';
 
-        this.statusTip('便签添加成功', false, 3000);
+        this.statusTip(this.lang('noteAddSuccess'), false, 3000);
 
         // 由于在添加的时候还顺带着切换，从而导致搜索，这两个是并行的，会有影响
         // 这里放到定时队列里，相当于排最后，避免冲突，会出现损坏的图片
@@ -715,7 +685,7 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '部分网页还未加载，请稍后重试',
+          message: this.lang('webRetry'),
           customClass: 'window-message-box',
           offset: 69,
           duration: 3000,
@@ -818,10 +788,8 @@ console.log('note.search2', keyword, '|',  this.storageKeyword);
       this.storageList.splice(this.currentStorageIndex , 1);
       chrome.storage.local.set({tabs: this.storageList}, () => {
         if( ! this.activeTabs[this.currentNote.url]) {
-console.log('aa')
         } else if(this.activeTabs[this.currentNote.url].count > 1) {
           // 存在多个网页则不关闭网页
-console.log('bb')
         } else if(this.getCacheUrlCount(this.currentNote.url) > 1) {
           // 存储了多个相同的网页也不自动关闭标签，直到只剩下一个
 
@@ -840,32 +808,24 @@ console.log('bb')
     },
 
     isRepeat(index) {
-      console.log('isRepeat', index)
       if(this.cacheList[index].url == this.currentTab.url) {
-        console.log('isRepeat fffffff', index)
         // 当前窗口只需比较附近即可
         if(index > 0) {
-          console.log('isRepeat ffffffffff2', index)
           if(this.cacheList[index-1].url == this.cacheList[index].url)
             return true;
         }
         if(index+1 < this.cacheList.length) {
-          console.log('isRepeat fffffffffffffff3', this.cacheList.length)
           if(this.cacheList[index+1].url == this.cacheList[index].url)
             return true;
         }
       } else {
-        console.log('isRepeat jjjjjjjjjjj', index)
         // 非当前窗口需要遍历所有 opened 窗口
         for(let i in this.cacheList) {
           let tab = this.cacheList[i];
           if(i == index) continue;
-          console.log('isRepeat jjjjjjjjjjj2', i, index)
           if( ! this.activeTabs[tab.url]) {
-            console.log('isRepeat jjjjjjjjjjj3', false)
             return false;
           } else {
-            console.log('isRepeat jjjjjjjjjjj4',  this.activeTabs[tab.url] == this.cacheList[index].url)
             if(tab.url == this.cacheList[index].url) {
               return true;
             }
@@ -922,19 +882,18 @@ console.log('bb')
       })
     },
     getTip() {
-      console.log('showTip');
       if(this.activeTabs[this.currentNote.url]) {
-        return '切换到对应的标签';
+        return this.lang('switchTab');
       }
 
       if(this.keyType == 'meta/ctrl') {
-        return '打开新标签但不切换';
+        return this.lang('openTabWithoutSwitch');
       } else if(this.keyType == 'shift') {
-        return '新窗口打开';
+        return this.lang('openNewWindow');
       } else if(this.keyType == 'alt') {
-        return '覆盖当前标签';
+        return this.lang('overwriteCurrentTab');
       } else if(this.keyType != '') {
-        return '打开新标签并切换';
+        return this.lang('openTabAndSwitch');
       } else {
         return '';
       }
@@ -947,10 +906,6 @@ console.log('bb')
     console.warn('updated');
   },
   mounted() {
-    //todo
-    window.n = this;let a = new Date().getTime();
-console.warn('mounted', a);
-
     Promise.all([
       new Promise((resolve) => {
         // 获取本地数据
@@ -999,10 +954,6 @@ console.warn('mounted', a);
         })
       })
     ]).then(() => {
-
-      let b = new Date().getTime();
-console.warn('finish', b, (b-a)/1000)
-
       this.isFinish = true;
       this.$emit('finish');
     })
@@ -1014,7 +965,6 @@ console.warn('finish', b, (b-a)/1000)
     chrome.tabs.onCreated.addListener((tab) => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('note.refreshTabs')
         this.refreshTabs();
       }, 200);
     })
@@ -1022,7 +972,6 @@ console.warn('finish', b, (b-a)/1000)
     //   if(changeInfo.status != 'complete') return;
     //   clearTimeout(this.w.timer);
     //   this.w.timer = setTimeout(() => {
-    //     console.log('note.refreshTabs')
     //     this.refreshTabs();
     //   }, 200);
     // })
@@ -1030,7 +979,6 @@ console.warn('finish', b, (b-a)/1000)
       // 这个无法像 tab 那样直接移除，因为涉及到太多东西，并不是简单的删除，如同样的标签只是数据减少，但并没有为 0
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('note.refreshTabs')
         this.refreshTabs();
       }, 200);
     })
@@ -1129,6 +1077,10 @@ console.warn('finish', b, (b-a)/1000)
 </style>
 
 <style>
+.note .el-alert .el-alert__content {
+  flex: 1;
+}
+
 .note .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);

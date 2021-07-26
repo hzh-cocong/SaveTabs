@@ -151,13 +151,13 @@ export default {
       console.log('showTip');
 
       if(this.keyType == 'meta/ctrl') {
-        return '打开新标签但不切换';
+        return this.lang('openTabWithoutSwitch');
       } else if(this.keyType == 'shift') {
-        return '新窗口打开';
+        return this.lang('openNewWindow');
       } else if(this.keyType == 'alt') {
-        return '覆盖当前标签';
+        return this.lang('overwriteCurrentTab');
       } else if(this.keyType != '') {
-        return '打开新标签并切换';
+        return this.lang('openTabAndSwitch');
       } else {
         return '';
       }

@@ -1,26 +1,28 @@
 <template>
   <div class="bookmark">
 
-  <el-alert
+  <div
     v-if="isSearched && list.length == 0"
-    type="info"
-    :closable="false"
-    show-icon
-    style="margin: 0 10px;"
-    :style="{ width: (currentThemeConfig.width-20)+'px' }">
-    <div
-      slot="title"
-      style="display:flex;align-items: center;"
-      :style="{ width: (currentThemeConfig.width-70)+'px' }">
-      <div style="flex:1;">
-        <div>{{ lang('bookmarkNoResult') }}</div>
-        <div>{{ lang('bookmarkCountTip')+tree.bookmarkCount[rootId]+lang('bookmarkCountTip2') }}</div>
+    style="margin: 0 10px;">
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon>
+      <div
+        slot="title"
+        style="display:flex;align-items: center;font-size:12px;">
+        <div style="flex:1;">
+          <div>{{ lang('bookmarkNoResult') }}</div>
+          <div>{{ lang('bookmarkCountTip').replace('[total]', tree.bookmarkCount[rootId]) }}</div>
+        </div>
+        <div style="margin-left: 8px;margin-right: -8px;">
+          <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=workspace#/workspace-general', getKeyType($event))"></el-button>
+        </div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
-    </div>
-  </el-alert>
+    </el-alert>
+  </div>
 
   <list
     :list="list"
@@ -333,13 +335,13 @@ export default {
       if(this.itemShowCount <= 0) return 0;
       console.log('bookmark.listPageCount')
 
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
       console.log('bookmark.watch.itemShowCount', this.isNoSearch)
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
     },
@@ -364,22 +366,11 @@ export default {
     },
 
     iconMap() {
-      console.log('getIcon:iconMap');
-      let a = new Date().getTime();
-
-      let ss = this.list.map((item, index) => {
+      return this.list.map((item, index) => {
         return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
-      let b = new Date().getTime();
-      console.log('getIcon:iconMap', (b-a)/1000);
-
-      return ss;
     },
     highlightMap() {
-      console.log('bookmark.highlightMap')
-
-      let a = new Date().getTime();
-
       // 书签自带的搜索系统是按字搜索的，相邻的字存在顺序关系，空格隔开的则没有，这里暂时加空格处理
       // let storageKeyword = this.storageKeyword.split('').join(' ');
       // 上面说的不对，书签自带的搜索目前观察是英文连着但中文拆开
@@ -394,10 +385,6 @@ export default {
           url: item.children ? '' : this.toHighlight(item.url, storageKeyword, '<strong>', '</strong>')
         }
       });
-
-      let b = new Date().getTime();
-
-      console.log('bookmark.highlightMap', (b-a)/1000);
 
       return highlightMap;
     },
@@ -1217,13 +1204,13 @@ console.log('chrome.bookmarks.getTree.second')
       // 打开网页
       if( ! this.currentBookmark.children) {
         if(this.keyType == 'meta/ctrl') {
-          return '打开新标签但不切换';
+          return this.lang('openTabWithoutSwitch');
         } else if(this.keyType == 'shift') {
-          return '新窗口打开';
+          return this.lang('openNewWindow');
         } else if(this.keyType == 'alt') {
-          return '覆盖当前标签';
+          return this.lang('overwriteCurrentTab');
         } else if(this.keyType != '') {
-          return '打开新标签并切换';
+          return this.lang('openTabAndSwitch');
         } else {
           return '';
         }
@@ -1330,6 +1317,10 @@ console.warn('finish', b, (b-a)/1000)
 }
 </style>
 <style>
+.bookmark .el-alert .el-alert__content {
+  flex: 1;
+}
+
 .bookmark .title strong {
   color: var(--list-highlight-color);
   font-weight: var(--list-highlight-weight);

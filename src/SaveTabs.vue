@@ -175,7 +175,7 @@
                   name="cog-solid"
                   class="hover"
                   style="height: 20px;color: #c0c4cc;margin-top: 4px;"
-                  @click.native="$open('./options.html?type=workspace', getKeyType($event))"
+                  @click.native="$open('./options.html?type=workspace#/workspace-general', getKeyType($event))"
                 ></svg-icon>
                 <svg-icon
                   :name="localConfig.theme_mode == 'light' ? 'sun-solid' : 'moon-solid'"
@@ -658,6 +658,7 @@ export default {
       themeScrollPosition: 0,
 
       limited: false,
+      isFocus: true,
 
       speed: localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth',
 
@@ -1433,6 +1434,7 @@ export default {
         this.focus();
         // popup 检查比较慢，很容易出错，所以直接不检查了，而且 popup 是肯定能获得焦点的
         if(this.openWay != 'popup' && ! document.hasFocus()) {
+          this.isFocus = false;
           this.$message({
             type: 'warning',
             message: '当前无法自动获得焦点，需手动点击输入框才可输入内容。',
@@ -1468,9 +1470,10 @@ export default {
     // 获取当前插件信息
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let tab = tabs[0];
+      console.log('chrome.tabs.query', tab, tabs)
 
       // window.open 不允许添加
-      if(tab.url == chrome.extension.getURL("savetabs.html")) {
+      if(tab.url.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
         this.limited = true;
       }
 
@@ -1524,7 +1527,7 @@ export default {
 
           document.documentElement.style.zoom = 1 / request.zoom;
 
-          this.statusTip('注意：当前网页进行了缩放，部分操作存在异常。', true, 3000);
+          this.statusTip('注意：当前网页进行了缩放，部分操作可能存在异常。', false, 3000);
         }
       })
 
@@ -1533,6 +1536,7 @@ export default {
       // 一旦失去焦点就会自己把自己给关了
       // 新建窗口也会触发，并且新建多个标签将触发多个事件
       chrome.tabs.onActivated.addListener((activeInfo) => {
+        console.log('onActivated', JSON.stringify(tab), JSON.stringify(activeInfo))
         // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
         // 现在不可能了，因为使用了 window.close 后，就算是多选也会被关闭
         // if(activeInfo.tabId == tab.id) return;
@@ -1541,27 +1545,42 @@ export default {
         // tab.create 但不 active 是不会触发本事件的，highlight 也不会
         if(tab == undefined || activeInfo.windowId != tab.windowId) return;
 
+        // 切换到别的标签和执行关闭，等到切换过来再执行
+        // 这样可能看起来会有闪烁，但为了避免在拖出标签时重启插件，也只能这样了
+        if(tab.id != activeInfo.tabId) return;
+
+        // 避免和 blur 重复而导致插件重启
+        if(this.isFocus) return;
+console.log('aa')
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })
 
+      //* window.addEventListener('blur' 已经帮忙做了，就不需要了，否则会添乱
       // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
       chrome.windows.onFocusChanged.addListener((windowId) => {
-        // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
-        if(windowId == -1) return;
-        // 再切换过来
-        // tab == undefined 不大可能发生
-        if(tab == undefined || windowId == tab.windowId) return;
+        console.log('onFocusChanged', JSON.stringify(windowId), JSON.stringify(tab))
+        // // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
+        // if(windowId == -1) return;
+        // // 再切换过来
+        // // tab == undefined 不大可能发生
+        // if(tab == undefined || windowId == tab.windowId) return;
 
-        // 当标签被拖出来成为一个新窗口会出现以下情况，注释掉可以让插件重启，减少不必要的麻烦
-        // if(activeInfo.tabId == tab.id) return;
+        // 当标签被拖出来成为一个新窗口时，由于没有 tabid，无法判断
+        // 现实是会执行两次 onActivated 和一次 onFocusChanged
+        // 最终执行两次 closeExtension，导致插件重启
+        // 虽然这不是我们想要的（我们要的是只执行一次 closeExtension），但影响不大
 
+        // 避免和 blur 重复而导致插件重启
+        if(this.isFocus) return;
+console.log('bb')
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })//*/
     })
 
     // 模拟 popup 行为（完美，调试都不行，哈哈）
+    // 当插件获取不到焦点时无法发挥作用
     window.addEventListener('blur', (event)=>{
       // event.stopPropagation();
       // event.preventDefault();

@@ -26,7 +26,7 @@
       <i
         class="el-icon-s-tools hover"
         style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;"
-        @click="$open('./options.html?type=themes', getKeyType($event))"></i>
+        @click="$open('./options.html?type=workspace#/theme-general', getKeyType($event))"></i>
     </div>
     <SelectX
       v-if="visible2"

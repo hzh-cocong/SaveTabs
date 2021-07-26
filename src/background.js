@@ -292,6 +292,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
     }
   } else if(request.type == 'closeExtension') {
+    console.log('closeExtension', request, sender)
     // 弹出菜单没有tab
     if(sender.tab == undefined) {
       let windows = chrome.extension.getViews({type: 'popup'});

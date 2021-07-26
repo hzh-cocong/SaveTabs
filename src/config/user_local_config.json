@@ -1,8 +1,8 @@
 {
-    "active_workspace_type": "window",
+    "active_workspace_type": "note",
     "pinned": false,
     "theme_mode": "light",
-    "popup": true,
+    "popup": false,
     "keymap_left_and_right": true,
 
     "adjust_window_width": 0,
@@ -253,7 +253,7 @@
             "padding_width": 0,
 
             "width": 540,
-            "width_fill": false,
+            "width_fill": true,
             "width_percentage": 50,
 
             "height_auto": false,

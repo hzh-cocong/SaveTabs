@@ -21,7 +21,7 @@
       name="cog-solid"
       class="hover2"
       style="margin: 0 10px;"
-      @click.native="$open('./options.html?type=workspace', $event)"
+      @click.native="$open('./options.html?type=workspace#/theme-general?status', getKeyType($event))"
     ></svg-icon>
 
     <svg-icon
@@ -63,7 +63,9 @@
             <el-tooltip
               placement="bottom"
               effect="light">
-              <span class="hover">（广告）</span>
+              <span
+                class="hover"
+                @click="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))">（广告）</span>
               <div
                 slot="content"
                 style="width: 170px;">如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，谢谢你的支持。</div>
@@ -147,7 +149,7 @@
         name="ad-solid"
         class="animate__animated hover2"
         style="margin-left: 5px;vertical-align: middle;"
-        @click.native="$refs.carousel.prev()"
+        @click.native="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))"
       ></svg-icon>
     </span>
     <span
@@ -195,12 +197,12 @@
           title="给个好评或提点建议"
           class="el-icon-chat-dot-square hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
-          @click="$open('./options.html?type=praise', getKeyType($event))"></i>
+          @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></i>
         <i
           title="赞赏作者"
           class="el-icon-coffee-cup hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
-          @click="$open('./options.html?type=praise', getKeyType($event))"></i>
+          @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></i>
       </div>
       <div @mousedown.prevent>
         <div class="share-box">

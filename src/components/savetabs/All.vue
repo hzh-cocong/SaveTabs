@@ -1,25 +1,27 @@
 <template>
   <div class="all">
 
-  <el-alert
+  <div
     v-if="isSearched && list.length == 0"
-    type="info"
-    :closable="false"
-    show-icon
-    style="margin: 0 10px;"
-    :style="{ width: (currentThemeConfig.width-20)+'px' }">
-    <div
-      slot="title"
-      style="display:flex;align-items: center;"
-      :style="{ width: (currentThemeConfig.width-70)+'px' }">
-      <div style="flex:1;">
-        <div>查找不到，你可以使用空格分隔多个关键词进行搜索</div>
+    style="margin: 0 10px;">
+    <el-alert
+      type="info"
+      :closable="false"
+      show-icon>
+      <div
+        slot="title"
+        style="display:flex;align-items: center;font-size:12px;">
+        <div style="flex:1;">
+          <div>查找不到，你可以使用空格分隔多个关键词进行搜索</div>
+        </div>
+        <div style="margin-left: 8px;margin-right: -8px;">
+          <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></el-button>
+          <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=workspace#/workspace-all', getKeyType($event))"></el-button>
+        </div>
       </div>
-      <el-button circle size="mini" icon="el-icon-coffee-cup" style="margin-left: 2px !important;" @click="$open('./options.html?type=praise', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-chat-dot-square" style="margin-left: 2px !important;" @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', $event)"></el-button>
-      <el-button circle size="mini" icon="el-icon-setting" style="margin-left: 2px !important;" @click="$open('./options.html?type=other', $event)"></el-button>
-    </div>
-  </el-alert>
+    </el-alert>
+  </div>
 
   <list
     :list="list"
@@ -234,13 +236,13 @@ export default {
       if(this.itemShowCount <= 0) return 0;
       console.log('all.listPageCount')
 
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
       console.log('all.watch.itemShowCount', this.isNoSearch)
-      return  this.isNoSearch
+      return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
     },
@@ -664,4 +666,9 @@ console.log('all.search:lists');
 </script>
 
 <style scoped>
+</style>
+<style>
+.all .el-alert .el-alert__content {
+  flex: 1;
+}
 </style>

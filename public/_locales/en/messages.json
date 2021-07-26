@@ -44,6 +44,13 @@
     "saveRightTabs": {"message": "Save right tabs"},
     "saveTabsWithoutCurrent": {"message": "Save tabs except this tab"},
 
+    "clearBrowsingData": {"message": "Clear browsing data"},
+    "lastHour": {"message": "Last hour"},
+    "lastTwentyFourHours": {"message": "Last 24 hours"},
+    "lastSevenDays": {"message": "Last 7 days"},
+    "lastFourDays": {"message": "Last 4 weeks"},
+    "allTime": {"message": "All time"},
+
     "tab": {"message": "tab"},
     "note": {"message": "note"},
     "window": {"message": "window"},
@@ -67,14 +74,14 @@
     "windowBindSuccess": {"message": "Window Binding Successfully"},
     "windowUpdateSuccess": {"message": "Window Updated Successfully"},
     "windowRestored": {"message": "Window Restored"},
-    "newWindowUpdated": {"message": "New Window Data Updated"},
+    "windowUpdated": {"message": "New Window Data Updated"},
 
 
-    "updateGroupName": {"message": "Window name modification"},
-    "deleteConfirm": {"message": "Are you sure to delete the window?"},
-    "groupNameRepeat": {"message": "The window name is not allowed to be repeated"},
-    "groupNameInput": {"message": "Please enter the window name"},
-    "emptyGroupName": {"message": "The window name is not allowed to be empty"},
+    "windowUpdateName": {"message": "Window name modification"},
+    "windowDeleteConfirm": {"message": "Are you sure to delete the window?"},
+    "windowNameRepeat": {"message": "The window name is not allowed to be repeated"},
+    "windowNameInput": {"message": "Please enter the window name"},
+    "windowNameEmpty": {"message": "The window name is not allowed to be empty"},
 
     "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
     "windowFirstAdd": {"message": "The window is saved successfully. Clicking on the list will switch to the corresponding window. You can create a new window and save it so that you can see the effect."},
@@ -95,11 +102,14 @@
     "tabNoResult": {"message": "The tab does not exist."},
     "tabCountTip": {"message": "A total of [total] tabs are opened."},
 
-    "historyNoResult": {"message": "The history cannot be found."},
-    "historyCountTip": {"message": "Only display data within one day by default."},
 
     "bookmarkNoResult": {"message": "The bookmark does not exist."},
     "bookmarkCountTip": {"message": "A total of [total] bookmarks are stored."},
+
+
+    "historyNoResult": {"message": "The history cannot be found."},
+    "historyCountTip": {"message": "Only display data within one day by default."},
+    "historyDeleteConfirm": {"message": "Are you sure to delete the history?"},
 
 
     "pageLayout": {"message": "Page Layout"},

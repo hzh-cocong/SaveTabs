@@ -805,7 +805,7 @@ export default {
                         : ''), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
-        inputPlaceholder: this.lang('groupNameInput'),
+        inputPlaceholder: this.lang('windowNameInput'),
         customClass: 'window-message-box',
         inputValue: keyword.trim() == '' ? null : keyword.trim(),
         inputValidator: ( value ) => {
@@ -813,13 +813,13 @@ export default {
 
           // 窗口名不允许为空
           if(value == '') {
-            return this.lang('emptyGroupName');
+            return this.lang('windowNameEmpty');
           }
 
           // 窗口名不允许重复
           for(let group of this.storageList) {
             if(group.name == value) {
-              return this.lang('groupNameRepeat');
+              return this.lang('windowNameRepeat');
             }
           }
 
@@ -1057,10 +1057,10 @@ export default {
     changeGroupName() {
       // let index = this.getStorageIndex();
       // this.group = this.list[this.currentIndex];
-      this.$prompt('', this.lang('updateGroupName'), {
+      this.$prompt('', this.lang('windowUpdateName'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
-        inputPlaceholder: this.lang('groupNameInput'),
+        inputPlaceholder: this.lang('windowNameInput'),
         customClass: 'window-message-box',
         inputValue: this.currentGroup.name,
         inputValidator: ( value ) => {
@@ -1068,13 +1068,13 @@ export default {
 
           // 窗口名不允许为空
           if(value == '') {
-            return this.lang('emptyGroupName');
+            return this.lang('windowNameEmpty');
           }
 
           // 窗口名不允许重复，自己的不算
           for(let i in this.storageList) {
             if(i != this.currentStorageIndex && this.storageList[i].name == value) {
-              return this.lang('groupNameRepeat');
+              return this.lang('windowNameRepeat');
             }
           }
 
@@ -1104,7 +1104,7 @@ export default {
     },
     deleteGroup() {
       // let group = this.list[this.currentIndex];
-      this.$confirm(' ('+this.currentGroup.name+') ', this.lang('deleteConfirm'), {
+      this.$confirm(' ('+this.currentGroup.name+') ', this.lang('windowDeleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -1351,7 +1351,7 @@ export default {
 
         this.$message({
           type: 'success',
-          message: this.lang('newWindowUpdated'),
+          message: this.lang('windowUpdated'),
           customClass: 'window-message-box',
           offset: 10,
           duration: 2000,

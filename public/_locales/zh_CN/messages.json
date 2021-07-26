@@ -44,6 +44,13 @@
     "saveRightTabs": {"message": "保存右侧标签页"},
     "saveTabsWithoutCurrent": {"message": "保存除此标签页以外的标签页"},
 
+    "clearBrowsingData": {"message": "清除浏览数据"},
+    "lastHour": {"message": "过去一小时"},
+    "lastTwentyFourHours": {"message": "过去24小时"},
+    "lastSevenDays": {"message": "过去7天"},
+    "lastFourDays": {"message": "过去4周"},
+    "allTime": {"message": "时间不限"},
+
     "tab": {"message": "标签"},
     "note": {"message": "便签"},
     "window": {"message": "窗口"},
@@ -67,13 +74,13 @@
     "windowBindSuccess": {"message": "窗口绑定成功"},
     "windowUpdateSuccess": {"message": "窗口更新成功"},
     "windowRestored": {"message": "窗口已还原"},
-    "newWindowUpdated": {"message": "新窗口数据已更新"},
+    "windowUpdated": {"message": "新窗口数据已更新"},
 
-    "updateGroupName": {"message": "窗口名修改"},
-    "deleteConfirm": {"message": "确定删除窗口?"},
-    "groupNameRepeat": {"message": "窗口名不允许重复"},
-    "groupNameInput": {"message": "请输入窗口名"},
-    "emptyGroupName": {"message": "窗口名不允许为空"},
+    "windowUpdateName": {"message": "窗口名修改"},
+    "windowDeleteConfirm": {"message": "确定删除窗口？"},
+    "windowNameRepeat": {"message": "窗口名不允许重复"},
+    "windowNameInput": {"message": "请输入窗口名"},
+    "windowNameEmpty": {"message": "窗口名不允许为空"},
 
     "windowNoResult": {"message": "请先输入窗口名，然后单击 “↓” 按钮保存窗口。"},
     "windowFirstAdd": {"message": "窗口保存成功，点击列表将切换到对应窗口。你可以再新建新的窗口并保存，这样就可以看到效果。"},
@@ -95,12 +102,13 @@
     "tabCountTip": {"message": "当前共打开 [total] 个标签。"},
 
 
-    "historyNoResult": {"message": "查无历史记录。"},
-    "historyCountTip": {"message": "默认只展示一天内的数据。"},
-
-
     "bookmarkNoResult": {"message": "不存在该书签。"},
     "bookmarkCountTip": {"message": "当前共存储 [total] 个书签。"},
+
+
+    "historyNoResult": {"message": "查无历史记录。"},
+    "historyCountTip": {"message": "默认只展示一天内的数据。"},
+    "historyDeleteConfirm": {"message": "确定删除历史？"},
 
 
     "pageLayout": {"message": "页面布局"},

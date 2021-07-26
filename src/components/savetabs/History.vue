@@ -236,9 +236,9 @@
   <el-dialog
     :visible.sync="dialogVisible"
     :append-to-body="true"
-    width="420px"
-    title="清除浏览数据"
     class="history-dialog"
+    width="420px"
+    :title="lang('clearBrowsingData')"
     @opened="$nextTick(() => { $refs.clearButton.$el.focus() })"
     @close="focus">
     <el-select
@@ -246,15 +246,15 @@
       style="width: 100%;"
       @change="$nextTick(() => { $refs.clearButton.$el.focus() })"
       ref="select">
-      <el-option :value="3600000" label="过去一小时"></el-option>
-      <el-option :value="86400000" label="过去24小时"></el-option>
-      <el-option :value="604800000" label="过去7天"></el-option>
-      <el-option :value="2419200000" label="过去4周"></el-option>
-      <el-option :value="-1" label="时间不限"></el-option>
+      <el-option :value="3600000" :label="this.lang('lastHour')"></el-option>
+      <el-option :value="86400000" :label="this.lang('lastTwentyFourHours')"></el-option>
+      <el-option :value="604800000" :label="this.lang('lastSevenDays')"></el-option>
+      <el-option :value="2419200000" :label="this.lang('lastFourDays')"></el-option>
+      <el-option :value="-1" :label="this.lang('allTime')"></el-option>
     </el-select>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="clearRecent" ref="clearButton">确 定</el-button>
+      <el-button @click="dialogVisible = false">{{ lang('cancel') }}</el-button>
+      <el-button type="primary" @click="clearRecent" ref="clearButton">{{ lang('sure') }}</el-button>
     </span>
   </el-dialog>
 
@@ -347,15 +347,12 @@ export default {
   },
   watch: {
     "history.date": function(newVal, oldVal) {
-      console.log('history.date', this.history.date, newVal, oldVal);
       this.search();
     },
     "history.visible": function(newVal, oldVal) {
-      console.log('history.visible', newVal, oldVal);
       this.search();
     },
     "history.isDel": function(newVal, oldVal) {
-      console.log('history.isDel', newVal, oldVal);
       if( ! this.history.isDel) return;
 
       if(this.history.date == null) {
@@ -379,11 +376,9 @@ export default {
     },
 
     // cacheList(newVal, oldVal) {
-    //   console.log('watch:cacheList', newVal, oldVal)
     //   this.$emit('update:searchTotal', newVal.length)
     // },
     list(newVal, oldVal) {
-      console.log('history.watch:list', newVal.length, oldVal.length)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -405,14 +400,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('history.listPageCount')
 
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('history.watch.itemShowCount', this.isNoSearch)
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -479,7 +472,6 @@ export default {
 
     // 这个会导致搜索时最新的搜不到，因为 new Date().getTime() 并非双向绑定
     // endTime() {
-    //   console.log('computed.endTime');
     //   if(this.history.date == null || ! this.history.visible) {
     //     // return null;
     //     return new Date().getTime();
@@ -488,7 +480,6 @@ export default {
     //   }
     // },
     startTime() {
-      console.log('computed.startTime');
       if(this.history.date == null ||  ! this.history.visible) {
         return 0;
       } else {
@@ -506,15 +497,12 @@ export default {
     },
     currentFolderIndex() {
       // 从当前位置网上寻找父亲
-      console.log('currentFolderIndex', this.currentIndex)
       let k = this.currentIndex;
       while(this.list[ k ].count == undefined) k--;
-      console.log('currentFolderIndex', this.currentIndex, k, this.list[k])
       return k;
     },
     currentFolder() {
       // 从当前位置寻找父亲
-      console.log('currentFolder', this.list[ this.currentFolderIndex ]);
       return this.list[ this.currentFolderIndex ];
     },
 
@@ -582,8 +570,6 @@ export default {
       }
     },
     copy() {
-      console.log('copy', this.currentHistory)
-
       if(this.currentHistory == null) return;
 
       // 工作区切换
@@ -624,8 +610,6 @@ export default {
     },
 
     search(keyword) {
-console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
-
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword == keyword.trim()) return;
@@ -659,8 +643,6 @@ console.log('history.search', keyword, '|', this.storageKeyword, '|', this.endTi
       this.lastEndTime = this.endTime;
       let lastVisitTime = this.endTime;
 
-console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endTime, '|', this.lastEndTime);
-
       // 默认只展示 24 小时内的数据（体验不好）
       // this.startTime = this.storageKeyword == '' ?  new Date().getTime()-86400000 : 0;
 
@@ -673,14 +655,10 @@ console.log('history.search2', keyword, '|', this.storageKeyword, '|', this.endT
 
       // 查找历史
       this.query((historys) => {
-        console.log('history.query', historys);
-console.log('history.search3', historys);
-
         // 防止并发错误
         if(times != this.w.times) return;
 
         if(historys.length == 0) {
-console.log('history.search4', historys);
           this.cacheList = [];
           this.list = [];
 
@@ -707,7 +685,6 @@ console.log('history.search4', historys);
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
-        console.log('history.search.end', this.scrollDisabled, this.queryDisabled)
       }, lastVisitTime, 27)
     },
     showWorkspaceList() {
@@ -730,8 +707,6 @@ console.log('history.search4', historys);
       this.currentIndex = 0;
     },
     load() {
-      console.log('history.load.test')
-
       // 避免出现死循环（并发时会出现）
       if(this.listPageCount <= 0) return;
 
@@ -744,7 +719,6 @@ console.log('history.search4', historys);
       }
 
       if(this.queryDisabled) {
-        console.log('history.load.test1', this.list.length, this.cacheList.length, end)
         if(this.list.length >= this.cacheList.length) return; // 避免引起不必要的计算
         this.list.push(...this.cacheList.slice(this.list.length, end))
         this.scrollDisabled = true;
@@ -754,11 +728,8 @@ console.log('history.search4', historys);
       // 查找历史
       this.scrollDisabled = true;
       this.query((historys) => {
-        console.log('history.load.test2')
         if(historys.length == 0) {
-          console.log('history.load.test3', this.list.length, this.list.length, end)
           if(this.list.length < this.cacheList.length) { // 避免引起不必要的计算
-            console.log('history.load.test30', ...this.cacheList.slice(this.list.length, end));
             this.list.push(...this.cacheList.slice(this.list.length, end))
           }
 
@@ -767,7 +738,6 @@ console.log('history.search4', historys);
 
           // 结果只有一条时自动展开
           if(this.cacheList.length == 1 && this.cacheList[0].count > 1) {
-            console.log('history.load.test4')
             let historys = this.cacheList[0].subFiles.splice(0, this.cacheList[0].count);
 
             this.cacheList.push(...historys);
@@ -804,13 +774,6 @@ console.log('history.search4', historys);
         endTime: lastVisitTime,
         maxResults: max, // this.listPageCount, 每次尽可能查多一点，这样就可以大大减少错误结果
       }, (historys)=>{
-        console.log('chrome.history.query', {
-          text: this.storageKeyword,
-          startTime: this.startTime,
-          endTime: lastVisitTime,
-          maxResults: max
-        }, historys)
-
         // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
         historys = historys.sort((a, b)=>{
           return b.lastVisitTime-a.lastVisitTime;
@@ -838,9 +801,7 @@ console.log('history.search4', historys);
         // 过滤
         if(historys.length == 0) {
           // 糟糕，被过滤完了
-          console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
           // this.lastVisitTime = this.lastVisitTime-1000*1;
-          console.warn('history.loading.result.warn', this.lastVisitTime, this.timeShow(this.lastVisitTime));
           callback([]);
           return;
         }
@@ -877,7 +838,6 @@ console.log('history.search4', historys);
         let url = this.currentHistory.count == undefined
                 ? this.currentHistory.url
                 : this.currentHistory.subFiles[0].url
-console.log('_openWindow', url)
         this.$open(url, keyType);
         return;
       }
@@ -890,14 +850,12 @@ console.log('_openWindow', url)
         this.cacheList.splice(this.currentIndex+1, 0, ...historys);
         this.list.splice(this.currentIndex+1, 0, ...historys);
         this.currentHistory.subFiles = [];
-        console.log('展开', this.list.length, this.cacheList.length)
 
         // 由于 currentIndex List 组件通过 $emit 调用触发的，虽然对于父组件 currentIndex 的更新是实时的，但是对于其依赖（即子组件的 currentIndex），则是被放到异步队列中执行的，因此此时子组件的 currentIndex 值依然是旧的
         this.$nextTick(() => {
           if(this.$refs.list.visiualIndex+this.currentHistory.count+1 > this.currentThemeConfig.item_show_count) {
             let index = this.currentThemeConfig.item_show_count-this.currentHistory.count-1;
             // index = index < 0 ? 0 : index;
-            console.warn('kkkk2')
             this.$refs.list.currentTo(index);
           }
           // this.$refs.list.currentToTop();
@@ -925,7 +883,6 @@ console.log('_openWindow', url)
       // 删除单独一条历史记录
       if(this.currentHistory.count == 1) {
         chrome.history.deleteUrl({ url: this.currentHistory.subFiles[0].url }, () => {
-console.log('删除单独一条历史记录')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
 
@@ -939,7 +896,6 @@ console.log('删除单独一条历史记录')
       if(this.currentHistory.count == undefined) {
         chrome.history.deleteUrl({ url: this.currentHistory.url }, () => {
           if(this.currentFolder.count-1 == 1) {
-console.log('删除文件夹内的某条历史记录（肯定展开了）1')
             // 收起文件夹
             let index = this.currentFolderIndex+1 == this.currentIndex
                       ? this.currentFolderIndex+2  // 删除第一条
@@ -951,7 +907,6 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）1')
             this.cacheList.splice(this.currentFolderIndex+1, 2);
             this.list.splice(this.currentFolderIndex+1, 2);
           } else {
-console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             this.currentFolder.count--;
             this.cacheList.splice(this.currentIndex, 1);
             this.list.splice(this.currentIndex, 1);
@@ -973,7 +928,6 @@ console.log('删除文件夹内的某条历史记录（肯定展开了）2')
             })
           })
         })).then(() => {
-console.log('删除整个文件夹（未展开）')
           this.cacheList.splice(this.currentIndex, 1);
           this.list.splice(this.currentIndex, 1);
 
@@ -995,7 +949,6 @@ console.log('删除整个文件夹（未展开）')
             })
           })
         })).then(() => {
-console.log('删除整个文件夹（已展开）')
           this.cacheList.splice(this.currentIndex, this.currentHistory.count+1);
           this.list.splice(this.currentIndex, this.currentHistory.count+1);
 
@@ -1035,12 +988,10 @@ console.log('删除整个文件夹（已展开）')
           }
         }
       }
-      console.log('list', list)
     },
 
     clearRecent() {
       if(this.range == -1) {
-console.log('deleteAll')
         chrome.history.deleteAll(() => {
           this.search();
           this.dialogVisible = false;
@@ -1051,7 +1002,6 @@ console.log('deleteAll')
       } else {
         let endTime = new Date().getTime();
         let startTime = endTime-this.range;
-console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
 
         chrome.history.deleteRange({
           startTime: startTime,
@@ -1067,8 +1017,7 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
     },
 
     deleteRange(startTime, endTime, callback) {
-      console.log('deleteRange', startTime, endTime, this.timeShow(startTime), this.timeShow(endTime))
-      this.$confirm("确定删除？", '提示', {
+      this.$confirm(this.lang('historyDeleteConfirm'), this.lang('tip'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -1083,8 +1032,6 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
     },
 
     getTip() {
-      console.log('showTip');
-
       if(this.currentHistory.count == undefined || this.currentHistory.count == 1) {
         if(this.keyType == 'meta/ctrl') {
           return this.lang('openTabWithoutSwitch');
@@ -1100,16 +1047,13 @@ console.log('clearRecent', this.range, startTime, endTime, this.timeShow(startTi
       }
 
       if(this.currentHistory.subFiles.length > 0) {
-        return '展开';
+        return this.lang('unfold');
       } else {
-        return '收起';
+        return this.lang('fold');
       }
     },
   },
   mounted() {
-    // todo
-    window.h = this;
-
     this.$emit('finish');
 
     // 更新列表

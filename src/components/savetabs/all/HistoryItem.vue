@@ -198,9 +198,9 @@ export default {
       }
 
       if(this.item.subFiles.length > 0) {
-        return '展开';
+        return this.lang('unfold');
       } else {
-        return '收起';
+        return this.lang('fold');
       }
     },
   }

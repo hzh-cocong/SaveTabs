@@ -217,13 +217,13 @@ export default {
     getTip() {
       console.log('showTip');
       if(this.keyType == 'meta/ctrl') {
-        return '移动到右侧';
+        return this.lang('moveToRight');
       } else if(this.keyType == 'shift') {
-        return '移动到新窗口中';
+        return this.lang('moveToNewWindow');
       } else if(this.keyType == 'alt') {
-        return '和当前标签交换位置';
+        return this.lang('swapWithCurrentTab');
       } else if(this.keyType != '') {
-        return '默认切换到该标签';
+        return this.lang('switchTab');
       } else {
         return '';
       }

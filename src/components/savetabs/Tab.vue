@@ -303,8 +303,6 @@ export default {
   },
   watch: {
     "tab.visible": function(newVal, oldVal) {
-      console.log('watch:tab.visible', newVal, oldVal);
-
       this.search();
 
       if(newVal == false) return;
@@ -325,7 +323,6 @@ export default {
       this.tab.windowFilter = windowFilter;
     },
     "windowIds": function(newVal, oldVal) {
-      console.log('watch:windowIds', newVal, oldVal, this.windowIds, this.windowRank);
       if(this.tab.visible == false) return;
 
       let windowFilter = this.windowIds.map((windowId, index) => {
@@ -336,33 +333,20 @@ export default {
           : 'Win'+(index+1)
         ];
       })
-      // if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
-      //   windowFilter.push([-2, 'Opened']);
-      // }
-
-      if(this.originList.some(tab => {
-        if(this.windowRank[tab.windowId] == undefined) {
-          console.log('watch:', tab.windowId, tab)
-        }
-        return this.windowRank[tab.windowId] == undefined;
-      })) {
+      if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
         windowFilter.push([-2, 'Opened']);
       }
-
 
       this.tab.windowFilter = windowFilter;
     },
     "tab.windowId": function(newVal, oldVal) {
-      console.log('watch:tab.tab.windowId', newVal, oldVal)
       this.search();
     },
 
     cacheList(newVal, oldVal) {
-      console.log('tab.watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
     },
     list(newVal, oldVal) {
-      console.log('tab.watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -384,14 +368,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('tab.listPageCount')
 
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('tab.watch.itemShowCount', this.isNoSearch)
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -445,7 +427,6 @@ export default {
       return this.list[ this.currentIndex ];
     },
     selectedOriginIndex() {
-      console.log('tab.selectedOriginIndex', this.selectedTab)
       return this.originList.findIndex(tab => {
         return tab.id == this.selectedTabId;
       });
@@ -537,8 +518,6 @@ export default {
       }
     },
     copy() {
-      console.log('copy', this.selectedTab)
-
       if(this.selectedTab == null) return;
 
       // 工作区切换
@@ -555,7 +534,6 @@ export default {
     },
 
     search(keyword) {
-console.log('tab.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword != keyword.trim()) {
@@ -564,7 +542,6 @@ console.log('tab.search', keyword, '|', this.storageKeyword);
           return;
         }
       }
-console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -608,8 +585,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
       this.isSearched = true;
-
-      console.log('tab.search.end')
     },
     showWorkspaceList() {
       let keyword = this.workspaceStorageKeyword.toUpperCase().split(/\s+/)[0];
@@ -632,7 +607,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       this.isFirstSearch = false;
     },
     load() {
-      console.log('tab.load', this.scrollDisabled, this.list.length, this.cacheList.length, this.itemShowCount, this.listPageCount)
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -661,7 +635,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       if(keyType == 'meta/ctrl') {
         // 移动到当前标签的下一个位置，但不激活
         chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, (tab) => {
-          console.log('aaaaaaaaaaaaaaaaaa', tab);
           // 位置一旦变动，很多 tab 的 index 都会发生改变，仅仅靠下面这个是完全不够的
           // Object.assign(this.selectedTab, tab);
           // 只需更新数据，无需重新 search
@@ -685,7 +658,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         chrome.windows.create({tabId: this.selectedTabId, focused: true});
       } else if(keyType == 'alt') {
         // 交换两个标签的位置，激活被选中的标签
-        console.log('exchangeTab');
 
         // 让后台帮忙交换，因为这个极有可能导致弹框关闭，进而导致操作突然终止
         chrome.runtime.sendMessage({
@@ -733,7 +705,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         // 防止重复点击产生错误
         this.cacheList.splice(this.currentIndex, 1);
         this.list.splice(this.currentIndex, 1);
-        console.log('tab.closeTab2', this.selectedTabId, this.currentIndex, this.selectedOriginIndex)
       })
     },
 
@@ -745,7 +716,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
           chrome.runtime.sendMessage({
               type: 'getActiveTabIds'
           }, (tabIds) => {
-            console.log('tabIds', tabIds)
             resolve(tabIds);
           })
         }),
@@ -754,7 +724,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
           chrome.runtime.sendMessage({
               type: 'getActiveWindowIds'
           }, (windowIds) => {
-            console.log('windowIds', windowIds)
             windowIds.reverse()
             // this.windowIds = windowIds;
             resolve(windowIds);
@@ -770,7 +739,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
                       : tab.url.replace(/(\/*$)/g,"");
               return tab;
             });
-            console.log('gggggggggg');
             resolve(t);
           })
         }),
@@ -782,8 +750,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
           })
         })
       ]).then(([tabIds, windowIds, tabs]) => {
-        console.log('ssssss', tabIds, windowIds, tabs);
-
         // 记录窗口顺序
         // this.windowRank = {};
         // windowIds.forEach((windowId, index) => this.windowRank[windowId]=index+1);
@@ -801,7 +767,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
         // 当前窗口排最前面
         map.set(this.activeTabId, map.size);
-        console.log('init', map, this.activeTabId, map.size);
 
         // 按标签顺序排序，没有记录的排最后
         this.originList = tabs.sort((tab1, tab2) => {
@@ -828,24 +793,20 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       })
     },
     getTip() {
-      console.log('showTip');
       if(this.keyType == 'meta/ctrl') {
-        return '移动到右侧';
+        return this.lang('moveToRight');
       } else if(this.keyType == 'shift') {
-        return '移动到新窗口中';
+        return this.lang('moveToNewWindow');
       } else if(this.keyType == 'alt') {
-        return '和当前标签交换位置';
+        return this.lang('swapWithCurrentTab');
       } else if(this.keyType != '') {
-        return '默认切换到该标签';
+        return this.lang('switchTab');
       } else {
         return '';
       }
     },
   },
   mounted() {
-    // todo
-    window.tab = this;
-
     this.refreshTabs(() => {
       this.$emit('finish');
 
@@ -861,7 +822,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onCreated')
         this.refreshTabs(() => {
           // 这样才会自动选择第二项
           this.isFirstSearch = true;
@@ -879,7 +839,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         if(t == undefined) return; // 有可能标签更新过快，此时列表还未完全刷新，这里直接忽略
 
         Object.assign(t, tab);
-        console.log('tab.refreshTabs.onUpdated')
 
         return;
       }
@@ -887,7 +846,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
       // 在搜索条件下，必须刷新列表
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onUpdated2')
         this.refreshTabs(() => {
           // 这样才会自动选择第二项
           this.isFirstSearch = true;
@@ -901,7 +859,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
 
       // 被移除的标签本来就不存在，则不需要刷新列表，提升用户体验
       if(originIndex == -1) return;
-      console.log('tab.refreshTabs.onRemoved', tabId, originIndex);
 
       // 直接移除，无需刷新列表，提升用户体验
       this.originList.splice(originIndex, 1);
@@ -910,11 +867,9 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
         this.cacheList.splice(index, 1);
         this.list.splice(index, 1);
       }
-      console.log('tab.refreshTabs.onRemoved2', tabId, originIndex, index);
 
       // clearTimeout(this.w.timer);
       // this.w.timer = setTimeout(() => {
-      //   console.log('tab.refreshTabs.onRemoved2', tabId, this.originList.some(tab => tab.id == tabId))
       //   this.refreshTabs(() => {
       //     // 这样才会自动选择第二项
       //     this.isFirstSearch = true;
@@ -926,7 +881,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
     chrome.tabs.onMoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onMoved')
         this.refreshTabs(() => {
           // 这样才会自动选择第二项
           this.isFirstSearch = true;
@@ -938,7 +892,6 @@ console.log('tab.search2', keyword, '|',  this.storageKeyword);
     chrome.tabs.onDetached.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.refreshTabs.onDetached')
         this.refreshTabs(() => {
           // 这样才会自动选择第二项
           this.isFirstSearch = true;

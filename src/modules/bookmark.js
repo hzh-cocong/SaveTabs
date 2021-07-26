@@ -64,7 +64,9 @@ let bookmark = {
         bookmarkCount[ parentId ] = childBookmarkCount;
 
         // 理论上不可能出现，除非出现脏数据
-        if(childrenStack.length <= 0) { console.error('脏数据', bookmark); break; }
+        if(childrenStack.length <= 0) {
+          break;
+        }
 
         [parentId, currentBookmarkCount] = childrenStack.pop();
         currentBookmarkCount += childBookmarkCount;
@@ -212,7 +214,6 @@ let bookmark = {
 
 //       let currentIndex = this.getRealIndex(index);
 //       let currentBookmark = this.cacheList[ currentIndex ];
-// console.log('uuuuuuuuuuuuuu', currentIndex, currentBookmark);
 //       // 只收起文件夹
 //       if(currentBookmark.children && currentBookmark.children.length <= 0) {
 //         return this.openWindow(currentBookmark.realIndex, '');
@@ -222,7 +223,6 @@ let bookmark = {
 
 //         // 说明已经是到了最顶部，没法再收起了
 //         if(i < 0) return Promise.resolve();
-// console.log('uuuuuuuuuuuuuuuuu2', i, this.cacheList[i])
 
 //         return this.openWindow(this.cacheList[i].realIndex, '').then((result) => {
 //           return { type: 'jump-up-and-collapse', count: currentIndex-i, length: result.length };
@@ -266,12 +266,11 @@ let bookmark = {
       while(true) {
         if(index >= list.length) break;
 
-        let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
+        let bookmark = list[index];
         if(bookmark.parentId != parentId) {
           // 不相等，说明是从文件夹中出来了
           if(stack.length == 0) {
             // 遍历结束
-            console.log('copy_finish', bookmark, parentId, index, list.length);
             break;
           }
 
@@ -283,10 +282,8 @@ let bookmark = {
 
         if(bookmark.children) {
           // 子文件夹，需要记录一下 parentId
-          console.log('copy_dir', bookmark, parentId);
           stack.push(parentId);
           parentId = bookmark.id;
-          console.log('copy_dir2', bookmark, parentId);
         } else {
           // 当前为网页
           if(parentId == currentBookmark.id) {
@@ -300,7 +297,6 @@ let bookmark = {
       }
     }
 
-    console.log('copy3', urls, count)
     if(urls == '') return;
 
     chrome.runtime.sendMessage({

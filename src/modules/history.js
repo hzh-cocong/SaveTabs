@@ -137,13 +137,6 @@ let history = {
       endTime: lastVisitTime,
       maxResults: max, // this.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
     }, (historys)=>{
-      console.log('chrome.history.query', {
-        text: this.storageKeyword,
-        startTime: 0,
-        endTime: lastVisitTime,
-        maxResults: 10, //100, // this.config.list_page_count, 每次尽可能查多一点，这样就可以大大减少错误结果
-      }, historys)
-
       // 谷歌提供的接口返回的结果过有时候会是错误的，排序出问题容易被看出，所以我们要自己给它重新排一下
       historys = historys.sort((a, b)=>{
         return b.lastVisitTime-a.lastVisitTime;
@@ -273,7 +266,6 @@ let history = {
       }
     }
 
-    console.log('copy2', urls);
     if(urls == '') return;
 
     chrome.runtime.sendMessage({

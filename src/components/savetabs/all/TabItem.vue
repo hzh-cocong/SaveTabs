@@ -215,7 +215,6 @@ export default {
     },
 
     getTip() {
-      console.log('showTip');
       if(this.keyType == 'meta/ctrl') {
         return this.lang('moveToRight');
       } else if(this.keyType == 'shift') {

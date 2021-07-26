@@ -148,8 +148,6 @@ export default {
   },
   methods: {
     getTip() {
-      console.log('showTip');
-
       if(this.keyType == 'meta/ctrl') {
         return this.lang('openTabWithoutSwitch');
       } else if(this.keyType == 'shift') {

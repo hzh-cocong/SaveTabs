@@ -206,7 +206,6 @@ export default {
     },
 
     getTip() {
-console.log('showTip');
       if(this.item.isOpened) {
         return this.lang('switchWindow');
       }

@@ -222,8 +222,6 @@ export default {
   computed: {
     // 行数尽可能多，字体尽可能大
     tagConfig() {
-      console.log('temporaryItem:computed:tagConfig')
-
       let item_height = this.currentThemeConfig.item_height;
       let border = 1; // 上下左右
 
@@ -322,17 +320,13 @@ export default {
   },
   methods: {
     hideOperationButton() {
-      console.log('mousemove', this.lock)
-
       this.isShowOperationButton = false;
     },
     mainEnter(event) {
-      console.log('temporary:mainEnter', event);
       // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
       event.target.addEventListener('scroll', this.hideOperationButton);
     },
     mainLeave(event) {
-      console.log('temporary:mainLeave', event);
       event.target.removeEventListener('scroll', this.hideOperationButton);
       this.isShowOperationButton = true;
     },

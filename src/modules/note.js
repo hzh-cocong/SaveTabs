@@ -19,7 +19,6 @@ let note = {
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('note.js.refreshTabs')
         this.refreshTabs();
       }, 200);
     })
@@ -27,14 +26,12 @@ let note = {
     //   if(changeInfo.status != 'complete') return;
     //   clearTimeout(this.w.timer);
     //   this.w.timer = setTimeout(() => {
-    //     console.log('note.js.refreshTabs')
     //     this.refreshTabs();
     //   }, 200);
     // })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('note.js.refreshTabs')
         this.refreshTabs();
       }, 200);
     })
@@ -172,7 +169,6 @@ let note = {
         })
       })
     ]).then(() => {
-      console.log('note.js.refreshTabs.finish')
       // 不能是 cacheList，因为这些状态在查询时并不会更新，这是唯一的更新机会
       this.storageList.forEach((note) => {
         // 加标签（速度很快）(存在污染问题)
@@ -228,7 +224,6 @@ let note = {
     let currentNote = this.cacheList[index];
 
     let url = currentNote.url;
-    console.log('copy2', url);
     if(url == '') return;
 
     chrome.runtime.sendMessage({

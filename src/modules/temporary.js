@@ -103,7 +103,6 @@ let temporary = {
       if(index == 0) return temporary.url;
       else return accumulator+"\n"+temporary.url;
     }, '');
-    console.log('copy2', urls, urls == '')
     if(urls == '') return;
 
     chrome.runtime.sendMessage({

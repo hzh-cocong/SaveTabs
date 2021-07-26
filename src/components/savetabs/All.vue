@@ -12,7 +12,7 @@
         slot="title"
         style="display:flex;align-items: center;font-size:12px;">
         <div style="flex:1;">
-          <div>查找不到，你可以使用空格分隔多个关键词进行搜索</div>
+          <div>{{ lang('noResultTip') }}</div>
         </div>
         <div style="margin-left: 8px;margin-right: -8px;">
           <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></el-button>
@@ -203,16 +203,13 @@ export default {
   },
   watch: {
     "all.visible": function(newVal, oldVal) {
-      console.log('all.visible', newVal, oldVal);
       this.search();
     },
 
     // cacheList(newVal, oldVal) {
-    //   console.log('watch:cacheList', newVal, oldVal)
     //   this.$emit('update:searchTotal', newVal.length)
     // },
     list(newVal, oldVal) {
-      console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -234,14 +231,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('all.listPageCount')
 
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('all.watch.itemShowCount', this.isNoSearch)
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -282,7 +277,6 @@ export default {
       let module = this.getModule(item.type);
 
       module.up(item.realIndex, keyType).then((result) => {
-        console.warn('up.finish.uuuuuuuuuuuuuuuuu', result);
         if(result == undefined) return;
 
         if(result.type == 'up') {
@@ -318,7 +312,6 @@ export default {
       }
 
       module.down(item.realIndex, keyType).then((result) => {
-        console.warn('down.finish', result);
         if(result == undefined) return;
 
         if(result.type == 'down') {
@@ -347,7 +340,6 @@ export default {
     },
 
     search(keyword) {
-console.log('all.search', keyword, '|', this.storageKeyword, this.isFirstSearch);
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword != keyword.trim()) {
@@ -356,7 +348,6 @@ console.log('all.search', keyword, '|', this.storageKeyword, this.isFirstSearch)
           return;
         }
       }
-console.log('all.search2', keyword, '|',  this.storageKeyword, this.isFirstSearch);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -371,10 +362,7 @@ console.log('all.search2', keyword, '|',  this.storageKeyword, this.isFirstSearc
       }
 
       this.length = {};
-console.log('all.search:lists');
       this.toSearch(0).then((list) => {
-        console.log('all.search:lists2', list);
-
         this.list = list;
 
         // 置顶只要有一个结果，就不会继续查，此时列表如果没有被填满也不用担心，load 会加载
@@ -386,7 +374,6 @@ console.log('all.search:lists');
           this.currentIndex = this.list.length > 0 ? 0 : -1;
         }
         this.isFirstSearch = false;
-        console.log('all.search:lists3', list, this.isFirstSearch);
 
         // 防止“无数据提示栏”在一开始就出现，从而造成闪烁
         this.isSearched = true;
@@ -394,13 +381,11 @@ console.log('all.search:lists');
     },
     toSearch(index = 0) {
       let conditions = this.storageKeyword == '' ? this.conditions[0][0] : this.conditions[1][0];
-
       if(index >= conditions.length) {
         return new Promise(resolve => resolve([]));
       }
 
       let condition = conditions[index];
-
       return Promise.all(this.localConfig.all_include.concat(
         ...this.advertisingOptions
       ).filter(workspace => {
@@ -420,8 +405,6 @@ console.log('all.search:lists');
           parent: this,
         })
       })).then((lists) => {
-        console.log('all:toSearch:lists', lists);
-
         let list = [];
         lists.forEach((workspaceList) => {
           if(workspaceList.length <= 0) return;
@@ -448,7 +431,6 @@ console.log('all.search:lists');
         originKeyword: this.storageKeyword,
         parent: this,
       }).then((list) => {
-        console.log(77777777777777777, list)
         this.list = list;
 
         this.scrollDisabled = true;
@@ -457,25 +439,20 @@ console.log('all.search:lists');
       })
     },
     load() {
-      console.log('all:load:lists');
       // 避免因为列表加载慢而重复 load，infinite-scroll-delay 默认节流时延为 200ms，但具体load要多久这个谁也说不准，所以干脆禁用，等有结果了再重新开启
       this.scrollDisabled = true;
       this.toLoad(0).then((list) => {
-        console.log('all:load:lists2', list, this.list.length, list.length);
-
         this.scrollDisabled = list.length <= 0;
         this.list.push(...list);
       })
     },
     toLoad(index = 0) {
       let conditions = this.storageKeyword == '' ? this.conditions[0][1] : this.conditions[1][1];
-
       if(index >= conditions.length) {
         return new Promise(resolve => resolve([]));
       }
 
       let condition = conditions[index];
-
       return Promise.all(this.localConfig.all_include.filter(workspace => {
         return Object.keys(condition).every((attr) => {
           return workspace[attr] == condition[attr];
@@ -506,8 +483,6 @@ console.log('all.search:lists');
           })
         }
       })).then(lists => {
-        console.log('all:toLoad:lists', lists);
-
         let list = [];
         lists.forEach((workspaceList) => {
           if(workspaceList.length <= 0) return;
@@ -517,10 +492,8 @@ console.log('all.search:lists');
         })
 
         if(list.length > 0) {
-          console.log('all:toLoad:lists21', lists);
           return list;
         } else {
-          console.log('all:toLoad:lists22', index+1);
           return this.toLoad(index+1);
         }
       })
@@ -531,7 +504,6 @@ console.log('all.search:lists');
         this._openWindow(keyType);
         return;
       }
-
       if( ! this.$refs.list.choice(index)) {
         return;
       }
@@ -539,8 +511,6 @@ console.log('all.search:lists');
       this._openWindow(keyType);
     },
     _openWindow(keyType) {
-      console.log('openWindow', keyType)
-
       if(this.list.length <= 0) return;
 
       let item = this.list[ this.currentIndex ];
@@ -550,7 +520,6 @@ console.log('all.search:lists');
       this.autoSort(item.type);
 
       module.openWindow(item.realIndex, keyType).then((result) => {
-        console.warn('all.finish', result);
         if(result == undefined) return;
 
         if(result.type == 'delete') {
@@ -572,8 +541,6 @@ console.log('all.search:lists');
     },
 
     autoSort(type) {
-      console.log('autoSort', type, this.localConfig.all_include, this.localConfig.all_sort_auto)
-
       if( ! this.localConfig.all_sort_auto) return;
       if(this.workspaceSwitch) return;
 
@@ -592,8 +559,6 @@ console.log('all.search:lists');
 
       // 将当前的 workspace 插入到顶部的前面去
       this.localConfig.all_include.splice(topIndex, 0, this.localConfig.all_include.splice(index , 1)[0]);
-
-      console.log('autoSort2', type, this.localConfig.all_include)
 
       // 重新保存
       chrome.storage.local.set({'config': this.localConfig});
@@ -614,18 +579,6 @@ console.log('all.search:lists');
     },
   },
   mounted() {
-    // todo
-    window.all = this;
-    window.ww = Window;
-    window.tte = Temporary;
-    window.nn = Note;
-    window.tta = Tab;
-    window.hh = History;
-    window.bb = Bookmark;
-    window.ss = Search;
-    window.tto = Toggle;
-    window.ad = Advertising;
-
     // 保持数据同步
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if(request.type == 'data_change') {
@@ -643,8 +596,6 @@ console.log('all.search:lists');
           return workspace.type != request.workspace;
         }))) return;
 
-        console.log('all:data_change', request, sender);
-
         // 虽然可能会有并发，但是是不同类型的并发，同一类型的发送方已经做了缓冲，所以无碍
         // 刷新数据
         let module = this.getModule(request.workspace);
@@ -655,7 +606,6 @@ console.log('all.search:lists');
           if(this.isActiveWorkspace) this.search();
 
           // 增删查改，还有反向操作，仅 temporary
-          console.log('all:reload', request);
         })
       }
     })

@@ -23,7 +23,6 @@ let tab = {
     chrome.tabs.onCreated.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.create')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'add'});
       }, 200);
     })
@@ -36,35 +35,30 @@ let tab = {
         if(t == undefined) return; // 有可能标签更新过快，此时列表还未完全刷新，这里直接忽略
 
         Object.assign(t, tab);
-        console.log('tab.js.refreshTabs.update')
         return;
       }
 
       // 在搜索条件下，必须刷新列表
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.update2')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'update'});
       }, 200);
     })
     chrome.tabs.onRemoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.remove')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'delete'});
       }, 200);
     })
     chrome.tabs.onMoved.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.onMoved')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
       }, 200);
     })
     chrome.tabs.onDetached.addListener(() => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
-        console.log('tab.js.refreshTabs.onDetached')
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
       }, 200);
     })
@@ -88,7 +82,6 @@ let tab = {
         chrome.runtime.sendMessage({
             type: 'getActiveWindowIds'
         }, (windowIds) => {
-          console.log('windowIds', windowIds)
           resolve(windowIds);
         })
       }),
@@ -205,7 +198,6 @@ let tab = {
     let selectedTab = this.cacheList[ index ];
 
     let url = selectedTab.url;
-    console.log('copy2', url);
     if(url == '') return;
 
     chrome.runtime.sendMessage({
@@ -225,7 +217,6 @@ let tab = {
           // // 延迟一下，chrome.windows.onRemoved 执行会慢一点点
           // clearTimeout(this.w.timer);
           // this.w.timer = setTimeout(() => {
-          //   console.log('tab.js.refreshTabs.move')
           //   chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'tab', operation: 'move'});
           // }, 200);
 

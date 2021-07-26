@@ -175,8 +175,6 @@ export default {
     },
 
     getTip() {
-      console.log('showTip');
-
       // 打开网页
       if( ! this.item.children) {
         if(this.keyType == 'meta/ctrl') {

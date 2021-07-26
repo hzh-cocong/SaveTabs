@@ -94,7 +94,6 @@ let advertising = {
       let currentItem = this.cacheList[index];
 
       let url = currentItem.url;
-      console.log('copy2', url);
       if(url == '') return;
 
       chrome.runtime.sendMessage({
@@ -106,7 +105,6 @@ let advertising = {
 
     openWindow(index, keyType) {
       let currentItem = this.cacheList[index];
-      console.log('advertising:openWindow', currentItem.url);
 
       return new Promise(resolve => {
         window.$open(currentItem.url, keyType, (tab, type) => {

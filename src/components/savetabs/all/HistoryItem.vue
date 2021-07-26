@@ -181,8 +181,6 @@ export default {
     },
 
     getTip() {
-      console.log('showTip');
-
       if(this.item.count == undefined || this.item.count == 1) {
         if(this.keyType == 'meta/ctrl') {
           return this.lang('openTabWithoutSwitch');

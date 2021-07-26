@@ -79,7 +79,6 @@ let search = {
 
   openWindow(index, keyType) {
     let currentItem = this.cacheList[index];
-console.log('cccccccccccccccccc', currentItem)
     return new Promise(resolve => {
       let keywords;
       let keyword = this.workspaceStorageKeyword().toUpperCase().split(/\s+/)[0];

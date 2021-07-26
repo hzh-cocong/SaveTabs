@@ -42,10 +42,6 @@ let window = {
         })
       }),
     ]).then((/* res */) => {
-      console.log('all.window.finish', this.storageList);
-
-      let a = new Date().getTime();
-
       // 加标签（速度很快）(存在污染问题)
       this.storageList.forEach(group => {
         group.isCurrent = group.windowId == this.currentWindowId;
@@ -53,10 +49,6 @@ let window = {
         group.type = 'window';
         // group.type = 'WindowItem';
       });
-
-      let b = new Date().getTime();
-
-      console.log('window.js===h', (b-a)/1000);
 
       this.isInit = true;
     })
@@ -139,7 +131,6 @@ let window = {
       if(index == 0) return group.url;
       else return accumulator+"\n"+group.url;
     }, '');
-    console.log('copy2', urls, urls == '')
     if(urls == '') return;
 
     chrome.runtime.sendMessage({

@@ -1547,7 +1547,8 @@ export default {
 
         // 切换到别的标签和执行关闭，等到切换过来再执行
         // 这样可能看起来会有闪烁，但为了避免在拖出标签时重启插件，也只能这样了
-        if(tab.id != activeInfo.tabId) return;
+        // 在窗口缩放时，同时操作两个插件会有问题，所以又注释掉了
+        // if(tab.id != activeInfo.tabId) return;
 
         // 避免和 blur 重复而导致插件重启
         if(this.isFocus) return;
@@ -1563,8 +1564,7 @@ console.log('aa')
         // // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
         // if(windowId == -1) return;
         // // 再切换过来
-        // // tab == undefined 不大可能发生
-        // if(tab == undefined || windowId == tab.windowId) return;
+        // if(windowId == tab.windowId) return;
 
         // 当标签被拖出来成为一个新窗口时，由于没有 tabid，无法判断
         // 现实是会执行两次 onActivated 和一次 onFocusChanged

@@ -288,18 +288,15 @@ export default {
       }
     },
     "bookmark.visible": function(newVal, oldVal) {
-      console.log('bookmark.visible', newVal, oldVal);
       this.search();
     },
     "bookmark.fold": function(newVal, oldVal) {
-      console.log('bookmark.fold', newVal, oldVal);
       if( ! this.bookmark.fold) return;
 
       this.fold(0);
       this.bookmark.fold = false;
     },
     "bookmark.unfold": function(newVal, oldVal) {
-      console.log('bookmark.unfold', newVal, oldVal);
       if( ! this.bookmark.unfold) return;
 
       this.unfold();
@@ -307,11 +304,9 @@ export default {
     },
 
     // cacheList(newVal, oldVal) {
-    //   console.log('watch:cacheList', newVal, oldVal)
     //   this.$emit('update:searchTotal', newVal.length)
     // },
     list(newVal, oldVal) {
-      console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -333,14 +328,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('bookmark.listPageCount')
 
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('bookmark.watch.itemShowCount', this.isNoSearch)
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -394,13 +387,12 @@ export default {
       return this.list[ this.currentIndex ];
     },
     tree() {
-console.log('computed:tree')
       let marginLeft = {};
       let path = {};
       let itemCount = {};
       // let total = 0;
       let bookmarkCount = {};
-let a = new Date().getTime();
+
       let stack = [];
       let childrenStack = [];
       let list = this.originList;
@@ -411,7 +403,6 @@ let a = new Date().getTime();
       while(true) {
         if(index >= list.length) {
           if(stack.length == 0) {
-            console.log('88888888888', JSON.stringify(childrenStack))
             // 汇总全部
             while(true) {
               let childBookmarkCount = currentBookmarkCount;
@@ -439,7 +430,9 @@ let a = new Date().getTime();
           bookmarkCount[ parentId ] = childBookmarkCount;
 
           // 理论上不可能出现，除非出现脏数据
-          if(childrenStack.length <= 0) { console.error('脏数据', bookmark); break; }
+          if(childrenStack.length <= 0) {
+            break;
+          }
 
           [parentId, currentBookmarkCount] = childrenStack.pop();
           currentBookmarkCount += childBookmarkCount;
@@ -479,11 +472,6 @@ let a = new Date().getTime();
         }
       }
 
-      console.log('88888888888', JSON.stringify(childrenStack))
-      if(childrenStack.length > 0) console.error('不可能出现', childrenStack);
-
-let b = new Date().getTime();
-      console.log('tttttttttttttt', (b-a)/1000, { marginLeft, path, itemCount, bookmarkCount })
       return {
         marginLeft, //
         path,
@@ -494,8 +482,6 @@ let b = new Date().getTime();
     },
 
     searchTree() {
-      console.log('searchTree')
-
       let marginLeft = new Array(this.list.length);
       let stack = [];
       let lastMarginLeft = 0;
@@ -508,19 +494,16 @@ let b = new Date().getTime();
         marginLeft[ index ] = lastMarginLeft;
 
         if(bookmark.count != undefined && bookmark.children.length <= 0) {
-          console.log('searchTree:push', JSON.stringify(stack));
           stack.push([lastMarginLeft, count]);
           lastMarginLeft += this.currentThemeConfig.item_height*2/5; // 20;
           count = bookmark.count;
         }
 
         while(count <= 0 && stack.length > 0) {
-          console.log('searchTree:pop', JSON.stringify(stack));
           [lastMarginLeft, count] = stack.pop();
         }
       }
 
-      console.log('computed:searchTree', {marginLeft});
       return {
         marginLeft,
       };
@@ -594,8 +577,6 @@ let b = new Date().getTime();
       }
     },
     copy() {
-      console.log('copy', this.currentBookmark)
-
       if(this.currentBookmark == null) return;
 
       // 工作区切换
@@ -623,12 +604,10 @@ let b = new Date().getTime();
         while(true) {
           if(index >= list.length) break;
 
-          let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
           if(bookmark.parentId != parentId) {
             // 不相等，说明是从文件夹中出来了
             if(stack.length == 0) {
               // 遍历结束
-              console.log('copy_finish', bookmark, parentId, index, list.length);
               break;
             }
 
@@ -640,10 +619,8 @@ let b = new Date().getTime();
 
           if(bookmark.children) {
             // 子文件夹，需要记录一下 parentId
-            console.log('copy_dir', bookmark, parentId);
             stack.push(parentId);
             parentId = bookmark.id;
-            console.log('copy_dir2', bookmark, parentId);
           } else {
             // 当前为网页
             if(parentId == this.currentBookmark.id) {
@@ -655,57 +632,8 @@ let b = new Date().getTime();
 
           index++;
         }
-        // while(true) {
-        //   if(index >= list.length) break;
-
-        //   let bookmark = list[index];console.log('copy2', bookmark, parentId, index, list.length);
-        //   if(bookmark.children) {
-        //     // 当前为文件夹
-        //     if(bookmark.parentId == parentId) {
-        //       // 子文件夹，需要记录一下 parentId
-        //       console.log('copy21', bookmark, parentId);
-        //       stack.push(parentId);
-        //       parentId = bookmark.id;
-        //       console.log('copy211', bookmark, parentId);
-        //       index++;
-        //     } else {
-        //       // 不相等，说明是从文件夹中出来了
-        //       if(stack.length == 0) {
-        //         // 遍历结束
-        //         console.log('copy99', bookmark, parentId);
-        //         break;
-        //       } else {
-        //         // 取出上一个文件夹
-        //         parentId = stack.pop();
-        //         // index 不能增加
-        //       }
-        //     }
-        //   } else {
-        //     // 当前为网页
-        //     if(bookmark.parentId == parentId) {
-        //       if(parentId == this.currentBookmark.id) {
-        //         count++;
-        //         if(count == 1) urls += bookmark.url;
-        //         else urls += "\n"+bookmark.url;
-        //       }
-        //       index++;
-        //     } else {
-        //       // 不相等，说明是从文件夹中出来了
-        //       if(stack.length == 0) {
-        //         // 遍历结束
-        //         console.log('copy22', bookmark, parentId);
-        //         break;
-        //       } else {
-        //         // 取出上一个文件夹
-        //         parentId = stack.pop();
-        //         // index 不能增加
-        //       }
-        //     }
-        //   }
-        // }
       }
 
-      console.log('copy3', urls, count)
       if(urls == '') return;
 
       chrome.runtime.sendMessage({
@@ -716,13 +644,11 @@ let b = new Date().getTime();
     },
 
     search(keyword) {
-console.log('bookmark.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword == keyword.trim()) return;
         this.storageKeyword = keyword.trim();
       }
-console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -738,14 +664,12 @@ console.log('bookmark.search2', keyword, '|',  this.storageKeyword);
         return;
       }
 
-console.log('bookmark.search3', keyword, '|',  this.storageKeyword);
-
       let times = ++this.w.times;
 
       if( ! this.isSearched) {
         // 避免第一次加载页面时重复 getTree
-console.log('chrome.bookmarks.getTree.first')
-          // 倒着打开
+
+        // 倒着打开
         for(let i = this.originList.length-1; i >= 0; i--)
           this.expand(this.originList, i, false);
         this.list = this.originList;
@@ -780,8 +704,6 @@ console.log('chrome.bookmarks.getTree.first')
         this.scrollDisabled = true;
 
         this.getTree((bookmarks) => {
-          console.log('getTree', bookmarks);
-
           // 防止并发错误
           if(times != this.w.times) return;
 
@@ -795,7 +717,6 @@ console.log('chrome.bookmarks.getTree.first')
           this.currentIndex = this.position.currentIndex;
           // vue 依赖更新是异步的，此时 对于 list 组件，所有值都为更新，currentTo 是无效的，所以要放到异步里去
           this.$nextTick(() => {
-            console.log('bookmark.currentTo', {position: this.position.currentIndex, visiualIndex: this.position.visiualIndex});
             this.$refs.list.currentTo(this.position.visiualIndex);
           });
 
@@ -805,7 +726,6 @@ console.log('chrome.bookmarks.getTree.first')
           this.isSearching = false;
 
           this.$emit('update:searchTotal', this.tree.bookmarkCount[this.rootId]);
-          console.log('bookmark.search.end')
         })
       }
 
@@ -821,7 +741,6 @@ console.log('chrome.bookmarks.getTree.first')
           // 防止并发错误
           if(times != this.w.times) return;
 
-console.log('chrome.bookmarks.getTree.second')
           this.cacheList = bookmarks;
           this.list = this.cacheList.slice(0, this.listPageCount);
 
@@ -829,7 +748,6 @@ console.log('chrome.bookmarks.getTree.second')
           this.scrollDisabled = this.list.length <= 0 || this.list.length >= this.cacheList.length;
 
           this.$emit('update:searchTotal', this.cacheList.length);
-          console.log('bookmark.search.end')
         })
       }
     },
@@ -853,7 +771,6 @@ console.log('chrome.bookmarks.getTree.second')
       this.currentIndex = 0;
     },
     load() {
-      console.log('bookmark.load')
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -891,9 +808,7 @@ console.log('chrome.bookmarks.getTree.second')
     },
     getTree(callback) {
       chrome.bookmarks.getTree((bookmarks) => {
-        console.log('chrome.bookmarks.getTree', bookmarks)
         if(bookmarks.length <= 0) {
-          console.error('不太可能出现', bookmarks)
           callback(bookmarks);
           return;
         }
@@ -1023,11 +938,9 @@ console.log('chrome.bookmarks.getTree.second')
       while(true) {
         if(count <= 0) {
           // 收起该层
-          console.log('收起1', lastIndex, parentIndex+1, lastIndex-(parentIndex+1), this.list[parentIndex].title);
           let total = lastIndex-(parentIndex+1);
           this.list[parentIndex].children = this.list.splice(parentIndex+1, total);
           this.cacheList.splice(parentIndex+1, total);
-          console.log('收起2', lastIndex, parentIndex+1, total);
 
           if(stack.length == 0) break;
 
@@ -1056,10 +969,8 @@ console.log('chrome.bookmarks.getTree.second')
     expand(list, index, isClick) {
       // 展开（如果子目录需要展开也会自动展开）
 
-      console.log('sssss', index);
       let parentId = list.length <= 0 ? -1 : list[index].parentId;
       for(let currentIndex = index; currentIndex < list.length; currentIndex++) {
-        console.log('expand')
         let bookmark = list[currentIndex];
 
         // 和一开始的目录同级，说明超出了，结束（被点对象除外）
@@ -1106,7 +1017,6 @@ console.log('chrome.bookmarks.getTree.second')
 
       let count = lastIndex-(index+1);
       list[index].children = list.splice(index+1, count);
-      console.log('收起', list.length, index+1, lastIndex, count)
     },
 
     fold() {
@@ -1114,8 +1024,6 @@ console.log('chrome.bookmarks.getTree.second')
 
       // todo 暂时用最简单的方法
       this.getTree((bookmarks) => {
-        console.log('getTree', bookmarks);
-
         this.originList = bookmarks;
         this.list = this.originList;
 
@@ -1130,11 +1038,9 @@ console.log('chrome.bookmarks.getTree.second')
     unfold() {
       // 全部展开（包括子目录）
 
-      console.log('unfold');
       this.state = {};
       let parentId = this.originList.length <= 0 ? -1 : this.originList[0].parentId;
       for(let currentIndex = 0; currentIndex < this.originList.length; currentIndex++) {
-        console.log('unfold', currentIndex)
         let bookmark = this.originList[currentIndex];
 
         // 不是目录，跳过
@@ -1152,8 +1058,6 @@ console.log('chrome.bookmarks.getTree.second')
       this.list = this.originList;
 
       chrome.storage.local.set({'bookmark': { state: this.state, position: this.position }});
-
-      console.log('unfold', this.state);
     },
 
     scrollEnd() {
@@ -1167,11 +1071,6 @@ console.log('chrome.bookmarks.getTree.second')
       if(this.position.currentIndex == currentIndex
       && this.position.visiualIndex == visiualIndex) return;
 
-      console.log('positionRecord'
-      ,this.position.currentIndex,
-      this.position.visiualIndex,
-      currentIndex, visiualIndex);
-
       // 通过键盘快捷键操作可能会关闭窗口，应在最短的时间内保存
       if(this.position.currentIndex != currentIndex
       && this.position.visiualIndex != visiualIndex) {
@@ -1181,7 +1080,7 @@ console.log('chrome.bookmarks.getTree.second')
         this.position.visiualIndex = visiualIndex;
 
         chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
-          console.log('positionRecord20', currentIndex, visiualIndex);
+
         });
         return;
       }
@@ -1193,14 +1092,12 @@ console.log('chrome.bookmarks.getTree.second')
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         chrome.storage.local.set({'bookmark': { state: this.state, position: this.position  }}, () => {
-          console.log('positionRecord21', currentIndex, visiualIndex);
+
         });
       }, 200);
     },
 
     getTip() {
-      console.log('showTip');
-
       // 打开网页
       if( ! this.currentBookmark.children) {
         if(this.keyType == 'meta/ctrl') {
@@ -1216,7 +1113,7 @@ console.log('chrome.bookmarks.getTree.second')
         }
       }
 
-      return this.currentBookmark.children.length ? '展开' : '收起';
+      return this.currentBookmark.children.length ? this.lang('unfold') : this.lang('fold');
     }
   },
   beforeUpdate() {
@@ -1226,9 +1123,6 @@ console.log('chrome.bookmarks.getTree.second')
     console.warn('updated');
   },
   mounted() {
-    // todo
-    window.b = this;let a = new Date().getTime();
-console.warn('mounted', a);
     Promise.all([
       new Promise((resolve) => {
         this.getTree((bookmarks) => {
@@ -1251,14 +1145,8 @@ console.warn('mounted', a);
         });
       }),
     ]).then(() => {
-      console.log('state', this.state);
-
-      let b = new Date().getTime();
-console.warn('finish', b, (b-a)/1000)
-
       this.$emit('finish');
     })
-      console.warn('mounted2');
   }
 }
 </script>

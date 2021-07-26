@@ -192,7 +192,7 @@ export default {
         }
       }
 
-      return this.item.children.length ? '展开' : '收起';
+      return this.item.children.length ? this.lang('unfold') : this.lang('fold');
     }
   }
 }

@@ -19,6 +19,9 @@
     "add": {"message": "添加"},
     "repeated": {"message": "重复"},
 
+    "unfold": {"message": "展开"},
+    "fold": {"message": "收起"},
+
     "switchWindow": {"message": "切换到对应的窗口"},
     "openCurrentWindowButNotSelect": {"message": "当前窗口打开但不选中"},
     "openCurrentWindowAndSelect": {"message": "当前窗口打开并选中"},

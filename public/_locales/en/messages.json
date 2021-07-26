@@ -19,6 +19,9 @@
     "add": {"message": "Add"},
     "repeated": {"message": "Repeated"},
 
+    "unfold": {"message": "Unfold"},
+    "fold": {"message": "Fold"},
+
     "switchWindow": {"message": "Switch to the window"},
     "openCurrentWindowButNotSelect": {"message": "Open in current window but not select"},
     "openCurrentWindowAndSelect": {"message": "Open in current window and select"},

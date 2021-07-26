@@ -103,14 +103,6 @@
               </div>
               <div slot="placeholder"></div>
             </el-image>
-            <!-- <div
-              class="title"
-              :style="{ fontSize: tagConfig.tag_font_size+'px',
-                        width: 'calc(100% - '
-                              +( tagConfig.tag_font_size+tagConfig.tag_padding_left*1
-                                + (isActive ? 20 : 0) )
-                              +'px' }"
-              v-html="highlightMap[index][i].title || highlightMap[index][i].url"></div> -->
             <div
               class="title"
               :style="{ fontSize: tagConfig.tag_font_size+'px',
@@ -146,10 +138,6 @@
               v-html="isSelected || storageKeyword != ''
                     ? (highlightMap[index][0].title || highlightMap[index][0].url)
                     : (beautifyTitle(highlightMap[index][0].title) || getDomain(highlightMap[index][0].url))"></span>
-            <!-- <span
-              style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;"
-              v-html="highlightMap[index][0].title || highlightMap[index][0].url"></span> -->
-            <!-- <span style="margin-left: 5px;flex: 1; overflow: hidden; text-overflow: ellipsis;">{{ item.tabs[0].title || item.tabs[0].url }}</span> -->
           </div>
           <div
             class="sub-title"
@@ -162,16 +150,6 @@
               v-html="storageKeyword == ''
                     ? highlightMap[index][0].domain
                     : highlightMap[index][0].url"></div>
-          <!-- <div
-            class="sub-title"
-            :style="{
-              fontSize: currentThemeConfig.list_explain_font_size+'px',
-              color: isSelected
-                    ? currentThemeConfig.list_explain_focus_font_color
-                    : currentThemeConfig.list_explain_font_color,
-              marginLeft: (currentThemeConfig.list_font_size+5)+'px' }">
-              {{ getDomain(item.tabs[0].url) }}
-          </div> -->
         </template>
       </div>
 
@@ -369,16 +347,13 @@ export default {
   },
   watch: {
     "temporary.visible": function(newVal, oldVal) {
-      console.log('temporary.visible', newVal, oldVal);
       this.search();
     },
 
     cacheList(newVal, oldVal) {
-      console.log('watch:cacheList', newVal, oldVal)
       this.$emit('update:searchTotal', newVal.length)
     },
     list(newVal, oldVal) {
-      console.log('watch:list', newVal, oldVal)
       this.$emit('update:listCount', newVal.length)
     },
 
@@ -400,14 +375,12 @@ export default {
     },
     listPageCount() {
       if(this.itemShowCount <= 0) return 0;
-      console.log('temporary.listPageCount')
 
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_list_page_count
             : this.currentThemeConfig.list_page_count
     },
     itemShowCount() {
-      console.log('temporary.watch.itemShowCount', this.isNoSearch)
       return this.isNoSearch
             ? this.currentThemeConfig.no_search_item_show_count
             : this.currentThemeConfig.item_show_count
@@ -438,33 +411,6 @@ export default {
       })
     },
     highlightMap() {
-      // 速度其实差不多
-      // let highlightMap = new Array(this.list.length);
-      // this.list.forEach((item, index) => {
-      //   let highlightMap2 = new Array(item.tabs.length);
-      //   item.tabs.map((tab, i) => {
-      //     highlightMap2[i] = {
-      //       title: this.toHighlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
-      //       url: this.toHighlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
-      //       domain: this.toHighlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
-      //     }
-      //   })
-
-      //   highlightMap[index] = highlightMap2;
-      // });
-
-      // // 速度非常非常快，无需再缓存优化
-      // // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
-      // let highlightMap = this.list.map(item => {
-      //   return item.tabs.map(tab => {
-      //     return {
-      //       title: this.toHighlight(tab.title, this.storageKeyword, '<strong>', '</strong>'),
-      //       url: this.toHighlight(tab.url, this.storageKeyword, '<strong>', '</strong>'),
-      //       domain: this.toHighlight(this.getDomain(tab.url), this.storageKeyword, '<strong>', '</strong>'),
-      //     }
-      //   })
-      // })
-
       // 速度非常非常快，无需再缓存优化
       // 这种实现方式非常简单，而且改造方便，并且兼容所有可能情况，如修改标题
       let highlightMap = new Array(this.list.length);
@@ -519,8 +465,7 @@ export default {
       if(row_count > tag_row_count_min) {
         tag_row_count = row_count;
       }
-console.log('oooooooooooo', tag_row_count, (item_height-tag_margin_top_min)/(tag_margin_top_min*3+tag_font_size_min+border*2))
-console.log('oooooooo2', 3*(tag_font_size_min+tag_margin_top_min*3+border*2)+tag_margin_top_min);
+
       // tag_font_size
       let tag_font_size = tag_font_size_min;
       let font_size = (item_height-tag_margin_top_min)/tag_row_count-tag_margin_top_min*3-border*2;
@@ -546,8 +491,6 @@ console.log('oooooooo2', 3*(tag_font_size_min+tag_margin_top_min*3+border*2)+tag
 
       let height = (tag_margin_top*3+tag_font_size+border*2)*tag_row_count+tag_margin_top;
       if(height < item_height) {
-        console.log('tagConfig 有剩余空间', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
-
         // 和 字体 优先不同，这里由于是按 tag_row_count 优先计算，其它值都是最小的了，如果再强塞一个，会导致它们被强制缩小
         // tag_row_count++;
 
@@ -569,75 +512,41 @@ console.log('oooooooo2', 3*(tag_font_size_min+tag_margin_top_min*3+border*2)+tag
             // 强制缩小 tag_padding_top 直到 1
             let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
             tag_padding_top = padding_top <= 1 ? 1 : padding_top;
-            console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
 
             if(tag_padding_top != padding_top) {
               // 强制缩小 tag_margin_top 直到 1
               margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
               tag_margin_top = margin_top <= 1 ? 1 : margin_top;
-              console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
 
               if(tag_margin_top != margin_top) {
-                console.error('tagConfig 我尽力了');
               }
             }
           }
         }
       } else if(height > item_height) {
-        console.log('tagConfig 空间不够', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
-alert('空间不够')
         // 空间不够，此时全部值都应该是最小值
 
         // 强制缩小 tag_padding_top 直到 1
         let padding_top = ((item_height-tag_margin_top)/tag_row_count-tag_font_size-tag_margin_top-border*2)/2;
         tag_padding_top = padding_top <= 1 ? 1 : padding_top;
-        console.error('强制缩小 tag_padding_top 直到 1', tag_padding_top)
 
         if(tag_padding_top != padding_top) {
           // 强制缩小 tag_margin_top 直到 1
           margin_top=(item_height-tag_row_count*(tag_font_size+tag_padding_top*2+border*2))/(1+tag_row_count);
           tag_margin_top = margin_top <= 1 ? 1 : margin_top;
-          console.error('强制缩小 tag_margin_top 直到 1', tag_margin_top)
 
           if(tag_margin_top != margin_top) {
-            console.error('tagConfig 我尽力了');
           }
         }
       } else {
         // 相等则说明找到了合适的值
-        console.log('tagConfig 值完全合适', {height, item_height, tag_row_count, tag_font_size, tag_margin_top})
-        // alert('值完全合适')
       }
-
-      console.log('tagConfig 上下计算结果', tag_row_count, tag_font_size, tag_margin_top, tag_padding_top)
 
       // 开放给用户设置
       let tag_line_count = this.currentThemeConfig.tag_line_count;
 
       let tag_margin_right = tag_margin_top;
       let tag_padding_left = tag_margin_top;
-
-      console.log('tagConfig 最后结果', {
-        tag_row_count,
-        tag_line_count,
-
-        tag_font_size,
-
-        tag_margin_top,
-        tag_margin_right,
-
-        tag_padding_top,
-        tag_padding_left,
-
-        height: (tag_padding_top*2+tag_font_size)+'px',
-        width: 'calc(100% / '+tag_line_count+' - '+(tag_padding_left*2+1*2+tag_margin_right)+'px)',
-        margin: tag_margin_top+'px '
-              + tag_margin_right+'px 0px 0px',
-        padding: tag_padding_top+'px '
-                +tag_padding_left+'px',
-
-        item_height: tag_row_count*(tag_font_size+tag_padding_top*2+tag_margin_top+border*2)+tag_margin_top,
-      })
 
       return {
         tag_row_count,
@@ -692,17 +601,13 @@ alert('空间不够')
     },
 
     hideOperationButton() {
-      console.log('mousemove', this.lock)
-
       this.isShowOperationButton = false;
     },
     mainEnter(event) {
-      console.log('temporary:mainEnter', event);
       // 注意切换工作区时是 非Active的，但依然要绑定，因为会 mousemove，不然就监听不到了
       event.target.addEventListener('scroll', this.hideOperationButton);
     },
     mainLeave(event) {
-      console.log('temporary:mainLeave', event);
       event.target.removeEventListener('scroll', this.hideOperationButton);
       this.isShowOperationButton = true;
     },
@@ -723,8 +628,6 @@ alert('空间不够')
       }
     },
     copy() {
-      console.log('copy', this.currentTemporary)
-
       if(this.currentTemporary == null) return;
 
       // 工作区切换
@@ -734,7 +637,6 @@ alert('空间不够')
         if(index == 0) return temporary.url;
         else return accumulator+"\n"+temporary.url;
       }, '');
-      console.log('copy2', urls, urls == '')
       if(urls == '') return;
 
       chrome.runtime.sendMessage({
@@ -745,13 +647,11 @@ alert('空间不够')
     },
 
     search(keyword) {
-console.log('temporary.search', keyword, '|', this.storageKeyword);
       // 无参数时则强制刷新
       if(keyword != undefined) {
         if(this.storageKeyword == keyword.trim()) return;
         this.storageKeyword = keyword.trim();
       }
-console.log('temporary.search2', keyword, '|',  this.storageKeyword);
 
       // 展示工作区
       if(this.workspaceSwitch) {
@@ -812,7 +712,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
       this.currentIndex = 0;
     },
     load() {
-      console.log('temporary.load')
       // 加载数据
       this.list.push(...this.cacheList.slice(this.list.length, this.list.length+this.listPageCount))
       this.scrollDisabled = this.list.length >= this.cacheList.length;
@@ -834,31 +733,29 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
           resolve(highlightCount)
         })
       }).then((highlightCount) => {
-        console.log({highlightCount})
-
         const h = this.$createElement;
         let message = null;
         if(highlightCount > 0) {
           message = h('p', {style: {'text-align': 'center'}}, [
-            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, '保存非选中标签页'),
-            h('el-button', {class: 'autofocus', props: {size: 'mini', plain: true}, on: {click: () => this._add('selected', callback)}}, '保存选中标签页'),
+            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('not-selected', callback)}}, this.lang('saveUnselectedTabs')),
+            h('el-button', {class: 'autofocus', props: {size: 'mini', plain: true}, on: {click: () => this._add('selected', callback)}}, this.lang('saveSelectedTabs')),
             h('div', {style: {margin: '10px 0 0 0'}}, null),
-            h('el-button', {props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+            h('el-button', {props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, this.lang('saveAllTabs')),
           ])
         } else {
           message = h('p', {style: {'text-align': 'center'}}, [
-            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, '保存左侧标签页'),
-            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('only-this', callback)}}, '仅保存此标签页'),
-            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, '保存右侧标签页'),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('left', callback)}}, this.lang('saveLeftTabs')),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('only-this', callback)}}, this.lang('saveCurrentTab')),
+            h('el-button', {props: {size: 'mini'}, on: {click: () => this._add('right', callback)}}, this.lang('saveRightTabs')),
             h('div', {style: {margin: '10px 0'}}, null),
-            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, '保存除此标签页以外的标签页'),
+            h('el-button', {props: {size: 'mini', type: 'info', plain: true}, on: {click: () => this._add('except-this', callback)}}, this.lang('saveTabsWithoutCurrent')),
             h('div', {style: {margin: '10px 0 0 0'}}, null),
-            h('el-button', {class: 'autofocus', props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, '保存全部标签页'),
+            h('el-button', {class: 'autofocus', props: {size: 'mini', type: 'primary', plain: true, round: true}, on: {click: () => this._add('all', callback)}}, this.lang('saveAllTabs')),
           ])
         }
 
         this.$msgbox({
-          title: '注意：标签页保存后将被自动关闭',
+          title: this.lang('temporaryCloseTip'),
           message: message,
           dangerouslyUseHTMLString: true,
           showConfirmButton: false,
@@ -867,7 +764,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
           customClass: 'window-message-box',
           center: false,
           callback: (action, instance, done) => {
-            console.log('callback', action, instance, done);
             // 其实只有取消会调到这里，
             if(action == 'cancel') {
               callback(false);
@@ -956,7 +852,9 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
         this.$msgbox.close();
         this.isOperating = false;
 
-        this.statusTip('临时窗口添加成功', false, 3000);
+        if(tabs.length > 0) {
+          this.statusTip(this.lang('temporaryAddSuccess'), false, 3000);
+        }
 
         // 让 all 保持数据同步
         chrome.runtime.sendMessage({ type: 'global_data_change', workspace: 'temporary', operation: 'add'});
@@ -1118,9 +1016,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
     },
   },
   mounted() {
-    // todo
-    window.t = this;
-
     // 获取本地数据
     chrome.storage.local.get({temporary: []}, items => {
       this.storageList = items.temporary;
@@ -1139,7 +1034,6 @@ console.log('temporary.search2', keyword, '|',  this.storageKeyword);
         if(request.exclude == undefined) return;
         // 被排除了则不处理
         if(request.exclude.indexOf('temporary') != -1) return;
-console.log('temporary:data_change', this.isActiveWorkspace)
 
         // 重新获取数据
         chrome.storage.local.get({temporary: []}, items => {

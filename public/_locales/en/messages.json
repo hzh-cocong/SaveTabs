@@ -72,9 +72,16 @@
     "noteCountTip": {"message": "A total of [total] notes are stored."},
 
 
+    "temporaryAddSuccess": {"message": "Temporary Window Added Successfully"},
     "temporaryCountTip": {"message": "A total of [total] temporary windows are stored."},
-    "temporaryTabTip": {"message": "tabs"},
-
+    "temporaryCloseTip": {"message": "Tip: The tab will be closed after saving."},
+    "saveUnselectedTabs": {"message": "Save unselected tabs"},
+    "saveSelectedTabs": {"message": "Save selected tabs"},
+    "saveAllTabs": {"message": "Save all tabs"},
+    "saveLeftTabs": {"message": "Save left tabs"},
+    "saveCurrentTab": {"message": "Save this tab only"},
+    "saveRightTabs": {"message": "Save right tabs"},
+    "saveTabsWithoutCurrent": {"message": "Save tabs except this tab"},
 
 
     "tabNoResult": {"message": "The tab does not exist."},

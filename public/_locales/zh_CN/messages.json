@@ -72,7 +72,15 @@
 
 
     "temporaryCountTip": {"message": "当前共存储 [total] 个临时窗口。"},
-    "temporaryTabTip": {"message": "个标签"},
+    "temporaryAddSuccess": {"message": "临时窗口添加成功"},
+    "temporaryCloseTip": {"message": "注意：标签页保存后将被自动关闭"},
+    "saveUnselectedTabs": {"message": "保存非选中标签页"},
+    "saveSelectedTabs": {"message": "保存选中标签页"},
+    "saveAllTabs": {"message": "保存全部标签页"},
+    "saveLeftTabs": {"message": "保存左侧标签页"},
+    "saveCurrentTab": {"message": "仅保存此标签页"},
+    "saveRightTabs": {"message": "保存右侧标签页"},
+    "saveTabsWithoutCurrent": {"message": "保存除此标签页以外的标签页"},
 
 
     "tabNoResult": {"message": "不存在该标签。"},

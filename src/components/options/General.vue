@@ -4,13 +4,13 @@
     <div class="jumbotron">
       <div class="title">
         <img src="@/assets/icon-128.png" />
-        <h1>SaveTabs - Window & Tab Manager</h1>
+        <h1 style="font-weight: 500;">{{ lang('extension_name') }}</h1>
       </div>
       <div class="sub-title">
-        简单、高效、个性化
+        {{ lang('extension_title') }}
       </div>
       <div class="explain">
-        简单的给你，复杂的交给我
+        {{ lang('extension_subtitle') }}
       </div>
     </div>
 
@@ -20,13 +20,13 @@
       <div style="width: 40%;">
         <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
       </div>
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">支持一键保存和打开所有网页，提高工作和学习效率</div>
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature1') }}</div>
     </div>
 
     <div class="divider"></div>
 
     <div style="display: flex;align-items: center;background: linear-gradient(to right, #CC66CC, #FFCCFF);">
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">支持书签、历史和标签页等的聚合搜索，避免多处查找</div>
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature2') }}</div>
       <div style="width: 40%;">
         <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
       </div>
@@ -38,7 +38,7 @@
       <div style="width: 40%;">
         <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
       </div>
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥</div>
+      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature3') }}</div>
     </div>
 
     <!-- <div class="divider"></div> -->

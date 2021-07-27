@@ -1,7 +1,13 @@
 {
     "extension_name": {"message": "SaveTabs - 窗口标签管理器"},
     "extension_short_name": {"message": "标签管理器"},
-    "description": {"message": "网页窗口太多怎么办？SaveTabs 将给你带来新的思考和学习方式。"},
+    "extension_description": {"message": "支持一键保存和打开所有网页，提高工作和学习效率。"},
+
+    "extension_title": {"message": "简单、高效、个性化"},
+    "extension_subtitle": {"message": "简单的给你，复杂的交给我"},
+    "extension_feature1": {"message": "支持一键保存和打开所有网页，提高工作和学习效率"},
+    "extension_feature2": {"message": "支持书签、历史和标签页等的聚合搜索，避免多处查找"},
+    "extension_feature3": {"message": "可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥"},
 
 
     "tip": {"message": "提示"},

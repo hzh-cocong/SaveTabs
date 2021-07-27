@@ -14,9 +14,8 @@
           @click="$open('http://www.cocong.cn', $event)" />
         <h3
           class="hover"
-          style="margin-bottom:0;"
-          :style="{ fontSize: collapse ? '12px' : '1.17em',
-                    fontWeight: collapse ? 'normal' : 'blod' }">
+          style="margin-bottom:0;font-weight:500;"
+          :style="{ fontSize: collapse ? '12px' : '1.17em' }">
           <router-link
             style="color: #408DDC;text-decoration: none;"
             :to="{name: 'general'}">SaveTabs</router-link>

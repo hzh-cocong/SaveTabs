@@ -84,16 +84,16 @@
       <el-col :md="12">
         <el-card
           class="box-card"
-          header="其它"
+          :header="lang('other')"
           :body-style="{ paddingBottom: '10px' }">
           <el-button
             icon="el-icon-star-on"
             style="margin-bottom: 10px;margin-right: 10px;"
-            @click="$open('chrome://bookmarks')">{{ lang('bookmarkManagement') }}</el-button>
+            @click="$open('chrome://bookmarks', getKeyType($event))">{{ lang('bookmarkManagement') }}</el-button>
           <el-button
             icon="el-icon-timer"
             style="margin-bottom: 10px;margin-left: 0;"
-            @click="$open('chrome://history')">{{ lang('historyManagement') }}</el-button>
+            @click="$open('chrome://history', getKeyType($event))">{{ lang('historyManagement') }}</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -125,7 +125,7 @@ export default {
         accumulator[ this.workspaceAttributes[type].key ] = [];
         return accumulator;
       }, {});
-console.log('leadOut', type, types, keys)
+
       chrome.storage.local.get(keys, items => {
         let data = types.reduce((accumulator, type) => {
           let key = this.workspaceAttributes[ type ].key;
@@ -140,7 +140,7 @@ console.log('leadOut', type, types, keys)
           })
           return accumulator;
         }, {});
-console.log('leadOut.data', data)
+
         this.download('SaveTabs'
                       +this.$validate.capitalize(Array.isArray(type) ? 'all' : type)
                       +'Data.json'
@@ -236,14 +236,12 @@ console.log('leadOut.data', data)
           });
           return;
         }
-console.log('upload', types)
+
         // 数据格式校验
         for(let type of types) {
           let attributes = {};
           attributes[ type ] = this.workspaceAttributes[ type ].attributes;
-          console.log('vvv', type, attributes[ type ])
           if(this.$validate(data, attributes) != undefined){
-            console.log('vvv2', this.$validate(data, attributes));
             this.$message({
               type: 'warning',
               message: this.lang('invalidFileFormat')
@@ -278,11 +276,10 @@ console.log('upload', types)
             return item2;
           })
         }
-console.log('update', keys)
+
         // 保存数据
         let total = 0;
         chrome.storage.local.get(keys, items => {
-          console.log('update', items, data2)
           for(let type in items) {
             total += data2[ type ].length;
             items[type].unshift(...data2[ type ]);

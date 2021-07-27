@@ -281,6 +281,27 @@
     "restoreEngineDeleteConfirm": {"message": "确定还原为默认设置？"},
 
 
+    "windowData": {"message": "窗口数据"},
+    "noteData": {"message": "便签数据"},
+    "temporaryData": {"message": "临时窗口"},
+    "allData": {"message": "全部数据"},
+
+    "clearData": {"message": "数据清理"},
+    "import": {"message": "导入"},
+    "clearDataConfirm": {"message": "确定删除"},
+    "clearDataConfirm2": {"message": "数据？"},
+    "resetConfirm": {"message": "确定还原默认配置？"},
+    "saveSuccess": {"message": "保存成功"},
+    "groupImportedSuccess": {"message": "成功导入 "},
+    "groupImportedSuccess2": {"message": " 条数据"},
+    "bookmarkManagement": {"message": "书签管理"},
+    "historyManagement": {"message": "历史记录"},
+
+
+
+
+
+
 
 
 
@@ -310,19 +331,14 @@
     "reset": {"message": "重置"},
     "store": {"message": "保存"},
 
-    "resetConfirm": {"message": "确定还原默认配置？"},
-    "saveSuccess": {"message": "保存成功"},
 
-
-    "clearDataConfirm": {"message": "确定删除"},
-    "clearDataConfirm2": {"message": "数据？"},
     "noDataImport": {"message": "无数据导入"},
     "clearDataSuccess": {"message": "数据已清除"},
-    "storeConfirm": {"message": "确定保存？"},
     "invalidFileFormat": {"message": "不是有效的文件格式"},
+
     "settingImportMessage": {"message": "文件载入成功，点击“保存”按钮即可生效"},
-    "groupImportedSuccess": {"message": "成功导入 "},
-    "groupImportedSuccess2": {"message": " 条数据"},
+
+    "storeConfirm": {"message": "确定保存？"},
 
     "displayOrder": {"message": "展示顺序"},
     "otherOptions": {"message": "其它选项"},
@@ -334,18 +350,7 @@
     "workspaceEnable": {"message": "请先启用该工作区"},
 
 
-    "windowData": {"message": "窗口数据"},
-    "noteData": {"message": "便签数据"},
-    "temporaryData": {"message": "临时窗口"},
-    "allData": {"message": "全部数据"},
-    "otherSetting": {"message": "其它"},
-
-    "clearData": {"message": "数据清理"},
-    "import": {"message": "导入"},
-
     "addKeys": {"message": "添加快捷键"},
-    "bookmarkManagement": {"message": "书签管理"},
-    "historyManagement": {"message": "历史记录"},
 
 
     "praise": {"message": "支持一下"},

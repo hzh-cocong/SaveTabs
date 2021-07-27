@@ -5,7 +5,7 @@
       style="border-right:solid 1px #e6e6e6;">
       <el-button
         style="border-radius: 0;height: 56px;width: 100%;border: 0;"
-        @click="addTheme(currentThemeFocus)">创建主题</el-button>
+        @click="addTheme(currentThemeFocus)">{{ lang('createTheme') }}</el-button>
       <div
         style="padding: 10px 0 0 0;text-align:center;border-top:solid 1px #e6e6e6">
         <svg-icon
@@ -87,7 +87,7 @@
         <div
           v-if="currentTheme.is_system"
           style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;"
-          title="此为系统主题，无法修改，可以克隆">
+          :title="lang('themeUpdateTip')">
           <img
             style="width: 24px; height: 24px;margin-left: 20px;"
             src="@/assets/icon-128.png" />
@@ -97,7 +97,7 @@
           style="border-left: 1px solid lightgray;height: 24px;margin: 0 10px;">
           <el-tooltip
             placement="right"
-            content="全部撤销">
+            :content="lang('themeReset')">
             <i
             class="el-icon-refresh-right hover2"
             style="margin-left: 20px;line-height: 24px;"
@@ -109,11 +109,11 @@
           style="flex: 1;margin: 0 10px;width:100%;height:100%;display:flex;flex-direction: column;justify-content: center;"
           :style="{ color: currentTheme.name == '' ? '#409EFF' : '#606266',
                     cursor: currentTheme.name == '' ? 'pointer' : 'inherit', }"
-          :title="currentTheme.is_system || currentTheme.name == '' ? '' : '点击修改'"
+          :title="currentTheme.is_system || currentTheme.name == '' ? '' : lang('themeNameUpdate')"
           @click="currentTheme.is_system
                 || (showNameInput=true,
                     $nextTick(()=>$refs.themeNameInput.focus()))">{{
-            currentTheme.name == '' ? '点此修改名称' : currentTheme.name
+            currentTheme.name == '' ? lang('themeNameUpdate') : currentTheme.name
           }}</span>
         <el-input
           v-if="showNameInput"
@@ -131,14 +131,14 @@
           @click="cloneTheme();
                   currentThemeFocus();
                   showNameInput=true;
-                  $nextTick(()=>$refs.themeNameInput.focus());">克隆</el-button>
+                  $nextTick(()=>$refs.themeNameInput.focus());">{{ lang('clone') }}</el-button>
         <el-button
           type="text"
-          @click="leadOut">导出</el-button>
+          @click="leadOut">{{ lang('export') }}</el-button>
         <el-button
           type="text"
           :disabled="currentTheme.is_system"
-          @click="deleteTheme(currentThemeFocus);">删除</el-button>
+          @click="deleteTheme(currentThemeFocus);">{{ lang('delete') }}</el-button>
       </el-header>
       <el-main style="padding:0;">
         <el-tabs
@@ -146,10 +146,10 @@
           class="tabs"
           v-model="activeName"
           @tab-click="tabClick">
-          <el-tab-pane label="整体" name="global" lazy>
-            <el-divider>布局</el-divider>
+          <el-tab-pane :label="lang('overall')" name="global" lazy>
+            <el-divider>{{ lang('layout') }}</el-divider>
             <div class="box">
-              <span class="label">蒙版颜色</span>
+              <span class="label">{{ lang('maskColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -157,7 +157,7 @@
                 :predefine="predefine"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('container_background_color', $event)"
               ></el-color-picker>
               <el-tooltip
@@ -175,7 +175,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">蒙版模糊</span>
+              <span class="label">{{ lang('maskBlur') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -185,7 +185,7 @@
                 :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('container_background_blur', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.container_background_blur != oldCurrentThemeConfig.container_background_blur"
@@ -198,7 +198,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label" title="透明时会和蒙版叠加">页面背景</span>
+              <span class="label" :title="lang('pageBlurTip')">{{ lang('pageBackground') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -222,7 +222,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="透明时会和蒙版叠加">页面模糊</span>
+              <span class="label" :title="lang('pageBlurTip')">{{ lang('pageBlur') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -232,7 +232,7 @@
                 :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('background_blur', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.background_blur != oldCurrentThemeConfig.background_blur"
@@ -245,7 +245,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">外边框</span>
+              <span class="label">{{ lang('outerBorder') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -265,7 +265,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">边框颜色</span>
+              <span class="label">{{ lang('borderColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -290,7 +290,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">内边距</span>
+              <span class="label">{{ lang('innerMargin') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -310,7 +310,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">指示器</span>
+              <span class="label">{{ lang('indicator') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -334,7 +334,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">加载时背景</span>
+              <span class="label">{{ lang('loadingBackground') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -357,16 +357,16 @@
                 @click="editTheme('loading_background_color', oldCurrentThemeConfig.loading_background_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>位置</el-divider>
+            <el-divider>{{ lang('location') }}</el-divider>
             <div class="box">
-              <span class="label">水平对齐</span>
+              <span class="label">{{ lang('horizontalAlignment') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_horizontal_align"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('position_horizontal_align', $event)">
                 <el-option
                   v-for="align in positionHorizontalOptions"
@@ -384,7 +384,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">水平偏移</span>
+              <span class="label">{{ lang('horizontalOffset') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -394,7 +394,7 @@
                 :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('position_horizontal_distance', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_horizontal_distance != oldCurrentThemeConfig.position_horizontal_distance"
@@ -407,14 +407,14 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">垂直对齐</span>
+              <span class="label">{{ lang('verticalAlignment') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
                 :value="currentThemeConfig.position_vertical_align"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('position_vertical_align', $event)">
                 <el-option
                   v-for="align in positionVerticalOptions"
@@ -432,7 +432,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">垂直偏移</span>
+              <span class="label">{{ lang('verticalOffset') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -442,7 +442,7 @@
                 :precision="0"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('position_vertical_distance', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.position_vertical_distance != oldCurrentThemeConfig.position_vertical_distance"
@@ -453,9 +453,9 @@
                 @click="editTheme('position_vertical_distance', oldCurrentThemeConfig.position_vertical_distance)"></i>
               </el-tooltip>
             </div>
-            <el-divider>临时（工作区）</el-divider>
+            <el-divider>{{ lang('temporary')+' ('+lang('workspace')+') ' }}</el-divider>
             <div class="box">
-              <span class="label">标签数量</span>
+              <span class="label">{{ lang('labelCount') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -475,10 +475,10 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="列表" name="list" lazy>
-            <el-divider>布局</el-divider>
+          <el-tab-pane :label="lang('list')" name="list" lazy>
+            <el-divider>{{ lang('layout') }}</el-divider>
             <div class="box">
-              <span class="label">宽度</span>
+              <span class="label">{{ lang('width') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -491,7 +491,7 @@
                           && currentTheme.type == 2)"
                 :title="( currentThemeConfig.width_fill
                         && currentTheme.type == 2)
-                        ? '请看宽度百分比'
+                        ? lang('widthPercentageTip')
                         : '' "
                 @change="editTheme('width', $event || 280)"></el-input-number>
               <el-tooltip
@@ -504,12 +504,12 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">宽度百分比</span>
+              <span class="label">{{ lang('widthPercentage') }}</span>
               <el-switch
                 :value="currentThemeConfig.width_fill"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('width_fill', $event)">
@@ -517,14 +517,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.width_fill != oldCurrentThemeConfig.width_fill"
                 placement="top"
-                :content="oldCurrentThemeConfig.width_fill ? '开启' : '关闭'">
+                :content="oldCurrentThemeConfig.width_fill ? lang('open') : lang('close')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('width_fill', oldCurrentThemeConfig.width_fill)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">宽度百分比</span>
+              <span class="label">{{ lang('widthPercentage') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -535,7 +535,7 @@
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)
                         || ! currentThemeConfig.width_fill"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('width_percentage', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.width_percentage != oldCurrentThemeConfig.width_percentage"
@@ -548,12 +548,12 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">总高度自动</span>
+              <span class="label">{{ lang('totalHeightAutomatic') }}</span>
               <el-switch
                 :value="currentThemeConfig.height_auto"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)"
-                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
+                :title=" ! (currentTheme.type & 1) ? lang('onlyPopupValid') : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('height_auto', $event)">
@@ -561,19 +561,19 @@
               <el-tooltip
                 v-if="currentThemeConfig.height_auto != oldCurrentThemeConfig.height_auto"
                 placement="top"
-                :content="oldCurrentThemeConfig.height_auto ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.height_auto ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('height_auto', oldCurrentThemeConfig.height_auto)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高度百分比</span>
+              <span class="label">{{ lang('heightPercentage') }}</span>
               <el-switch
                 :value="currentThemeConfig.height_fill"
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 active-color="#13ce66"
                 inactive-color="gray"
                 @change="editTheme('height_fill', $event)">
@@ -581,14 +581,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.height_fill != oldCurrentThemeConfig.height_fill"
                 placement="top"
-                :content="oldCurrentThemeConfig.height_fill ? '开启' : '关闭'">
+                :content="oldCurrentThemeConfig.height_fill ? lang('open') : lang('close')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('height_fill', oldCurrentThemeConfig.height_fill)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高度百分比</span>
+              <span class="label">{{ lang('heightPercentage') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -599,7 +599,7 @@
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 2)
                         || ! currentThemeConfig.height_fill"
-                :title=" ! (currentTheme.type & 2) ? '仅“注入”时有效' : '' "
+                :title=" ! (currentTheme.type & 2) ? lang('onlyInjectValid') : '' "
                 @change="editTheme('height_percentage', $event || 1)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.height_percentage != oldCurrentThemeConfig.height_percentage"
@@ -612,7 +612,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">列表项高度</span>
+              <span class="label">{{ lang('listItemHeight') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -632,7 +632,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">列表项个数</span>
+              <span class="label">{{ lang('listItemCount') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -652,7 +652,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">每页缓存</span>
+              <span class="label">{{ lang('pageCount') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -673,7 +673,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label" title="菜单栏输入框为空时，列表显示的个数（仅在“总高度自动”时生效）">非搜索显示</span>
+              <span class="label" :title="lang('noSearchTip')">{{ lang('noSearchDisplay') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -684,7 +684,7 @@
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)
                         || ! currentThemeConfig.height_auto"
-                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
+                :title=" ! (currentTheme.type & 1) ? lang('onlyPopupValid') : '' "
                 @change="editTheme('no_search_item_show_count', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_item_show_count != oldCurrentThemeConfig.no_search_item_show_count"
@@ -696,7 +696,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="菜单栏输入框为空时，列表显示的个数（仅在“总高度自动”时生效）">非搜索缓存</span>
+              <span class="label" :title="lang('noSearchTip')">{{ lang('noSearchCache') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -708,7 +708,7 @@
                 :disabled="currentTheme.is_system
                         || ! (currentTheme.type & 1)
                         || ! currentThemeConfig.height_auto"
-                :title=" ! (currentTheme.type & 1) ? '仅“弹出”时有效' : '' "
+                :title=" ! (currentTheme.type & 1) ? lang('onlyPopupValid') : '' "
                 @change="editTheme('no_search_list_page_count', $event || 0)"></el-input-number>
               <el-tooltip
                 v-if="currentThemeConfig.no_search_list_page_count != oldCurrentThemeConfig.no_search_list_page_count"
@@ -719,9 +719,9 @@
                 @click="editTheme('no_search_list_page_count', oldCurrentThemeConfig.no_search_list_page_count)"></i>
               </el-tooltip>
             </div>
-            <el-divider>字体大小</el-divider>
+            <el-divider>{{ lang('fontSize') }}</el-divider>
             <div class="box">
-              <span class="label">标题</span>
+              <span class="label">{{ lang('title') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -741,7 +741,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">副标题</span>
+              <span class="label">{{ lang('subtitle') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -761,7 +761,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">状态栏</span>
+              <span class="label">{{ lang('statusbar') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -781,7 +781,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">快捷键</span>
+              <span class="label">{{ lang('keymap') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -800,9 +800,9 @@
                 @click="editTheme('list_keymap_size', oldCurrentThemeConfig.list_keymap_size)"></i>
               </el-tooltip>
             </div>
-            <el-divider>列表项</el-divider>
+            <el-divider>{{ lang('listItem') }}</el-divider>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -826,7 +826,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景颜色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -851,7 +851,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">高亮颜色</span>
+              <span class="label">{{ lang('highlightColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -875,7 +875,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高亮加粗</span>
+              <span class="label">{{ lang('highlightBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -899,7 +899,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">副标题</span>
+              <span class="label">{{ lang('subtitle') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -923,7 +923,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlight') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -947,7 +947,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlightedBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -971,7 +971,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">图标</span>
+              <span class="label">{{ lang('icon') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -995,7 +995,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">状态栏</span>
+              <span class="label">{{ lang('statusbar') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1019,7 +1019,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">快捷键</span>
+              <span class="label">{{ lang('keymap') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1042,9 +1042,9 @@
                 @click="editTheme('list_keymap_color', oldCurrentThemeConfig.list_keymap_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>列表项（选中时）</el-divider>
+            <el-divider>{{ lang('listItemSelected') }}</el-divider>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1068,7 +1068,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景颜色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1093,7 +1093,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">高亮颜色</span>
+              <span class="label">{{ lang('highlightColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1117,7 +1117,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高亮加粗</span>
+              <span class="label">{{ lang('highlightBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1141,7 +1141,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">副标题</span>
+              <span class="label">{{ lang('subtitle') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1165,7 +1165,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlight') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1189,7 +1189,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlightedBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1213,7 +1213,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">图标</span>
+              <span class="label">{{ lang('icon') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1237,7 +1237,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">状态栏</span>
+              <span class="label">{{ lang('statusbar') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1261,7 +1261,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">快捷键</span>
+              <span class="label">{{ lang('keymap') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1284,9 +1284,9 @@
                 @click="editTheme('list_focus_keymap_color', oldCurrentThemeConfig.list_focus_keymap_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>当前窗口项</el-divider>
+            <el-divider>{{ lang('currentWindowItem') }}</el-divider>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1310,7 +1310,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景颜色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1335,7 +1335,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">高亮颜色</span>
+              <span class="label">{{ lang('highlightColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1359,7 +1359,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高亮加粗</span>
+              <span class="label">{{ lang('highlightBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1383,7 +1383,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">副标题</span>
+              <span class="label">{{ lang('subtitle') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1407,7 +1407,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlight') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1431,7 +1431,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlightedBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1455,7 +1455,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">图标</span>
+              <span class="label">{{ lang('icon') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1479,7 +1479,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">状态栏</span>
+              <span class="label">{{ lang('statusbar') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1502,9 +1502,9 @@
                 @click="editTheme('list_current_state_color', oldCurrentThemeConfig.list_current_state_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>当前窗口项（选中时）</el-divider>
+            <el-divider>{{ lang('currentWindowItemSelected') }}</el-divider>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1528,7 +1528,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景颜色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1553,7 +1553,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">高亮颜色</span>
+              <span class="label">{{ lang('highlightColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1577,7 +1577,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">高亮加粗</span>
+              <span class="label">{{ lang('highlightBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1601,7 +1601,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">副标题</span>
+              <span class="label">{{ lang('subtitle') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1625,7 +1625,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlight') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1649,7 +1649,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label" title="副标题高亮加粗" >副标题高亮</span>
+              <span class="label">{{ lang('subtitleHighlightedBold') }}</span>
               <el-select
                 size="mini"
                 style="width: 100px;"
@@ -1673,7 +1673,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">图标</span>
+              <span class="label">{{ lang('icon') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1697,7 +1697,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">状态栏</span>
+              <span class="label">{{ lang('statusbar') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1720,9 +1720,9 @@
                 @click="editTheme('list_current_focus_state_color', oldCurrentThemeConfig.list_current_focus_state_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>滚动条</el-divider>
+            <el-divider>{{ lang('scrollBar') }}</el-divider>
             <div class="box">
-              <span class="label">颜色</span>
+              <span class="label">{{ lang('color') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1746,7 +1746,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">选中时颜色</span>
+              <span class="label">{{ lang('selectedColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1770,10 +1770,10 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="菜单栏" name="menu" lazy>
-            <el-divider>布局</el-divider>
+          <el-tab-pane :label="lang('menubar')" name="menu" lazy>
+            <el-divider>{{ lang('layout') }}</el-divider>
             <div class="box">
-              <span class="label">高度</span>
+              <span class="label">{{ lang('height') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -1793,7 +1793,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1817,7 +1817,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">边框颜色</span>
+              <span class="label">{{ lang('borderColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1840,9 +1840,9 @@
                 @click="editTheme('toolbar_border_color', oldCurrentThemeConfig.toolbar_border_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>图标</el-divider>
+            <el-divider>{{ lang('icon') }}</el-divider>
             <div class="box">
-              <span class="label">自动隐藏</span>
+              <span class="label">{{ lang('autoHide') }}</span>
               <el-switch
                 :value="currentThemeConfig.toolbar_icon_auto_hide"
                 :disabled="currentTheme.is_system"
@@ -1853,14 +1853,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_icon_auto_hide != oldCurrentThemeConfig.toolbar_icon_auto_hide"
                 placement="top"
-                :content="oldCurrentThemeConfig.toolbar_icon_auto_hide ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.toolbar_icon_auto_hide ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('toolbar_icon_auto_hide', oldCurrentThemeConfig.toolbar_icon_auto_hide)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">颜色</span>
+              <span class="label">{{ lang('color') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1884,7 +1884,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">选中时颜色</span>
+              <span class="label">{{ lang('selectedColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1907,9 +1907,9 @@
                 @click="editTheme('toolbar_icon_focus_color', oldCurrentThemeConfig.toolbar_icon_focus_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>下拉菜单</el-divider>
+            <el-divider>{{ lang('dropdownMenu') }}</el-divider>
             <div class="box">
-              <span class="label">自动隐藏</span>
+              <span class="label">{{ lang('autoHide') }}</span>
               <el-switch
                 :value="currentThemeConfig.toolbar_menu_auto_hide"
                 :disabled="currentTheme.is_system"
@@ -1920,14 +1920,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_menu_auto_hide != oldCurrentThemeConfig.toolbar_menu_auto_hide"
                 placement="top"
-                :content="oldCurrentThemeConfig.toolbar_menu_auto_hide ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.toolbar_menu_auto_hide ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('toolbar_menu_auto_hide', oldCurrentThemeConfig.toolbar_menu_auto_hide)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">工作区名称</span>
+              <span class="label">{{ lang('workspaceName') }}</span>
               <el-switch
                 :value="currentThemeConfig.toolbar_menu_show_workspace_name"
                 :disabled="currentTheme.is_system"
@@ -1938,7 +1938,7 @@
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_menu_show_workspace_name != oldCurrentThemeConfig.toolbar_menu_show_workspace_name"
                 placement="top"
-                :content="oldCurrentThemeConfig.toolbar_menu_show_workspace_name ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.toolbar_menu_show_workspace_name ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('toolbar_menu_show_workspace_name', oldCurrentThemeConfig.toolbar_menu_show_workspace_name)"></i>
@@ -1946,7 +1946,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1970,7 +1970,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">图标颜色</span>
+              <span class="label">{{ lang('iconColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -1994,7 +1994,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">图标选中</span>
+              <span class="label">{{ lang('iconSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2017,9 +2017,9 @@
                 @click="editTheme('toolbar_menu_icon_fixed_color', oldCurrentThemeConfig.toolbar_menu_icon_fixed_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>输入框</el-divider>
+            <el-divider>{{ lang('inputBox') }}</el-divider>
             <div class="box">
-              <span class="label">显示提示</span>
+              <span class="label">{{ lang('showHint') }}</span>
               <el-switch
                 :value="currentThemeConfig.toolbar_input_tip_show"
                 :disabled="currentTheme.is_system"
@@ -2030,14 +2030,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_input_tip_show != oldCurrentThemeConfig.toolbar_input_tip_show"
                 placement="top"
-                :content="oldCurrentThemeConfig.toolbar_input_tip_show ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.toolbar_input_tip_show ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('toolbar_input_tip_show', oldCurrentThemeConfig.toolbar_input_tip_show)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">边框选中</span>
+              <span class="label">{{ lang('borderSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2061,7 +2061,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">背景选中</span>
+              <span class="label">{{ lang('backgroundSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2086,7 +2086,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">字体大小</span>
+              <span class="label">{{ lang('fontSize') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -2106,7 +2106,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2130,7 +2130,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">字体选中</span>
+              <span class="label">{{ lang('fontSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2153,9 +2153,9 @@
                 @click="editTheme('toolbar_input_selected_font_color', oldCurrentThemeConfig.toolbar_input_selected_font_color)"></i>
               </el-tooltip>
             </div>
-            <el-divider>操作按钮</el-divider>
+            <el-divider>{{ lang('operationButton') }}</el-divider>
             <div class="box">
-              <span class="label">自动隐藏</span>
+              <span class="label">{{ lang('autoHide') }}</span>
               <el-switch
                 :value="currentThemeConfig.toolbar_button_auto_hide"
                 :disabled="currentTheme.is_system"
@@ -2166,14 +2166,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.toolbar_button_auto_hide != oldCurrentThemeConfig.toolbar_button_auto_hide"
                 placement="top"
-                :content="oldCurrentThemeConfig.toolbar_button_auto_hide ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.toolbar_button_auto_hide ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('toolbar_button_auto_hide', oldCurrentThemeConfig.toolbar_button_auto_hide)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">字体颜色</span>
+              <span class="label">{{ lang('fontColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2198,7 +2198,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">滑过字体</span>
+              <span class="label">{{ lang('fontHovered') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2222,7 +2222,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">滑过边框</span>
+              <span class="label">{{ lang('borderHovered') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2246,7 +2246,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">滑过背景</span>
+              <span class="label">{{ lang('backgroundHovered') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2271,7 +2271,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">选中字体</span>
+              <span class="label">{{ lang('fontSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2295,7 +2295,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">选中边框</span>
+              <span class="label">{{ lang('borderSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2319,7 +2319,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">选中背景</span>
+              <span class="label">{{ lang('backgroundSelected') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2343,9 +2343,9 @@
               </el-tooltip>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="状态栏" name="status" lazy>
+          <el-tab-pane :label="lang('statusbar')" name="status" lazy>
             <div class="box">
-              <span class="label">显示状态栏</span>
+              <span class="label">{{ lang('showStatusBar') }}</span>
               <el-switch
                 :value="currentThemeConfig.statusbar_show"
                 :disabled="currentTheme.is_system"
@@ -2356,14 +2356,14 @@
               <el-tooltip
                 v-if="currentThemeConfig.statusbar_show != oldCurrentThemeConfig.statusbar_show"
                 placement="top"
-                :content="oldCurrentThemeConfig.statusbar_show ? '显示' : '隐藏'">
+                :content="oldCurrentThemeConfig.statusbar_show ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('statusbar_show', oldCurrentThemeConfig.statusbar_show)"></i>
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">显示总数</span>
+              <span class="label">{{ lang('showTotal') }}</span>
               <el-switch
                 :value="currentThemeConfig.statusbar_show_search_total"
                 active-color="#13ce66"
@@ -2375,7 +2375,7 @@
               <el-tooltip
                 v-if="currentThemeConfig.statusbar_show_search_total != oldCurrentThemeConfig.statusbar_show_search_total"
                 placement="top"
-                :content="currentThemeConfig.statusbar_show_search_total ? '显示' : '隐藏'">
+                :content="currentThemeConfig.statusbar_show_search_total ? lang('show') : lang('hide')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('statusbar_show_search_total', oldCurrentThemeConfig.statusbar_show_search_total)"></i>
@@ -2383,7 +2383,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">背景色</span>
+              <span class="label">{{ lang('backgroundColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2408,7 +2408,7 @@
               </el-tooltip>
             </div>
             <div class="box">
-              <span class="label">图标颜色</span>
+              <span class="label">{{ lang('iconColor') }}</span>
               <el-color-picker
                 show-alpha
                 size="mini"
@@ -2434,7 +2434,7 @@
             </div>
             <br/>
             <div class="box">
-              <span class="label">图片透明度</span>
+              <span class="label">{{ lang('imageTransparency') }}</span>
               <el-input-number
                 size="mini"
                 style="width: 100px;"
@@ -2506,23 +2506,23 @@ export default {
       showNameInput: false,
 
       positionHorizontalOptions: [
-        { value: 'center', label: '居中'},
-        { value: 'left', label: '向左对齐'},
-        { value: 'right', label: '向右对齐'},
+        { value: 'center', label: this.lang('center')},
+        { value: 'left', label: this.lang('left')},
+        { value: 'right', label: this.lang('right')},
       ],
       positionVerticalOptions: [
-        { value: 'center', label: '居中'},
-        { value: 'top', label: '置顶'},
-        { value: 'bottom', label: '置底'},
+        { value: 'center', label: this.lang('center')},
+        { value: 'top', label: this.lang('top')},
+        { value: 'bottom', label: this.lang('bottom')},
       ],
       highlightFontWeight: [
         { value: '100', label: '100'},
         { value: '200', label: '200'},
         { value: '300', label: '300'},
-        { value: '400', label: 'normal'},
+        { value: '400', label: this.lang('standard')},
         { value: '500', label: '500'},
         { value: '600', label: '600'},
-        { value: '700', label: 'blod'},
+        { value: '700', label: this.lang('bold')},
         { value: '800', label: '800'},
         { value: '900', label: '900'},
       ],
@@ -2597,23 +2597,17 @@ export default {
     },
 
     tabClick() {
-      console.log('tabClick', this.activeName);
-      // this.$router.push('/theme-general?'+this.activeName);
       let query = {};
       query[this.activeName]=null;
       this.$router.replace({ name: 'theme-general', query}).catch(()=>{});
     },
 
     leadOut() {
-console.log('leadOut.currentTheme', this.currentTheme)
-
       let data = {
         user_theme_list: [
           validate.cleanAttributes(this.currentTheme, this.themeAttribute.user_theme_list.array)
         ]
       }
-
-console.log('leadOut.data', data)
 
       let filename = this.currentTheme.name + '-SavetabsTheme.json';
 
@@ -2638,23 +2632,15 @@ console.log('leadOut.data', data)
     }
   },
   mounted() {
-    // todo
-    window.tg = this;
-    console.log('mounted:ThemeGeneral.vue', this.activeName)
-
     let res = window.location.href.match(/\?([^?]+)$/);
-    console.log('window.location.href.match', res);
     if(res != null
     && ['global', 'list', 'menu', 'status'].indexOf(res[1]) != -1) {
       this.activeName = res[1];
     }
 
-    // this.$refs.theme.scrollTop = this.currentThemeIndex * (56+10);
-    // console.log('fff', this.currentThemeIndex)
     this.currentThemeFocus();
 
     //创建拖拽对象
-    // this.sortable =
     Sortable.create(document.querySelector('.theme'), {
       // sort: this.isEditOrder, //是否可进行拖拽排序
       animation: 150,

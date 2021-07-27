@@ -112,32 +112,155 @@
     "historyDeleteConfirm": {"message": "Are you sure to delete the history?"},
 
 
-    "pageLayout": {"message": "Page Layout"},
-    "colorSetting": {"message": "Color Setting"},
     "workspace": {"message": "Workspace"},
-    "otherFunctions": {"message": "Other Functions"},
+    "theme": {"message": "Theme"},
+    "importOrExport": {"message": "Import/Export"},
+    "help": {"message": "Help"},
+    "other": {"message": "Other"},
+    "general": {"message": "General"},
+    "adjust": {"message": "Adjust"},
+    "keymap": {"message": "Keymap"},
+    "tool": {"message": "Tool"},
+    "thanks": {"message": "Thanks"},
     "support": {"message": "Support"},
+    "share": {"message": "Share"},
+    "advertising": {"message": "Advertising"},
+    "about": {"message": "About"},
 
-    "page": {"message": "Page"},
-    "border": {"message": "Border"},
+    "clone": {"message": "Clone"},
+    "export": {"message": "Export"},
+    "delete": {"message": "Delete"},
 
-    "listItem": {"message": "List Item"},
+    "chooseTheme": {"message": "Choose Theme"},
+    "createTheme": {"message": "Create Theme"},
+    "themeDeleteConfirm": {"message": "Are you sure to delete the theme?"},
+    "themeNameInput": {"message": "Please enter the theme name"},
+    "themeUpdateTip": {"message": "This is a system theme, it cannot be modified, but it can be cloned."},
+    "themeReset": {"message": "Undo All"},
+    "themeNameUpdate": {"message": "Click here to modify the theme name"},
+
+    "noSearchTip": {"message": "When the input box in the menu bar is empty, the number of items displayed in the list (only effective when \"total height is automatic\")"},
+    "onlyPopupValid": {"message": "Only valid when \"Popup\""},
+    "onlyInjectValid": {"message": "Only valid when \"Inject\""},
+    "show": {"message": "Show"},
+    "hide": {"message": "Hide"},
+    "pageBlurTip": {"message": "When transparent, it will be superimposed with the mask"},
+    "widthPercentageTip": {"message": "See \"Width Percentage\""},
+    "open": {"message": "Open"},
+    "close": {"message": "Close"},
+
+    "overall": {"message": "Overall"},
+    "list": {"message": "List"},
+    "menubar": {"message": "Menu Bar"},
+    "statusbar": {"message": "Status Bar"},
+
+    "layout": {"message": "Layout"},
+    "maskColor": {"message": "Mask Color"},
+    "maskBlur": {"message": "Mask Blur"},
+    "pageBackground": {"message": "Page Background"},
+    "pageBlur": {"message": "Page Blur"},
+    "outerBorder": {"message": "Outer Border"},
+    "borderColor": {"message": "Border Color"},
+    "innerMargin": {"message": "Inner Margin"},
+    "indicator": {"message": "Indicator"},
+    "loadingBackground": {"message": "Loading Background"},
+
+    "location": {"message": "Location"},
+    "horizontalAlignment": {"message": "Horizontal Alignment"},
+    "horizontalOffset": {"message": "Horizontal Offset"},
+    "verticalAlignment": {"message": "Vertical Alignment"},
+    "verticalOffset": {"message": "Vertical Offset"},
+    "center": {"message": "Center"},
+    "left": {"message": "Left"},
+    "right": {"message": "Right"},
+    "top": {"message": "Top"},
+    "bottom": {"message": "Bottom"},
+
+    "labelCount": {"message": "Label Count"},
+
     "width": {"message": "Width"},
-    "height": {"message": "Height"},
-    "count": {"message": "Count"},
+    "widthPercentage": {"message": "Width Percentage"},
+    "totalHeightAutomatic": {"message": "Total Height Automatic"},
+    "heightPercentage": {"message": "Height Percentage"},
+    "listItemHeight": {"message": "List Item Height"},
+    "listItemCount": {"message": "List Item Count"},
     "pageCount": {"message": "Page Count"},
+    "noSearchDisplay": {"message": "No Search Display"},
+    "noSearchCache": {"message": "No Search Cache"},
 
     "fontSize": {"message": "Font Size"},
-    "titleSize": {"message": "Title"},
-    "subtitleSize": {"message": "Subitle"},
-    "statusSize": {"message": "Status"},
-    "keymapSize": {"message": "Keymap"},
+    "title": {"message": "Title"},
+    "subtitle": {"message": "Subtitle"},
+
+    "listItem": {"message": "List Item"},
+    "fontColor": {"message": "Font Color"},
+    "backgroundColor": {"message": "Background Color"},
+    "highlightColor": {"message": "Highlight Color"},
+    "highlightBold": {"message": "Highlight Bold"},
+    "subtitleHighlight": {"message": "Subtitle Highlight"},
+    "subtitleHighlightedBold": {"message": "Subtitle Highlighted Bold"},
+    "icon": {"message": "Icon"},
+    "standard": {"message": "Standard"},
+    "bold": {"message": "Bold"},
 
     "listItemSelected": {"message": "List Item - On Focus"},
     "currentWindowItem": {"message": "Current Window Item"},
     "currentWindowItemSelected": {"message": "Current Window Item - On Focus"},
 
-    "backgroundColor": {"message": "Background"},
+    "scrollBar": {"message": "Scroll Bar"},
+    "color": {"message": "Color"},
+    "selectedColor": {"message": " Selected Color"},
+
+    "height": {"message": "Height"},
+    "autoHide": {"message": "Auto Hide"},
+
+    "dropdownMenu": {"message": "Dropdown Menu"},
+    "workspaceName": {"message": "Workspace Name"},
+    "iconColor": {"message": "Icon Color"},
+    "iconSelected": {"message": "Icon Selected"},
+
+    "inputBox": {"message": "Input Box"},
+    "showHint": {"message": "Show Hint"},
+    "borderSelected": {"message": "Border Selected"},
+    "backgroundSelected": {"message": "Background Selected"},
+    "fontSelected": {"message": "Font Selected"},
+
+    "operationButton": {"message": "Operation Button"},
+    "fontHovered": {"message": "Font Hovered"},
+    "borderHovered": {"message": "Border Hovered"},
+    "backgroundHovered": {"message": "Background Hovered"},
+
+    "showStatusBar": {"message": "Show Status Bar"},
+    "showTotal": {"message": "Show Total"},
+    "imageTransparency": {"message": "Image Transparent"},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "pageLayout": {"message": "Page Layout"},
+    "colorSetting": {"message": "Color Setting"},
+    "otherFunctions": {"message": "Other Functions"},
+
+    "page": {"message": "Page"},
+    "border": {"message": "Border"},
+
+    "count": {"message": "Count"},
+
+    "statusSize": {"message": "Status"},
+    "keymapSize": {"message": "Keymap"},
+
     "statusColor": {"message": "Status Bar"},
     "titleColor": {"message": "Title Color"},
     "subtitleColor": {"message": "Subtitle Color"},
@@ -149,7 +272,6 @@
 
     "load": {"message": "Loading"},
     "loadExplain": {"message": "Load configuration shared by others"},
-    "share": {"message": "Share"},
     "shareExplain": {"message": "Export configuration to share"},
     "reset": {"message": "Reset"},
     "store": {"message": "Store"},
@@ -186,7 +308,6 @@
 
     "clearData": {"message": "Data cleaning"},
     "import": {"message": "Import"},
-    "export": {"message": "Export"},
 
     "addKeys": {"message": "Key Bindings"},
     "bookmarkManagement": {"message": "Boormark Management"},

@@ -1,101 +1,101 @@
 export default [{
   name: 'workspace',
-  title: '工作区',
+  title: 'workspace',
   icon: 'el-icon-s-home',
   children: [
     {
       'name': 'general',
-      'title': '总览',
+      'title': 'general',
     },
     {
       'name': 'all',
-      'title': '全部',
+      'title': 'all',
     },
     {
       'name': 'export',
-      'title': '导入导出',
+      'title': 'importOrExport',
       'redirect': { 'name': 'export-workspace' },
     },
   ]
 },
 {
   name: 'theme',
-  title: '主题',
+  title: 'theme',
   icon: 'el-icon-s-shop',
   children: [
     {
       'name': 'general',
-      'title': ' 总览',
+      'title': 'general',
     },
     {
       'name': 'adjust',
-      'title': ' 矫正',
+      'title': 'adjust',
     },
     {
       'name': 'export',
-      'title': '导入导出',
+      'title': 'importOrExport',
       'redirect': { 'name': 'export-theme' },
     },
   ]
 },
 {
   name: 'export',
-  title: '导入导出',
+  title: 'importOrExport',
   icon: 'el-icon-download',
   children: [
     {
       'name': 'workspace',
-      'title': ' 工作区',
+      'title': 'workspace',
     },
     {
       'name': 'theme',
-      'title': '主题',
+      'title': 'theme',
     },
   ]
 },
 {
   name: 'help',
-  title: '帮助',
+  title: 'help',
   icon: 'el-icon-question',
   children: [
     // {
     //   'name': 'workspace',
-    //   'title': '工作区',
+    //   'title': 'workspace',
     // },
     {
       'name': 'keymap',
-      'title': '快捷键',
+      'title': 'keymap',
     },
     {
       'name': 'tool',
-      'title': '工具',
+      'title': 'tool',
     },
   ]
 },
 {
   name: 'other',
-  title: '其它',
+  title: 'other',
   icon: 'el-icon-more',
   children: [
     {
       'name': 'thanks',
-      'title': '鸣谢',
+      'title': 'thanks',
     },
     {
       'name': 'support',
-      'title': '支持一下',
+      'title': 'support',
     },
     {
       'name': 'share',
-      'title': '分享',
+      'title': 'share',
     },
     {
       'name': 'advertising',
-      'title': '广告',
+      'title': 'advertising',
     },
     {
       'name': 'about',
-      'title': '关于',
+      'title': 'about',
     },
   ]
 }]

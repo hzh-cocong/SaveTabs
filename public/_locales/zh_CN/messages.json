@@ -111,44 +111,159 @@
     "historyDeleteConfirm": {"message": "确定删除历史？"},
 
 
-    "pageLayout": {"message": "页面布局"},
-    "colorSetting": {"message": "颜色配置"},
     "workspace": {"message": "工作区"},
-    "otherFunctions": {"message": "其它功能"},
+    "theme": {"message": "主题"},
+    "importOrExport": {"message": "导入导出"},
+    "help": {"message": "帮助"},
+    "other": {"message": "其它"},
+    "general": {"message": "总览"},
+    "adjust": {"message": "矫正"},
+    "keymap": {"message": "快捷键"},
+    "tool": {"message": "工具"},
+    "thanks": {"message": "鸣谢"},
     "support": {"message": "支持一下"},
+    "share": {"message": "分享"},
+    "advertising": {"message": "广告"},
+    "about": {"message": "关于"},
 
-    "page": {"message": "页面"},
-    "border": {"message": "边框"},
+    "clone": {"message": "克隆"},
+    "export": {"message": "导出"},
+    "delete": {"message": "删除"},
 
-    "listItem": {"message": "列表项"},
+    "chooseTheme": {"message": "选择主题"},
+    "createTheme": {"message": "创建主题"},
+    "themeDeleteConfirm": {"message": "确定删除主题？"},
+    "themeNameInput": {"message": "请输入主题名称"},
+    "themeUpdateTip": {"message": "此为系统主题，无法修改，但可以克隆"},
+    "themeReset": {"message": "全部撤销"},
+    "themeNameUpdate": {"message": "点此修改主题名"},
+
+    "noSearchTip": {"message": "菜单栏输入框为空时，列表显示的个数（仅在“总高度自动”时生效）"},
+    "onlyPopupValid": {"message": "仅“弹出”时有效"},
+    "onlyInjectValid": {"message": "仅“注入”时有效"},
+    "show": {"message": "显示"},
+    "hide": {"message": "隐藏"},
+    "pageBlurTip": {"message": "透明时会和蒙版叠加"},
+    "widthPercentageTip": {"message": "请看宽度百分比"},
+    "open": {"message": "开启"},
+    "close": {"message": "关闭"},
+
+    "overall": {"message": "整体"},
+    "list": {"message": "列表"},
+    "menubar": {"message": "菜单栏"},
+    "statusbar": {"message": "状态栏"},
+
+    "layout": {"message": "布局"},
+    "maskColor": {"message": "蒙版颜色"},
+    "maskBlur": {"message": "蒙版模糊"},
+    "pageBackground": {"message": "页面背景"},
+    "pageBlur": {"message": "页面模糊"},
+    "outerBorder": {"message": "外边框"},
+    "borderColor": {"message": "边框颜色"},
+    "innerMargin": {"message": "内边距"},
+    "indicator": {"message": "指示器"},
+    "loadingBackground": {"message": "加载时背景"},
+
+    "location": {"message": "位置"},
+    "horizontalAlignment": {"message": "水平对齐"},
+    "horizontalOffset": {"message": "水平偏移"},
+    "verticalAlignment": {"message": "垂直对齐"},
+    "verticalOffset": {"message": "垂直偏移"},
+    "center": {"message": "居中"},
+    "left": {"message": "向左对齐"},
+    "right": {"message": "向右对齐"},
+    "top": {"message": "置顶"},
+    "bottom": {"message": "置底"},
+
+    "labelCount": {"message": "标签数量"},
+
     "width": {"message": "宽度"},
-    "height": {"message": "高度"},
-    "count": {"message": "个数"},
-    "pageCount": {"message": "每页数量"},
+    "widthPercentage": {"message": "宽度百分比"},
+    "totalHeightAutomatic": {"message": "总高度自动"},
+    "heightPercentage": {"message": "高度百分比"},
+    "listItemHeight": {"message": "列表项高度"},
+    "listItemCount": {"message": "列表项个数"},
+    "pageCount": {"message": "每页缓存"},
+    "noSearchDisplay": {"message": "非搜索显示"},
+    "noSearchCache": {"message": "非搜索缓存"},
 
     "fontSize": {"message": "字体大小"},
-    "titleSize": {"message": "标题"},
-    "subtitleSize": {"message": "副标题"},
-    "statusSize": {"message": "状态栏"},
-    "keymapSize": {"message": "快捷键"},
+    "title": {"message": "标题"},
+    "subtitle": {"message": "副标题"},
+
+    "listItem": {"message": "列表项"},
+    "fontColor": {"message": "字体颜色"},
+    "backgroundColor": {"message": "背景颜色"},
+    "highlightColor": {"message": "高亮颜色"},
+    "highlightBold": {"message": "高亮加粗"},
+    "subtitleHighlight": {"message": "副标题高亮"},
+    "subtitleHighlightedBold": {"message": "副标题高亮加粗"},
+    "icon": {"message": "图标"},
+    "standard": {"message": "标准"},
+    "bold": {"message": "加粗"},
 
     "listItemSelected": {"message": "列表项（选中时）"},
     "currentWindowItem": {"message": "当前窗口项"},
     "currentWindowItemSelected": {"message": "当前窗口项（选中时）"},
 
-    "backgroundColor": {"message": "背景色"},
+    "scrollBar": {"message": "滚动条"},
+    "color": {"message": "颜色"},
+    "selectedColor": {"message": "选中时颜色"},
+
+    "height": {"message": "高度"},
+    "autoHide": {"message": "自动隐藏"},
+
+    "dropdownMenu": {"message": "下拉菜单"},
+    "workspaceName": {"message": "工作区名称"},
+    "iconColor": {"message": "图标颜色"},
+    "iconSelected": {"message": "图标选中"},
+
+    "inputBox": {"message": "输入框"},
+    "showHint": {"message": "显示提示"},
+    "borderSelected": {"message": "边框选中"},
+    "backgroundSelected": {"message": "背景选中"},
+    "fontSelected": {"message": "字体选中"},
+
+    "operationButton": {"message": "操作按钮"},
+    "fontHovered": {"message": "滑过字体"},
+    "borderHovered": {"message": "滑过边框"},
+    "backgroundHovered": {"message": "滑过背景"},
+
+    "showStatusBar": {"message": "显示状态栏"},
+    "showTotal": {"message": "显示总数"},
+    "imageTransparency": {"message": "图片透明度"},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "pageLayout": {"message": "页面布局"},
+    "colorSetting": {"message": "颜色配置"},
+    "otherFunctions": {"message": "其它功能"},
+
+    "page": {"message": "页面"},
+    "border": {"message": "边框"},
+
+    "count": {"message": "个数"},
+
     "statusColor": {"message": "状态栏颜色"},
     "titleColor": {"message": "标题颜色"},
     "subtitleColor": {"message": "副标题字体"},
 
-    "pageBackgroundColor": {"message": "页面背景"},
-    "pageBorderColor": {"message": "页面边框"},
     "keymapColor": {"message": "快捷键状态"},
     "keymapFocusColor": {"message": "快捷键选中"},
 
     "load": {"message": "载入"},
     "loadExplain": {"message": "载入别人分享的配置"},
-    "share": {"message": "分享"},
     "shareExplain": {"message": "导出配置以分享"},
     "reset": {"message": "重置"},
     "store": {"message": "保存"},
@@ -185,7 +300,6 @@
 
     "clearData": {"message": "数据清理"},
     "import": {"message": "导入"},
-    "export": {"message": "导出"},
 
     "addKeys": {"message": "添加快捷键"},
     "bookmarkManagement": {"message": "书签管理"},

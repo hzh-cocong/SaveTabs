@@ -41,13 +41,13 @@
           :key="menu.name">
           <template slot="title">
             <i :class="menu.icon"></i>
-            <span>{{ menu.title }}</span>
+            <span>{{ lang(menu.title) }}</span>
           </template>
           <el-menu-item
             v-for="submenu in menu.children"
             :index="menu.name+'-'+submenu.name"
             :key="submenu.name">
-            {{ submenu.title }}
+            {{ lang(submenu.title) }}
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -166,20 +166,17 @@ export default {
       return -1;
     },
     currentThemeId() {
-      console.log('computed:currentThemeId')
       if(this.openWay == 'popup') return this.localConfig.theme_popup.id;
       else return this.localConfig.theme_inject.id;
     },
     currentTheme: {
       set(theme) {
-        console.log('uuuuuuuuuuu1')
         if(this.openWay == 'popup') this.localConfig.theme_popup = theme;
         else this.localConfig.theme_inject = theme;
         // this.storeTheme({ 'config': true, 'theme': false, 'tip': false });
         this.store('local', false);
       },
       get() {
-        console.log('uuuuuuuuuuu2')
         // 合并系统主题和用户主题
         let currentTheme = this.themeList.find((theme) => theme.id == this.currentThemeId);
 
@@ -229,7 +226,6 @@ export default {
       return themeList;
     },
     currentThemeList() {
-      console.log('computed.currentThemeList')
       let themeType = this.openWay == 'popup' ? THEME_TYPWE.POPUP : THEME_TYPWE.INJECT;
       let themeList = this.themeList.filter(theme => themeType & theme.type );
 
@@ -498,7 +494,6 @@ export default {
       this.store('local');
     },
     allIncludeSort({newIndex, oldIndex }) {
-      console.log('allIncludeSort', newIndex, oldIndex)
       if(newIndex == oldIndex) {
         return;
       }
@@ -506,7 +501,6 @@ export default {
       if(newIndex >= this.localConfig.all_include.length) {
         newIndex = this.localConfig.all_include.length-1;
       }
-console.log('allIncludeSort2', newIndex, oldIndex)
       this.localConfig.all_include.splice(newIndex, 0, this.localConfig.all_include.splice(oldIndex , 1)[0]);
       this.store('local');
     },
@@ -652,8 +646,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       save && this.storeTheme();
     },
     editTheme(type, value) {
-      console.log('editTheme', type, value);
-
       if(type == 'all') {
         this.$confirm('', '确定撤销全部修改？', {
           confirmButtonText: this.lang('sure'),
@@ -737,7 +729,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.storeTheme();
     },
     themeSort({newIndex, oldIndex }) {
-      console.log('themeSort', newIndex, oldIndex)
       if(newIndex == oldIndex) {
           return;
         }
@@ -756,7 +747,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.storeTheme({ config: false, theme: true });
     },
     addTheme(callback) {
-      this.$prompt('', '请输入主题名称', {
+      this.$prompt('', this.lang('themeNameInput'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         inputValue: '',
@@ -799,7 +790,7 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.storeTheme({tip: false});
     },
     deleteTheme(callback) {
-      this.$confirm(this.currentTheme.name, '删除确认', {
+      this.$confirm(this.currentTheme.name, this.lang('themeDeleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -848,7 +839,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
       this.store('local');
     },
     editSyncConfig(type, value) {
-      console.log('editSyncConfig', this.syncConfig, this.syncConfig[type], type, value);
       this.syncConfig[type] = value;
       this.store('sync');
     },
@@ -867,7 +857,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
     upgrade(syncItems, localItems) {
       // 老用户升级
-      console.log('upgrade', syncItems, localItems);
 
       // 提取异步配置
       let syncConfig = {};
@@ -949,14 +938,11 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         localConfig.adjust_window_top = 37;
       }
 
-      console.log('options.test', syncConfig, '|', localConfig, '|', theme_popup)
-
       Object.assign(this.syncConfig, syncConfig);
       Object.assign(this.localConfig, localConfig);
       this.theme.user_theme_list.push(theme_popup);
 
       // 重新保存
-      console.log('options.test2', this.syncConfig, '|', this.localConfig, '|', this.theme)
       chrome.storage.sync.set({'config': this.syncConfig});
       chrome.storage.local.set({'config': this.localConfig, 'theme': this.theme});
 
@@ -965,17 +951,6 @@ console.log('allIncludeSort2', newIndex, oldIndex)
     }
   },
   mounted: function() {
-    // todo
-    window.o = this;
-    // window.userConfig = userConfig;
-    // window.userLocalConfig = userLocalConfig;
-    // window.projectConfig = projectConfig;
-    // window.userConfig2 = JSON.parse(JSON.stringify(userConfig));
-    // window.userLocalConfig2 = JSON.parse(JSON.stringify(userLocalConfig));
-    // window.projectConfig2 = JSON.parse(JSON.stringify(projectConfig));
-
-    console.log('mounted:options.vue');
-
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {
@@ -993,11 +968,8 @@ console.log('allIncludeSort2', newIndex, oldIndex)
         })
       })
     ]).then(([syncItems, localItems, commands]) => {
-      console.log('options:storage.get', syncItems, localItems)
-
       if(Object.keys(syncItems.config).length == 0) {
         // 新用户
-        console.log('新用户')
 
         if(this._device.platform == 'Win') {
           this.localConfig.adjust_window_width = 16;
@@ -1007,14 +979,11 @@ console.log('allIncludeSort2', newIndex, oldIndex)
 
         chrome.storage.sync.set({'config': this.syncConfig});
         chrome.storage.local.set({'config': this.localConfig});
-        console.log({syncConfig: this.syncConfig, localConfig: this.localConfig})
       } else if(localItems.config.theme_popup == undefined) {
         // 老用户升级
-        console.log('老用户升级')
         this.upgrade(syncItems, localItems);
       } else {
         // 新版
-        console.log('新版')
         Object.assign(this.syncConfig, syncItems.config);
         Object.assign(this.localConfig, localItems.config);
 

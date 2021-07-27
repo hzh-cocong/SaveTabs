@@ -240,8 +240,18 @@
     "imageTransparency": {"message": "图片透明度"},
 
 
-
-
+    "workspaceOrder": {"message": "工作区顺序"},
+    "buttonOrder": {"message": "按钮顺序"},
+    "enableWorkspaceTip": {"message": "请先启用对应的工作区"},
+    "commonFunctions": {"message": "常用功能"},
+    "openLeftAndRightShortcuts": {"message": "开启左右快捷键"},
+    "workspaceSwitchingKeywords": {"message": "工作区切换关键词"},
+    "startupSpeed": {"message": "插件启动速度"},
+    "gentle": {"message": "丝滑"},
+    "fast": {"message": "快速"},
+    "modifySuccess": {"message": "修改成功"},
+    "popup": {"message": "弹出"},
+    "inject": {"message": "注入"},
 
 
 

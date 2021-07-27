@@ -241,6 +241,20 @@
     "imageTransparency": {"message": "Image Transparent"},
 
 
+    "workspaceOrder": {"message": "Workspace Order"},
+    "buttonOrder": {"message": "Button Order"},
+    "enableWorkspaceTip": {"message": "Please enable the workspace first"},
+    "commonFunctions": {"message": "Common Functions"},
+    "openLeftAndRightShortcuts": {"message": "Open left and right shortcuts"},
+    "workspaceSwitchingKeywords": {"message": "Workspace switching keywords"},
+    "startupSpeed": {"message": "Plug-in startup speed"},
+    "gentle": {"message": "Gentle"},
+    "fast": {"message": "Fast"},
+    "modifySuccess": {"message": "Modify Successfully"},
+    "popup": {"message": "Popup"},
+    "inject": {"message": "Inject"},
+
+
 
 
 

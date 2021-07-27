@@ -1,6 +1,6 @@
 <template>
   <div class="workspace-general">
-    <el-card class="box-card" header="工作区顺序">
+    <el-card class="box-card" :header="lang('workspaceOrder')">
       <ul class="list workspaces">
         <li
           class="list-item"
@@ -49,11 +49,11 @@
       </ul>
     </el-card>
 
-    <el-card class="box-card" header="按钮顺序">
+    <el-card class="box-card" :header="lang('buttonOrder')">
       <ul class="list button">
         <li
           class="list-item"
-          :title="disabledOperationButtons.indexOf(type) == -1 ? '' : '请先启用对应的工作区'"
+          :title="disabledOperationButtons.indexOf(type) == -1 ? '' : lang('enableWorkspaceTip')"
           v-for="type of sortedOperationButtons"
           :class="{ disabled: disabledOperationButtons.indexOf(type) != -1,
                     enabled: disabledOperationButtons.indexOf(type) == -1 }"
@@ -63,7 +63,7 @@
       </ul>
     </el-card>
 
-    <el-card class="box-card" header="常用功能" :body-style="{paddingBottom: '10px'}">
+    <el-card class="box-card" :header="lang('commonFunctions')" :body-style="{paddingBottom: '10px'}">
 
       <el-radio-group
         :value="localConfig.popup"
@@ -75,13 +75,13 @@
           <svg-icon
             name="fly-brands"
             class="popup"
-          ></svg-icon> 弹出
+          ></svg-icon> {{ lang('popup') }}
         </el-radio-button>
         <el-radio-button :label="false">
           <svg-icon
             name="ship-solid"
             class="popup"
-          ></svg-icon> 注入
+          ></svg-icon> {{ lang('inject') }}
         </el-radio-button>
       </el-radio-group>
 
@@ -99,26 +99,26 @@
         border
         size="medium"
         style="margin-right: 20px;margin-left: 0px;margin-bottom: 10px;"
-        @change="keymapLeftAndRightChange">开启左右快捷键</el-checkbox>
+        @change="keymapLeftAndRightChange">{{ lang('openLeftAndRightShortcuts') }}</el-checkbox>
 
       <el-input
         :value="syncConfig.workspace_change_word"
         size="medium"
-        style="width: 210px;margin-right: 20px;margin-bottom: 10px;"
+        style="width: 300px;margin-right: 20px;margin-bottom: 10px;"
         @input="workspaceChangeWordSync"
         @change="setWorkspaceChangeWord"
         @focus="$event.target.select()">
         <template slot="append">
-          <span style="cursor:default;">工作区切换关键词</span>
+          <span style="cursor:default;">{{ lang('workspaceSwitchingKeywords') }}</span>
         </template>
       </el-input>
 
     </el-card>
 
-    <el-card class="box-card" header="插件启动速度">
+    <el-card class="box-card" :header="lang('startupSpeed')">
       <el-select v-model="speed">
-        <el-option value="smooth" label="丝滑"></el-option>
-        <el-option value="fast" label="快速"></el-option>
+        <el-option value="smooth" :label="lang('gentle')"></el-option>
+        <el-option value="fast" :label="lang('fast')"></el-option>
       </el-select>
     </el-card>
 
@@ -196,11 +196,10 @@ export default {
   },
   watch: {
     speed(newVal, oldValue) {
-      console.log('watch:newVal', newVal, oldValue)
       localStorage.setItem('speed', newVal);
       this.$message({
         type: 'success',
-        message: '修改成功',
+        message: this.lang('modifySuccess'),
         duration: 1000,
       });
     }

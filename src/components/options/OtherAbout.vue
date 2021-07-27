@@ -1,8 +1,9 @@
 <template>
   <div
     class="other-about">
-    <div class="main" style="flex: 1;">
-      <div style="text-align: left;">当前版本：4.0.0</div>
+    <div class="main" style="color: #303133;flex: 1;">
+      <div style="text-align: left;">{{ lang('name') }}: {{ lang('extension_name') }}</div>
+      <div style="text-align: left;">{{ lang('version') }}: 4.0.0</div>
     </div>
     <div class="copyright">
       <span>Copyright © 胡镇华 <a href="//cocong.cn" style="color:inherit;">cocong.cn</a></span>

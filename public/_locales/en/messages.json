@@ -274,7 +274,7 @@
     "searchEngineDisableTip": {"message": "Do not show Search Engines"},
     "restoreDefaultSettings": {"message": "Restore Default Settings"},
     "addSearchEngine": {"message": "Add Search Engine"},
-    "name": {"message": "name"},
+    "name": {"message": "Name"},
     "searchURL": {"message": "Search URL"},
     "searchURLTip": {"message": "Perform a search on the website and copy the result URL, and replace the search keyword with {query}"},
     "keywordInputTip": {"message": "Please enter keywords to test"},
@@ -338,6 +338,8 @@
     "thanks6": {"message": "DAN DAN 心魅かれてく (Dan Dan Kokoro Hikareteku)"},
     "thanks7": {"message": "share with everyone."},
 
+
+    "version": {"message": "Version"},
 
 
 

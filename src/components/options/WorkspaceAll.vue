@@ -2,31 +2,27 @@
   <div
     class="workspace-all"
     v-loading="syncConfig.workspaces.indexOf('all') == -1"
-    element-loading-text="请先开启该工作区"
+    :element-loading-text="lang('enableWorkspaceTip')"
     @click="openWorkspaceAll">
-    <el-card class="box-card" header="智能排序">
+    <el-card class="box-card" :header="lang('smartSorting')">
       <el-checkbox
         :value="localConfig.all_sort_auto"
         size="medium"
         border
         true-label="dark"
         false-label="light"
-        @change="changeAutoSort">最后访问的列表所对应的工作区将排在该类型的最前面</el-checkbox>
+        @change="changeAutoSort">{{ lang('smartSortingTip') }}</el-checkbox>
     </el-card>
     <el-card class="box-card" :body-style="{paddingBottom: '10px'}">
       <template slot="header">
-        <span style="margin-right: 10px;line-height:31px;">列表顺序</span>
+        <span style="margin-right: 10px;line-height:31px;">{{ lang('listOrder') }}</span>
         <el-popover
           placement="top"
           width="430"
           trigger="hover">
-          <div>默认：将按设置的数量交错展示多个工作区的内容。</div>
-          <div>置顶：将出现在最开始的位置，并一直持续到内容结束，<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    若有多个置顶则按设置的数量交错展示。</div>
-          <div>置底：只有置顶和默认工作区的内容都展示完了才开始输出内容，<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    若有多个置底，则按设置的数量交错展示。</div>
+          <div>{{ lang('listOrderTip1') }}</div>
+          <div>{{ lang('listOrderTip2') }}</div>
+          <div>{{ lang('listOrderTip3') }}</div>
           <i class="el-icon-question"  slot="reference" style="color: gray;"></i>
         </el-popover>
       </template>
@@ -46,16 +42,18 @@
             style="width:16px;margin-right: 10px;color:#c0c4cc;vertical-align: -0.50em"
           ></svg-icon>
           <span
-            class="handle">{{ lang(allWorkspaces[workspace.type].title) }}</span>
+            class="handle"
+            :title="localConfig.all_sort_auto ? lang('smartSorting') : ''"
+            >{{ lang(allWorkspaces[workspace.type].title) }}</span>
 
           <i
             class="el-icon-top active"
             style="margin-right: 5px;"
-            title="点击取消置顶"
+            :title="lang('cancelToTop')"
             @click="allIncludeChangeTop(workspace.type, 0)"></i>
           <i
             class="el-icon-bottom"
-            title="点击置底"
+            :title="lang('toBottom')"
             @click="allIncludeChangeTop(workspace.type, -1)"></i>
           <el-input-number
             :value="workspace.count"
@@ -63,12 +61,12 @@
             :max="1000"
             :precision="0"
             size="mini"
-            title="每次展示多少行"
+            :title="lang('rowsTip')"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
             @click.native="$event.target.select && $event.target.select();"
             @change="allIncludeCountChange(workspace.type, $event==undefined ? topRecommendCount : $event)"></el-input-number>
           <el-tooltip
-            :content="workspace.only_search ? '仅在搜索时出现' : '非搜索时仍旧展示内容'"
+            :content="workspace.only_search ? lang('searchingMatchTip') : lang('searchingNoMatchTip')"
             placement="top">
             <el-switch
               :value=" ! workspace.only_search"
@@ -97,17 +95,17 @@
           ></svg-icon>
           <span
             class="handle"
-            :title="localConfig.all_sort_auto ? '智能排序' : ''"
+            :title="localConfig.all_sort_auto ? lang('smartSorting') : ''"
             >{{ lang(allWorkspaces[workspace.type].title) }}</span>
 
           <i
             class="el-icon-top"
             style="margin-right: 5px;"
-            title="点击置顶"
+            :title="lang('toTop')"
             @click="allIncludeChangeTop(workspace.type, 1)"></i>
           <i
             class="el-icon-bottom"
-            title="点击置底"
+            :title="lang('toBottom')"
             @click="allIncludeChangeTop(workspace.type, -1)"></i>
           <el-input-number
             :value="workspace.count"
@@ -115,12 +113,12 @@
             :max="1000"
             :precision="0"
             size="mini"
-            title="每次展示多少行"
+            :title="lang('rowsTip')"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
             @click.native="$event.target.select && $event.target.select();"
             @change="allIncludeCountChange(workspace.type, $event==undefined ? topRecommendCount : $event)"></el-input-number>
           <el-tooltip
-            :content="workspace.only_search ? '仅在搜索时出现' : '非搜索时仍旧展示内容'"
+            :content="workspace.only_search ? lang('searchingMatchTip') : lang('searchingNoMatchTip')"
             placement="top">
             <el-switch
               :value=" ! workspace.only_search"
@@ -148,16 +146,18 @@
             style="width:16px;margin-right: 10px;color:#c0c4cc;vertical-align: -0.50em"
           ></svg-icon>
           <span
-            class="handle">{{ lang(allWorkspaces[workspace.type].title) }}</span>
+            class="handle"
+            :title="localConfig.all_sort_auto ? lang('smartSorting') : ''"
+            >{{ lang(allWorkspaces[workspace.type].title) }}</span>
 
           <i
             class="el-icon-top"
             style="margin-right: 5px;"
-            title="点击置顶"
+            :title="lang('toTop')"
             @click="allIncludeChangeTop(workspace.type, 1)"></i>
           <i
             class="el-icon-bottom active"
-            title="点击取消置底"
+            :title="lang('cancelToBottom')"
             @click="allIncludeChangeTop(workspace.type, 0)"></i>
           <el-input-number
             :value="workspace.count"
@@ -165,12 +165,12 @@
             :max="1000"
             :precision="0"
             size="mini"
-            title="每次展示多少行"
+            :title="lang('rowsTip')"
             style="width: 100px;margin-right: 10px;margin-left: 20px;"
             @click.native="$event.target.select && $event.target.select();"
             @change="allIncludeCountChange(workspace.type, $event==undefined ? topRecommendCount : $event)"></el-input-number>
           <el-tooltip
-            :content="workspace.only_search ? '仅在搜索时出现' : '非搜索时仍旧展示内容'"
+            :content="workspace.only_search ? lang('searchingMatchTip') : lang('searchingNoMatchTip')"
             placement="top">
             <el-switch
               :value=" ! workspace.only_search"
@@ -219,9 +219,9 @@
     </el-card>
     <el-card class="box-card" :body-style="{paddingBottom: '10px'}">
       <template slot="header">
-        <span style="margin-right: 20px;line-height:31px;">搜索引擎</span>
+        <span style="margin-right: 20px;line-height:31px;">{{ lang('searchEngine') }}</span>
         <el-tooltip
-          :content="isSearchEngineEnabled ? '仅在搜索不到内容时出现' : '不展示搜索引擎'"
+          :content="isSearchEngineEnabled ? lang('searchEngineEnableTip') : lang('searchEngineDisableTip')"
           placement="top">
           <el-switch
             :value="isSearchEngineEnabled"
@@ -241,7 +241,7 @@
           style="display:inline-block;border-left: 1px solid lightgray;height: 30px;margin: 0 20px;">
           <el-tooltip
             placement="right"
-            content="还原默认设置">
+            :content="lang('restoreDefaultSettings')">
             <i
             class="el-icon-refresh-right hover2"
             style="margin-left: 20px;line-height: 30px;"
@@ -303,27 +303,27 @@
       :append-to-body="true"
       width="80%"
       class="window-group"
-      title="添加搜索引擎"
+      :title="lang('addSearchEngine')"
       @open="$refs.searchEngineForm && $refs.searchEngineForm.clearValidate()">
-      <el-form ref="searchEngineForm" :model="searchEngineForm" :rules="searchEngineRules" label-width="90px">
-        <el-form-item label="名称" prop="name">
+      <el-form ref="searchEngineForm" :model="searchEngineForm" :rules="searchEngineRules" label-width="100px">
+        <el-form-item :label="lang('name')" prop="name">
           <el-input v-model="searchEngineForm.name" placeholder="例如：百度"></el-input>
         </el-form-item>
-        <el-form-item label="搜索 URL" prop="formate">
+        <el-form-item :label="lang('searchURL')" prop="formate">
           <el-input v-model="searchEngineForm.formate" placeholder="例如：https://www.baidu.com/s?ie=utf-8&wd={query}"></el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
           <div style="font-size: 12px;
                       color: rgb(144, 147, 153);
                       margin-top: -15px;
-                      line-height:1.4">在网站上执行搜索并复制结果 URL，并用 {query} 替换搜索关键词</div>
+                      line-height:1.4">{{ lang('searchURLTip') }}</div>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button style="float:left;" @click="testSearchEngineForm">测 试</el-button>
+        <el-button style="float:left;" @click="testSearchEngineForm">{{ lang('test' )}}</el-button>
 
-        <el-button @click="searchEngineVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitSearchEngineForm">确 定</el-button>
+        <el-button @click="searchEngineVisible = false">{{ lang('cancel') }}</el-button>
+        <el-button type="primary" @click="submitSearchEngineForm">{{ lang('sure') }}</el-button>
       </span>
     </el-dialog>
 
@@ -383,7 +383,6 @@ export default {
   },
   computed: {
     isSearchEngineChange() {
-      console.log('isSearchEngineChange')
       return JSON.stringify(this.localConfig.all_search_engine) != JSON.stringify(userLocalConfig.all_search_engine);
     },
     allWorkspaces() {
@@ -455,33 +454,18 @@ export default {
       this.$refs.searchEngineForm.validate((valid) => {
         if( ! valid) return false;
 
-        this.$prompt('', '请输入关键词进行测试', {
+        this.$prompt('', this.lang('keywordInputTip'), {
           confirmButtonText: this.lang('sure'),
           cancelButtonText: this.lang('cancel'),
           inputPlaceholder: '',
           inputValue: 'SaveTabs',
-          inputValidator: ( value ) => {
-            // value = value == null ? '' : value.trim();
-
-            // // 窗口名不允许为空
-            // if(value == '') {
-            //   return this.lang('emptyGroupName');
-            // }
-
-            // // 窗口名不允许重复，自己的不算
-            // for(let i in this.storageList) {
-            //   if(i != this.currentStorageIndex && this.storageList[i].name == value) {
-            //     return this.lang('groupNameRepeat');
-            //   }
-            // }
-
-            return true;
-          }
+          // inputValidator: ( value ) => {
+          //   return true;
+          // }
         }).then(({ value }) => {
           value = value.trim();
 
           let url = encodeURI(this.searchEngineForm.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(value));
-          console.log(url)
           this.$open(this.searchEngineForm.formate)
 
           return false;
@@ -491,11 +475,6 @@ export default {
     },
   },
   mounted() {
-    // todo
-    window.wa = this;
-    console.log('mounted:WorkspaceAll');
-
-
     //创建拖拽对象
     // this.sortable =
     Sortable.create(document.querySelector('.list.topWorkspaces'), {
@@ -535,8 +514,6 @@ export default {
       //   let ul = this.$refs.topWorkspaces;
       //   let newLi = ul.children[newIndex];
       //   let oldLi = ul.children[oldIndex];
-
-      //   console.log('onUpdate',newIndex, oldIndex, ul, newLi, oldLi);
 
       //   // 先删除移动的节点
       //   ul.removeChild(newLi);
@@ -637,8 +614,6 @@ export default {
       //   let ul = this.$refs.searchEngineList;
       //   let newLi = ul.children[newIndex];
       //   let oldLi = ul.children[oldIndex];
-
-      //   console.log('onUpdate',newIndex, oldIndex, ul, newLi, oldLi);
 
       //   // 先删除移动的节点
       //   ul.removeChild(newLi);

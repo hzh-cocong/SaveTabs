@@ -540,7 +540,7 @@ export default {
     },
     deleteSearchEngine(index) {
       let engine = this.localConfig.all_search_engine[index];
-      this.$confirm(engine.name+' | '+engine.formate, '删除确认', {
+      this.$confirm(engine.name+' | '+engine.formate, this.lang('searchEngineDeleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',
@@ -563,7 +563,7 @@ export default {
       this.store('local');
     },
     resetSearchEngine(data) {
-      this.$confirm('', '确定还原为默认设置？', {
+      this.$confirm('', this.lang('restoreEngineDeleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',

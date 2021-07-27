@@ -16,6 +16,7 @@
     "update": {"message": "更 新"},
     "restore": {"message": "还 原"},
     "bind": {"message": "绑 定"},
+    "test": {"message": "测 试"},
 
     "justNow": {"message": "刚刚"},
     "secondAgo": {"message": "秒前"},
@@ -242,7 +243,7 @@
 
     "workspaceOrder": {"message": "工作区顺序"},
     "buttonOrder": {"message": "按钮顺序"},
-    "enableWorkspaceTip": {"message": "请先启用对应的工作区"},
+    "enableWorkspaceTip": {"message": "请先开启该工作区"},
     "commonFunctions": {"message": "常用功能"},
     "openLeftAndRightShortcuts": {"message": "开启左右快捷键"},
     "workspaceSwitchingKeywords": {"message": "工作区切换关键词"},
@@ -253,6 +254,31 @@
     "popup": {"message": "弹出"},
     "inject": {"message": "注入"},
 
+
+    "smartSorting": {"message": "智能排序"},
+    "smartSortingTip": {"message": "最后访问的列表所对应的工作区将排在该类型的最前面"},
+    "listOrder": {"message": "列表顺序"},
+    "listOrderTip1": {"message": "默认：将按设置的数量交错展示多个工作区的内容。"},
+    "listOrderTip2": {"message": "置顶：将出现在最开始的位置，并一直持续到内容结束，若有多个置顶则按设置的数量交错展示。"},
+    "listOrderTip3": {"message": "置底：只有置顶和默认工作区的内容都展示完了才开始输出内容，若有多个置底，则按设置的数量交错展示。"},
+    "toTop": {"message": "点击置顶"},
+    "toBottom": {"message": "点击置底"},
+    "cancelToTop": {"message": "点击取消置顶"},
+    "cancelToBottom": {"message": "点击取消置底"},
+    "rowsTip": {"message": "每次展示多少行"},
+    "searchingMatchTip": {"message": "仅在搜索时出现"},
+    "searchingNoMatchTip": {"message": "非搜索时仍旧展示内容"},
+    "searchEngine": {"message": "搜索引擎"},
+    "searchEngineEnableTip": {"message": "仅在搜索不到内容时出现"},
+    "searchEngineDisableTip": {"message": "不展示搜索引擎"},
+    "restoreDefaultSettings": {"message": "还原默认设置"},
+    "addSearchEngine": {"message": "添加搜索引擎"},
+    "name": {"message": "名称"},
+    "searchURL": {"message": "搜索 URL"},
+    "searchURLTip": {"message": "在网站上执行搜索并复制结果 URL，并用 {query} 替换搜索关键词"},
+    "keywordInputTip": {"message": "请输入关键词进行测试"},
+    "searchEngineDeleteConfirm": {"message": "确定删除搜索引擎？"},
+    "restoreEngineDeleteConfirm": {"message": "确定还原为默认设置？"},
 
 
 

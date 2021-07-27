@@ -16,6 +16,7 @@
     "update": {"message": "Update"},
     "restore": {"message": "Restore"},
     "bind": {"message": "Bind"},
+    "test": {"message": "Test"},
 
     "justNow": {"message": " just now"},
     "secondAgo": {"message": " second(s) ago"},
@@ -254,6 +255,31 @@
     "popup": {"message": "Popup"},
     "inject": {"message": "Inject"},
 
+
+    "smartSorting": {"message": "Smart Sorting"},
+    "smartSortingTip": {"message": "The last visited workspace will be at the top of the category"},
+    "listOrder": {"message": "List Order"},
+    "listOrderTip1": {"message": "Default: The contents of multiple workspaces will be displayed staggered according to the set number."},
+    "listOrderTip2": {"message": "Top: It will appear at the very beginning and will continue until the end of the content. If there are multiple tops, they will be displayed in staggered fashion according to the set number."},
+    "listOrderTip3": {"message": "Bottom: Only when the contents of the top and default workspaces are displayed, the output will start. If there are multiple bottoms, they will be displayed staggered according to the set number."},
+    "toTop": {"message": "Click to top"},
+    "toBottom": {"message": "Click to bottom"},
+    "cancelToTop": {"message": "Click to cancel to top"},
+    "cancelToBottom": {"message": "Click to cancel to bottom"},
+    "rowsTip": {"message": "Number of rows per impression"},
+    "searchingMatchTip": {"message": "Only appears when searching"},
+    "searchingNoMatchTip": {"message": "Still showing in when not searching"},
+    "searchEngine": {"message": "Search Engine"},
+    "searchEngineEnableTip": {"message": "Appears only when there is no search content"},
+    "searchEngineDisableTip": {"message": "Do not show Search Engines"},
+    "restoreDefaultSettings": {"message": "Restore Default Settings"},
+    "addSearchEngine": {"message": "Add Search Engine"},
+    "name": {"message": "name"},
+    "searchURL": {"message": "Search URL"},
+    "searchURLTip": {"message": "Perform a search on the website and copy the result URL, and replace the search keyword with {query}"},
+    "keywordInputTip": {"message": "Please enter keywords to test"},
+    "searchEngineDeleteConfirm": {"message": "Are you sure to delete the Search Engine?"},
+    "restoreEngineDeleteConfirm": {"message": "Are you sure to restore the default settings?"},
 
 
 

@@ -4,7 +4,7 @@
     @click="focus">
     <el-card
       class="box-card"
-      header="批量打开链接">
+      :header="lang('openBulkLinks')">
       <el-input
         type="textarea"
         autofocus
@@ -16,11 +16,11 @@
       <div style="text-align: right;margin-top: 20px;" @mousedown.prevent>
         <el-button
           :disabled="urls.length <= 0"
-          @click="open(true)">当前窗口打开</el-button>
+          @click="open(true)">{{ lang('openCurrentWindowAndSelect') }}</el-button>
         <el-button
           type="primary"
           :disabled="urls.length <= 0"
-          @click="open(false)">新窗口打开</el-button>
+          @click="open(false)">{{ lang('openNewWindow') }}</el-button>
       </div>
     </el-card>
   </div>
@@ -36,11 +36,9 @@ export default {
   },
   methods: {
     open(isCurrent) {
-      console.log(this.urls.split("\n"))
       let urls = this.urls.split("\n").filter(url => url.length > 0).map(url => url.trim() );
       this.urls = urls.join("\n");
       if(this.urls.length <= 0) return;
-      console.log(urls)
 
       if( ! isCurrent) {
         // 新建新窗口
@@ -54,7 +52,7 @@ export default {
           if(error && error.message) {
             this.$message({
               type: 'warning',
-              message: '地址格式错误',
+              message: this.lang('addressFormatError'),
               customClass: 'window-message-box',
               offset: 69,
               duration: 3000,
@@ -81,7 +79,7 @@ export default {
         if(error && error.message) {
           this.$message({
             type: 'warning',
-            message: '地址格式错误',
+            message: this.lang('addressFormatError'),
             customClass: 'window-message-box',
             offset: 69,
             duration: 3000,

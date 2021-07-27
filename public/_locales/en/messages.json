@@ -310,6 +310,33 @@
     "topOffset": {"message": "Top Offset"},
 
 
+    "openBulkLinks": {"message": "Open links in bulk"},
+    "addressFormatError": {"message": "Address format error"},
+
+
+    "thanksAlert": {"message": "Thanks to the contributors of the open source project. It is the project you shared that allowed me to stand on the shoulders of giants and develop a product that I don't even think I can do in such a short time."},
+    "dependenceTip": {"message": "Heavily dependent frameworks and components"},
+    "vueTitle": {"message": "The Progressive JavaScript Framework"},
+    "vueDescription1": {"message": "Already know HTML, CSS and JavaScript? Read the guide and start building things in no time!"},
+    "vueDescription2": {"message": "An incrementally adoptable ecosystem that scales between a library and a full-featured framework."},
+    "vueDescription3": {"message": "20KB min+gzip Runtime | Blazing Fast Virtual DOM | Minimal Optimization Efforts"},
+    "vueDescription4": {"message": "Approachable"},
+    "vueDescription5": {"message": "Versatile"},
+    "vueDescription6": {"message": "Performant"},
+    "elementUITitle": {"message": "A Desktop UI Library"},
+    "elementUIDescription": {"message": "Element, a Vue 2.0 based component library for developers, designers and product managers"},
+    "otherDependenceTip": {"message": "Other dependent tools and plugins"},
+    "webpackDescription1": {"message": "is a"},
+    "webpackDescription2": {"message": "static module bundler"},
+    "webpackDescription3": {"message": "for modern JavaScript applications."},
+
+    "thanks1": {"message": "Thank you to all users who use SaveTabs, you guys make my life more valuable"},
+    "thanks2": {"message": "Thanks again to all users who share and support savetabs. It is you who have given it the driving force to move forward."},
+    "thanks3": {"message": "Thanks for the encouragement and blessings of relatives and friends!"},
+    "thanks4": {"message": "Especially thank you dad and mom. In Guangzhou, what bothers me most is the problem of eating. As a Chaoshan person, I prefer to eat light food. Coupled with gastritis, it is not suitable to eat those greasy foods. So my parents have sent me my favorite pork, pork balls, and pork jerky many times from my hometown. This has solved my diet problem to a great extent, and under the care of these delicacies, my stomach It's already fine. Let’s share the photo of the box sent by my mother."},
+    "thanks5": {"message": "Finally, one of my favorite songs"},
+    "thanks6": {"message": "DAN DAN 心魅かれてく (Dan Dan Kokoro Hikareteku)"},
+    "thanks7": {"message": "share with everyone."},
 
 
 

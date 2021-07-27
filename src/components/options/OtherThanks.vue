@@ -5,10 +5,10 @@
       type="info"
       style="margin-bottom: 20px">
       <div slot="title">
-        <p>感谢开源项目的贡献者，是你们分享的项目，让我得以站在巨人的肩膀上，在这么短的时间里开发出一款我甚至都不认为自己能做得到的产品。</p>
+        <p>{{ lang('thanksAlert') }}</p>
       </div>
     </el-alert>
-    <el-divider>以下是本项目重度依赖的框架和组件</el-divider>
+    <el-divider>{{ lang('dependenceTip') }}</el-divider>
     <el-row :gutter="20">
       <el-col :md="12">
         <el-card
@@ -23,28 +23,28 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 261.76 226.69"><path d="M161.096.001l-30.225 52.351L100.647.001H-.005l130.877 226.688L261.749.001z" fill="#41b883"/><path d="M161.096.001l-30.225 52.351L100.647.001H52.346l78.526 136.01L209.398.001z" fill="#34495e"/></svg>
           </div>
           <div style="text-align: center;">
-            <div>渐进式 JavaScript 框架</div>
+            <div>{{ lang('vueTitle') }}</div>
             <div style="margin-top: 20px; color: #42b983; cursor:default;">
               <el-tooltip
                 class="item"
                 effect="light"
-                content="已经会了 HTML、CSS、JavaScript？即刻阅读指南开始构建应用！"
+                :content="lang('vueDescription1')"
                 placement="bottom">
-                <span>易用</span>
+                <span>{{ lang('vueDescription4') }}</span>
               </el-tooltip>&nbsp;&nbsp;
               <el-tooltip
                 class="item"
                 effect="light"
-                content="不断繁荣的生态系统，可以在一个库和一套完整框架之间自如伸缩。"
+                :content="lang('vueDescription2')"
                 placement="bottom">
-                <span>灵活</span>
+                <span>{{ lang('vueDescription5') }}</span>
               </el-tooltip>&nbsp;&nbsp;
               <el-tooltip
                 class="item"
                 effect="light"
-                content="20kB min+gzip 运行大小超快虚拟 DOM 最省心的优化"
+                :content="lang('vueDescription3')"
                 placement="bottom">
-                <span>高效</span>
+                <span>{{ lang('vueDescription6') }}</span>
               </el-tooltip>
             </div>
           </div>
@@ -63,15 +63,15 @@
             <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjMwcHgiIGhlaWdodD0iMzBweCIgdmlld0JveD0iMCAwIDM4IDQ4IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCA0MCAoMzM3NjIpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPlNoYXBlIENvcHk8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0idjIuMi4wIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0i6aaW6aG1Lem7mOiupOaViOaenC1jb3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC03MC4wMDAwMDAsIC0xOS4wMDAwMDApIiBmaWxsPSIjNDA5RUZGIj4KICAgICAgICAgICAgPHBhdGggZD0iTTIxMi4xMzU0NDEsNDUuMTU3ODA3NyBaIE0xMDMuNDE2NTAyLDQ2LjIxNzU1MTEgQzEwMy40MDcwMDgsNDcuNzk0NTY4MiAxMDIuNTg3ODQxLDQ4LjE0NjM0NzQgMTAyLjU4Nzg0MSw0OC4xNDYzNDc0IEMxMDIuNTg3ODQxLDQ4LjE0NjM0NzQgODguNDUyMDQ3OCw1Ni4zMTQ1MDg3IDg3LjUzMjk5NTYsNTYuODI2Mjc1MSBDODYuNjIyMzM2LDU3LjIxNzE1NjEgODYuMDEzNjcwMyw1Ni44MjYyNzUxIDg2LjAxMzY3MDMsNTYuODI2Mjc1MSBDODYuMDEzNjcwMyw1Ni44MjYyNzUxIDcxLjIyMjU3MDYsNDguMjQ3OTU3MiA3MC42ODI2OTYyLDQ3Ljg3MDg0NDQgQzcwLjE0MjY4NDMsNDcuNDkzNzMxNiA3MC4xMzAxNjQzLDQ2LjkwNjM3NzQgNzAuMTMwMTY0Myw0Ni45MDYzNzc0IEM3MC4xMzAxNjQzLDQ2LjkwNjM3NzQgNzAuMTQ1MDIzMiwyOS45MTk5MTc0IDcwLjEzMDE2NDMsMjkuMTMzMzM2NCBDNzAuMTE1MzA1MywyOC4zNDY2MTc3IDcxLjA5Njk1NzYsMjcuNzU1NTQ2MSA3MS4wOTY5NTc2LDI3Ljc1NTU0NjEgTDg1Ljg3NTUzNzMsMTkuMjEzNDM4NyBDODYuNzg1MzcxNCwxOC43MzMyMDE2IDg3LjY3MTEyODYsMTkuMjEzNDM4NyA4Ny42NzExMjg2LDE5LjIxMzQzODcgQzg3LjY3MTEyODYsMTkuMjEzNDM4NyAxMDAuNzI2NjIzLDI2LjgwMjA5MzcgMTAyLjE3MzQ0MiwyNy42MTc3MjU3IEMxMDMuNTkxNTA3LDI4LjI5MTk1NzcgMTAzLjQxNjUwMiwyOS42ODQzNDI0IDEwMy40MTY1MDIsMjkuNjg0MzQyNCBDMTAzLjQxNjUwMiwyOS42ODQzNDI0IDEwMy40MjUzMDcsNDQuNzUxOTE5MiAxMDMuNDE2NTAyLDQ2LjIxNzU1MTEgTDEwMy40MTY1MDIsNDYuMjE3NTUxMSBaIE05Ny41MTYwMTA1LDI5LjE2OTEzMzkgQzk0LjQ5MDAxNzMsMjcuNDI3NDQ4MyA4Ny4zNjE1ODQyLDIzLjI5NzEwNjMgODcuMzYxNTg0MiwyMy4yOTcxMDYzIEM4Ny4zNjE1ODQyLDIzLjI5NzEwNjMgODYuNjY2MTAzOSwyMi45MjEyMzI2IDg1Ljk1MTc3NDcsMjMuMjk3MTA2MyBMNzQuMzQ4NzQwNiwyOS45ODIxNSBDNzQuMzQ4NzQwNiwyOS45ODIxNSA3My41NzgwMDI1LDMwLjQ0NDkwMTQgNzMuNTg5Njk3LDMxLjA2MDQ4MDUgQzczLjYwMTM5MTUsMzEuNjc2MDU5NyA3My41ODk2OTcsNDQuOTY5ODcwOCA3My41ODk2OTcsNDQuOTY5ODcwOCBDNzMuNTg5Njk3LDQ0Ljk2OTg3MDggNzMuNTk5NDY1NCw0NS40Mjk1OTMyIDc0LjAyMzQ5NTEsNDUuNzI0NjQ3MiBDNzQuNDQ3Mzg3Myw0Ni4wMTk3MDExIDg2LjA2MDE4OTgsNTIuNzMzMjQ1MSA4Ni4wNjAxODk4LDUyLjczMzI0NTEgQzg2LjA2MDE4OTgsNTIuNzMzMjQ1MSA4Ni41MzgxNTIsNTMuMDM5MTc1OSA4Ny4yNTMwMzE1LDUyLjczMzI0NTEgQzg3Ljk3NDY1MjYsNTIuMzMyNzI2MiA5OS4wNzMwMzM1LDQ1Ljk0MDI1ODIgOTkuMDczMDMzNSw0NS45NDAyNTgyIEM5OS4wNzMwMzM1LDQ1Ljk0MDI1ODIgOTkuNzE2MjMyNSw0NS42NjQ4OTI5IDk5LjcyMzY2MTksNDQuNDMwNzA1NiBDOTkuNzI1NzI1Nyw0NC4wNzQ3OTU5IDk5LjcyNjU1MTIsNDIuNjkzMjg4MSA5OS43MjY2ODg3LDQwLjk1NzUyMjkgTDg2LjY2MDA1MDIsNDguODc1MjM5NCBMODYuNjYwMDUwMiw0NS44NDYyMjEgQzg2LjY2MDA1MDIsNDQuNjAyMTIwNSA4Ny42MjMxMjg5LDQzLjc4MDk4MTEgODcuNjIzMTI4OSw0My43ODA5ODExIEw5OS4xODA3NjA3LDM2LjgxNjU3OTMgQzk5LjYxNjg5NzgsMzYuMzYxMTI1MSA5OS43MDY4NzY4LDM1LjYzMTU0NDcgOTkuNzI1NDUwNSwzNS4zNTU2Mjg3IEM5OS43MjUwMzc4LDM0LjA5MDQ2MjcgOTkuNzI0NDg3NCwzMi45ODUyODQxIDk5LjcyNDA3NDcsMzIuMjg1MTY3OCBMODYuNjYwMDUwMiw0MC4yMDEyMzIxIEw4Ni42NjAwNTAyLDM3LjAzNDUzMSBDODYuNjYwMDUwMiwzNS43OTA0MzA1IDg3LjQ4NTU0NjIsMzUuMjQ0NjU2NCA4Ny40ODU1NDYyLDM1LjI0NDY1NjQgTDk3LjUxNjAxMDUsMjkuMTY5MTMzOSBaIiBpZD0iU2hhcGUtQ29weSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+" style="width: 100%; height: 100%;">
           </div>
           <div style="text-align: center;">
-            <div>网站快速成型工具</div>
+            <div>{{ lang('elementUITitle') }}</div>
             <div style="margin-top: 20px; color: #888;">
-              Element，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库
+              {{ lang('elementUIDescription') }}
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
-    <el-divider>其它依赖的工具和插件</el-divider>
+    <el-divider>{{ lang('otherDependenceTip') }}</el-divider>
     <el-row :gutter="20">
       <el-col :md="12">
         <el-card
@@ -87,7 +87,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 961.76 926.69"><path d="m387 0 387 218.9v437.9l-387 218.9-387-218.9v-437.9z" fill="#fff"/><path d="m704.9 641.7-305.1 172.6v-134.4l190.1-104.6zm20.9-18.9v-360.9l-111.6 64.5v232zm-657.9 18.9 305.1 172.6v-134.4l-190.2-104.6zm-20.9-18.9v-360.9l111.6 64.5v232zm13.1-384.3 312.9-177v129.9l-200.5 110.3-1.6.9zm652.6 0-312.9-177v129.9l200.5 110.2 1.6.9z" fill="#8ed6fb"/><path d="m373 649.3-187.6-103.2v-204.3l187.6 108.3zm26.8 0 187.6-103.1v-204.4l-187.6 108.3zm-201.7-331.1 188.3-103.5 188.3 103.5-188.3 108.7z" fill="#1c78c0"/></svg>
           </div>
           <div style="text-align: center;margin-top: 20px">
-            <strong>webpack</strong>是一个用于现代 JavaScript 应用程序的<em>静态模块打包工具</em>。
+            <strong>webpack</strong> {{ lang('webpackDescription1') }} <em>{{ lang('webpackDescription2') }}</em> {{ lang('webpackDescription3') }}
           </div>
         </el-card>
       </el-col>
@@ -249,26 +249,24 @@
             <el-tooltip
               class="item"
               effect="light"
-              content="已经会了 HTML、CSS、JavaScript？即刻阅读指南开始构建应用！"
               placement="top">
               <img slot="content" src="@/assets/flower.png" style="width: 200px; height: 200px" />
               <img src="@/assets/flower.png" style="width: 16px; height: 16px; border-radius: 2px; vertical-align: middle;" />
             </el-tooltip>
-            <p>感谢所有使用 SaveTabs 的用户，是你们让我的人生有了更多价值。</p>
-            <p>再次感谢所有分享、支持 SaveTabs 的用户，是你们让它有了前进的动力。</p>
-            <p>感谢亲朋好友的鼓励和祝福！</p>
+            <p>{{ lang('thanks1') }}</p>
+            <p>{{ lang('thanks2') }}</p>
+            <p>{{ lang('thanks3') }}</p>
             <div>
-              尤其感谢老爸和老妈。在广州，最困扰我的就是吃饭问题。作为潮汕人，比较喜欢吃清淡的，再加上胃炎的关系，不适合吃那些油腻的食物。于是老爸老妈多次从老家给我寄来了我最爱吃的猪肉、猪肉丸和猪肉干等，这极大程度地解决了我的饮食问题，并且在这些美食的调养下，我的胃也已经好了。下面分享一下老妈寄来的箱子照片
+              {{ lang('thanks4') }}
               <el-tooltip
                 class="item"
                 effect="light"
-                content="已经会了 HTML、CSS、JavaScript？即刻阅读指南开始构建应用！"
                 placement="top">
                 <img slot="content" src="@/assets/food.jpeg" style="width: 200px; height: 200px" />
                 <img src="@/assets/food.jpeg" style="width: 16px; height: 16px; border-radius: 2px; vertical-align: middle;" />
               </el-tooltip>
             </div>
-            <p>最后，一首我最喜欢的歌 <a href="https://www.google.com/search?q=DAN%20DAN%20%E5%BF%83%E9%AD%85%E3%81%8B%E3%82%8C%E3%81%A6%E3%81%8F" style="color:inherit;" target="_blank">DAN DAN 心魅かれてく（渐渐被你吸引）</a> 分享给大家。</p>
+            <p>{{ lang('thanks5') }} <a href="https://www.google.com/search?q=DAN%20DAN%20%E5%BF%83%E9%AD%85%E3%81%8B%E3%82%8C%E3%81%A6%E3%81%8F" style="color:inherit;" target="_blank">{{ lang('thanks6') }}</a> {{ lang('thanks7') }}</p>
           </div>
         </el-card>
       </el-col>

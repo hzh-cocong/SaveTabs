@@ -309,7 +309,33 @@
     "topOffset": {"message": "顶部偏移"},
 
 
+    "openBulkLinks": {"message": "批量打开链接"},
+    "addressFormatError": {"message": "地址格式错误"},
 
+
+    "thanksAlert": {"message": "感谢开源项目的贡献者，是你们分享的项目，让我得以站在巨人的肩膀上，在这么短的时间里开发出一款我甚至都不认为自己能做得到的产品。"},
+    "dependenceTip": {"message": "以下是本项目重度依赖的框架和组件"},
+    "vueTitle": {"message": "渐进式 JavaScript 框架"},
+    "vueDescription1": {"message": "已经会了 HTML、CSS、JavaScript？即刻阅读指南开始构建应用！"},
+    "vueDescription2": {"message": "不断繁荣的生态系统，可以在一个库和一套完整框架之间自如伸缩。"},
+    "vueDescription3": {"message": "20kB min+gzip 运行大小 | 超快虚拟 DOM | 最省心的优化"},
+    "vueDescription4": {"message": "易用"},
+    "vueDescription5": {"message": "灵活"},
+    "vueDescription6": {"message": "高效"},
+    "elementUITitle": {"message": "网站快速成型工具"},
+    "elementUIDescription": {"message": "Element，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库"},
+    "otherDependenceTip": {"message": "其它依赖的工具和插件"},
+    "webpackDescription1": {"message": "是一个用于现代 JavaScript 应用程序的"},
+    "webpackDescription2": {"message": "静态模块打包工具"},
+    "webpackDescription3": {"message": "。"},
+
+    "thanks1": {"message": "感谢所有使用 SaveTabs 的用户，是你们让我的人生有了更多价值"},
+    "thanks2": {"message": "再次感谢所有分享、支持 SaveTabs 的用户，是你们让它有了前进的动力。"},
+    "thanks3": {"message": "感谢亲朋好友的鼓励和祝福！"},
+    "thanks4": {"message": "尤其感谢老爸和老妈。在广州，最困扰我的就是吃饭问题。作为潮汕人，比较喜欢吃清淡的，再加上胃炎的关系，不适合吃那些油腻的食物。于是老爸老妈多次从老家给我寄来了我最爱吃的猪肉、猪肉丸和猪肉干等，这极大程度地解决了我的饮食问题，并且在这些美食的调养下，我的胃也已经好了。下面分享一下老妈寄来的箱子照片"},
+    "thanks5": {"message": "最后，一首我最喜欢的歌"},
+    "thanks6": {"message": "DAN DAN 心魅かれてく（渐渐被你吸引）"},
+    "thanks7": {"message": "分享给大家。"},
 
 
 

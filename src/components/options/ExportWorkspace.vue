@@ -287,9 +287,7 @@ export default {
           chrome.storage.local.set(items, () => {
             this.$message({
               type: 'success',
-              message: this.lang('groupImportedSuccess')
-                      +total
-                      +this.lang('groupImportedSuccess2')
+              message: this.lang('importedSuccess').replace('[total]', total)
             });
           });
         });

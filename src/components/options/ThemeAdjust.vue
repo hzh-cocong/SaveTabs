@@ -2,14 +2,14 @@
   <div class="export-adjust">
     <el-alert
       type="info"
-      title="仅在注入模式下，并且弹窗才有效"
+      :title="lang('adjustTip')"
       style="margin-bottom: 20px">
     </el-alert>
     <el-row :gutter="20">
       <el-col :sm="12" :md="8">
         <el-card
           class="box-card"
-          header="宽度矫正"
+          :header="lang('widthCorrection')"
           :body-style="{ paddingBottom: '10px' }">
           <el-input-number
             size="mini"
@@ -24,7 +24,7 @@
       <el-col :sm="12" :md="8">
         <el-card
           class="box-card"
-          header="高度矫正"
+          :header="lang('heightCorrection')"
           :body-style="{ paddingBottom: '10px' }">
           <el-input-number
             size="mini"
@@ -39,7 +39,7 @@
       <el-col :sm="12" :md="8">
         <el-card
           class="box-card"
-          header="顶部偏移"
+          :header="lang('topOffset')"
           :body-style="{ paddingBottom: '10px' }">
           <el-input-number
             size="mini"

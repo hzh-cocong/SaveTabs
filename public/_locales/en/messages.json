@@ -293,11 +293,21 @@
     "clearDataConfirm2": {"message": " Data?"},
     "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
     "saveSuccess": {"message": "Saved successfully"},
-    "groupImportedSuccess": {"message": "Successfully imported "},
-    "groupImportedSuccess2": {"message": " pieces of data"},
+    "importedSuccess": {"message": "Successfully imported [total] pieces of data"},
     "bookmarkManagement": {"message": "Boormark Management"},
     "historyManagement": {"message": "History Management"},
 
+
+    "themeImportTip": {"message": "Import (single or multiple themes)"},
+    "themeExportTip": {"message": "Export all user themes (excluding system built-in themes)"},
+    "oldVersionImportTip": {"message": "Old version (from color sharing)"},
+    "importSuccessTip": {"message": "[total] theme(s) imported"},
+
+
+    "adjustTip": {"message": "Only in injection mode, and the pop-up window is effective."},
+    "widthCorrection": {"message": "Width Correction"},
+    "heightCorrection": {"message": "Height Correction"},
+    "topOffset": {"message": "Top Offset"},
 
 
 

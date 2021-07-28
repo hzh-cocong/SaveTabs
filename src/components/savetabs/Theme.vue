@@ -68,7 +68,7 @@
           </div>
           <span
             class="title"
-            :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.name }}</span>
+            :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.is_system ? lang(item.name) : item.name }}</span>
           <i
             v-show="isSelected"
             class="el-icon-check"

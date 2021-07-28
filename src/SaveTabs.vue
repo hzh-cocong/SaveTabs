@@ -160,10 +160,10 @@
               <el-dropdown-item
                 divided
                 :command="-1"
-                :title="currentTheme.name"
+                :title="currentTheme.is_system ? lang(currentTheme.name) : currentTheme.name"
                 style="overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
                 @click.native="themeDialogVisible=true;"><!-- 顶部已继承了 click focus -->
-                <i class="el-icon-check"></i><span>{{ currentTheme.name }}</span>
+                <i class="el-icon-check"></i><span>{{ currentTheme.is_system ? lang(currentTheme.name) : currentTheme.name }}</span>
               </el-dropdown-item>
               <el-dropdown-item
                 divided

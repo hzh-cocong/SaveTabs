@@ -398,7 +398,12 @@
     "zoomTip": {"message": "注意：当前网页进行了缩放，部分操作可能存在异常。"},
 
 
-
+    "themeClassic": {"message": "经典"},
+    "themeSimple": {"message": "极简"},
+    "themeLarge": {"message": "超大"},
+    "themeFullScreen": {"message": "全屏"},
+    "themeSidebar": {"message": "侧边栏"},
+    "themeGlass": {"message": "玻璃"},
 
 
 

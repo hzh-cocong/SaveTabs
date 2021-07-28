@@ -398,6 +398,14 @@
     "zoomTip": {"message": "Tip: The current webpage has been zoomed, and some operations may be abnormal."},
 
 
+    "themeClassic": {"message": "Classic"},
+    "themeSimple": {"message": "Simple"},
+    "themeLarge": {"message": "Large"},
+    "themeFullScreen": {"message": "Full Screen"},
+    "themeSidebar": {"message": "Sidebar"},
+    "themeGlass": {"message": "Glass"},
+
+
 
 
 

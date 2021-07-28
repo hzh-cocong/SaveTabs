@@ -7,7 +7,7 @@
     "system_theme_list": [
         {
             "id": "1",
-            "name": "经典",
+            "name": "themeClassic",
             "type": 3,
             "is_system": true,
             "config": {
@@ -131,7 +131,7 @@
         },
         {
             "id": "2",
-            "name": "极简",
+            "name": "themeSimple",
             "type": 1,
             "is_system": true,
             "config": {
@@ -255,8 +255,9 @@
         },
         {
             "id": "3",
-            "name": "超大",
+            "name": "themeLarge",
             "type": 2,
+            "is_system": true,
             "config": {
                 "list_font_color": "rgba(0, 0, 0, 1)",
                 "list_background_color": "rgba(255, 255, 255, 1)",
@@ -378,7 +379,7 @@
         },
         {
             "id": "4",
-            "name": "全屏",
+            "name": "themeFullScreen",
             "type": 2,
             "is_system": true,
             "config": {
@@ -502,7 +503,7 @@
         },
         {
             "id": "5",
-            "name": "侧边栏",
+            "name": "themeSidebar",
             "type": 2,
             "is_system": true,
             "config": {
@@ -626,7 +627,7 @@
         },
         {
             "id": "6",
-            "name": "玻璃",
+            "name": "themeGlass",
             "type": 2,
             "is_system": true,
             "config": {

@@ -781,6 +781,7 @@ export default {
           is_system: undefined,
         }
       );
+      if(this.currentTheme.is_system) newTheme.name = this.lang(newTheme.name);
       let type = this.openWay == 'popup' ? 'popup' : 'inject';
 
       this.theme.user_theme_list.push(newTheme)

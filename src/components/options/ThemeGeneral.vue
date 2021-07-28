@@ -59,7 +59,7 @@
           </div>
           <span
             class="title"
-            :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.name }}</span>
+            :style="{ color: item.id == currentTheme.id ? item.config.list_focus_background_color : 'black' }">{{ item.is_system ? lang(item.name) : item.name }}</span>
           <i
             v-show="item.id == currentTheme.id"
             class="el-icon-check"
@@ -113,7 +113,11 @@
           @click="currentTheme.is_system
                 || (showNameInput=true,
                     $nextTick(()=>$refs.themeNameInput.focus()))">{{
-            currentTheme.name == '' ? lang('themeNameUpdate') : currentTheme.name
+              currentTheme.name == ''
+            ? lang('themeNameUpdate')
+            : ( currentTheme.is_system
+              ? lang(currentTheme.name)
+              : currentTheme.name)
           }}</span>
         <el-input
           v-if="showNameInput"

@@ -70,7 +70,7 @@
         size="medium"
         border
         style="display: block;float:left;margin-right: 20px;margin-bottom: 10px;"
-        @change="popupChange">
+        @change="popupChange(true)">
         <el-radio-button :label="true">
           <svg-icon
             name="fly-brands"

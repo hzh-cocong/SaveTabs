@@ -307,10 +307,10 @@
       @open="$refs.searchEngineForm && $refs.searchEngineForm.clearValidate()">
       <el-form ref="searchEngineForm" :model="searchEngineForm" :rules="searchEngineRules" label-width="100px">
         <el-form-item :label="lang('name')" prop="name">
-          <el-input v-model="searchEngineForm.name" placeholder="例如：百度"></el-input>
+          <el-input v-model="searchEngineForm.name" placeholder="e.g.: Google"></el-input>
         </el-form-item>
         <el-form-item :label="lang('searchURL')" prop="formate">
-          <el-input v-model="searchEngineForm.formate" placeholder="例如：https://www.baidu.com/s?ie=utf-8&wd={query}"></el-input>
+          <el-input v-model="searchEngineForm.formate" placeholder="e.g.: https://www.google.com/search?q={query}"></el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
           <div style="font-size: 12px;

@@ -385,6 +385,18 @@
     "copyAllLink": {"message": "复制所有链接地址"},
 
 
+    "selectDate": {"message": "选择日期"},
+    "collapseAll": {"message": "全部收起"},
+    "expandAll": {"message": "全部展开"},
+    "noOtherFunctions": {"message": "暂无其它功能"},
+    "limitedFunctionality": {"message": "功能受限"},
+    "workspaceDisabledTip": {"message": "“[workspace]”工作区已被禁用，是否前往 设置中心 开启？"},
+    "leftAndRightEnabledTip": {"message": "左右快捷键切换已开启"},
+    "leftAndRightDisabledTip": {"message": "左右快捷键切换已被禁用，但以下快捷键仍然可用"},
+    "noFocusTip": {"message": "当前无法自动获得焦点，需手动点击输入框才可输入内容。"},
+    "copyTip": {"message": "已成功复制 [count] 条地址"},
+    "zoomTip": {"message": "注意：当前网页进行了缩放，部分操作可能存在异常。"},
+
 
 
 

@@ -22,7 +22,7 @@
         style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;"
         @click.native="popupChange"
       ></svg-icon>
-      <span>选择主题</span>
+      <span>{{ lang('chooseTheme') }}</span>
       <i
         class="el-icon-s-tools hover"
         style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;"
@@ -180,13 +180,9 @@ export default {
     SelectX,
   },
   mounted() {
-    // todo
-    window.th = this;
-
     chrome.storage.local.get({'theme': {}}, items => {
       Object.assign(this.theme, items.theme);
       if(this.autoOpen) {
-
         // 不要直接赋值，那是不符合规范的，而且会有很多问题，如开启后自动关闭，或者是手动关闭不了等
         this.$emit('update:visible', true);
       }

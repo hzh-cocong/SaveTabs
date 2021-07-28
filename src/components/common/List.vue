@@ -602,12 +602,12 @@ export default {
       }
     },
   },
-  beforeUpdate() {
-    console.warn('list:beforeUpdate', this.$el.scrollTop);
-  },
-  updated() {
-    console.warn('list:updated', this.$el.scrollTop);
-  },
+  // beforeUpdate() {
+  //   console.warn('list:beforeUpdate', this.$el.scrollTop);
+  // },
+  // updated() {
+  //   console.warn('list:updated', this.$el.scrollTop);
+  // },
   mounted() {
     // 一开始尽量显示少一点，一半就行了，加快启动速度
     this.rangeDown = this.scrollRange;

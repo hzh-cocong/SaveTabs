@@ -1116,12 +1116,12 @@ export default {
       return this.currentBookmark.children.length ? this.lang('unfold') : this.lang('fold');
     }
   },
-  beforeUpdate() {
-    console.warn('beforeUpdate');
-  },
-  updated() {
-    console.warn('updated');
-  },
+  // beforeUpdate() {
+  //   console.warn('bookmark:beforeUpdate');
+  // },
+  // updated() {
+  //   console.warn('bookmark:updated');
+  // },
   mounted() {
     Promise.all([
       new Promise((resolve) => {

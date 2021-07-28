@@ -144,7 +144,7 @@
                 :command="index"
                 :class="{ selected: index == activeWorkspaceIndex }"
                 :title="keymap['open_workspace_'+workspace.type]
-                      ? '快捷键：'+keymap['open_workspace_'+workspace.type]
+                      ? lang('keymap')+': '+keymap['open_workspace_'+workspace.type]
                       : ''"
                 :key="index">
                 <svg-icon
@@ -223,7 +223,7 @@
               <el-date-picker
                 type="date"
                 v-model="history.date"
-                placeholder="选择日期"
+                :placeholder="lang('selectDate')"
                 :picker-options="history.pickerOptions"
                 @blur="focus"
                 @change="focus"
@@ -266,12 +266,12 @@
                   size="mini"
                   icon="el-icon-s-fold"
                   :disabled="keyword.trim() != ''"
-                  @click="bookmark.fold = true;">全部收起</el-button>
+                  @click="bookmark.fold = true;">{{ lang('collapseAll') }}</el-button>
                 <el-button
                   size="mini"
                   icon="el-icon-s-unfold"
                   :disabled="keyword.trim() != ''"
-                  @click="bookmark.unfold = true;">全部展开</el-button>
+                  @click="bookmark.unfold = true;">{{ lang('expandAll') }}</el-button>
                 <i
                   class="el-icon-close hover"
                   style="float: right;margin-top: 8px;margin-left: 10px;"
@@ -344,10 +344,10 @@
               <div
                 style="padding: 12px;cursor: default;"
                 @mousedown.prevent>
-                <span>暂无其它功能</span>
+                <span>{{ lang('noOtherFunctions') }}</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;"
+                  style="float: right;margin-top: 3px;margin-left: 10px"
                   @click="window.visible = false;"></i>
               </div>
               <i
@@ -371,10 +371,10 @@
               <div
                 style="padding: 12px;cursor: default;"
                 @mousedown.prevent>
-                <span>暂无其它功能</span>
+                <span>{{ lang('noOtherFunctions') }}</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;"
+                  style="float: right;margin-top: 3px;margin-left: 10px"
                   @click="note.visible = false;"></i>
               </div>
               <i
@@ -398,10 +398,10 @@
               <div
                 style="padding: 12px;cursor: default;"
                 @mousedown.prevent>
-                <span>暂无其它功能</span>
+                <span>{{ lang('noOtherFunctions') }}</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;"
+                  style="float: right;margin-top: 3px;margin-left: 10px"
                   @click="temporary.visible = false;"></i>
               </div>
               <i
@@ -425,10 +425,10 @@
               <div
                 style="padding: 12px;cursor: default;"
                 @mousedown.prevent>
-                <span>暂无其它功能</span>
+                <span>{{ lang('noOtherFunctions') }}</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;"
+                  style="float: right;margin-top: 3px;margin-left: 10px"
                   @click="all.visible = false;"></i>
               </div>
               <i
@@ -452,10 +452,10 @@
               <div
                 style="padding: 12px;cursor: default;"
                 @mousedown.prevent>
-                <span>暂无其它功能</span>
+                <span>{{ lang('noOtherFunctions') }}</span>
                 <i
                   class="el-icon-close hover"
-                  style="float: right;margin-top: 3px;"
+                  style="float: right;margin-top: 3px;margin-left: 10px"
                   @click="other.visible = false;"></i>
               </div>
               <i
@@ -481,8 +481,8 @@
           :disabled="limited"
           :icon="allWorkspaces[type].icon_simple"
           :title="limited
-                ? '功能受限'
-                : keymap['add_'+type] ? '快捷键：'+keymap['add_'+type] : ''"
+                ? lang('limitedFunctionality')
+                : keymap['add_'+type] ? lang('keymap')+': '+keymap['add_'+type] : ''"
           @mousedown.native.prevent
           @click.stop="operate(getKeyType($event), type)"></el-button>
       </el-button-group>
@@ -895,13 +895,13 @@ export default {
       }
     },
     workspacesTip(type) {
-      this.$confirm(this.lang(type)+'已被禁用，是否前往 设置中心 开启？', '提示', {
+      this.$confirm(this.lang('workspaceDisabledTip').replace('[workspace]', this.lang(type)), this.lang('tip'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         customClass: 'window-message-box',
         type: 'warning'
       }).then(() => {
-        this.$open('./options.html?type=workspace');
+        this.$open('./options.html?type=workspace#/workspace-general');
       }).catch(() => {
         // 窗口关闭后会自动 foucs，无需这个
         // this.focus();
@@ -1253,29 +1253,29 @@ export default {
         const h = this.$createElement;
         let message = null;
         if(this.localConfig.keymap_left_and_right) {
-          message = '左右快捷键切换已开启';
+          message = this.lang('leftAndRightEnabledTip');
         } else {
           message = h('span', { style: 'font-size: 14px;'}, [
-            h('p', { style: 'color: teal;margin-bottom: 10px;' }, '左右快捷键切换已被禁用，但以下快捷键仍然可用'),
+            h('p', { style: 'color: teal;margin-bottom: 10px;' }, this.lang('leftAndRightDisabledTip')),
             h('div', null, [
               h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇧' : 'shift'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
-              h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
+              h('span', { style: 'margin: 0 20px 0 0' }, this.lang('switchLeft')),
               h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
-              h('span', { style: 'margin: 0' }, '向右切换'),
+              h('span', { style: 'margin: 0' }, this.lang('switchRight')),
             ]),
             h('div', null, [
               // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
               h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, '['),
-              h('span', { style: 'margin: 0 20px 0 0' }, '向左切换'),
+              h('span', { style: 'margin: 0 20px 0 0' }, this.lang('switchLeft')),
               // h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Alt'),
               h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⌘' : 'Ctrl'),
               h('span', null, '+'),
               h('span', { class: 'keymap-box' }, ']'),
-              h('span', { style: 'margin: 0' }, '向右切换'),
+              h('span', { style: 'margin: 0' }, this.lang('switchRight')),
             ]),
           ]);
         }
@@ -1342,12 +1342,12 @@ export default {
       })
     }
   },
-  beforeUpdate() {
-    console.warn('savetabs:beforeUpdate');
-  },
-  updated() {
-    console.warn('savetabs:updated');
-  },
+  // beforeUpdate() {
+  //   console.warn('savetabs:beforeUpdate');
+  // },
+  // updated() {
+  //   console.warn('savetabs:updated');
+  // },
   mounted() {
     Promise.all([
       new Promise((resolve) => {
@@ -1437,7 +1437,7 @@ export default {
           this.isFocus = false;
           this.$message({
             type: 'warning',
-            message: '当前无法自动获得焦点，需手动点击输入框才可输入内容。',
+            message: this.lang('noFocusTip'),
             customClass: 'window-message-box',
             offset: 69,
             duration: 3000,
@@ -1454,7 +1454,7 @@ export default {
     // 等页面加载完了再加载图片，否则插件弹出的速度回变慢
     // 这个才是最对的
     document.body.onload=() => {
-      console.warn('isLoad');
+      // console.warn('isLoad');
       this.isLoad = true;
     };
 
@@ -1470,7 +1470,6 @@ export default {
     // 获取当前插件信息
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let tab = tabs[0];
-      console.log('chrome.tabs.query', tab, tabs)
 
       // window.open 不允许添加
       if(tab.url.indexOf(chrome.extension.getURL("savetabs.html")) == 0) {
@@ -1511,12 +1510,14 @@ export default {
           this.$message({
             type: 'success',
             // message: '地址复制成功',
-            message: `已成功复制 ${request.count} 条地址`,
+            message: this.lang('copyTip').replace('[count]', request.count),
             customClass: 'window-message-box',
             offset: 69,
             duration: 1000,
           });
         } else if(request.type == 'pageZoom') {
+          if( ! this.isConfigLoad) return;
+
           sendResponse({received: true});
 
           if(this.w.isReceived) return;
@@ -1527,7 +1528,7 @@ export default {
 
           document.documentElement.style.zoom = 1 / request.zoom;
 
-          this.statusTip('注意：当前网页进行了缩放，部分操作可能存在异常。', false, 3000);
+          this.statusTip(this.lang('zoomTip'), false, 3000);
         }
       })
 
@@ -1536,7 +1537,6 @@ export default {
       // 一旦失去焦点就会自己把自己给关了
       // 新建窗口也会触发，并且新建多个标签将触发多个事件
       chrome.tabs.onActivated.addListener((activeInfo) => {
-        console.log('onActivated', JSON.stringify(tab), JSON.stringify(activeInfo))
         // 只有一种可能，那就是直接 url 打开本扩展程序，并且多选其它标签，之后再获得焦点
         // 现在不可能了，因为使用了 window.close 后，就算是多选也会被关闭
         // if(activeInfo.tabId == tab.id) return;
@@ -1552,7 +1552,7 @@ export default {
 
         // 避免和 blur 重复而导致插件重启
         if(this.isFocus) return;
-console.log('aa')
+
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })
@@ -1560,7 +1560,6 @@ console.log('aa')
       //* window.addEventListener('blur' 已经帮忙做了，就不需要了，否则会添乱
       // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
       chrome.windows.onFocusChanged.addListener((windowId) => {
-        console.log('onFocusChanged', JSON.stringify(windowId), JSON.stringify(tab))
         // // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
         // if(windowId == -1) return;
         // // 再切换过来
@@ -1573,7 +1572,7 @@ console.log('aa')
 
         // 避免和 blur 重复而导致插件重启
         if(this.isFocus) return;
-console.log('bb')
+
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })//*/

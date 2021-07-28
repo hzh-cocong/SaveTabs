@@ -1378,12 +1378,12 @@ export default {
     },
   },
 
-  beforeUpdate() {
-    console.warn('window:beforeUpdate');
-  },
-  updated() {
-    console.warn('window:updated');
-  },
+  // beforeUpdate() {
+  //   console.warn('window:beforeUpdate');
+  // },
+  // updated() {
+  //   console.warn('window:updated');
+  // },
   mounted() {
     // 并行执行，效率更高
     // 其实速度并没有多大提升，因为主要瓶颈在于获取本地数据，另外两个完全可以忽略不计

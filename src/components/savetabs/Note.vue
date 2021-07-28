@@ -899,12 +899,12 @@ export default {
       }
     },
   },
-  beforeUpdate() {
-    console.warn('beforeUpdate');
-  },
-  updated() {
-    console.warn('updated');
-  },
+  // beforeUpdate() {
+  //   console.warn('note:beforeUpdate');
+  // },
+  // updated() {
+  //   console.warn('note:updated');
+  // },
   mounted() {
     Promise.all([
       new Promise((resolve) => {

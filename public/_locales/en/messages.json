@@ -385,6 +385,19 @@
     "copyAllLink": {"message": "Copy all link addresses"},
 
 
+    "selectDate": {"message": "Select date"},
+    "collapseAll": {"message": "Collapse All"},
+    "expandAll": {"message": "Expand All"},
+    "noOtherFunctions": {"message": "No other functions"},
+    "limitedFunctionality": {"message": "Limited functionality"},
+    "workspaceDisabledTip": {"message": "The [workspace] workspace has been disabled. Do you want to go to the Settings Center to open it?"},
+    "leftAndRightEnabledTip": {"message": "The left and right switching keymap is turned on."},
+    "leftAndRightDisabledTip": {"message": "The left and right switching keymap has been disabled, but the following switching keymap  are still available."},
+    "noFocusTip": {"message": "It can't get focus automatically.Please manually click the input box to enter the content."},
+    "copyTip": {"message": "[count] address successfully copied"},
+    "zoomTip": {"message": "Tip: The current webpage has been zoomed, and some operations may be abnormal."},
+
+
 
 
 

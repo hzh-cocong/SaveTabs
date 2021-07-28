@@ -278,7 +278,7 @@ export default {
         if( ! tip) return;
         this.$message({
           type: 'success',
-          message: '修改成功|'+type,
+          message: this.lang('modifySuccess'),
           duration: 1000,
         });
       });
@@ -295,8 +295,8 @@ export default {
         if( ! tip) return;
 
         this.$notify({
-          title: '主题',
-          message: '保存成功',
+          title: this.lang('theme'),
+          message: this.lang('saveSuccess'),
           position: 'bottom-left',
           duration: 1000,
         });
@@ -588,7 +588,7 @@ export default {
       if(currentType == 0) {
         this.$message({
           type: 'warning',
-          message: '至少选择一种类型',
+          message: this.lang('atLeastOneTypeTip'),
           duration: 1000,
         });
         return;
@@ -598,7 +598,7 @@ export default {
       && this.popupThemeList.length <= 1) {
         this.$message({
           type: 'warning',
-          message: '弹出类型只剩下这最后一个主题了',
+          message: this.lang('onlyLastPopupTip'),
           duration: 1000,
         });
         return;
@@ -608,7 +608,7 @@ export default {
       && this.injectThemeList.length <= 1) {
         this.$message({
           type: 'warning',
-          message: '注入类型只剩下这最后一个主题了',
+          message: this.lang('onlyLastInjectTip'),
           duration: 1000,
         });
         return;
@@ -646,7 +646,7 @@ export default {
     },
     editTheme(type, value) {
       if(type == 'all') {
-        this.$confirm('', '确定撤销全部修改？', {
+        this.$confirm('', this.lang('undoConfirm'), {
           confirmButtonText: this.lang('sure'),
           cancelButtonText: this.lang('cancel'),
           type: 'warning',
@@ -662,7 +662,7 @@ export default {
           this.currentTheme.config.container_background_blur = 0;
           this.$message({
             type: 'warning',
-            message: '暂不支持同时开启“页面模糊”和“蒙版模糊”',
+            message: this.lang('blurTip'),
           });
         }
       } else if(type == 'container_background_blur') {
@@ -670,7 +670,7 @@ export default {
           this.currentTheme.config.background_blur = 0;
           this.$message({
             type: 'warning',
-            message: '暂不支持同时开启“页面模糊”和“蒙版模糊”',
+            message: this.lang('blurTip'),
           });
         }
       } else if(type == 'position_horizontal_align') {

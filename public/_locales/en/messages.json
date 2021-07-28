@@ -5,9 +5,9 @@
 
     "extension_title": {"message": "Simple, Efficient And Personalized"},
     "extension_subtitle": {"message": "Simple For You, Complicated For Me"},
-    "extension_feature1": {"message": "Save and open all web pages with one click"},
+    "extension_feature1": {"message": "Save and open all web pages with one click."},
     "extension_feature2": {"message": "Support aggregate search of bookmarks, history, tabs, etc."},
-    "extension_feature3": {"message": "You can adjust the behavior and style of the plug-in according to your own preferences"},
+    "extension_feature3": {"message": "You can adjust the behavior and style of the plug-in according to your own preferences."},
 
     "open_extension": {"message": "Activate the extension"},
     "open_workspace_all": {"message": "Open all workspace"},
@@ -405,6 +405,12 @@
     "themeSidebar": {"message": "Sidebar"},
     "themeGlass": {"message": "Glass"},
 
+
+    "atLeastOneTypeTip": {"message": "Choose at least one type"},
+    "onlyLastPopupTip": {"message": "Only the last theme of the Popup type is left"},
+    "onlyLastInjectTip": {"message": "Only the last theme of the Inject type is left"},
+    "undoConfirm": {"message": "Are you sure to undo all changes?"},
+    "blurTip": {"message": "It is not currently supported to enable \"Page Blur\" and \"Mask Blur\" at the same time."},
 
 
 

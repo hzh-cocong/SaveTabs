@@ -406,7 +406,11 @@
     "themeGlass": {"message": "玻璃"},
 
 
-
+    "atLeastOneTypeTip": {"message": "至少选择一种类型"},
+    "onlyLastPopupTip": {"message": "弹出类型只剩下这最后一个主题了"},
+    "onlyLastInjectTip": {"message": "注入类型只剩下这最后一个主题了"},
+    "undoConfirm": {"message": "确定撤销全部修改？"},
+    "blurTip": {"message": "暂不支持同时开启“页面模糊”和“蒙版模糊”"},
 
 
 

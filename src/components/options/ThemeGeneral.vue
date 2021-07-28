@@ -517,7 +517,7 @@
               <el-tooltip
                 v-if="currentThemeConfig.width_fill != oldCurrentThemeConfig.width_fill"
                 placement="top"
-                :content="oldCurrentThemeConfig.width_fill ? lang('open') : lang('close')">
+                :content="oldCurrentThemeConfig.width_fill ? lang('enable') : lang('close')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('width_fill', oldCurrentThemeConfig.width_fill)"></i>
@@ -581,7 +581,7 @@
               <el-tooltip
                 v-if="currentThemeConfig.height_fill != oldCurrentThemeConfig.height_fill"
                 placement="top"
-                :content="oldCurrentThemeConfig.height_fill ? lang('open') : lang('close')">
+                :content="oldCurrentThemeConfig.height_fill ? lang('enable') : lang('close')">
                 <i
                 class="el-icon-refresh-right hover2"
                 @click="editTheme('height_fill', oldCurrentThemeConfig.height_fill)"></i>

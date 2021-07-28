@@ -29,34 +29,34 @@
       }
     },
     "open_workspace_all": {
-      "description": "open_workspace_all"
+      "description": "__MSG_open_workspace_all__"
     },
     "open_workspace_window": {
-      "description": "open_workspace_window"
+      "description": "__MSG_open_workspace_window__"
     },
     "open_workspace_note": {
-      "description": "open_workspace_note"
+      "description": "__MSG_open_workspace_note__"
     },
     "open_workspace_temporary": {
-      "description": "open_workspace_temporary"
+      "description": "__MSG_open_workspace_temporary__"
     },
     "open_workspace_tab": {
-      "description": "open_workspace_tab"
+      "description": "__MSG_open_workspace_tab__"
     },
     "open_workspace_bookmark": {
-      "description": "open_workspace_bookmark"
+      "description": "__MSG_open_workspace_bookmark__"
     },
     "open_workspace_history": {
-      "description": "open_workspace_history"
+      "description": "__MSG_open_workspace_history__"
     },
     "add_window": {
-      "description": "add_window"
+      "description": "__MSG_add_window__"
     },
     "add_note": {
-      "description": "add_note"
+      "description": "__MSG_add_note__"
     },
     "add_temporary": {
-      "description": "add_temporary"
+      "description": "__MSG_add_temporary__"
     }
   },
   "permissions": [

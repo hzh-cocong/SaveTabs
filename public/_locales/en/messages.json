@@ -9,6 +9,18 @@
     "extension_feature2": {"message": "Support aggregate search of bookmarks, history, tabs, etc."},
     "extension_feature3": {"message": "You can adjust the behavior and style of the plug-in according to your own preferences"},
 
+    "open_extension": {"message": "Activate the extension"},
+    "open_workspace_all": {"message": "Open all workspace"},
+    "open_workspace_window": {"message": "Open window workspace"},
+    "open_workspace_note": {"message": "Open note workspace"},
+    "open_workspace_temporary": {"message": "Open temporary workspace"},
+    "open_workspace_tab": {"message": "Open tab workspace"},
+    "open_workspace_bookmark": {"message": "Open bookmark workspace"},
+    "open_workspace_history": {"message": "Open history workspace"},
+    "add_window": {"message": "Add window"},
+    "add_note": {"message": "Add note"},
+    "add_temporary": {"message": "Add temporary window"},
+
 
     "tip": {"message": "Tip"},
     "cancel": {"message": "Cancel"},
@@ -83,7 +95,6 @@
     "windowRestored": {"message": "Window Restored"},
     "windowUpdated": {"message": "New Window Data Updated"},
 
-
     "windowUpdateName": {"message": "Window name modification"},
     "windowDeleteConfirm": {"message": "Are you sure to delete the window?"},
     "windowNameRepeat": {"message": "The window name is not allowed to be repeated"},
@@ -153,7 +164,7 @@
     "hide": {"message": "Hide"},
     "pageBlurTip": {"message": "When transparent, it will be superimposed with the mask"},
     "widthPercentageTip": {"message": "See \"Width Percentage\""},
-    "open": {"message": "Open"},
+    "enable": {"message": "Enable"},
     "close": {"message": "Close"},
 
     "overall": {"message": "Overall"},
@@ -294,7 +305,7 @@
     "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
     "saveSuccess": {"message": "Saved successfully"},
     "importedSuccess": {"message": "Successfully imported [total] pieces of data"},
-    "bookmarkManagement": {"message": "Boormark Management"},
+    "bookmarkManagement": {"message": "Bookmark Management"},
     "historyManagement": {"message": "History Management"},
 
 
@@ -340,6 +351,40 @@
 
 
     "version": {"message": "Version"},
+
+
+    "commonKeymap": {"message": "Common Keymap"},
+    "type": {"message": "Type"},
+    "linkButton": {"message": "Link Button"},
+    "listSelection": {"message": "List Selection"},
+    "operate": {"message": "Operation"},
+    "workspaceSwitching": {"message": "Workspace Switching"},
+    "specialOperation": {"message": "Special Operation"},
+    "customKeymap": {"message": "Custom Keymap"},
+    "open": {"message": "Open"},
+    "putAwayOrJump": {"message": "Put Away Or Jump"},
+    "copy": {"message": "Copy"},
+    "openLine": {"message": "Open the corresponding line"},
+    "moveTo": {"message": "Move to the corresponding line"},
+    "moveUp": {"message": "Move up one line"},
+    "moveDown": {"message": "Move down one line"},
+    "switchLeft": {"message": "Switch left"},
+    "switchRight": {"message": "Switch right"},
+    "switchToFarLeft": {"message": "Switch to the far left (First Workspace)"},
+    "switchToFarRight": {"message": "Switch to the far right (Last Workspace)"},
+    "switchWorkspace": {"message": "Switch to [workspace] workspace"},
+    "switchToSpecifiedWorkspace": {"message": "Switch to the specified workspace"},
+    "closePopupWindow": {"message": "Close popup window"},
+    "setKeymap": {"message": "Click here to set shortcuts"},
+    "space": {"message": "Space"},
+    "toggle": {"message": "toggle"},
+    "search": {"message": "search"},
+    "moveToParentFolder": {"message": "Move to parent folder"},
+    "collapseFolder": {"message": "Collapse folder"},
+    "copyLink": {"message": "Copy link address"},
+    "copyAllLink": {"message": "Copy all link addresses"},
+
+
 
 
 

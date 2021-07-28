@@ -9,6 +9,18 @@
     "extension_feature2": {"message": "支持书签、历史和标签页等的聚合搜索，避免多处查找"},
     "extension_feature3": {"message": "可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥"},
 
+    "open_extension": {"message": "激活该扩展程序"},
+    "open_workspace_all": {"message": "打开“全部”工作区"},
+    "open_workspace_window": {"message": "打开“窗口”工作区"},
+    "open_workspace_note": {"message": "打开“便签”工作区"},
+    "open_workspace_temporary": {"message": "打开“临时窗口”工作区"},
+    "open_workspace_tab": {"message": "打开“标签”工作区"},
+    "open_workspace_bookmark": {"message": "打开“书签”工作区"},
+    "open_workspace_history": {"message": "打开“历史”工作区"},
+    "add_window": {"message": "添加“窗口”"},
+    "add_note": {"message": "添加“便签”"},
+    "add_temporary": {"message": "添加“临时窗口”"},
+
 
     "tip": {"message": "提示"},
     "cancel": {"message": "取 消"},
@@ -152,7 +164,7 @@
     "hide": {"message": "隐藏"},
     "pageBlurTip": {"message": "透明时会和蒙版叠加"},
     "widthPercentageTip": {"message": "请看宽度百分比"},
-    "open": {"message": "开启"},
+    "enable": {"message": "开启"},
     "close": {"message": "关闭"},
 
     "overall": {"message": "整体"},
@@ -339,6 +351,46 @@
 
 
     "version": {"message": "版本"},
+
+
+    "commonKeymap": {"message": "常用快捷键"},
+    "type": {"message": "类型"},
+    "linkButton": {"message": "链接按钮"},
+    "listSelection": {"message": "列表选择"},
+    "operate": {"message": "操作"},
+    "workspaceSwitching": {"message": "工作区切换"},
+    "specialOperation": {"message": "特殊操作"},
+    "customKeymap": {"message": "用户自定义快捷键"},
+    "open": {"message": "打开"},
+    "putAwayOrJump": {"message": "收起或跳跃"},
+    "copy": {"message": "复制"},
+    "openLine": {"message": "打开对应的行"},
+    "moveTo": {"message": "移动到对应的行"},
+    "moveUp": {"message": "向上移动一行"},
+    "moveDown": {"message": "向下移动一行"},
+    "switchLeft": {"message": "向左切换"},
+    "switchRight": {"message": "向右切换"},
+    "switchToFarLeft": {"message": "切换到最左，即第一个工作区"},
+    "switchToFarRight": {"message": "切换到最右，即最后一个工作区"},
+    "switchWorkspace": {"message": "切换到 “[workspace]” 工作区"},
+    "switchToSpecifiedWorkspace": {"message": "切换到指定的工作区"},
+    "closePopupWindow": {"message": "关闭弹窗"},
+    "setKeymap": {"message": "点此设置快捷键"},
+    "space": {"message": "空格"},
+    "toggle": {"message": "切换"},
+    "search": {"message": "搜索"},
+    "moveToParentFolder": {"message": "移动到父文件夹"},
+    "collapseFolder": {"message": "收起文件夹"},
+    "copyLink": {"message": "复制链接地址"},
+    "copyAllLink": {"message": "复制所有链接地址"},
+
+
+
+
+
+
+
+
 
 
 

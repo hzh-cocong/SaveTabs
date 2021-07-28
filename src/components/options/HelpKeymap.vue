@@ -3,14 +3,14 @@
     class="help-keymap">
     <el-card
       class="box-card"
-      header="常用快捷键">
+      :header="lang('commonKeymap')">
       <el-table
         :data="usualKeymapTableData"
         :span-method="usualKeymapSpanMethod"
         stripe
         border>
-        <el-table-column label="类型" fixed prop="type"></el-table-column>
-        <el-table-column label="快捷键" fixed width="200">
+        <el-table-column :label="lang('type')" fixed prop="type" width="100"></el-table-column>
+        <el-table-column :label="lang('keymap')" fixed width="160">
           <template slot-scope="scope">
             <span
               v-for="(data, index) in scope.row.keymaps"
@@ -18,35 +18,35 @@
               :class="[ data[1] ]">{{ data[0] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="Link Button" width="200"></el-table-column>
-        <el-table-column label="列表" align="center">
-          <el-table-column label="Tab" width="200">
+        <el-table-column :label="lang('linkButton')" width="270" prop="linkButton"></el-table-column>
+        <el-table-column :label="lang('list')" align="center">
+          <el-table-column :label="lang('tab')" width="270" prop="tab">
           </el-table-column>
-          <el-table-column label="Window" width="200">
+          <el-table-column :label="lang('window')" width="270" prop="window">
           </el-table-column>
-          <el-table-column label="Note" width="200">
+          <el-table-column :label="lang('note')" width="270" prop="note">
           </el-table-column>
-          <el-table-column label="Temporary" width="200">
+          <el-table-column :label="lang('temporary')" width="270" prop="temporary">
           </el-table-column>
-          <el-table-column label="Bookmark" width="200">
+          <el-table-column :label="lang('bookmark')" width="270" prop="bookmark">
           </el-table-column>
-          <el-table-column label="History" width="200">
+          <el-table-column :label="lang('history')" width="270" prop="history">
           </el-table-column>
-          <el-table-column label="Toggle" width="200">
+          <el-table-column :label="lang('toggle')" width="270" prop="toggle">
           </el-table-column>
-          <el-table-column label="Search" width="200">
+          <el-table-column :label="lang('search')" width="270" prop="search">
           </el-table-column>
         </el-table-column>
       </el-table>
     </el-card>
     <el-card
       class="box-card"
-      header="列表选择">
+      :header="lang('listSelection')">
       <el-table
         :data="listChoiceKeymapTableData"
         stripe
         border>
-        <el-table-column label="快捷键" fixed width="200">
+        <el-table-column :label="lang('keymap')" fixed width="200">
           <template slot-scope="scope">
             <span
               v-for="(data, index) in scope.row.keymaps"
@@ -54,17 +54,17 @@
               :class="[ data[1] ]">{{ data[0] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="opetation"></el-table-column>
+        <el-table-column :label="lang('operate')" prop="opetation"></el-table-column>
       </el-table>
     </el-card>
     <el-card
       class="box-card"
-      header="工作区切换">
+      :header="lang('workspaceSwitching')">
       <el-table
         :data="workspaceToggleKeymapTableData"
         stripe
         border>
-        <el-table-column label="快捷键" fixed width="200">
+        <el-table-column :label="lang('keymap')" fixed width="200">
           <template slot-scope="scope">
             <span
               v-for="(data, index) in scope.row.keymaps"
@@ -72,17 +72,17 @@
               :class="[ data[1] ]">{{ data[0] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="opetation"></el-table-column>
+        <el-table-column :label="lang('operate')" prop="opetation"></el-table-column>
       </el-table>
     </el-card>
     <el-card
       class="box-card"
-      header="特殊操作">
+      :header="lang('specialOperation')">
       <el-table
         :data="specialKeymapTableData"
         stripe
         border>
-        <el-table-column label="快捷键" fixed width="200">
+        <el-table-column :label="lang('keymap')" fixed width="200">
           <template slot-scope="scope">
             <span
               v-for="(data, index) in scope.row.keymaps"
@@ -105,33 +105,38 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="opetation"></el-table-column>
+        <el-table-column :label="lang('operate')" prop="opetation"></el-table-column>
       </el-table>
     </el-card>
     <el-card
       class="box-card"
-      header="用户自定义快捷键">
+      :header="lang('customKeymap')">
       <el-table
         :data="commands"
         stripe
         border>
-        <el-table-column label="快捷键" fixed width="200">
+        <el-table-column :label="lang('keymap')" fixed width="200">
           <template slot-scope="scope">
             <template v-if="scope.row.shortcut == ''">
               <el-link
                 target="_blank"
                 :underline="false"
-                @click="$open('chrome://extensions/shortcuts', getKeyType($event))">点此设置快捷键</el-link>
+                @click="$open('chrome://extensions/shortcuts', getKeyType($event))">{{ lang('setKeymap') }}</el-link>
             </template>
-            <template v-for="(data, index) in scope.row.shortcut.replace(/space/i, ' ').split('')">
+            <template v-for="(data, index) in scope.row.shortcut.replace(new RegExp(lang('space'), 'i'), ' ').split('')">
               <span :key="index">
-                <span class="keymap-box">{{ data == ' ' ? 'Space' : data }}</span>
-                <span v-if="index < scope.row.shortcut.replace(/space/i, ' ').split('').length-1">+</span>
+                <span class="keymap-box">{{ data == ' ' ? lang('space') : data }}</span>
+                <span v-if="index < scope.row.shortcut.replace(new RegExp(lang('space'), 'i'), ' ').split('').length-1">+</span>
               </span>
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="description"></el-table-column>
+        <!-- <el-table-column :label="lang('operate')" prop="description"> -->
+        <el-table-column :label="lang('operate')">
+          <template slot-scope="scope">
+            {{ scope.row.name == '_execute_browser_action' ? lang('open_extension') : scope.row.description }}
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>
@@ -157,131 +162,194 @@ export default {
   data() {
     return {
       usualKeymapTableData: [{
-        type: '打开',
+        type: this.lang('open'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
-                : [['Ctrl', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
+                : [['Ctrl', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']],
+        linkButton: this.lang('openTabWithoutSwitch'),
+        tab: this.lang('moveToRight'),
+        window: this.lang('openCurrentWindowButNotSelect'),
+        note: this.lang('openTabWithoutSwitch'),
+        temporary: this.lang('openCurrentWindowButNotSelect'),
+        bookmark: this.lang('openTabWithoutSwitch'),
+        history: this.lang('openTabWithoutSwitch'),
+        toggle: this.lang('switchToSpecifiedWorkspace'),
+        search: this.lang('openTabWithoutSwitch'),
       }, {
-        type: '打开',
+        type: this.lang('open'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⌥', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
-                : [['Alt', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
+                : [['Alt', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']],
+        linkButton: this.lang('overwriteCurrentTab'),
+        tab: this.lang('swapWithCurrentTab'),
+        window: this.lang('openCurrentWindowAndSelect'),
+        note: this.lang('overwriteCurrentTab'),
+        temporary: this.lang('openCurrentWindowAndSelect'),
+        bookmark: this.lang('overwriteCurrentTab'),
+        history: this.lang('overwriteCurrentTab'),
+        toggle: this.lang('switchToSpecifiedWorkspace'),
+        search: this.lang('overwriteCurrentTab'),
       }, {
-        type: '打开',
+        type: this.lang('open'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⇧', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
-                : [['Shift', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
+                : [['Shift', 'keymap-box'], '+', ['↩', 'keymap-box'], '/', ['Click', 'keymap-box']],
+        linkButton: this.lang('openNewWindow'),
+        tab: this.lang('moveToNewWindow'),
+        window: this.lang('openNewWindow'),
+        note: this.lang('openNewWindow'),
+        temporary: this.lang('openNewWindow'),
+        bookmark: this.lang('openNewWindow'),
+        history: this.lang('openNewWindow'),
+        toggle: this.lang('switchToSpecifiedWorkspace'),
+        search: this.lang('openNewWindow'),
       }, {
-        type: '打开',
+        type: this.lang('open'),
         keymaps: this._device.platform == 'Mac'
                 ? [['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
-                : [['↩', 'keymap-box'], '/', ['Click', 'keymap-box']]
+                : [['↩', 'keymap-box'], '/', ['Click', 'keymap-box']],
+        linkButton: this.lang('openTabAndSwitch'),
+        tab: this.lang('switchTab'),
+        window: this.lang('openNewWindow'),
+        note: this.lang('openTabAndSwitch'),
+        temporary: this.lang('openNewWindow'),
+        bookmark: this.lang('openTabAndSwitch'),
+        history: this.lang('openTabAndSwitch'),
+        toggle: this.lang('switchToSpecifiedWorkspace'),
+        search: this.lang('openTabAndSwitch'),
       }, {
-        type: '打开',
+        type: this.lang('open'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['↓', 'keymap-box']]
-                : [['Ctrl', 'keymap-box'], '+', ['↓', 'keymap-box']]
+                : [['Ctrl', 'keymap-box'], '+', ['↓', 'keymap-box']],
+        linkButton: '-',
+        tab: this.lang('switchTab'),
+        window: this.lang('openNewWindow'),
+        note: this.lang('openTabAndSwitch'),
+        temporary: this.lang('openNewWindow'),
+        bookmark: this.lang('openTabAndSwitch'),
+        history: this.lang('openTabAndSwitch'),
+        toggle: this.lang('switchToSpecifiedWorkspace'),
+        search: this.lang('openTabAndSwitch'),
       }, {
-        type: '收起或跳跃',
+        type: this.lang('putAwayOrJump'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['↑', 'keymap-box']]
-                : [['Ctrl', 'keymap-box'], '+', ['↑', 'keymap-box']]
+                : [['Ctrl', 'keymap-box'], '+', ['↑', 'keymap-box']],
+        linkButton: '-',
+        tab: '-',
+        window: '-',
+        note: '-',
+        temporary: '-',
+        bookmark: this.lang('moveToParentFolder'),
+        history: this.lang('collapseFolder'),
+        toggle: '-',
+        search: '-',
       }, {
-        type: '复制',
+        type: this.lang('copy'),
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['C', 'keymap-box']]
-                : [['Ctrl', 'keymap-box'], '+', ['C', 'keymap-box']]
+                : [['Ctrl', 'keymap-box'], '+', ['C', 'keymap-box']],
+        linkButton: '-',
+        tab: this.lang('copyLink'),
+        window: this.lang('copyAllLink'),
+        note: this.lang('copyLink'),
+        temporary: this.lang('copyAllLink'),
+        bookmark: this.lang('copyAllLink'),
+        history: this.lang('copyAllLink'),
+        toggle: '-',
+        search: this.lang('copyLink'),
       }],
 
       listChoiceKeymapTableData: [{
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['1', 'keymap-box'], '~', ['9', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['1', 'keymap-box'], '~', ['9', 'keymap-box']],
-        opetation: '打开对应的行'
+        opetation: this.lang('openLine'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['⌥', 'keymap-box'], '+', ['1', 'keymap-box'], '~', ['9', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['Alt', 'keymap-box'], '+', ['1', 'keymap-box'], '~', ['9', 'keymap-box']],
-        opetation: '移动到对应的行'
+        opetation: this.lang('moveTo'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['↑', 'keymap-box']]
                 : [['↑', 'keymap-box']],
-        opetation: '向上移动一行'
+        opetation: this.lang('moveUp'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['↓', 'keymap-box']]
                 : [['↓', 'keymap-box']],
-        opetation: '向下移动一行'
+        opetation: this.lang('moveDown'),
       }],
 
       workspaceToggleKeymapTableData: [{
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['[', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['[', 'keymap-box']],
-        opetation: '向左切换'
+        opetation: this.lang('switchLeft'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', [']', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', [']', 'keymap-box']],
-        opetation: '向右切换'
+        opetation: this.lang('switchRight'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⇥', 'keymap-box'], '+', ['⇧', 'keymap-box']]
                 : [['tab', 'keymap-box'], '+', ['shift', 'keymap-box']],
-        opetation: '向左切换'
+        opetation: this.lang('switchLeft'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⇥', 'keymap-box']]
                 : [['tab', 'keymap-box']],
-        opetation: '向右切换'
+        opetation: this.lang('switchRight'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['←', 'keymap-box']]
                 : [['←', 'keymap-box']],
-        opetation: '向左切换'
+        opetation: this.lang('switchLeft'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['→', 'keymap-box']]
                 : [['→', 'keymap-box']],
-        opetation: '向右切换'
+        opetation: this.lang('switchRight'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['←', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['←', 'keymap-box']],
-        opetation: '切换到最左，即第一个工作区'
+        opetation: this.lang('switchToFarLeft'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['→', 'keymap-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['→', 'keymap-box']],
-        opetation: '切换到最右，即最后一个工作区'
+        opetation: this.lang('switchToFarRight'),
       }],
 
       specialKeymapTableData: [{
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['el-icon-download', 'button-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['el-icon-download', 'button-box']],
-        opetation: '切换到 窗口 工作区'
+        opetation: this.lang('switchWorkspace').replace('[workspace]', this.lang('window'))
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['el-icon-collection-tag', 'button-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['el-icon-collection-tag', 'button-box']],
-        opetation: '切换到 便签 工作区'
+        opetation: this.lang('switchWorkspace').replace('[workspace]', this.lang('note'))
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['⌘', 'keymap-box'], '+', ['el-icon-paperclip', 'button-box']]
                 : [['Ctrl', 'keymap-box'], '+', ['el-icon-paperclip', 'button-box']],
-        opetation: '切换到 临时 工作区'
+        opetation: this.lang('switchWorkspace').replace('[workspace]', this.lang('temporary'))
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['>', 'input-box']]
                 : [['>', 'input-box']],
-        opetation: '切换到指定的工作区'
+        opetation: this.lang('switchToSpecifiedWorkspace'),
       }, {
         keymaps: this._device.platform == 'Mac'
                 ? [['esc', 'keymap-box']]
                 : [['esc', 'keymap-box']],
-        opetation: '关闭弹窗'
+        opetation: this.lang('closePopupWindow'),
       }]
     }
   },
@@ -307,10 +375,6 @@ export default {
         }
       }
     }
-  },
-  mounted() {
-    // todo
-    window.hk = this;
   }
 }
 </script>

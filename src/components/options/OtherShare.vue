@@ -23,22 +23,17 @@
               <img
                 src="@/assets/images/logo/wechat_48x48.png"
                 style="cursor: default;"
-                :title="lang('shareToWeChat')" />
+                :title="lang('shareToWeChat')"
+                @mouseenter="getWeChatUrl" />
               <div
                 slot="content"
-                class="qrcode-box">
+                class="qrcode-box"
+                @mousedown.prevent>
                 <img
-                  v-if="country == 'zh_CN'"
-                  src="@/assets/web-qrcode-200x200.png"
-                  title="https://www.cocong.cn/savetabs"
+                  :src="weChatUrl"
+                  :title="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')"
                   style="width:100%; cursor: pointer;"
-                  @click="$open('https://www.cocong.cn/savetabs', getKeyType($event))"/>
-                <img
-                  v-else
-                  src="@/assets/web-qrcode-en-200x200.png"
-                  title="https://www.cocong.cn/savetabs/#/en"
-                  style="width:100%; cursor: pointer;"
-                  @click="$open('https://www.cocong.cn/savetabs/#/en', getKeyType($event))"/>
+                  @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))"/>
                 <div>{{ lang('wechatSharingTip1') }}</div>
                 <div>{{ lang('wechatSharingTip2') }}</div>
               </div>
@@ -67,18 +62,22 @@
 </template>
 
 <script>
+import QRCode from 'qrcode'
+
 export default {
   name: 'OtherShare',
   data() {
     return {
       country: this.lang('@@ui_locale'), // 'zh_CN',
+
+      weChatUrl: '',
     }
   },
   computed: {
     weiboUrl() {
       let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"
@@ -90,7 +89,7 @@ export default {
     twitterUrl() {
       let format = 'https://twitter.com/intent/tweet?text={title}&url={url}&via={origin}';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"
@@ -101,7 +100,7 @@ export default {
     facebookUrl() {
       let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"
@@ -109,6 +108,22 @@ export default {
         '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png'),
       });
     }
+  },
+  methods: {
+    getWeChatUrl() {
+      if(this.weChatUrl != '') return;
+
+      QRCode.toDataURL('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale'), {
+        errorCorrectionLevel: 'L',
+        quality: 1,
+        margin: 0,
+        width: 200,
+      },(error, url)=>{
+        if(error) return;
+
+        return this.weChatUrl = url;
+      })
+    },
   }
 }
 </script>

@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Gestione schede finestra"},
+    "extension_description": {"message": "Salva e apri tutte le pagine web con un clic."},
+
+    "extension_title": {"message": "Semplice, efficiente e personalizzato"},
+    "extension_feature1": {"message": "Salva e apri tutte le pagine web con un clic."},
+    "extension_feature2": {"message": "Supporta la ricerca di segnalibri, cronologia, schede."},
+    "extension_feature3": {"message": "Puoi facilmente regolare il comportamento e lo stile dell'estensione."},
+
+    "sharingTip": {"message": "(Estensione del browser)"}
+}

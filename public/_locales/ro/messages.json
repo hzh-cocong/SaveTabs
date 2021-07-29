@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Manager filă fereastră"},
+    "extension_description": {"message": "Salvați și deschideți toate paginile web cu un singur clic."},
+
+    "extension_title": {"message": "Simplu, eficient și personalizat"},
+    "extension_feature1": {"message": "Salvați și deschideți toate paginile web cu un singur clic."},
+    "extension_feature2": {"message": "Suportă căutarea marcajelor, istoricului, filelor."},
+    "extension_feature3": {"message": "Puteți regla cu ușurință comportamentul și stilul extensiei."},
+
+    "sharingTip": {"message": "(Extensie browser)"}
+}

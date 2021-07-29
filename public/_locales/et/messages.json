@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Aknakaardi haldur"},
+    "extension_description": {"message": "Salvestage ja avage kõik veebilehed ühe klõpsuga."},
+
+    "extension_title": {"message": "Lihtne, tõhus ja isikupärastatud"},
+    "extension_feature1": {"message": "Salvestage ja avage kõik veebilehed ühe klõpsuga."},
+    "extension_feature2": {"message": "Toetage järjehoidjate, ajaloo, vahelehtede otsimist."},
+    "extension_feature3": {"message": "Saate hõlpsalt kohandada laienduse käitumist ja stiili."},
+
+    "sharingTip": {"message": "(Brauseri laiendus)"}
+}

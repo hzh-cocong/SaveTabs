@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Vindue Tab Manager"},
+    "extension_description": {"message": "Gem og åbn alle websider med et klik."},
+
+    "extension_title": {"message": "Enkel, effektiv og personlig"},
+    "extension_feature1": {"message": "Gem og åbn alle websider med et klik."},
+    "extension_feature2": {"message": "Support søgning efter bogmærker, historik, faner."},
+    "extension_feature3": {"message": "Du kan nemt justere adfærd og stil for udvidelsen."},
+
+    "sharingTip": {"message": "(Browserudvidelse)"}
+}

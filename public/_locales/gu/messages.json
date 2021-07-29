@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "વિન્ડો ટેબ મેનેજર"},
+    "extension_description": {"message": "એક ક્લિક સાથે તમામ વેબ પેજ સાચવો અને ખોલો."},
+
+    "extension_title": {"message": "સરળ, કાર્યક્ષમ અને વ્યક્તિગત"},
+    "extension_feature1": {"message": "એક ક્લિક સાથે તમામ વેબ પેજ સાચવો અને ખોલો."},
+    "extension_feature2": {"message": "બુકમાર્ક્સ, ઇતિહાસ, ટેબ્સ માટે શોધને સપોર્ટ કરો."},
+    "extension_feature3": {"message": "તમે એક્સ્ટેંશનની વર્તણૂક અને શૈલીને સરળતાથી ગોઠવી શકો છો."},
+
+    "sharingTip": {"message": "(બ્રાઉઝર એક્સ્ટેંશન)"}
+}

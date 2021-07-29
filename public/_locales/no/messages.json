@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Vindusfanebehandler"},
+    "extension_description": {"message": "Lagre og åpne alle nettsider med ett klikk."},
+
+    "extension_title": {"message": "Enkelt, effektivt og personlig"},
+    "extension_feature1": {"message": "Lagre og åpne alle nettsider med ett klikk."},
+    "extension_feature2": {"message": "Støtte søk etter bokmerker, historie, faner."},
+    "extension_feature3": {"message": "Du kan enkelt justere oppførselen og stilen til utvidelsen."},
+
+    "sharingTip": {"message": "(Nettleserutvidelse)"}
+}

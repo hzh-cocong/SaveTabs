@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "SaveTabs - 창 탭 관리자"},
+    "extension_description": {"message": "한 번의 클릭으로 모든 웹 페이지를 저장하고 엽니다."},
+
+    "extension_title": {"message": "간단하고 효율적이며 개인화"},
+    "extension_feature1": {"message": "한 번의 클릭으로 모든 웹 페이지를 저장하고 엽니다."},
+    "extension_feature2": {"message": "책갈피, 기록, 탭 검색을 지원합니다."},
+    "extension_feature3": {"message": "확장의 동작과 스타일을 쉽게 조정할 수 있습니다."},
+
+    "sharingTip": {"message": "(브라우저 확장)"}
+}

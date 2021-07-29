@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Window Tab Manager"},
+    "extension_description": {"message": "I-save at buksan ang lahat ng mga web page sa isang pag-click."},
+
+    "extension_title": {"message": "Simple, Mahusay At Isinapersonal"},
+    "extension_feature1": {"message": "I-save at buksan ang lahat ng mga web page sa isang pag-click."},
+    "extension_feature2": {"message": "Suportahan ang paghahanap para sa mga bookmark, kasaysayan, mga tab."},
+    "extension_feature3": {"message": "Madali mong maaayos ang pag-uugali at istilo ng extension."},
+
+    "sharingTip": {"message": "(Extension ng Browser)"}
+}

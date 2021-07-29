@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Fönsterflikhanteraren"},
+    "extension_description": {"message": "Spara och öppna alla webbsidor med ett klick."},
+
+    "extension_title": {"message": "Enkelt, effektivt och personligt"},
+    "extension_feature1": {"message": "Spara och öppna alla webbsidor med ett klick."},
+    "extension_feature2": {"message": "Stöd för sökning efter bokmärken, historik, flikar."},
+    "extension_feature3": {"message": "Du kan enkelt justera beteendet och stilen på tillägget."},
+
+    "sharingTip": {"message": "(Webbläsartillägg)"}
+}

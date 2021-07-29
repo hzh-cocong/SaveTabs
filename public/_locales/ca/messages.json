@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Gestor de pestanyes de finestra"},
+    "extension_description": {"message": "Deseu i obriu totes les pàgines web amb un sol clic."},
+
+    "extension_title": {"message": "Senzill, eficaç i personalitzat"},
+    "extension_feature1": {"message": "Deseu i obriu totes les pàgines web amb un sol clic."},
+    "extension_feature2": {"message": "Suporta la cerca de marcadors, historial i pestanyes."},
+    "extension_feature3": {"message": "Podeu ajustar fàcilment el comportament i l'estil de l'extensió."},
+
+    "sharingTip": {"message": "(Extensió del navegador)"}
+}

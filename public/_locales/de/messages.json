@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Fensterregisterkarten-Manager"},
+    "extension_description": {"message": "Speichern und öffnen Sie alle Webseiten mit einem Klick."},
+
+    "extension_title": {"message": "Einfach, effizient und personalisiert"},
+    "extension_feature1": {"message": "Speichern und öffnen Sie alle Webseiten mit einem Klick."},
+    "extension_feature2": {"message": "Unterstützen Sie die Suche nach Lesezeichen, Verlauf, Registerkarten."},
+    "extension_feature3": {"message": "Sie können das Verhalten und den Stil der Erweiterung einfach anpassen."},
+
+    "sharingTip": {"message": "(Browsererweiterung)"}
+}

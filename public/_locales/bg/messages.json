@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Window Tab Manager"},
+    "extension_description": {"message": "Запазете и отворете всички уеб страници с едно щракване."},
+
+    "extension_title": {"message": "Прост, ефективен и персонализиран"},
+    "extension_feature1": {"message": "Запазете и отворете всички уеб страници с едно щракване."},
+    "extension_feature2": {"message": "Поддържайте търсене на отметки, история, раздели."},
+    "extension_feature3": {"message": "Можете лесно да коригирате поведението и стила на разширението."},
+
+    "sharingTip": {"message": "(Разширение на браузъра)"}
+}

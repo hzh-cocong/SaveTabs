@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "מנהל כרטיסיות חלון"},
+    "extension_description": {"message": "שמור ופתח את כל דפי האינטרנט בלחיצה אחת."},
+
+    "extension_title": {"message": "פשוט, יעיל ומותאם אישית"},
+    "extension_feature1": {"message": "שמור ופתח את כל דפי האינטרנט בלחיצה אחת."},
+    "extension_feature2": {"message": "תמיכה בחיפוש סימניות, היסטוריה, כרטיסיות."},
+    "extension_feature3": {"message": "אתה יכול בקלות להתאים את ההתנהגות והסגנון של התוסף."},
+
+    "sharingTip": {"message": "(הרחבת דפדפן)"}
+}

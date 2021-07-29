@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Trình quản lý tab cửa sổ"},
+    "extension_description": {"message": "Lưu và mở tất cả các trang web bằng một cú nhấp chuột."},
+
+    "extension_title": {"message": "Đơn giản, hiệu quả và được cá nhân hóa"},
+    "extension_feature1": {"message": "Lưu và mở tất cả các trang web bằng một cú nhấp chuột."},
+    "extension_feature2": {"message": "Hỗ trợ tìm kiếm dấu trang, lịch sử, tab."},
+    "extension_feature3": {"message": "Bạn có thể dễ dàng điều chỉnh hành vi và phong cách của tiện ích mở rộng."},
+
+    "sharingTip": {"message": "(Tiện ích mở rộng trình duyệt)"}
+}

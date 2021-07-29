@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "የመስኮት ትር አስተዳዳሪ"},
+    "extension_description": {"message": "በአንድ ጠቅታ ሁሉንም የድር ገጾች ያስቀምጡ እና ይክፈቱ።"},
+
+    "extension_title": {"message": "ቀላል ፣ ውጤታማ እና ግላዊነት የተላበሰ"},
+    "extension_feature1": {"message": "በአንድ ጠቅታ ሁሉንም የድር ገጾች ያስቀምጡ እና ይክፈቱ።"},
+    "extension_feature2": {"message": "ለዕልባቶች ፣ ታሪክ ፣ ትሮች የድጋፍ ፍለጋ።"},
+    "extension_feature3": {"message": "የቅጥያውን ባህሪ እና ዘይቤ በቀላሉ ማስተካከል ይችላሉ።"},
+
+    "sharingTip": {"message": "(የአሳሽ ቅጥያ)"}
+}

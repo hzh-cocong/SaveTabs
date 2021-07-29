@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Venstertabbladbeheer"},
+    "extension_description": {"message": "Bewaar en open alle webpagina's met één klik."},
+
+    "extension_title": {"message": "Eenvoudig, efficiënt en gepersonaliseerd"},
+    "extension_feature1": {"message": "Bewaar en open alle webpagina's met één klik."},
+    "extension_feature2": {"message": "Ondersteuning zoeken naar bladwijzers, geschiedenis, tabbladen."},
+    "extension_feature3": {"message": "U kunt het gedrag en de stijl van de extensie eenvoudig aanpassen."},
+
+    "sharingTip": {"message": "(Browserextensie)"}
+}

@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Pencere Sekmesi Yöneticisi"},
+    "extension_description": {"message": "Tüm web sayfalarını tek tıklamayla kaydedin ve açın."},
+
+    "extension_title": {"message": "Basit, Verimli ve Kişiselleştirilmiş"},
+    "extension_feature1": {"message": "Tüm web sayfalarını tek tıklamayla kaydedin ve açın."},
+    "extension_feature2": {"message": "Yer imleri, geçmiş, sekmeler için arama desteği."},
+    "extension_feature3": {"message": "Uzantının davranışını ve stilini kolayca ayarlayabilirsiniz."},
+
+    "sharingTip": {"message": "(Tarayıcı Uzantısı)"}
+}

@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Upravitelj zavihkov oken"},
+    "extension_description": {"message": "Shranite in odprite vse spletne strani z enim klikom."},
+
+    "extension_title": {"message": "Enostavno, učinkovito in prilagojeno"},
+    "extension_feature1": {"message": "Shranite in odprite vse spletne strani z enim klikom."},
+    "extension_feature2": {"message": "Podprite iskanje po zaznamkih, zgodovini in zavihkih."},
+    "extension_feature3": {"message": "Obnašanje in slog razširitve lahko preprosto prilagodite."},
+
+    "sharingTip": {"message": "(Razširitev brskalnika)"}
+}

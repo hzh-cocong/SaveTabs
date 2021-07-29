@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Gerenciador de abas de janela"},
+    "extension_description": {"message": "Salve e abra todas as páginas da web com um clique."},
+
+    "extension_title": {"message": "Simples, eficiente e personalizado"},
+    "extension_feature1": {"message": "Salve e abra todas as páginas da web com um clique."},
+    "extension_feature2": {"message": "Pesquisa de suporte para favoritos, histórico, guias."},
+    "extension_feature3": {"message": "Você pode ajustar facilmente o comportamento e o estilo da extensão."},
+
+    "sharingTip": {"message": "(Extensão do navegador)"}
+}

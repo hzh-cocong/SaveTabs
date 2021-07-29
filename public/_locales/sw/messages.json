@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Meneja wa Kichupo cha Dirisha"},
+    "extension_description": {"message": "Hifadhi na ufungue kurasa zote za wavuti kwa mbofyo mmoja."},
+
+    "extension_title": {"message": "Rahisi, Ufanisi na Msako"},
+    "extension_feature1": {"message": "Hifadhi na ufungue kurasa zote za wavuti kwa mbofyo mmoja."},
+    "extension_feature2": {"message": "Tafuta utaftaji wa alamisho, historia, tabo."},
+    "extension_feature3": {"message": "Unaweza kurekebisha tabia na mtindo wa ugani kwa urahisi."},
+
+    "sharingTip": {"message": "(Kiendelezi cha Kivinjari)"}
+}

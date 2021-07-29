@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Lango skirtukų tvarkyklė"},
+    "extension_description": {"message": "Išsaugokite ir atidarykite visus tinklalapius vienu paspaudimu."},
+
+    "extension_title": {"message": "Paprasta, efektyvi ir personalizuota"},
+    "extension_feature1": {"message": "Išsaugokite ir atidarykite visus tinklalapius vienu paspaudimu."},
+    "extension_feature2": {"message": "Palaikykite žymių, istorijos, skirtukų paiešką."},
+    "extension_feature3": {"message": "Galite lengvai koreguoti plėtinio elgesį ir stilių."},
+
+    "sharingTip": {"message": "(Naršyklės plėtinys)"}
+}

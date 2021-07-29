@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Administrador de pestañas de ventana"},
+    "extension_description": {"message": "Guarde y abra todas las páginas web con un solo clic."},
+
+    "extension_title": {"message": "Sencilla, eficiente y personalizada"},
+    "extension_feature1": {"message": "Guarde y abra todas las páginas web con un solo clic."},
+    "extension_feature2": {"message": "Admite la búsqueda de marcadores, historial, pestañas."},
+    "extension_feature3": {"message": "Puede ajustar fácilmente el comportamiento y el estilo de la extensión."},
+
+    "sharingTip": {"message": "(Extensión del navegador)"}
+}

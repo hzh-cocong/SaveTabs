@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Upravitelj kartica prozora"},
+    "extension_description": {"message": "Spremite i otvorite sve web stranice jednim klikom."},
+
+    "extension_title": {"message": "Jednostavno, učinkovito i prilagođeno"},
+    "extension_feature1": {"message": "Spremite i otvorite sve web stranice jednim klikom."},
+    "extension_feature2": {"message": "Podržite pretraživanje oznaka, povijesti, kartica."},
+    "extension_feature3": {"message": "Možete jednostavno prilagoditi ponašanje i stil proširenja."},
+
+    "sharingTip": {"message": "(Proširenje preglednika)"}
+}

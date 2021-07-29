@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "विंडो टॅब व्यवस्थापक"},
+    "extension_description": {"message": "एका क्लिकवर सर्व वेब पृष्ठे जतन करा आणि उघडा."},
+
+    "extension_title": {"message": "साधे, कार्यक्षम आणि वैयक्तिकृत"},
+    "extension_feature1": {"message": "एका क्लिकवर सर्व वेब पृष्ठे जतन करा आणि उघडा."},
+    "extension_feature2": {"message": "बुकमार्क, इतिहास, टॅबसाठी शोध समर्थन."},
+    "extension_feature3": {"message": "आपण विस्ताराचे वर्तन आणि शैली सहजपणे समायोजित करू शकता."},
+
+    "sharingTip": {"message": "(ब्राउझर विस्तार)"}
+}

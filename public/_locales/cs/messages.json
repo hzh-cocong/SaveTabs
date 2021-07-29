@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Správce záložek okna"},
+    "extension_description": {"message": "Uložte a otevřete všechny webové stránky jediným kliknutím."},
+
+    "extension_title": {"message": "Jednoduché, efektivní a přizpůsobené"},
+    "extension_feature1": {"message": "Uložte a otevřete všechny webové stránky jediným kliknutím."},
+    "extension_feature2": {"message": "Podpora vyhledávání záložek, historie, karet."},
+    "extension_feature3": {"message": "Chování a styl rozšíření můžete snadno upravit."},
+
+    "sharingTip": {"message": "(Rozšíření prohlížeče)"}
+}

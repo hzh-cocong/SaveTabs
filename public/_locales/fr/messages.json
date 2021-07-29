@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Gestionnaire d'onglets de fenêtre"},
+    "extension_description": {"message": "Enregistrez et ouvrez toutes les pages Web en un seul clic."},
+
+    "extension_title": {"message": "Simple, efficace et personnalisé"},
+    "extension_feature1": {"message": "Enregistrez et ouvrez toutes les pages Web en un seul clic."},
+    "extension_feature2": {"message": "Prise en charge de la recherche de signets, historique, onglets."},
+    "extension_feature3": {"message": "Vous pouvez facilement ajuster le comportement et le style de l'extension."},
+
+    "sharingTip": {"message": "(Extension de navigateur)"}
+}

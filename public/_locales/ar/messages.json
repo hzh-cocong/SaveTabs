@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "نافذة تبويب مدير"},
+    "extension_description": {"message": "احفظ وافتح جميع صفحات الويب بنقرة واحدة."},
+
+    "extension_title": {"message": "بسيطة وفعالة ومخصصة"},
+    "extension_feature1": {"message": "احفظ وافتح جميع صفحات الويب بنقرة واحدة."},
+    "extension_feature2": {"message": "دعم البحث عن الإشارات المرجعية والتاريخ وعلامات التبويب."},
+    "extension_feature3": {"message": "يمكنك بسهولة ضبط سلوك وأسلوب الامتداد."},
+
+    "sharingTip": {"message": "(ملحق المتصفح)"}
+}

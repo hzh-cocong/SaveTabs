@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Menedżer zakładek okien"},
+    "extension_description": {"message": "Zapisz i otwórz wszystkie strony internetowe jednym kliknięciem."},
+
+    "extension_title": {"message": "Prosty, wydajny i spersonalizowany"},
+    "extension_feature1": {"message": "Zapisz i otwórz wszystkie strony internetowe jednym kliknięciem."},
+    "extension_feature2": {"message": "Wsparcie wyszukiwania zakładek, historii, kart."},
+    "extension_feature3": {"message": "Możesz łatwo dostosować zachowanie i styl rozszerzenia."},
+
+    "sharingTip": {"message": "(Rozszerzenie przeglądarki)"}
+}

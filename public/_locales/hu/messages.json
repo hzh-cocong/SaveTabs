@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Ablak lapkezelő"},
+    "extension_description": {"message": "Mentse el és nyissa meg az összes weboldalt egyetlen kattintással."},
+
+    "extension_title": {"message": "Egyszerű, hatékony és személyre szabott"},
+    "extension_feature1": {"message": "Mentse el és nyissa meg az összes weboldalt egyetlen kattintással."},
+    "extension_feature2": {"message": "Támogatja a könyvjelzők, előzmények, lapok keresését."},
+    "extension_feature3": {"message": "Könnyedén beállíthatja a bővítmény viselkedését és stílusát."},
+
+    "sharingTip": {"message": "(Böngészőbővítmény)"}
+}

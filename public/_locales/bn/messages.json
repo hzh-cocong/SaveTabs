@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "উইন্ডো ট্যাব ম্যানেজার"},
+    "extension_description": {"message": "এক ক্লিকে সকল ওয়েব পেজ সেভ করুন এবং ওপেন করুন।"},
+
+    "extension_title": {"message": "সহজ, দক্ষ এবং ব্যক্তিগতকৃত"},
+    "extension_feature1": {"message": "এক ক্লিকে সকল ওয়েব পেজ সেভ করুন এবং ওপেন করুন।"},
+    "extension_feature2": {"message": "বুকমার্ক, ইতিহাস, ট্যাবগুলির জন্য সহায়তা অনুসন্ধান।"},
+    "extension_feature3": {"message": "আপনি সহজেই এক্সটেনশনের আচরণ এবং শৈলী সামঞ্জস্য করতে পারেন।"},
+
+    "sharingTip": {"message": "(ব্রাউজার এক্সটেনশন)"}
+}

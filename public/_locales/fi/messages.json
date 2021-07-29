@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Ikkuna -välilehden hallinta"},
+    "extension_description": {"message": "Tallenna ja avaa kaikki verkkosivut yhdellä napsautuksella."},
+
+    "extension_title": {"message": "Yksinkertainen, tehokas ja yksilöllinen"},
+    "extension_feature1": {"message": "Tallenna ja avaa kaikki verkkosivut yhdellä napsautuksella."},
+    "extension_feature2": {"message": "Tuki kirjanmerkkien, historian ja välilehtien etsimiselle."},
+    "extension_feature3": {"message": "Voit helposti säätää laajennuksen käyttäytymistä ja tyyliä."},
+
+    "sharingTip": {"message": "(Selaimen laajennus)"}
+}

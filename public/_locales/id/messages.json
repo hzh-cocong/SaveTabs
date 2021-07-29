@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Manajer Tab Jendela"},
+    "extension_description": {"message": "Simpan dan buka semua halaman web dengan satu klik."},
+
+    "extension_title": {"message": "Sederhana, Efisien, dan Dipersonalisasi"},
+    "extension_feature1": {"message": "Simpan dan buka semua halaman web dengan satu klik."},
+    "extension_feature2": {"message": "Dukungan pencarian untuk bookmark, sejarah, tab."},
+    "extension_feature3": {"message": "Anda dapat dengan mudah menyesuaikan perilaku dan gaya ekstensi."},
+
+    "sharingTip": {"message": "(Ekstensi Peramban)"}
+}

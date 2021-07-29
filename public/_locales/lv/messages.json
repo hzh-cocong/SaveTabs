@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "Logu cilņu pārvaldnieks"},
+    "extension_description": {"message": "Saglabājiet un atveriet visas tīmekļa lapas ar vienu klikšķi."},
+
+    "extension_title": {"message": "Vienkāršs, efektīvs un personalizēts"},
+    "extension_feature1": {"message": "Saglabājiet un atveriet visas tīmekļa lapas ar vienu klikšķi."},
+    "extension_feature2": {"message": "Atbalsta grāmatzīmju, vēstures, cilņu meklēšanu."},
+    "extension_feature3": {"message": "Jūs varat viegli pielāgot paplašinājuma uzvedību un stilu."},
+
+    "sharingTip": {"message": "(Pārlūkprogrammas paplašinājums)"}
+}

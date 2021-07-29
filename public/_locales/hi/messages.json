@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "विंडो टैब मैनेजर"},
+    "extension_description": {"message": "एक क्लिक के साथ सभी वेब पेज सहेजें और खोलें।"},
+
+    "extension_title": {"message": "सरल, कुशल और निजीकृत"},
+    "extension_feature1": {"message": "एक क्लिक के साथ सभी वेब पेज सहेजें और खोलें।"},
+    "extension_feature2": {"message": "बुकमार्क, इतिहास, टैब के लिए समर्थन खोज।"},
+    "extension_feature3": {"message": "आप एक्सटेंशन के व्यवहार और शैली को आसानी से समायोजित कर सकते हैं।"},
+
+    "sharingTip": {"message": "(ब्राउज़र एक्सटेंशन)"}
+}

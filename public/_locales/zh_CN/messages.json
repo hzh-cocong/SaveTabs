@@ -256,6 +256,7 @@
     "workspaceOrder": {"message": "工作区顺序"},
     "buttonOrder": {"message": "按钮顺序"},
     "enableWorkspaceTip": {"message": "请先开启该工作区"},
+    "workspaceCountLimit": {"message": "至少要有一个工作区"},
     "commonFunctions": {"message": "常用功能"},
     "openLeftAndRightShortcuts": {"message": "开启左右快捷键"},
     "workspaceSwitchingKeywords": {"message": "工作区切换关键词"},
@@ -265,6 +266,7 @@
     "modifySuccess": {"message": "修改成功"},
     "popup": {"message": "弹出"},
     "inject": {"message": "注入"},
+    "darkMode": {"message": "暗黑模式"},
 
 
     "smartSorting": {"message": "智能排序"},
@@ -305,6 +307,9 @@
     "resetConfirm": {"message": "确定还原默认配置？"},
     "saveSuccess": {"message": "保存成功"},
     "importedSuccess": {"message": "成功导入 [total] 条数据"},
+    "noDataImport": {"message": "无数据导入"},
+    "clearDataSuccess": {"message": "数据已清除"},
+    "invalidFileFormat": {"message": "不是有效的文件格式"},
     "bookmarkManagement": {"message": "书签管理"},
     "historyManagement": {"message": "历史记录"},
 
@@ -443,64 +448,11 @@
     "advertisingAlert3": {"message": "因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。"},
 
 
-
-
-
-
-
-
-
-
-
-
-    "pageLayout": {"message": "页面布局"},
-    "colorSetting": {"message": "颜色配置"},
-    "otherFunctions": {"message": "其它功能"},
-
-    "page": {"message": "页面"},
-    "border": {"message": "边框"},
-
-    "count": {"message": "个数"},
-
-    "statusColor": {"message": "状态栏颜色"},
-    "titleColor": {"message": "标题颜色"},
-    "subtitleColor": {"message": "副标题字体"},
-
-    "keymapColor": {"message": "快捷键状态"},
-    "keymapFocusColor": {"message": "快捷键选中"},
-
-    "load": {"message": "载入"},
-    "loadExplain": {"message": "载入别人分享的配置"},
-    "shareExplain": {"message": "导出配置以分享"},
-    "reset": {"message": "重置"},
-    "store": {"message": "保存"},
-
-
-    "noDataImport": {"message": "无数据导入"},
-    "clearDataSuccess": {"message": "数据已清除"},
-    "invalidFileFormat": {"message": "不是有效的文件格式"},
-
-    "settingImportMessage": {"message": "文件载入成功，点击“保存”按钮即可生效"},
-
-    "storeConfirm": {"message": "确定保存？"},
-
-    "displayOrder": {"message": "展示顺序"},
-    "otherOptions": {"message": "其它选项"},
-    "darkMode": {"message": "暗黑模式"},
-    "showWorkspaceTitle": {"message": "显示工作区标题"},
-    "buttonFollow": {"message": "操作按钮跟随工作区顺序"},
-
-    "workspaceCountLimit": {"message": "至少要有一个工作区"},
-    "workspaceEnable": {"message": "请先启用该工作区"},
-
-
-    "addKeys": {"message": "添加快捷键"},
-
-
-    "praise": {"message": "支持一下"},
-    "thankYou": {"message": "如果你觉得这款插件还不错，可以请我喝杯咖啡。 ￣▽￣"},
-
-    "advice1": {"message": "你也可以登陆"},
+    "support1": {"message": "如果你觉得这款插件还不错，可以请我喝杯咖啡。 ￣▽￣"},
+    "support2": {"message": "你也可以登陆"},
     "chromeWebStore": {"message": "Chrome 网上应用店"},
-    "advice2": {"message": "给予好评 或 提供支持性建议"}
+    "support3": {"message": "给予好评 或 提供支持性建议"},
+    "support4": {"message": "你还可以通过"},
+    "clickHere": {"message": "点击这里"},
+    "support5": {"message": "购买商品，作者将获得一定的佣金，谢谢你的支持。"}
 }

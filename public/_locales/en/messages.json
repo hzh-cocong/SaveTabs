@@ -4,7 +4,7 @@
     "extension_description": {"message": "Save and open all web pages with one click."},
 
     "extension_title": {"message": "Simple, Efficient And Personalized"},
-    "extension_subtitle": {"message": "Simple For You, Complicated For Me"},
+    "extension_subtitle": {"message": "Simple To You, Complicated To Me"},
     "extension_feature1": {"message": "Save and open all web pages with one click."},
     "extension_feature2": {"message": "Support search for bookmarks, history, tabs."},
     "extension_feature3": {"message": "You can easily adjust the behavior and style of the extension."},
@@ -256,6 +256,7 @@
     "workspaceOrder": {"message": "Workspace Order"},
     "buttonOrder": {"message": "Button Order"},
     "enableWorkspaceTip": {"message": "Please enable the workspace first"},
+    "workspaceCountLimit": {"message": "At least one workspace"},
     "commonFunctions": {"message": "Common Functions"},
     "openLeftAndRightShortcuts": {"message": "Open left and right shortcuts"},
     "workspaceSwitchingKeywords": {"message": "Workspace switching keywords"},
@@ -265,6 +266,7 @@
     "modifySuccess": {"message": "Modify Successfully"},
     "popup": {"message": "Popup"},
     "inject": {"message": "Inject"},
+    "darkMode": {"message": "Dark Mode"},
 
 
     "smartSorting": {"message": "Smart Sorting"},
@@ -305,6 +307,9 @@
     "resetConfirm": {"message": "Are you sure to restore the default configuration?"},
     "saveSuccess": {"message": "Saved successfully"},
     "importedSuccess": {"message": "Successfully imported [total] pieces of data"},
+    "noDataImport": {"message": "No data import"},
+    "clearDataSuccess": {"message": " Data has been cleared"},
+    "invalidFileFormat": {"message": "File format error"},
     "bookmarkManagement": {"message": "Bookmark Management"},
     "historyManagement": {"message": "History Management"},
 
@@ -443,75 +448,11 @@
     "advertisingAlert3": {"message": "Due to merchant promotions or other reasons, the price may change, please refer to the actual purchase price."},
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    "pageLayout": {"message": "Page Layout"},
-    "colorSetting": {"message": "Color Setting"},
-    "otherFunctions": {"message": "Other Functions"},
-
-    "page": {"message": "Page"},
-    "border": {"message": "Border"},
-
-    "count": {"message": "Count"},
-
-    "statusSize": {"message": "Status"},
-    "keymapSize": {"message": "Keymap"},
-
-    "statusColor": {"message": "Status Bar"},
-    "titleColor": {"message": "Title Color"},
-    "subtitleColor": {"message": "Subtitle Color"},
-
-    "pageBackgroundColor": {"message": "Page"},
-    "pageBorderColor": {"message": "Page Border"},
-    "keymapColor": {"message": "KeyMap"},
-    "keymapFocusColor": {"message": "KeyMap Focus"},
-
-    "load": {"message": "Loading"},
-    "loadExplain": {"message": "Load configuration shared by others"},
-    "shareExplain": {"message": "Export configuration to share"},
-    "reset": {"message": "Reset"},
-    "store": {"message": "Store"},
-
-
-
-    "noDataImport": {"message": "No data import"},
-    "clearDataSuccess": {"message": " Data has been cleared"},
-    "storeConfirm": {"message": "Are you sure to save?"},
-    "invalidFileFormat": {"message": "File format error"},
-    "settingImportMessage": {"message": "The file is loaded successfully, click the \"Store\" button to take effect"},
-
-    "displayOrder": {"message": "Display Order"},
-    "otherOptions": {"message": "Other Options"},
-    "darkMode": {"message": "Dark Mode"},
-    "showWorkspaceTitle": {"message": "Show Title"},
-    "buttonFollow": {"message": "Button Follow Workspace"},
-
-    "workspaceCountLimit": {"message": "At least one workspace"},
-    "workspaceEnable": {"message": "Please enable this workspace first"},
-
-
-    "addKeys": {"message": "Key Bindings"},
-
-
-    "praise": {"message": "Support"},
-    "thankYou": {"message": "If you think this plugin is good, you can buy me a cup of coffee. ￣▽￣"},
-
-    "advice1": {"message": "You can also log in"},
+    "support1": {"message": "If you think this plugin is good, you can buy me a cup of coffee. ￣▽￣"},
+    "support2": {"message": "You can also log in"},
     "chromeWebStore": {"message": "Chrome Web Store"},
-    "advice2": {"message": "to give praise or provide suggestions"}
-
+    "support3": {"message": "to give praise or provide suggestions"},
+    "support4": {"message": "In addition, you can also"},
+    "clickHere": {"message": "Click Here"},
+    "support5": {"message": "to buy some goods, the author will get some commission, thank you for your support."}
 }

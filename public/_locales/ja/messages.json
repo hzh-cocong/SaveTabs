@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "SaveTabs - ウィンドウタブマネージャー"},
+    "extension_description": {"message": "ワンクリックですべてのWebページを保存して開きます。"},
+
+    "extension_title": {"message": "シンプルで効率的でパーソナライズされた"},
+    "extension_feature1": {"message": "ワンクリックですべてのWebページを保存して開きます。"},
+    "extension_feature2": {"message": "ブックマーク、履歴、タブの検索をサポートします。"},
+    "extension_feature3": {"message": "拡張機能の動作とスタイルを簡単に調整できます。"},
+
+    "sharingTip": {"message": "(ブラウザ拡張機能)"}
+}

@@ -9,7 +9,7 @@
       <div class="sub-title">
         {{ lang('extension_title') }}
       </div>
-      <div class="explain">
+      <div class="explain" v-if="country == 'zh_CN'">
         {{ lang('extension_subtitle') }}
       </div>
     </div>
@@ -49,7 +49,12 @@
 <script>
 
 export default {
-  name: 'General'
+  name: 'General',
+  data() {
+    return {
+      country: this.lang('@@ui_locale'), // 'zh_CN',
+    }
+  },
 }
 </script>
 
@@ -84,11 +89,12 @@ export default {
 }
 .jumbotron .sub-title {
   color: #0099CC;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
   font-size: 21px;
   font-weight: 200;
 }
 .jumbotron .explain {
+  margin-top: 15px;
   font-size: 12px;
   color: #6699CC;
   font-style:oblique

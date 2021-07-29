@@ -262,7 +262,7 @@
         name="share-alt-solid"
         class="hover2"
         style="margin: 0 10px;margin-top: 3px;"
-        @click.native="$open('http://www.cocong.cn/savetabs'+(country == 'zh_CN' ? '' : '/#/en'), getKeyType($event))"
+        @click.native="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))"
       ></svg-icon>
     </el-popover>
   </div>
@@ -340,7 +340,7 @@ export default {
     weiboUrl() {
       let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"
@@ -352,7 +352,7 @@ export default {
     twitterUrl() {
       let format = 'https://twitter.com/intent/tweet?text={title}&url={url}&via={origin}';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"
@@ -363,7 +363,7 @@ export default {
     facebookUrl() {
       let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+lang('@@ui_locale')),
         '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
                                     + '1. '+this.lang('extension_feature1')+"\n"
                                     + '2. '+this.lang('extension_feature2')+"\n"

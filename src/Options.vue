@@ -11,7 +11,7 @@
           style="cursor: pointer;"
           :style="{ width: collapse ? '20px' : '32px',
                     height: collapse ? '20px' : '32px', }"
-          @click="$open('http://www.cocong.cn', $event)" />
+          @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), $event)" />
         <h3
           class="hover"
           style="margin-bottom:0;font-weight:500;"
@@ -359,7 +359,7 @@ export default {
       if(this.allWorkspaces[type].isEnabled == false) {
         this.$message({
           type: 'warning',
-          message: this.lang('workspaceEnable'),
+          message: this.lang('enableWorkspaceTip'),
         });
         return;
       }

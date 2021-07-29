@@ -1,0 +1,11 @@
+{
+    "extension_name": {"message": "SaveTabs - Window & Tab Manager"},
+    "extension_description": {"message": "Save and open all web pages with one click."},
+
+    "extension_title": {"message": "Simple, Efficient And Personalized"},
+    "extension_feature1": {"message": "Save and open all web pages with one click."},
+    "extension_feature2": {"message": "Support search for bookmarks, history, tabs."},
+    "extension_feature3": {"message": "You can easily adjust the behavior and style of the extension."},
+
+    "sharingTip": {"message": "(Browser Extension)"}
+}

@@ -5,54 +5,59 @@
       <el-col :xs="24" :sm="12" :md="8" :xl="6">
         <el-card
           class="box-card"
-          header="欢迎分享">
+          :header="lang('thanksSharing2')"
+          :body-style="{ textAlign: 'center' }">
           <div
-            class="share-box"
-            @mousedown.prevent>
+            class="share-box">
             <img
               src="@/assets/images/logo/weibo_48x48.png"
-              title="分享到微博"
+              :title="lang('shareToWeibo')"
               @click="$open(weiboUrl, getKeyType($event))"/>
           </div>
           <div
-            class="share-box"
-            @mousedown.prevent>
+            class="share-box">
             <el-tooltip
-              placement="top"
+              placement="bottom"
               effect="light"
               transition="">
               <img
                 src="@/assets/images/logo/wechat_48x48.png"
                 style="cursor: default;"
-                title="分享到微信" />
+                :title="lang('shareToWeChat')" />
               <div
                 slot="content"
-                class="qrcode-box"
-                @mousedown.prevent>
+                class="qrcode-box">
                 <img
+                  v-if="country == 'zh_CN'"
                   src="@/assets/web-qrcode-200x200.png"
-                  title="http://www.cocong.cn/savetabs"
-                  style="cursor: pointer"
-                  @click="$open('http://www.cocong.cn/savetabs', getKeyType($event))"/>
-                <div>使用微信“扫一扫”</div>
-                <div>打开网页后点击右上角分享至朋友圈</div>
+                  title="https://www.cocong.cn/savetabs"
+                  style="width:100%; cursor: pointer;"
+                  @click="$open('https://www.cocong.cn/savetabs', getKeyType($event))"/>
+                <img
+                  v-else
+                  src="@/assets/web-qrcode-en-200x200.png"
+                  title="https://www.cocong.cn/savetabs/#/en"
+                  style="width:100%; cursor: pointer;"
+                  @click="$open('https://www.cocong.cn/savetabs/#/en', getKeyType($event))"/>
+                <div>{{ lang('wechatSharingTip1') }}</div>
+                <div>{{ lang('wechatSharingTip2') }}</div>
               </div>
             </el-tooltip>
           </div>
           <div
-            class="share-box"
-            @mousedown.prevent>
+            v-if="country != 'zh_CN'"
+            class="share-box">
             <img
               src="@/assets/images/logo/twitter_48x48.png"
-              title="分享到 twitter"
+              :title="lang('shareToTwitter')"
               @click="$open(twitterUrl, getKeyType($event))"/>
           </div>
           <div
-            class="share-box"
-            @mousedown.prevent>
+            v-if="country != 'zh_CN'"
+            class="share-box">
             <img
               src="@/assets/images/logo/facebook_48x48.png"
-              title="分享到 facebook"
+              :title="lang('shareToFacebook')"
               @click="$open(facebookUrl, getKeyType($event))"/>
           </div>
         </el-card>
@@ -63,7 +68,48 @@
 
 <script>
 export default {
-  name: 'OtherShare'
+  name: 'OtherShare',
+  data() {
+    return {
+      country: this.lang('@@ui_locale'), // 'zh_CN',
+    }
+  },
+  computed: {
+    weiboUrl() {
+      let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
+      return format.strtr({
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png||http://www.cocong.cn/savetabs/img/feature2.png||http://www.cocong.cn/savetabs/img/feature3.png'),
+        '{ralateUid}': 5564314611,
+      });
+    },
+    twitterUrl() {
+      let format = 'https://twitter.com/intent/tweet?text={title}&url={url}&via={origin}';
+      return format.strtr({
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
+        '{origin}': encodeURIComponent("hzh_cocong"),
+      });
+    },
+    facebookUrl() {
+      let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
+      return format.strtr({
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png'),
+      });
+    }
+  }
 }
 </script>
 
@@ -74,6 +120,7 @@ export default {
 }
 
 .qrcode-box {
+  width: 200px;
   text-align: center;
   font-size: 12px;
   color: #666666;

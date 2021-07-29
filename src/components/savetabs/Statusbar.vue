@@ -589,9 +589,9 @@ input[type=checkbox]:checked:after {
 }
 
 .qrcode-box {
+  width: 200px;
   text-align: center;
   font-size: 12px;
-  width: 200px;
   color: #666666;
   cursor: default;
 }

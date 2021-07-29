@@ -6,9 +6,9 @@
       type="info"
       style="margin-bottom: 20px">
       <div slot="title">
-        <p>这些是我自己从各大平台上精心挑选的商品，全部都是热销产品，质量有保证，价格和大家自己网上搜索的一样，不会说在这里买就会变贵，都是一样的，不一样的是我可以额外获得佣金，算是导购的报酬。</p>
-        <p>本插件后面将会增加一些更高级的功能，不过这需要额外购买服务器，希望大家多多支持。</p>
-        <p>因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。</p>
+        <p>{{ lang('advertisingAlert1') }}</p>
+        <p>{{ lang('advertisingAlert2') }}</p>
+        <p>{{ lang('advertisingAlert3') }}</p>
       </div>
     </el-alert>
     <el-card
@@ -59,7 +59,7 @@
     <!-- maxHeight: '457px' -->
     <el-card
       class="box-card"
-      header="商品推荐"
+      :header="lang('commodityPromotion')"
       :body-style="{ overflow: 'auto' }">
       <div
         v-for="(goods, index) in allGoods"
@@ -70,20 +70,20 @@
           <img
             :src="'./img/'+goods.pic"
             style="width: 120px; height: 120px;cursor: pointer;"
-            title="点击可查看更多商品信息"
+            :title="lang('advertisingTip2')"
             @click="$open(goods.url, getKeyType($event))" />
         </span>
         <span style="flex: 1;margin-left: 10px;padding: 10px;height: 100%;display: flex;flex-direction: column;">
           <div
             class="goods-name"
-            title="点击可直接购买商品，谢谢支持！"
+            :title="lang('advertisingTip3')"
             @click="$open(goods.url, getKeyType($event))" >{{ goods.name }}</div>
           <div
             class="goods-description"
             v-html="goods.description"
             ref="goods_description"></div>
           <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
-            <span title="因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。">{{ goods.unit+goods.price }}</span>
+            <span :title="lang('advertisingTip4')">{{ goods.unit+goods.price }}</span>
             <el-tooltip
               placement="top"
               effect="light"
@@ -104,13 +104,14 @@
                 <img
                   class="goods-qrcode"
                   :src="qrcodeImgUrls[index]"
+                  :title="goods.url"
                   @click="$open(goods.url, getKeyType($event))" />
-                <div>谢谢支持！</div>
-                <div>使用 京东APP “扫一扫” 即可购买。</div>
+                <div>{{ lang('supportTip') }}</div>
+                <div>{{ lang('goodsScanTip').replace('[platform]', goods.platform.text) }}</div>
               </div>
             </el-tooltip>
             <span
-              title="来自京东平台"
+              :title="lang('platform').replace('[platform]', goods.platform.text)"
               class="hover2"
               style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
               :style="{ backgroundColor: goods.platform.background_color,
@@ -190,9 +191,6 @@ export default {
     }
   },
   mounted() {
-    // todo
-    window.oa = this;
-
     if(this.allGoods.length > 0) {
       let index = Math.floor(Math.random()*this.allGoods.length);
       this.JDSearchValue = this.allGoods[index].name;

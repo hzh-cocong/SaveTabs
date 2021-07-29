@@ -425,7 +425,7 @@
     "shareToFacebook": {"message": "Share to Facebook"},
 
     "commodityPromotion": {"message": "Commodity Promotion"},
-    "advertisingTip": {"message": "If you think this plug-in helps you, you can directly choose the goods you need to purchase, and the author will get a certain commission. Thank you for your support."},
+    "advertisingTip": {"message": "If you think this plug-in helps you, you can directly choose the goods you need to purchase, and the author will get some commission. Thank you for your support."},
     "change": {"message": "Change"},
     "advertisingTip2": {"message": "Click to view more product information."},
     "advertisingTip3": {"message": "Click to buy the product directly, thank you for your support!"},
@@ -437,6 +437,10 @@
 
     "thanksSharing2": {"message": "Welcome to share"},
 
+
+    "advertisingAlert1": {"message": "These are the products that I have carefully selected from major platforms. I will get some commission after you buy them. Thank you for your support."},
+    "advertisingAlert2": {"message": "Some more advanced functions will be added later in this plug-in, but this requires the purchase of an additional server. I hope someone can support it."},
+    "advertisingAlert3": {"message": "Due to merchant promotions or other reasons, the price may change, please refer to the actual purchase price."},
 
 
 

@@ -59,21 +59,21 @@
           style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
           @mousedown.prevent>
           <span>
-            <span>商品推荐</span>
+            <span>{{ lang('commodityPromotion') }}</span>
             <el-tooltip
               placement="bottom"
               effect="light">
               <span
                 class="hover"
-                @click="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))">（广告）</span>
+                @click="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))"> ({{ lang('advertising') }}) </span>
               <div
                 slot="content"
-                style="width: 170px;">如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，谢谢你的支持。</div>
+                style="width: 170px;">{{ lang('advertisingTip') }}</div>
             </el-tooltip>
           </span>
           <i
             v-if="allGoods.length > 1"
-            title="换一换"
+            :title="lang('change')"
             class="el-icon-refresh hover"
             style="float:right; margin-right: 10px;cursor: pointer"
             @click="changeGoods"></i>
@@ -85,13 +85,13 @@
             <img
               :src="'./img/'+goods.pic"
               style="width: 120px; height: 120px;cursor: pointer;"
-              title="点击可查看更多商品信息"
+              :title="lang('advertisingTip2')"
               @click="$open(goods.url, getKeyType($event))" />
           </span>
           <span style="flex: 1;padding: 10px;height: 100%;display: flex;flex-direction: column;width: 160px;">
             <div
               id="goods-name"
-              title="点击可直接购买商品，谢谢支持！"
+              :title="lang('advertisingTip3')"
               @click="$open(goods.url, getKeyType($event))" >{{ storageTip }}</div>
             <div
               id="goods-description"
@@ -100,7 +100,7 @@
               @mouseleave="$refs.goods_description.className=''"
               ref="goods_description"></div>
             <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
-              <span title="因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。">{{ goods.unit+goods.price }}</span>
+              <span :title="lang('advertisingTip4')">{{ goods.unit+goods.price }}</span>
               <el-tooltip
                 placement="top"
                 effect="light"
@@ -124,13 +124,14 @@
                   <img
                     id="goods-qrcode"
                     :src="qrcodeImgUrl"
+                    :title="goods.url"
                     @click="$open(goods.url, getKeyType($event))" />
-                  <div>谢谢支持！</div>
-                  <div>使用 京东APP “扫一扫” 即可购买。</div>
+                  <div>{{ lang('supportTip') }}</div>
+                  <div>{{ lang('goodsScanTip').replace('[platform]', goods.platform.text) }}</div>
                 </div>
               </el-tooltip>
               <span
-                title="来自京东平台"
+                :title="lang('platform').replace('[platform]', goods.platform.text)"
                 class="hover2"
                 style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
                 :style="{ backgroundColor: goods.platform.background_color,
@@ -185,30 +186,32 @@
     <el-popover
       placement="top-end"
       title=""
-      width="210"
+      :width="country == 'zh_CN' ? 110 : 210"
       trigger="hover"
-      style="text-align: center;"
+      style="min-width: 0;text-align: center;"
       @hide="focus">
       <div
         style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
         @mousedown.prevent>
-        <span>谢谢分享</span>
+        <span>{{ lang('thanksSharing') }}</span>
         <i
-          title="给个好评或提点建议"
+          :title="lang('giveGoodComment')"
           class="el-icon-chat-dot-square hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
           @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></i>
         <i
-          title="赞赏作者"
+          :title="lang('rewardAuthor')"
           class="el-icon-coffee-cup hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
           @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))"></i>
       </div>
-      <div @mousedown.prevent>
+      <div
+        style="display: flex;justify-content: center"
+        @mousedown.prevent>
         <div class="share-box">
           <img
             src="@/assets/images/logo/weibo_48x48.png"
-            title="分享到微博"
+            :title="lang('shareToWeibo')"
             @click="$open(weiboUrl, getKeyType($event))"/>
         </div>
         <div class="share-box">
@@ -219,31 +222,38 @@
             <img
               src="@/assets/images/logo/wechat_48x48.png"
               style="cursor: default;"
-              title="分享到微信" />
+            :title="lang('shareToWeChat')" />
             <div
               slot="content"
               class="qrcode-box"
               @mousedown.prevent>
               <img
+                v-if="country == 'zh_CN'"
                 src="@/assets/web-qrcode-200x200.png"
-                title="http://www.cocong.cn/savetabs"
-                style="cursor: pointer"
-                @click="$open('http://www.cocong.cn/savetabs', getKeyType($event))"/>
-              <div>使用微信“扫一扫”</div>
-              <div>打开网页后点击右上角分享至朋友圈</div>
+                title="https://www.cocong.cn/savetabs"
+                style="width:100%; cursor: pointer;"
+                @click="$open('https://www.cocong.cn/savetabs', getKeyType($event))"/>
+              <img
+                v-else
+                src="@/assets/web-qrcode-en-200x200.png"
+                title="https://www.cocong.cn/savetabs/#/en"
+                style="width:100%; cursor: pointer;"
+                @click="$open('https://www.cocong.cn/savetabs/#/en', getKeyType($event))"/>
+              <div>{{ lang('wechatSharingTip1') }}</div>
+              <div>{{ lang('wechatSharingTip2') }}</div>
             </div>
           </el-tooltip>
         </div>
-        <div class="share-box">
+        <div class="share-box" v-if="country != 'zh_CN'">
           <img
             src="@/assets/images/logo/twitter_48x48.png"
-            title="分享到 twitter"
+            :title="lang('shareToTwitter')"
             @click="$open(twitterUrl, getKeyType($event))"/>
         </div>
-        <div class="share-box">
+        <div class="share-box" v-if="country != 'zh_CN'">
           <img
             src="@/assets/images/logo/facebook_48x48.png"
-            title="分享到 facebook"
+            :title="lang('shareToFacebook')"
             @click="$open(facebookUrl, getKeyType($event))"/>
         </div>
       </div>
@@ -252,7 +262,7 @@
         name="share-alt-solid"
         class="hover2"
         style="margin: 0 10px;margin-top: 3px;"
-        @click.native="$open('http://www.cocong.cn/savetabs', getKeyType($event))"
+        @click.native="$open('http://www.cocong.cn/savetabs'+(country == 'zh_CN' ? '' : '/#/en'), getKeyType($event))"
       ></svg-icon>
     </el-popover>
   </div>
@@ -330,26 +340,35 @@ export default {
     weiboUrl() {
       let format = 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&ralateUid={ralateUid}&searchPic=false';
       return format.strtr({
-        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'),
-        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
-        '{pic}': encodeURIComponent('https://www.cocong.cn/assets/images/cocong-34.png||https://www.cocong.cn/assets/images/cocong-34.png?a||https://www.cocong.cn/assets/images/cocong-34.png?b'),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png||http://www.cocong.cn/savetabs/img/feature2.png||http://www.cocong.cn/savetabs/img/feature3.png'),
         '{ralateUid}': 5564314611,
       });
     },
     twitterUrl() {
       let format = 'https://twitter.com/intent/tweet?text={title}&url={url}&via={origin}';
       return format.strtr({
-        '{url}': encodeURIComponent('http://www.cocong.cn/savetabs'),
-        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整插件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
         '{origin}': encodeURIComponent("hzh_cocong"),
       });
     },
     facebookUrl() {
       let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
       return format.strtr({
-        '{url}': encodeURIComponent('http://www.cocong.cn'),
-        '{title}': encodeURIComponent("SaveTabs - 窗口标签管理器 浏览器插件分享\n\n1. 支持一键保存和打开所有网页，提高工作和学习效率\n2. 支持书签、历史和标签页等的聚合搜索，避免多处查找\n3. 可以根据自己的喜好调整软件的行为和样式，喜欢 DIY 的朋友可以尽情发挥\n\n"),
-        '{pic}': encodeURIComponent('http://www.cocong.cn/assets/images/cocong-34.png'),
+        '{url}': encodeURIComponent('https://www.cocong.cn/savetabs'+(this.country == 'zh_CN' ? '' : '/#/en')),
+        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+                                    + '1. '+this.lang('extension_feature1')+"\n"
+                                    + '2. '+this.lang('extension_feature2')+"\n"
+                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
+        '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png'),
       });
     }
   },
@@ -458,10 +477,6 @@ export default {
     },
   },
   mounted() {
-    // todo
-    window.statusbar = this;
-    window.QRCode = QRCode;
-
     this.changeGoods();
   }
 }
@@ -576,6 +591,7 @@ input[type=checkbox]:checked:after {
 .qrcode-box {
   text-align: center;
   font-size: 12px;
+  width: 200px;
   color: #666666;
   cursor: default;
 }

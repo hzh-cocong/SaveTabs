@@ -6,8 +6,8 @@
     "extension_title": {"message": "Simple, Efficient And Personalized"},
     "extension_subtitle": {"message": "Simple For You, Complicated For Me"},
     "extension_feature1": {"message": "Save and open all web pages with one click."},
-    "extension_feature2": {"message": "Support aggregate search of bookmarks, history, tabs, etc."},
-    "extension_feature3": {"message": "You can adjust the behavior and style of the plug-in according to your own preferences."},
+    "extension_feature2": {"message": "Support search for bookmarks, history, tabs."},
+    "extension_feature3": {"message": "You can easily adjust the behavior and style of the extension."},
 
     "open_extension": {"message": "Activate the extension"},
     "open_workspace_all": {"message": "Open all workspace"},
@@ -411,6 +411,36 @@
     "onlyLastInjectTip": {"message": "Only the last theme of the Inject type is left"},
     "undoConfirm": {"message": "Are you sure to undo all changes?"},
     "blurTip": {"message": "It is not currently supported to enable \"Page Blur\" and \"Mask Blur\" at the same time."},
+
+
+    "thanksSharing": {"message": "Thank You"},
+    "giveGoodComment": {"message": "Give a good comment or suggestion"},
+    "rewardAuthor": {"message": "Reward the author"},
+    "sharingTip": {"message": "(Browser Extension)"},
+    "wechatSharingTip1": {"message": "Use Wechat to \"Scan\""},
+    "wechatSharingTip2": {"message": "After opening the webpage, click on the upper right corner to share to Moments"},
+    "shareToWeibo": {"message": "Share to Weibo"},
+    "shareToWeChat": {"message": "Share to WeChat"},
+    "shareToTwitter": {"message": "Share to Twitter"},
+    "shareToFacebook": {"message": "Share to Facebook"},
+
+    "commodityPromotion": {"message": "Commodity Promotion"},
+    "advertisingTip": {"message": "If you think this plug-in helps you, you can directly choose the goods you need to purchase, and the author will get a certain commission. Thank you for your support."},
+    "change": {"message": "Change"},
+    "advertisingTip2": {"message": "Click to view more product information."},
+    "advertisingTip3": {"message": "Click to buy the product directly, thank you for your support!"},
+    "advertisingTip4": {"message": "Due to merchant promotions or other reasons, the price may change, please refer to the actual purchase price."},
+    "supportTip": {"message": "Thank you for your support!"},
+    "goodsScanTip": {"message": "Use [platform] APP \"Scan\" to purchase."},
+    "platform": {"message": "From the [platform] platform."},
+
+
+
+
+
+
+
+
 
 
 

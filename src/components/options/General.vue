@@ -18,7 +18,7 @@
 
     <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #50A2F4);">
       <div style="width: 40%;">
-        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+        <img src="@/assets/feature1.png" width="80%"/>
       </div>
       <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature1') }}</div>
     </div>
@@ -28,7 +28,7 @@
     <div style="display: flex;align-items: center;background: linear-gradient(to right, #CC66CC, #FFCCFF);">
       <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature2') }}</div>
       <div style="width: 40%;">
-        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+        <img src="@/assets/feature2.png" width="80%"/>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
 
     <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #538BD6);">
       <div style="width: 40%;">
-        <img src="@/assets/iShot2021-07-19 23.04.20.png" width="80%"/>
+        <img src="@/assets/feature3.png" width="80%"/>
       </div>
       <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature3') }}</div>
     </div>

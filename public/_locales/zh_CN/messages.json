@@ -413,6 +413,36 @@
     "blurTip": {"message": "暂不支持同时开启“页面模糊”和“蒙版模糊”"},
 
 
+    "thanksSharing": {"message": "谢谢分享"},
+    "giveGoodComment": {"message": "给个好评或提点建议"},
+    "rewardAuthor": {"message": "赞赏作者"},
+    "sharingTip": {"message": "(浏览器扩展分享)"},
+    "wechatSharingTip1": {"message": "使用微信“扫一扫”"},
+    "wechatSharingTip2": {"message": "打开网页后点击右上角分享至朋友圈"},
+    "shareToWeibo": {"message": "分享到微博"},
+    "shareToWeChat": {"message": "分享到微信"},
+    "shareToTwitter": {"message": "分享到推特"},
+    "shareToFacebook": {"message": "分享到 Facebook"},
+
+    "commodityPromotion": {"message": "商品推荐"},
+    "advertisingTip": {"message": "如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，谢谢你的支持。"},
+    "change": {"message": "换一换"},
+    "advertisingTip2": {"message": "点击可查看更多商品信息"},
+    "advertisingTip3": {"message": "点击可直接购买商品，谢谢支持！"},
+    "advertisingTip4": {"message": "因商家促销或其它原因，价格可能会有变化，请以实际购买价格为准。"},
+    "supportTip": {"message": "谢谢支持！"},
+    "goodsScanTip": {"message": "使用 [platform]APP “扫一扫” 即可购买。"},
+    "platform": {"message": "来自 [platform] 平台。"},
+
+
+
+
+
+
+
+
+
+
 
 
 

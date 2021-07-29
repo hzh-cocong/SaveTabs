@@ -307,10 +307,10 @@
       @open="$refs.searchEngineForm && $refs.searchEngineForm.clearValidate()">
       <el-form ref="searchEngineForm" :model="searchEngineForm" :rules="searchEngineRules" label-width="100px">
         <el-form-item :label="lang('name')" prop="name">
-          <el-input v-model="searchEngineForm.name" placeholder="e.g.: Google"></el-input>
+          <el-input v-model="searchEngineForm.name" placeholder="Google"></el-input>
         </el-form-item>
         <el-form-item :label="lang('searchURL')" prop="formate">
-          <el-input v-model="searchEngineForm.formate" placeholder="e.g.: https://www.google.com/search?q={query}"></el-input>
+          <el-input v-model="searchEngineForm.formate" placeholder="https://www.google.com/search?q={query}"></el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
           <div style="font-size: 12px;
@@ -466,7 +466,7 @@ export default {
           value = value.trim();
 
           let url = encodeURI(this.searchEngineForm.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(value));
-          this.$open(this.searchEngineForm.formate)
+          this.$open(url)
 
           return false;
         }).catch(() => {

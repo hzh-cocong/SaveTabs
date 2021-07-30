@@ -102,9 +102,14 @@ const tool = {
           size = this.getIconSize(size);
 
           // 图标为空或者是插件图标则返回缓存图标
-          if(icon == '' || icon == undefined || icon.indexOf("chrome-extension://") > -1) {
+          if(icon == '' || icon == undefined || icon.indexOf("chrome-extension://") == 0) {
             let res = url.match(/[a-zA-z-]+:\/\/[^/]+/);
             return res ? "chrome://favicon/size/"+size+"/"+res[0] : '';
+          }
+
+          // 图片资源直接返回
+          if(icon.indexOf("data:image/") == 0) {
+            return icon;
           }
 
           // 不安全的网址直接返回空
@@ -118,7 +123,9 @@ const tool = {
 
           // 不安全的图标则返回缓存图标
           let res2 = icon.match(/([a-zA-z-]+):\/\/[^/]+/);
-          if(res2 == null) "chrome://favicon/size/"+size+"/"+res[0];
+          if(res2 == null) {
+            return "chrome://favicon/size/"+size+"/"+res[0];
+          }
 
           // 不安全的图标协议也返回缓存图标
           if( ! (res2[1] == 'http' || res2[1] == 'https')) {

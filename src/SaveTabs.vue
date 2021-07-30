@@ -1552,7 +1552,7 @@ export default {
           // 可能会重复接收（这种方法不靠谱，因为精度会丢失导致不相等）
           // if(document.documentElement.style.zoom == 1 / request.zoom) return;
 
-          document.documentElement.style.zoom = 1 / request.zoom;
+          // document.documentElement.style.zoom = 1 / request.zoom;
 
           this.statusTip(this.lang('zoomTip'), false, 3000);
         }

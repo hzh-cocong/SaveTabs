@@ -252,7 +252,7 @@ export default {
 .goods-qrcode {
   width: 200px;
   height: 200px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 

@@ -231,7 +231,7 @@
               <img
                 :src="weChatUrl"
                 :title="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')"
-                style="width:100%; cursor: pointer;"
+                style="margin-bottom: 5px; width:100%; cursor: pointer;"
                 @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))"/>
               <div>{{ lang('wechatSharingTip1') }}</div>
               <div>{{ lang('wechatSharingTip2') }}</div>
@@ -625,7 +625,7 @@ input[type=checkbox]:checked:after {
 #goods-qrcode {
   width: 200px;
   height: 200px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   cursor: pointer;
 }
 </style>

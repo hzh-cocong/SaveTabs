@@ -87,7 +87,7 @@
                       || (storageKeyword != '' && item.lastVisitTime != undefined)">
           <div v-if="isActive">
             <el-badge
-              v-if="isCurrentWindowChange && item.windowId == currentWindowId"
+              v-if=" ! limited && isCurrentWindowChange && item.windowId == currentWindowId"
               is-dot
               class="refresh"
               style="margin-right: 10px"
@@ -100,7 +100,7 @@
                 @click.stop="showDifference"></el-button>
             </el-badge>
             <el-button
-              v-if="! isInCurrentWindow && ! activeWindows[item.windowId]"
+              v-else-if=" ! limited && ! isInCurrentWindow && ! activeWindows[item.windowId]"
               type="warning"
               icon="el-icon-refresh"
               circle
@@ -456,6 +456,11 @@ export default {
       default: function() {
         return {};
       },
+    },
+    limited: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

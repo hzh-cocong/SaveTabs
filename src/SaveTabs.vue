@@ -526,6 +526,8 @@
           :temporary="temporary"
           :all="all"
 
+          :limited="limited"
+
           @update:searchTotal="$set(searchTotal, currentWorkspace.type, $event)"
           @update:listCount="$set(listCount, currentWorkspace.type, $event)"
 
@@ -1510,6 +1512,20 @@ export default {
             this.workspacesTip(request.workspace);
           }
         } else if(request.type == 'to_add') {
+          if(this.limited) {
+            let index = this.getTypeIndex(request.workspace);
+            if(index != -1) this.$refs.carousel.setActiveItem(index);
+
+            this.$message({
+              type: 'warning',
+              message: this.lang('limitedFunctionality'),
+              customClass: 'window-message-box',
+              offset: 69,
+              duration: 3000,
+            });
+            return;
+          }
+
           let index = this.getTypeIndex(request.workspace);
           if(index != -1) {
             this.add(request.workspace);

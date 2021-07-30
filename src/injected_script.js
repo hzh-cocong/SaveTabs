@@ -179,13 +179,20 @@
     //   document.getElementsByTagName('head')[0].appendChild(style);
     // }
 
+    // localStorage 获取不掉
+    // let speed = localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth';
+    // if(speed == 'fast') {
+    //   container.style.opacity = 1;
+    //   container.style.backgroundColor = containerBackgroundColor;
+    //   iframe.style.opacity = 1;
+    // }
+
     container.append(iframe);
     document.body.append(container);
     document.body.setAttribute('data-savetabs-overflow', document.body.style.overflow);
     document.body.style.overflow = 'hidden';
 
     let zoom = window.outerWidth / window.innerWidth;
-
     setTimeout(() => {
       container.style.opacity = 1;
       container.style.backgroundColor = containerBackgroundColor;

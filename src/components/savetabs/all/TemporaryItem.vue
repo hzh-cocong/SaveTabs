@@ -212,7 +212,12 @@ export default {
       type: String,
       required: false,
       default: '',
-    }
+    },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data(){
     return {

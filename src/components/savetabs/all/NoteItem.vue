@@ -208,6 +208,11 @@ export default {
       required: false,
       default: '',
     },
+    openWay: {
+      type: String,
+      required: false,
+      default: '',
+    },
     keyType: {
       type: String,
       required: false,

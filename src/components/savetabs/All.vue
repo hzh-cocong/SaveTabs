@@ -50,6 +50,7 @@
         :isLoad="isLoad"
 
         :storageKeyword="storageKeyword"
+        :openWay="openWay"
 
         :showIndex="(index-$refs.list.scrollLines+1) <= 9
                   ? ( 1 > index-$refs.list.scrollLines+1

@@ -32,21 +32,27 @@ const tool = {
           let res = url.match(/([a-zA-z-]+):\/\/[^/]+/);
           if(res == null) return '';
 
-          // 不安全的网址直接返回空
+          // 不安全的网址协议则返回缓存图标
           if( ! (res[1] == 'http' || res[1] == 'https')) {
             return "chrome://favicon/size/"+size+"/"+res[0];
           }
 
-          // 不安全的图标直接返回空
+          // 不安全的图标则返回缓存图标
           let res2 = icon.match(/([a-zA-z-]+):\/\/[^/]+/);
-          if(res2 == null) return '';
+          if(res2 == null) "chrome://favicon/size/"+size+"/"+res[0];
 
-          // 不安全的网址直接返回空
+          // 不安全的图标协议也返回缓存图标
           if( ! (res2[1] == 'http' || res2[1] == 'https')) {
-            return '';
+            return "chrome://favicon/size/"+size+"/"+res[0];
           }
 
-          return icon;
+          // https 协议直接返回
+          if(res2[1] == 'https') return icon;
+          // popup 允许 http
+          if(this.openWay == 'popup') return icon;
+
+          // inject 或者不知道状态，为了安全（避免报错），返回缓存图标
+          return "chrome://favicon/size/"+size+"/"+res[0];
         },
         getDomain(url) {
           let res = url.match(/[a-zA-z-]+:\/\/([^/]+)/);

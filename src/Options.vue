@@ -11,7 +11,7 @@
           style="cursor: pointer;"
           :style="{ width: collapse ? '20px' : '32px',
                     height: collapse ? '20px' : '32px', }"
-          @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), $event)" />
+          @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))" />
         <h3
           class="hover"
           style="margin-bottom:0;font-weight:500;"

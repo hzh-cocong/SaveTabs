@@ -65,8 +65,9 @@
 
     "theme_popup": {
         "id": "1",
-        "name": "经典",
+        "name": "themeClassic",
         "type": 3,
+        "is_system": true,
         "config": {
             "list_font_color": "rgba(0, 0, 0, 1)",
             "list_background_color": "rgba(255, 255, 255, 1)",
@@ -188,8 +189,9 @@
     },
     "theme_inject": {
         "id": "1",
-        "name": "经典",
+        "name": "themeClassic",
         "type": 3,
+        "is_system": true,
         "config": {
             "list_font_color": "rgba(0, 0, 0, 1)",
             "list_background_color": "rgba(255, 255, 255, 1)",

@@ -120,7 +120,6 @@ const tool = {
 
           // 合并重复区间
           if(pos.length > 1) {
-            // alert('s')
             pos = pos.sort(function(a, b){return a[0] - b[0]});
             let merge = [];
             for(let i = 0, k = 0; i < pos.length; i++) {

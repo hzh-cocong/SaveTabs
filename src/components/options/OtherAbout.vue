@@ -6,7 +6,7 @@
       <div style="text-align: left;">{{ lang('version') }}: 4.0.0</div>
     </div>
     <div class="copyright">
-      <span>Copyright © 胡镇华 <a href="//cocong.cn" style="color:inherit;">cocong.cn</a></span>
+      <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank" style="color:inherit;">cocong.cn</a></span>
     </div>
   </div>
 </template>

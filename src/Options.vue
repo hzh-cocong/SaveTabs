@@ -951,9 +951,6 @@ export default {
     }
   },
   mounted: function() {
-    // todo
-    window.o = this;
-
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {

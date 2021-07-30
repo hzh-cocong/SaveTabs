@@ -43,7 +43,7 @@
         },
         {
             "type": "search",
-            "count": 3,
+            "count": 1000,
             "is_top": -2,
             "only_search": true
         }

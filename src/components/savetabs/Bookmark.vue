@@ -510,7 +510,7 @@ export default {
     },
 
     isActiveWorkspace() {
-      return this.activeWorkspace.type == 'temporary';
+      return this.activeWorkspace.type == 'bookmark';
     }
   },
   methods: {

@@ -156,7 +156,6 @@ export default {
   methods: {
     getQrcode(index) {
       if(this.qrcodeImgUrls[index]) return;
-      console.log('gggggggg')
 
       let goods  = this.allGoods[index];
       QRCode.toDataURL(goods.url, {
@@ -165,8 +164,6 @@ export default {
         margin: 0,
         width: 200,
       },(error, url)=>{
-        console.log(error, url);
-
         if(error) return;
 
         // this.qrcodeImgUrls[index] = url;

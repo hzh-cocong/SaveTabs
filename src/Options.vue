@@ -950,7 +950,7 @@ export default {
       chrome.browserAction.setPopup({ popup: chrome.extension.getURL("savetabs.html") })
     }
   },
-  mounted: function() {
+  mounted() {
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {

@@ -604,6 +604,7 @@ export default {
         while(true) {
           if(index >= list.length) break;
 
+          let bookmark = list[index];
           if(bookmark.parentId != parentId) {
             // 不相等，说明是从文件夹中出来了
             if(stack.length == 0) {

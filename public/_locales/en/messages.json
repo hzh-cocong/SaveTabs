@@ -18,7 +18,7 @@
     "open_workspace_bookmark": {"message": "Open bookmark workspace"},
     "open_workspace_history": {"message": "Open history workspace"},
     "add_window": {"message": "Add window"},
-    "add_note": {"message": "Add note"},
+    "add_note": {"message": "Add or remove note"},
     "add_temporary": {"message": "Add temporary window"},
 
 

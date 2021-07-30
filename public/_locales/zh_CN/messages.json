@@ -18,7 +18,7 @@
     "open_workspace_bookmark": {"message": "打开“书签”工作区"},
     "open_workspace_history": {"message": "打开“历史”工作区"},
     "add_window": {"message": "添加“窗口”"},
-    "add_note": {"message": "添加“便签”"},
+    "add_note": {"message": "添加或删除“便签”"},
     "add_temporary": {"message": "添加“临时窗口”"},
 
 

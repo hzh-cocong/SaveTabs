@@ -2729,6 +2729,11 @@ export default {
   padding: 0 20px;
   padding-bottom: 25px;
   box-sizing: border-box;
+  /* overflow: auto; */
+  overflow: hidden;
+}
+.tabs >>> .el-tabs__content .el-tab-pane {
+  height: 100%;
   overflow: auto;
 }
 .box {

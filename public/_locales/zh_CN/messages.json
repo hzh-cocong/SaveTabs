@@ -428,6 +428,7 @@
     "shareToWeChat": {"message": "分享到微信"},
     "shareToTwitter": {"message": "分享到推特"},
     "shareToFacebook": {"message": "分享到 Facebook"},
+    "gotoSetting": {"message": "前往“设置中心”"},
 
     "commodityPromotion": {"message": "商品推荐"},
     "advertisingTip": {"message": "如果你觉得这款插件帮到了你，可以直接在这里选择你需要的商品进行购买，作者将获得一定的佣金，谢谢你的支持。"},

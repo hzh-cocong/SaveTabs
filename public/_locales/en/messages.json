@@ -428,6 +428,7 @@
     "shareToWeChat": {"message": "Share to WeChat"},
     "shareToTwitter": {"message": "Share to Twitter"},
     "shareToFacebook": {"message": "Share to Facebook"},
+    "gotoSetting": {"message": "Go to \"Settings Center\""},
 
     "commodityPromotion": {"message": "Commodity Promotion"},
     "advertisingTip": {"message": "If you think this plug-in helps you, you can directly choose the goods you need to purchase, and the author will get some commission. Thank you for your support."},

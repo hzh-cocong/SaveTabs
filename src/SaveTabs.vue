@@ -482,7 +482,7 @@
           :icon="allWorkspaces[type].icon_simple"
           :title="limited
                 ? lang('limitedFunctionality')
-                : keymap['add_'+type] ? lang('keymap')+': '+keymap['add_'+type] : ''"
+                : lang('add_'+type)+(keymap['add_'+type] ? ' ('+keymap['add_'+type]+') ' : '')"
           @mousedown.native.prevent
           @click.stop="operate(getKeyType($event), type)"></el-button>
       </el-button-group>

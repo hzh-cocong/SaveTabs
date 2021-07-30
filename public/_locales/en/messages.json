@@ -106,7 +106,7 @@
     "windowCountTip": {"message": "A total of [total] windows are stored."},
 
 
-    "noteDeleted": {"message": "The Note has been deleted"},
+    "noteDeleted": {"message": "The Note has been removed."},
     "noteAddSuccess": {"message": "Note Added Successfully"},
     "noteSaved": {"message": "The Note has been saved."},
     "noteCountTip": {"message": "A total of [total] notes are stored."},
@@ -393,7 +393,7 @@
     "collapseAll": {"message": "Collapse All"},
     "expandAll": {"message": "Expand All"},
     "noOtherFunctions": {"message": "No other functions"},
-    "limitedFunctionality": {"message": "Limited functionality"},
+    "limitedFunctionality": {"message": "This function is limited."},
     "workspaceDisabledTip": {"message": "The [workspace] workspace has been disabled. Do you want to go to the Settings Center to open it?"},
     "leftAndRightEnabledTip": {"message": "The left and right switching keymap is turned on."},
     "leftAndRightDisabledTip": {"message": "The left and right switching keymap has been disabled, but the following switching keymap  are still available."},

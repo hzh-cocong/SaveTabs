@@ -453,7 +453,6 @@ chrome.commands.onCommand.addListener(command => {
           add_type: type,
         }}, () => {
           executeScript();
-          // todo
           // executeScript({onlyInjection: true});
         });
       } else if(result.isActive){

@@ -393,7 +393,7 @@
     "collapseAll": {"message": "全部收起"},
     "expandAll": {"message": "全部展开"},
     "noOtherFunctions": {"message": "暂无其它功能"},
-    "limitedFunctionality": {"message": "功能受限"},
+    "limitedFunctionality": {"message": "该功能受限！"},
     "workspaceDisabledTip": {"message": "“[workspace]”工作区已被禁用，是否前往 设置中心 开启？"},
     "leftAndRightEnabledTip": {"message": "左右快捷键切换已开启"},
     "leftAndRightDisabledTip": {"message": "左右快捷键切换已被禁用，但以下快捷键仍然可用"},

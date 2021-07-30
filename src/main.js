@@ -18,7 +18,6 @@ import locale from 'element-ui/lib/locale'
 locale.use(chrome.i18n.getMessage('@@ui_locale') == 'zh_CN' ? zhLocale : enLocale);
 
 
-// todo
 Vue.config.productionTip = false
 
 new Vue({

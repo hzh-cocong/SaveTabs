@@ -1023,7 +1023,7 @@ export default {
     fold() {
       // 全部收起（包括子目录）
 
-      // todo 暂时用最简单的方法
+      // 暂时用最简单的方法
       this.getTree((bookmarks) => {
         this.originList = bookmarks;
         this.list = this.originList;

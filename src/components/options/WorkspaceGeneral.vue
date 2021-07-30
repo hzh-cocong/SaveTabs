@@ -207,9 +207,6 @@ export default {
   methods: {
   },
   mounted() {
-    // todo
-    window.wg = this;
-
     //创建拖拽对象
     // this.sortable =
     Sortable.create(document.querySelector('.list.workspaces'), {

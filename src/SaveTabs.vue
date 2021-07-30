@@ -1417,10 +1417,20 @@ export default {
       if(localItems.info.add_type != undefined && index != -1) {
         let type = localItems.info.add_type;
 
-        this.things[ this.activeWorkspaceRefIndex ].push({
-          'method': 'add',
-          'params': [type, this.keyword],
-        });
+        if(this.limited) {
+          this.$message({
+            type: 'warning',
+            message: this.lang('limitedFunctionality'),
+            customClass: 'window-message-box',
+            offset: 69,
+            duration: 3000,
+          });
+        } else {
+          this.things[ this.activeWorkspaceRefIndex ].push({
+            'method': 'add',
+            'params': [type, this.keyword],
+          });
+        }
       }
 
       this.isConfigLoad = true;

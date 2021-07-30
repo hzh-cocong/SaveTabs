@@ -13,7 +13,6 @@
         style="display:flex;align-items: center;font-size:12px;">
         <div style="flex:1;">
           <div>{{ lang('historyNoResult') }}</div>
-          <div>{{ lang('historyCountTip') }}</div>
         </div>
         <div style="margin-left: 8px;margin-right: -8px;">
           <el-button circle size="mini" icon="el-icon-coffee-cup" @click="$open('./options.html?type=workspace#/other-support', getKeyType($event))" :title="lang('rewardAuthor')"></el-button>

@@ -126,7 +126,6 @@
 
 
     "historyNoResult": {"message": "The history cannot be found."},
-    "historyCountTip": {"message": "Only display data within one day by default."},
     "historyDeleteConfirm": {"message": "Are you sure to delete the history?"},
 
 

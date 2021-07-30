@@ -126,7 +126,6 @@
 
 
     "historyNoResult": {"message": "查无历史记录。"},
-    "historyCountTip": {"message": "默认只展示一天内的数据。"},
     "historyDeleteConfirm": {"message": "确定删除历史？"},
 
 

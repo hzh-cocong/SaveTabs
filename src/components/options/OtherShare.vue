@@ -98,15 +98,19 @@ export default {
       });
     },
     facebookUrl() {
-      let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
+      let format = 'https://www.facebook.com/share.php?u={url}';
       return format.strtr({
         '{url}': encodeURIComponent('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale')),
-        '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
-                                    + '1. '+this.lang('extension_feature1')+"\n"
-                                    + '2. '+this.lang('extension_feature2')+"\n"
-                                    + '3. '+this.lang('extension_feature3')+"\n\n"),
-        '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png'),
       });
+      // let format = 'https://www.facebook.com/share.php?u={url}&t={title}&pic={pic}';
+      // return format.strtr({
+      //   '{url}': encodeURIComponent('https://www.cocong.cn/savetabs/#/'+this.lang('@@ui_locale')),
+      //   '{title}': encodeURIComponent(this.lang('extension_name')+' '+this.lang('sharingTip')+"\n\n"
+      //                               + '1. '+this.lang('extension_feature1')+"\n"
+      //                               + '2. '+this.lang('extension_feature2')+"\n"
+      //                               + '3. '+this.lang('extension_feature3')+"\n\n"),
+      //   '{pic}': encodeURIComponent('http://www.cocong.cn/savetabs/img/feature1.png'),
+      // });
     }
   },
   methods: {

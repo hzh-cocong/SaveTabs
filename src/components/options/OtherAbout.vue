@@ -6,7 +6,7 @@
       <div style="text-align: left;">{{ lang('version') }}: 4.0.0</div>
     </div>
     <div class="copyright">
-      <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank" style="color:inherit;">cocong.cn</a></span>
+      <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">cocong.cn</a></span>
     </div>
   </div>
 </template>
@@ -41,12 +41,19 @@ export default {
 }
 
 .copyright {
-  padding: 20px 0;
+  padding: 20px;
   margin: 0 -20px;
   font-size: 14px;
   text-align: center;
   color: #777777;
   background-color: #f5f5f5;
+}
+.copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+.copyright a:hover {
+  text-decoration: underline;
 }
 </style>
 

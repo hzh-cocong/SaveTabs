@@ -16,29 +16,29 @@
 
     <div class="divider"></div>
 
-    <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #50A2F4);">
-      <div style="width: 40%;">
-        <img src="@/assets/feature1.png" width="80%"/>
+    <div class="item">
+      <div class="left">
+        <img src="@/assets/feature1.png" />
       </div>
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature1') }}</div>
+      <div class="right">{{ lang('extension_feature1') }}</div>
     </div>
 
     <div class="divider"></div>
 
-    <div style="display: flex;align-items: center;background: linear-gradient(to right, #CC66CC, #FFCCFF);">
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature2') }}</div>
-      <div style="width: 40%;">
-        <img src="@/assets/feature2.png" width="80%"/>
+    <div class="item2">
+      <div class="left">{{ lang('extension_feature2') }}</div>
+      <div class="right">
+        <img src="@/assets/feature2.png" />
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <div style="display: flex;align-items: center;background: linear-gradient(to right, #5DC7B1, #538BD6);">
-      <div style="width: 40%;">
-        <img src="@/assets/feature3.png" width="80%"/>
+    <div class="item">
+      <div class="left">
+        <img src="@/assets/feature3.png" />
       </div>
-      <div style="flex: 1;font-size:18px;color: #ffffffc9;">{{ lang('extension_feature3') }}</div>
+      <div class="right">{{ lang('extension_feature3') }}</div>
     </div>
 
     <!-- <div class="divider"></div> -->
@@ -102,5 +102,34 @@ export default {
 
 .divider {
   padding:2px;
+}
+
+.item,
+.item2 {
+  display: flex;
+  align-items: center;
+  /* box-sizing: border-box; */
+}
+.item {
+  background: linear-gradient(to right, #5DC7B1, #50A2F4);
+}
+.item2 {
+  background: linear-gradient(to right, #CC66CC, #FFCCFF);
+}
+.item .left,
+.item2 .right {
+  width: 40vw;
+  height: 29.5vw;
+}
+.item .right,
+.item2 .left {
+  flex: 1;
+  font-size:18px;
+  padding: 10px;
+  color: #ffffffc9;
+}
+.item img,
+.item2 img {
+  width: 80%;
 }
 </style>

@@ -1,6 +1,5 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const path = require('path')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -60,12 +59,12 @@ module.exports = {
 
     //todo
     // 压缩图片（貌似没什么效果）
-    config.module
-        .rule('images')
-        .test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
-        .use('image-webpack-loader')
-        .loader('image-webpack-loader')
-        .options({ bypassOnDebug: true, disable: true, })
+    // config.module
+    //     .rule('images')
+    //     .test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
+    //     .use('image-webpack-loader')
+    //     .loader('image-webpack-loader')
+    //     .options({ bypassOnDebug: true, disable: true, })
   },
 
   configureWebpack: {
@@ -91,26 +90,21 @@ module.exports = {
       ]
     },
 
-    optimization: {
-      minimizer: [
-        new UglifyJsPlugin({
-          cache: true,
-          parallel: true,
-          sourceMap: false,
-          uglifyOptions: {
-            output: {
-              comments: false, // 去掉注释
-            },
-            warnings: false,
-            compress: {
-              drop_console: true,
-              drop_debugger: true,
-              pure_funcs: ['console.log']//移除console
-            },
-          }
-        }),
-        new OptimizeCSSAssetsPlugin({})
-      ]
-    }
+    // todo
+    // plugins: [
+    //   new UglifyJsPlugin({
+    //     uglifyOptions: {
+    //       output: {
+    //         comments: false, // 去掉注释
+    //       },
+    //       warnings: false,
+    //       compress: {
+    //         drop_console: true,
+    //         drop_debugger: true,
+    //         pure_funcs: ['console.log']//移除console
+    //       },
+    //     }
+    //   })
+    // ],
   }
 }

@@ -9,7 +9,7 @@ function generate(filename, tabs)
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title>SaveTabs</title>
+    <title>SaveTabs - Window & Tab Manager</title>
 </head>
 <body>
 ${href}

@@ -478,6 +478,7 @@
                 @click="editTheme('tag_line_count', oldCurrentThemeConfig.tag_line_count)"></i>
               </el-tooltip>
             </div>
+            <div class="bottom-blank"></div>
           </el-tab-pane>
           <el-tab-pane :label="lang('list')" name="list" lazy>
             <el-divider>{{ lang('layout') }}</el-divider>
@@ -1773,6 +1774,7 @@
                 @click="editTheme('list_scrollbar_focus_color', oldCurrentThemeConfig.list_scrollbar_focus_color)"></i>
               </el-tooltip>
             </div>
+            <div class="bottom-blank"></div>
           </el-tab-pane>
           <el-tab-pane :label="lang('menubar')" name="menu" lazy>
             <el-divider>{{ lang('layout') }}</el-divider>
@@ -2346,6 +2348,7 @@
                 @click="editTheme('toolbar_button_active_background_color', oldCurrentThemeConfig.toolbar_button_active_background_color)"></i>
               </el-tooltip>
             </div>
+            <div class="bottom-blank"></div>
           </el-tab-pane>
           <el-tab-pane :label="lang('statusbar')" name="status" lazy>
             <div class="box">
@@ -2459,6 +2462,7 @@
                 @click="editTheme('statusbar_image_opacity', oldCurrentThemeConfig.statusbar_image_opacity)"></i>
               </el-tooltip>
             </div>
+            <div class="bottom-blank"></div>
           </el-tab-pane>
         </el-tabs>
       </el-main>
@@ -2726,13 +2730,15 @@ export default {
 }
 .tabs >>> .el-tabs__content {
   height: 100%;
-  padding: 0 20px;
-  padding-bottom: 25px;
+  /* padding: 0 20px; */
+  /* padding-bottom: 25px; */
   box-sizing: border-box;
   /* overflow: auto; */
   overflow: hidden;
 }
 .tabs >>> .el-tabs__content .el-tab-pane {
+  padding: 0 20px;
+  /* margin-bottom: 25px; */ /* 无论是 padding 还是 margin 都没有效果 */
   height: 100%;
   overflow: auto;
 }
@@ -2753,6 +2759,9 @@ export default {
 .box .el-icon-refresh-right {
   margin: 0 10px;
   cursor: pointer;
+}
+.bottom-blank {
+  margin-bottom: 25px;
 }
 
 .color-tip {

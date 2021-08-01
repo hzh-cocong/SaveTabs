@@ -123,10 +123,14 @@
                 :underline="false"
                 @click="$open('chrome://extensions/shortcuts', getKeyType($event))">{{ lang('setKeymap') }}</el-link>
             </template>
-            <template v-for="(data, index) in scope.row.shortcut.replace(new RegExp(lang('space'), 'i'), ' ').split('')">
+            <template v-for="(data, index) in scope.row.shortcut.indexOf('+') == -1
+                                            ? scope.row.shortcut.split(/(⇧|⌘|⌥)/i).filter(s => s != '')
+                                            : scope.row.shortcut.split('+')">
               <span :key="index">
-                <span class="keymap-box">{{ data == ' ' ? lang('space') : data }}</span>
-                <span v-if="index < scope.row.shortcut.replace(new RegExp(lang('space'), 'i'), ' ').split('').length-1">+</span>
+                <span class="keymap-box">{{ data }}</span>
+                <span v-if="index < (scope.row.shortcut.indexOf('+') == -1
+                                  ? scope.row.shortcut.split(/(⇧|⌘|⌥)/i).filter(s => s != '').length
+                                  : scope.row.shortcut.split('+').length) - 1">+</span>
               </span>
             </template>
           </template>

@@ -321,7 +321,7 @@
 
 
     "adjustTip": {"message": "仅在注入模式下，并且弹窗才有效"},
-    "widthCorretion": {"message": "宽度矫正"},
+    "widthCorrection": {"message": "宽度矫正"},
     "heightCorrection": {"message": "高度矫正"},
     "topOffset": {"message": "顶部偏移"},
 

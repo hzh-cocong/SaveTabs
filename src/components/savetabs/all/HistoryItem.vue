@@ -112,7 +112,7 @@
             color: showIndex <= 0
                 ? 'transparent'
                 : currentThemeConfig.list_keymap_color }">
-          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }">{{ showIndex }}</font>

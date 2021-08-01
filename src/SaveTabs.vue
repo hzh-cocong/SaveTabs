@@ -1260,11 +1260,11 @@ export default {
           message = h('span', { style: 'font-size: 14px;'}, [
             h('p', { style: 'color: teal;margin-bottom: 10px;' }, this.lang('leftAndRightDisabledTip')),
             h('div', null, [
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇧' : 'shift'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇧' : 'Shift'),
               h('span', null, '+'),
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'Tab'),
               h('span', { style: 'margin: 0 20px 0 0' }, this.lang('switchLeft')),
-              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'tab'),
+              h('span', { class: 'keymap-box' }, this._device.platform == 'Mac' ? '⇥' : 'Tab'),
               h('span', { style: 'margin: 0' }, this.lang('switchRight')),
             ]),
             h('div', null, [

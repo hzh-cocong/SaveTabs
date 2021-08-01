@@ -65,7 +65,7 @@
               effect="light">
               <span
                 class="hover"
-                @click="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))"> ({{ lang('advertising') }}) </span>
+                @click="$open('./options.html?type=workspace#/other-advertising', getKeyType($event))"> ({{ lang('advertising') }}) </span>
               <div
                 slot="content"
                 style="width: 170px;">{{ lang('advertisingTip') }}</div>
@@ -150,7 +150,7 @@
         name="ad-solid"
         class="animate__animated hover2"
         style="margin-left: 5px;vertical-align: middle;"
-        @click.native="$open('chrome-extension://hcdhcpnadajoaeigigfdlggelpmnhkkh/options.html?type=workspace#/other-advertising', getKeyType($event))"
+        @click.native="$open('./options.html?type=workspace#/other-advertising', getKeyType($event))"
       ></svg-icon>
     </span>
     <span

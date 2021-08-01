@@ -178,7 +178,7 @@
               color: currentThemeConfig.item_show_count > 9 && index-$refs.list.scrollLines+1 > 9
                     ? 'transparent'
                     : currentThemeConfig.list_keymap_color }">
-            <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+            <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
             <font
               style="display:inline-block;text-align:left;"
               :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
@@ -235,7 +235,7 @@
             color: currentThemeConfig.item_show_count > 9 && index-$refs.list.scrollLines+1 > 9
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
-          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt+') }}</font>
+          <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"

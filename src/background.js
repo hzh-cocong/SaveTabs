@@ -254,7 +254,6 @@ chrome.windows.onRemoved.addListener((windowId)=>{
 })
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('onMessage', request, sender, sendResponse) // todo
   if(request.type == 'download') {
     var filename = request.filename;
     let tabs = request.tabs;

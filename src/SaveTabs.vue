@@ -1613,7 +1613,7 @@ export default {
       // event.stopPropagation();
       // event.preventDefault();
 
-      // chrome.runtime.sendMessage({ type: 'closeExtension' });//todo
+      chrome.runtime.sendMessage({ type: 'closeExtension' });
     });//*/
 
     // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉

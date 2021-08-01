@@ -92,24 +92,24 @@ module.exports = {
     },
 
     optimization: {
-      minimizer: [//todo
-        // new UglifyJsPlugin({
-        //   cache: true,
-        //   parallel: true,
-        //   sourceMap: false,
-        //   uglifyOptions: {
-        //     output: {
-        //       comments: false, // 去掉注释
-        //     },
-        //     warnings: false,
-        //     compress: {
-        //       drop_console: true,
-        //       drop_debugger: true,
-        //       pure_funcs: ['console.log']//移除console
-        //     },
-        //   }
-        // }),
-        // new OptimizeCSSAssetsPlugin({})
+      minimizer: [
+        new UglifyJsPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: false,
+          uglifyOptions: {
+            output: {
+              comments: false, // 去掉注释
+            },
+            warnings: false,
+            compress: {
+              drop_console: true,
+              drop_debugger: true,
+              pure_funcs: ['console.log']//移除console
+            },
+          }
+        }),
+        new OptimizeCSSAssetsPlugin({})
       ]
     }
   }

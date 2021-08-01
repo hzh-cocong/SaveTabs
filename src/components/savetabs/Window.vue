@@ -395,7 +395,7 @@
     </div>
     <span slot="footer" v-if="differenceVisible2">
       <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">{{ lang('restore') }}</el-button>
-      <el-button size="small" v-else style="float: left;" @click="bind">{{ lang('bind') }}</el-button>
+      <el-button size="small" v-else-if="haveDifference" style="float: left;" @click="bind">{{ lang('bind') }}</el-button>
       <el-button size="small" @click="differenceVisible = false">{{ lang('cancel') }}</el-button>
       <el-button class="autofocus" type="primary" size="small" @click="updateGroup">{{ lang('update') }}</el-button>
     </span>

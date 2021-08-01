@@ -1600,7 +1600,7 @@ export default {
         if(this.isFocus) return;
 
         // 让 background.js 帮忙关闭，减轻负担
-        chrome.runtime.sendMessage({ type: 'closeExtension' })
+        chrome.runtime.sendMessage({ type: 'closeExtension' });
       })//*/
     })
 
@@ -1610,7 +1610,7 @@ export default {
       // event.stopPropagation();
       // event.preventDefault();
 
-      chrome.runtime.sendMessage({ type: 'closeExtension' })
+      // chrome.runtime.sendMessage({ type: 'closeExtension' });//todo
     });//*/
 
     // 屏蔽 esc ，否则 popup 弹出框在 dialog 弹出时也会连同插件一起杀掉

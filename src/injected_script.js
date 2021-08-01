@@ -89,17 +89,51 @@
                   +'px';//0;//height;
 
     // 水平位置
+    // let horizontalPosition;
+    // if(currentThemeConfig.position_horizontal_align == 'center') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance*2}px;right: 0;margin:auto auto`;
+    // else if(currentThemeConfig.position_horizontal_align == 'left') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance}px`;
+    // else if(currentThemeConfig.position_horizontal_align == 'right') horizontalPosition = `right: ${currentThemeConfig.position_horizontal_distance}px`;
+    // else horizontalPosition = "left: 0;right: 0;margin:auto auto"; // 不应该出现这种情况
+    // 水平位置（侧边栏使用侧滑动画特效）
     let horizontalPosition;
-    if(currentThemeConfig.position_horizontal_align == 'center') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance*2}px;right: 0;margin:auto auto`;
-    else if(currentThemeConfig.position_horizontal_align == 'left') horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance}px`;
-    else if(currentThemeConfig.position_horizontal_align == 'right') horizontalPosition = `right: ${currentThemeConfig.position_horizontal_distance}px`;
+    if(currentThemeConfig.position_horizontal_align == 'center')
+      horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance*2}px;right: 0;margin:auto auto`;
+    else if(currentThemeConfig.position_horizontal_align == 'left')
+      horizontalPosition = `left: ${currentThemeConfig.position_horizontal_distance == 0
+                                  && (currentThemeConfig.width_fill == false
+                                    || currentThemeConfig.width_percentage != 100)
+                                  ? -150
+                                  : currentThemeConfig.position_horizontal_distance}px`;
+    else if(currentThemeConfig.position_horizontal_align == 'right')
+      horizontalPosition = `right: ${currentThemeConfig.position_horizontal_distance == 0
+                                  && (currentThemeConfig.width_fill == false
+                                    || currentThemeConfig.width_percentage != 100)
+                                  ? -150
+                                  : currentThemeConfig.position_horizontal_distance}px`;
     else horizontalPosition = "left: 0;right: 0;margin:auto auto"; // 不应该出现这种情况
 
     // 垂直位置
+    // let verticalPosition;
+    // if(currentThemeConfig.position_vertical_align == 'center') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance*2}px;bottom: 0;margin:auto auto`;
+    // else if(currentThemeConfig.position_vertical_align == 'top') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance}px`;
+    // else if(currentThemeConfig.position_vertical_align == 'bottom') verticalPosition = `bottom: ${currentThemeConfig.position_vertical_distance}px`;
+    // else verticalPosition = "top: 0;bottom: 0;margin:auto auto"; // 不应该出现这种情况
+    // 垂直位置（侧边栏使用侧滑动画特效）
     let verticalPosition;
-    if(currentThemeConfig.position_vertical_align == 'center') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance*2}px;bottom: 0;margin:auto auto`;
-    else if(currentThemeConfig.position_vertical_align == 'top') verticalPosition = `top: ${currentThemeConfig.position_vertical_distance}px`;
-    else if(currentThemeConfig.position_vertical_align == 'bottom') verticalPosition = `bottom: ${currentThemeConfig.position_vertical_distance}px`;
+    if(currentThemeConfig.position_vertical_align == 'center')
+      verticalPosition = `top: ${currentThemeConfig.position_vertical_distance*2}px;bottom: 0;margin:auto auto`;
+    else if(currentThemeConfig.position_vertical_align == 'top')
+      verticalPosition = `top: ${currentThemeConfig.position_vertical_distance == 0
+                              && (currentThemeConfig.height_fill == false
+                                || currentThemeConfig.height_percentage != 100)
+                              ? -50
+                              : currentThemeConfig.position_vertical_distance}px`;
+    else if(currentThemeConfig.position_vertical_align == 'bottom')
+      verticalPosition = `bottom: ${currentThemeConfig.position_vertical_distance == 0
+                                && (currentThemeConfig.height_fill == false
+                                  || currentThemeConfig.height_percentage != 100)
+                                ? -50
+                                : currentThemeConfig.position_vertical_distance}px`;
     else verticalPosition = "top: 0;bottom: 0;margin:auto auto"; // 不应该出现这种情况
 
     // 圆角
@@ -157,7 +191,7 @@
                                                   ? 'none'
                                                   : 'blur('+currentThemeConfig.background_blur+'px)'};
                                   opacity: 0;
-                                  transition-property: opacity;
+                                  transition-property: opacity,left,right,top,bottom;
                                   transition-duration: 0.15s;
                                   transition-timing-function: ease-out;
                                   transition-delay: .15s;
@@ -197,6 +231,31 @@
       container.style.opacity = 1;
       container.style.backgroundColor = containerBackgroundColor;
       iframe.style.opacity = 1;
+
+      if(currentThemeConfig.position_horizontal_align == 'left'
+      && currentThemeConfig.position_horizontal_distance == 0
+      && (currentThemeConfig.width_fill == false
+        || currentThemeConfig.width_percentage != 100)) {
+        iframe.style.left = currentThemeConfig.position_horizontal_distance+'px';
+      }
+      if(currentThemeConfig.position_horizontal_align == 'right'
+      && currentThemeConfig.position_horizontal_distance == 0
+      && (currentThemeConfig.width_fill == false
+        || currentThemeConfig.width_percentage != 100)) {
+        iframe.style.right = currentThemeConfig.position_horizontal_distance+'px';
+      }
+      if(currentThemeConfig.position_vertical_align == 'top'
+      && currentThemeConfig.position_vertical_distance == 0
+      && (currentThemeConfig.height_fill == false
+        || currentThemeConfig.height_percentage != 100)) {
+        iframe.style.top = currentThemeConfig.position_vertical_distance+'px';
+      }
+      if(currentThemeConfig.position_vertical_align == 'bottom'
+      && currentThemeConfig.position_vertical_distance == 0
+      && (currentThemeConfig.height_fill == false
+        || currentThemeConfig.height_percentage != 100)) {
+        iframe.style.bottom = currentThemeConfig.position_vertical_distance+'px';
+      }
 
       if(zoom != 1) iframe.style.zoom = 1 / zoom;
     }, 0);

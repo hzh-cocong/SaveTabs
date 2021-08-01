@@ -70,7 +70,7 @@
         }
       ],
       "no-empty": [
-        "error",
+        "off",
         {
           "allowEmptyCatch": true
         }

@@ -139,7 +139,7 @@ export default {
             this.changeTheme(items.theme);
             this.$message({
               type: 'success',
-              message: lang('importSuccessTip').replace('[total]', total),
+              message: this.lang('importSuccessTip').replace('[total]', total),
             });
           });
         });
@@ -205,7 +205,7 @@ export default {
             this.changeTheme(items.theme);
             this.$message({
               type: 'success',
-              message: lang('importSuccessTip').replace('[total]', 1),
+              message: this.lang('importSuccessTip').replace('[total]', 1),
             });
           });
         });

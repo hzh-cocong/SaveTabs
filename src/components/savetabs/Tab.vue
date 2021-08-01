@@ -403,7 +403,6 @@ export default {
         // return this.getIcon(item.favIconUrl, item.url, this.currentThemeConfig.item_height*3/5);
         return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
-      return ss;
     },
     highlightMap() {
       // 速度非常非常快，无需再缓存优化

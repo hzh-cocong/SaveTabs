@@ -38,9 +38,10 @@
       :style="{
         width: currentThemeConfig.item_height+'px',
         padding: (currentThemeConfig.item_height*1/5)+'px' }">
+        <!-- :src="getIcon('', item.url, currentThemeConfig.item_height*3/5)" -->
       <el-image
         v-if="isLoad"
-        :src="getIcon('', item.url, currentThemeConfig.item_height*3/5)"
+        :src="getIcon(item.favIconUrl, item.url, currentThemeConfig.item_height*3/5)"
         style="width:100%; height: 100%;"
         fit="cover"
         :scroll-container="$parent.$el"
@@ -116,7 +117,7 @@
                     : currentThemeConfig.list_current_state_color,
               borderColor: isSelected
                     ? currentThemeConfig.list_current_focus_state_color
-                    : currentThemeConfig.list_current_state_color }">Current</span>
+                    : currentThemeConfig.list_current_state_color }">{{ lang('current') }}</span>
       </template>
       <template v-else>
         <span
@@ -126,10 +127,10 @@
               ? currentThemeConfig.list_focus_state_color
               : currentThemeConfig.list_state_color }">{{
               item.isCurrent
-            ? 'Current'
+            ? lang('current')
             : ( item.windowRank == undefined
-              ? 'Opened'
-              : 'Win'+item.windowRank )
+              ? lang('opened')
+              : lang('win')+item.windowRank )
           }}</span>
       </template>
       <template v-if=" ! isActive && ! (index == 0 && item.isCurrent)">

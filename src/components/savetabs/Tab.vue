@@ -118,7 +118,7 @@
                       : currentThemeConfig.list_current_state_color,
                 borderColor: isSelected
                       ? currentThemeConfig.list_current_focus_state_color
-                      : currentThemeConfig.list_current_state_color }">Current</span>
+                      : currentThemeConfig.list_current_state_color }">{{ lang('current') }}</span>
         </template>
         <template v-else>
           <span
@@ -128,10 +128,10 @@
                 ? currentThemeConfig.list_focus_state_color
                 : currentThemeConfig.list_state_color }">{{
                 item.windowId == currentWindowId
-              ? 'Current'
+              ? lang('current')
               : ( windowRank[item.windowId] == undefined
-                ? 'Opened'
-                : 'Win'+windowRank[item.windowId] )
+                ? lang('opened')
+                : lang('win').replace(/^\S/, s => s.toUpperCase())+windowRank[item.windowId] )
             }}</span>
         </template>
         <!-- <template v-else> -->
@@ -311,13 +311,13 @@ export default {
         return [
           windowId == this.currentWindowId ? 0 : windowId,
           windowId == this.currentWindowId
-          ? 'Current'
-          : 'Win'+(index+1)
+          ? this.lang('current')
+          : this.lang('win')+(index+1)
         ];
       })
 
       if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
-        windowFilter.push([-2, 'Opened']);
+        windowFilter.push([-2, this.lang('opened')]);
       }
 
       this.tab.windowFilter = windowFilter;
@@ -329,12 +329,12 @@ export default {
         return [
           windowId == this.currentWindowId ? 0 : windowId,
           windowId == this.currentWindowId
-          ? 'Current'
-          : 'Win'+(index+1)
+          ? this.lang('current')
+          : this.lang('win')+(index+1)
         ];
       })
       if(this.originList.some(tab => this.windowRank[tab.windowId] == undefined)) {
-        windowFilter.push([-2, 'Opened']);
+        windowFilter.push([-2, this.lang('opened')]);
       }
 
       this.tab.windowFilter = windowFilter;
@@ -400,8 +400,8 @@ export default {
 
     iconMap() {
       return this.list.map((item, index) => {
-        // return this.getIcon(item.favIconUrl, item.url, this.currentThemeConfig.item_height*3/5);
-        return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
+        return this.getIcon(item.favIconUrl, item.url, this.currentThemeConfig.item_height*3/5);
+        // return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
     },
     highlightMap() {

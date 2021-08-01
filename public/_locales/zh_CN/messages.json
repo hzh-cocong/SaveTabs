@@ -80,6 +80,7 @@
 
     "current": {"message": "当前"},
     "opened": {"message": "已打开"},
+    "win": {"message": "窗口"},
 
     "noDifference": {"message": "无差别"},
     "new": {"message": "新"},

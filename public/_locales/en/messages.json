@@ -80,6 +80,7 @@
 
     "current": {"message": "Current"},
     "opened": {"message": "Opened"},
+    "win": {"message": "Win"},
 
     "noDifference": {"message": "No Difference"},
     "new": {"message": "New"},

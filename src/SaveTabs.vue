@@ -760,6 +760,9 @@ export default {
           //   this.statusTip(theme.name);
           // })
 
+          // 强制刷新列表，以保证 currentIndex 显现
+          this.$refs.workspaces[ this.activeWorkspaceRefIndex ].search();
+
           if(this.openWay != 'popup') {
             // 重启
             chrome.runtime.sendMessage({ type: 'restartExtension',})

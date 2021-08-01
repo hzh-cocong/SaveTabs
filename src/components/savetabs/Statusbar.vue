@@ -45,15 +45,18 @@
     <span
       v-if="tip == storageTip && goods"
       class="advertising animate__animated animate__flipInX">
+        <!-- :close-delay="500" -->
       <el-popover
         placement="top"
         title=""
         width="300"
         style="height: 30px;"
         trigger="hover"
-        transition
+        :transition="isAdShowing ? 'fade-in-linear' : ''"
         popper-class="product-box"
         :open-delay="450"
+        @after-enter="isAdShowing=true"
+        @after-leave="isAdShowing=false"
         @hide="focus">
         <div
           style="color: #303133;font-size: 16px;line-height: 1;margin-bottom: 12px;cursor: default;"
@@ -315,6 +318,8 @@ export default {
       weChatUrl: '',
 
       country: this.lang('@@ui_locale'), // 'zh_CN',
+
+      isAdShowing: false,
 
       w: {
         tipTimer: null,

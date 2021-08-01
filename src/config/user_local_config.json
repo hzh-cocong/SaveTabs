@@ -1,8 +1,8 @@
 {
-    "active_workspace_type": "bookmark",
+    "active_workspace_type": "window",
     "pinned": false,
     "theme_mode": "light",
-    "popup": false,
+    "popup": true,
     "keymap_left_and_right": true,
 
     "adjust_window_width": 0,
@@ -12,9 +12,9 @@
     "all_sort_auto": true,
     "all_include": [
         {
-            "type": "temporary",
+            "type": "tab",
             "count": 3,
-            "is_top": 1,
+            "is_top": 0,
             "only_search": false
         },
         {
@@ -38,7 +38,7 @@
         {
             "type": "history",
             "count": 3,
-            "is_top": 1,
+            "is_top": -1,
             "only_search": false
         },
         {

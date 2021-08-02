@@ -180,7 +180,7 @@ let history = {
                     ? ( list[k].count == undefined
                       ? this.parent.getDomain(list[k].url)
                       : this.parent.getDomain(list[k].subFiles[0].url))
-                    : '';
+                    : null;
       if(domain == lastDomain && list[k].count == undefined) {
         // 文件夹展开的情况（一般不会遇到）
         let l = k;

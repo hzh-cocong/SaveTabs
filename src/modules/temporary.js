@@ -123,7 +123,7 @@ let temporary = {
       // 获取当前标签信息
       chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         // 记录空白标签
-        if(tabs[0].url == "chrome://newtab/") {
+        if(tabs[0].url.replace(/(\/*$)/g,"") == "chrome://newtab") {
           blankTabId = tabs[0].id;
         }
         resolve();

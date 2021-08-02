@@ -324,7 +324,7 @@
                 @mousedown.prevent
                 @click="tab.visible = false;"></i>
               <i
-                class="el-icon-search"
+                class="el-icon-s-grid"
                 slot="reference"
                 style="padding-left: 4px;cursor: pointer;"
                 :style="{ 'line-height': currentThemeConfig.toolbar_height+'px',
@@ -977,6 +977,8 @@ export default {
     openWindow(keyType) {
       // 中文输入法时禁用，避免冲突
       if(this.isComposition) return;
+      // 选择主题时不操作
+      if(this.themeDialogVisible) return;
 
       this.$refs.workspaces[ this.activeWorkspaceRefIndex ].openWindow(undefined, keyType);
     },
@@ -1515,6 +1517,9 @@ export default {
             this.workspacesTip(request.workspace);
           }
         } else if(request.type == 'to_add') {
+          // 选择主题时不操作
+          if(this.themeDialogVisible) return;
+
           if(this.limited) {
             let index = this.getTypeIndex(request.workspace);
             if(index != -1) this.$refs.carousel.setActiveItem(index);
@@ -1585,12 +1590,12 @@ export default {
         // 让 background.js 帮忙关闭，减轻负担
         chrome.runtime.sendMessage({ type: 'closeExtension' })
       })
-
       //* window.addEventListener('blur' 已经帮忙做了，就不需要了，否则会添乱
       // tabs.onActivated 不包括窗口焦点变化（如果窗口内 tab focus 没变），得再加多个监听器
       chrome.windows.onFocusChanged.addListener((windowId) => {
         // // 切换到其它应用程序（非浏览器内窗口切换）则不关闭
-        // if(windowId == -1) return;
+        // 在 windows 中，windows popupChange 后，插件关闭后又重启，要在没有焦点时发生，就是因为其会同时出发这个事件，所以这里不能关闭
+        if(windowId == -1) return;
         // // 再切换过来
         // if(windowId == tab.windowId) return;
 

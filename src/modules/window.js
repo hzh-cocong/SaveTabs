@@ -238,7 +238,7 @@ let window = {
         chrome.windows.update(window.id, { focused: true});
 
         // 关闭空白标签页（是工作窗口则不关闭）
-        if( ! isInCurrentWindow && this.currentTab.url == 'chrome://newtab/') {
+        if( ! isInCurrentWindow && this.currentTab.url.replace(/(\/*$)/g,"") == 'chrome://newtab') {
           chrome.tabs.remove(this.currentTab.id);
         }
       })

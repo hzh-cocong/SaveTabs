@@ -24,8 +24,7 @@
     "_execute_browser_action": {
       "suggested_key": {
         "mac": "Command+Shift+Space",
-        "windows": "Alt+Shift+Space",
-        "linux": "Alt+Shift+Space"
+        "default": "Alt+S"
       }
     },
     "open_workspace_all": {

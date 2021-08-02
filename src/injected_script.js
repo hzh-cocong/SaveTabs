@@ -55,9 +55,10 @@
                                     transition-delay: 0s;
                                   `);
     container.id = id;
-    container.onclick = function() {
-      chrome.runtime.sendMessage({ type: 'closeExtension',})
-    }
+    // window blur 会自动关闭，不再需要这个了，否则会导致插件重启
+    // container.onclick = function() {
+    //   chrome.runtime.sendMessage({ type: 'closeExtension',})
+    // }
 
 
     // 创建 iframe
@@ -258,7 +259,7 @@
       }
 
       if(zoom != 1) iframe.style.zoom = 1 / zoom;
-    }, 0);
+    }, 50);
 
     if(zoom != 1) {
       let intervalID = null;

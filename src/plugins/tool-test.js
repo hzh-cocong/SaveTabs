@@ -148,6 +148,9 @@ const tool = {
           if(url.indexOf('file:///') == 0) {
             return 'file:';
           }
+          if(url.indexOf('data:') == 0) {
+            return 'data:';
+          }
 
           return '';
         },

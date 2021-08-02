@@ -102,7 +102,7 @@
     "windowNameInput": {"message": "Please enter the window name"},
     "windowNameEmpty": {"message": "The window name is not allowed to be empty"},
 
-    "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window"},
+    "windowNoResult": {"message": "Please enter the window name first, and then click the \"↓\" button to save the window."},
     "windowFirstAdd": {"message": "The window is saved successfully. Clicking on the list will switch to the corresponding window. You can create a new window and save it so that you can see the effect."},
     "windowCountTip": {"message": "A total of [total] windows are stored."},
 
@@ -398,7 +398,7 @@
     "workspaceDisabledTip": {"message": "The [workspace] workspace has been disabled. Do you want to go to the Settings Center to open it?"},
     "leftAndRightEnabledTip": {"message": "The left and right switching keymap is turned on."},
     "leftAndRightDisabledTip": {"message": "The left and right switching keymap has been disabled, but the following switching keymap  are still available."},
-    "noFocusTip": {"message": "It can't get focus automatically.Please manually click the input box to enter the content."},
+    "noFocusTip": {"message": "It can't get focus automatically. Please manually click the input box to enter the content."},
     "copyTip": {"message": "[count] address successfully copied"},
     "zoomTip": {"message": "Tip: The current webpage has been zoomed, and some operations may be abnormal."},
 

@@ -395,7 +395,7 @@
     </div>
     <span slot="footer" v-if="differenceVisible2">
       <el-button size="small" v-if="isCurrentWindowChange" style="float: left;" @click="restore">{{ lang('restore') }}</el-button>
-      <el-button size="small" v-else-if="haveDifference" style="float: left;" @click="bind">{{ lang('bind') }}</el-button>
+      <el-button size="small" v-else-if=" ! isInCurrentWindow || haveDifference" style="float: left;" @click="bind">{{ lang('bind') }}</el-button>
       <el-button size="small" @click="differenceVisible = false">{{ lang('cancel') }}</el-button>
       <el-button class="autofocus" type="primary" size="small" @click="updateGroup">{{ lang('update') }}</el-button>
     </span>
@@ -1035,7 +1035,7 @@ export default {
 
           // 关闭空白标签页（是工作窗口则不关闭）
           if( ! this.isInCurrentWindow
-          && this.currentTab.url == 'chrome://newtab/') {
+          && this.currentTab.url.replace(/(\/*$)/g,"") == 'chrome://newtab') {
             chrome.tabs.remove(this.currentTab.id);
           }
         })
@@ -1109,7 +1109,7 @@ export default {
     },
     deleteGroup() {
       // let group = this.list[this.currentIndex];
-      this.$confirm(' ('+this.currentGroup.name+') ', this.lang('windowDeleteConfirm'), {
+      this.$confirm(this.currentGroup.name, this.lang('windowDeleteConfirm'), {
         confirmButtonText: this.lang('sure'),
         cancelButtonText: this.lang('cancel'),
         type: 'warning',

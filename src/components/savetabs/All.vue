@@ -594,7 +594,12 @@ export default {
         if(this.localConfig.all_include.filter(workspace => {
           return this.storageKeyword != '' || workspace.only_search == false;
         }).every((workspace => {
-          return workspace.type != request.workspace;
+          // 工作区未被搜索则不刷新（这是错误的，因为有可能是增加的事件，而这为使得搜索结果发生变化，所以不能加 length 条件）
+          // 实验结果表明，上述猜想是错误的
+          // 当 length 为 undefined 时，只能是未轮到它出现，不管有没有 search。既然还未出现，就还未加载，也不会说要排在最前面，所以无需刷新，该出现时自会出现，此时才开始 init。
+          return workspace.type != request.workspace
+              || this.length[workspace.type] == undefined;
+          // return workspace.type != request.workspace;
         }))) return;
 
         // 虽然可能会有并发，但是是不同类型的并发，同一类型的发送方已经做了缓冲，所以无碍

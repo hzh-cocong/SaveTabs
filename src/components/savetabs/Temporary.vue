@@ -765,12 +765,14 @@ export default {
           center: false,
           callback: (action, instance, done) => {
             // 其实只有取消会调到这里，
-            if(action == 'cancel') {
-              callback(false);
-              this.isOperating = false;
-            }
+            callback(false);
+            this.isOperating = false;
+            // if(action == 'cancel' || action == 'close') {
+            //   callback(false);
+            //   this.isOperating = false;
+            // }
           }
-        });
+        })
         this.$nextTick(() => {
           // 由于弹框是 createElement 创建的，此时 button 还没有被渲染，所以要再放到下一个事件流中
           this.$nextTick(() => {
@@ -898,7 +900,7 @@ export default {
         // 获取当前标签信息
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           // 记录空白标签
-          if(tabs[0].url == "chrome://newtab/") {
+          if(tabs[0].url.replace(/(\/*$)/g,"") == "chrome://newtab") {
             blankTabId = tabs[0].id;
           }
           resolve();

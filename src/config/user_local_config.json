@@ -255,7 +255,7 @@
             "padding_width": 0,
 
             "width": 540,
-            "width_fill": true,
+            "width_fill": false,
             "width_percentage": 50,
 
             "height_auto": false,

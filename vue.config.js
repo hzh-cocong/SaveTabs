@@ -58,7 +58,6 @@ module.exports = {
                     })
                   .end()
 
-    //todo
     // 压缩图片（貌似没什么效果）
     config.module
         .rule('images')

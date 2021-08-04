@@ -35,7 +35,6 @@ let advertising = {
       // 小心，这里污染了广告
       this.storageList.forEach((item, index) => {
         item.type = 'advertising';
-        item.realIndex = index;
       })
 
       this.isInit = true;
@@ -62,7 +61,10 @@ let advertising = {
         })
 
         // 列表赋值
-        this.cacheList = filterList;
+        this.cacheList = filterList.map((advertising, index) => {
+          advertising.realIndex = index;
+          return advertising;
+        });
 
         return this.cacheList.slice(0, length);
       })
@@ -112,7 +114,6 @@ let advertising = {
         })
       })
     },
-
   }
 
   export default advertising;

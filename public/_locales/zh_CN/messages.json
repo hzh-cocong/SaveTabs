@@ -439,6 +439,9 @@
     "supportTip": {"message": "谢谢支持！"},
     "goodsScanTip": {"message": "使用 [platform]APP “扫一扫” 即可购买。"},
     "platform": {"message": "来自 [platform] 平台。"},
+    "recommendSort": {"message": "推荐"},
+    "lowToHightSort": {"message": "价格由低到高"},
+    "highToLowSort": {"message": "价格由高到低"},
 
 
     "thanksSharing2": {"message": "欢迎分享"},
@@ -455,5 +458,9 @@
     "support3": {"message": "给予好评 或 提供支持性建议"},
     "support4": {"message": "你还可以通过"},
     "clickHere": {"message": "点击这里"},
-    "support5": {"message": "购买商品，作者将获得一定的佣金，谢谢你的支持。"}
+    "support5": {"message": "购买商品，作者将获得一定的佣金，谢谢你的支持。"},
+
+
+    "submenuUniqueOpenTip": {"message": "只保持一个子菜单展开"},
+    "multipleSubmenuOpenTip": {"message": "可同时展开多个子菜单"}
 }

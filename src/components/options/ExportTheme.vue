@@ -193,7 +193,7 @@ export default {
         }
 
         // 保存数据
-        let total = 0;
+        let total = 1;
         chrome.storage.local.get({ theme: {}}, items => {
           if(Array.isArray(items.theme.user_theme_list)) {
             items.theme.user_theme_list.push(data);
@@ -205,7 +205,7 @@ export default {
             this.changeTheme(items.theme);
             this.$message({
               type: 'success',
-              message: this.lang('importSuccessTip').replace('[total]', 1),
+              message: this.lang('importSuccessTip').replace('[total]', total),
             });
           });
         });

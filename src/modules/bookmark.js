@@ -426,7 +426,7 @@ let bookmark = {
   },
 
   getRealIndex(i) {
-    return this.cacheList.findIndex((bookmark, index) => {
+    return this.cacheList.findIndex((bookmark/*, index*/) => {
       return bookmark.realIndex == i;
     })
   },

@@ -150,10 +150,11 @@
                     ? 'transparent'
                     : currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+            <!-- index-$refs.list.scrollLines+1 < 1 -->
             <font
               style="display:inline-block;text-align:left;"
               :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-              >{{ index-$refs.list.scrollLines+1 < 1
+              >{{ index-$refs.list.scrollLines+1 &lt; 1
                 ? 1
                 : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
           </span>
@@ -207,10 +208,11 @@
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+          <!-- index-$refs.list.scrollLines+1 < 1 -->
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-            >{{ index-$refs.list.scrollLines+1 < 1
+            >{{ index-$refs.list.scrollLines+1 &lt; 1
               ? 1
               : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
         </span>
@@ -302,7 +304,7 @@ export default {
     List,
   },
   watch: {
-    "tab.visible": function(newVal, oldVal) {
+    "tab.visible": function(newVal/*, oldVal*/) {
       this.search();
 
       if(newVal == false) return;
@@ -322,7 +324,7 @@ export default {
 
       this.tab.windowFilter = windowFilter;
     },
-    "windowIds": function(newVal, oldVal) {
+    "windowIds": function(/*newVal, oldVal*/) {
       if(this.tab.visible == false) return;
 
       let windowFilter = this.windowIds.map((windowId, index) => {
@@ -339,18 +341,18 @@ export default {
 
       this.tab.windowFilter = windowFilter;
     },
-    "tab.windowId": function(newVal, oldVal) {
+    "tab.windowId": function(/*newVal, oldVal*/) {
       this.search();
     },
 
-    cacheList(newVal, oldVal) {
+    cacheList(newVal/*, oldVal*/) {
       this.$emit('update:searchTotal', newVal.length)
     },
-    list(newVal, oldVal) {
+    list(newVal/*, oldVal*/) {
       this.$emit('update:listCount', newVal.length)
     },
 
-    workspaceSwitch(newVal, oldVal) {
+    workspaceSwitch(newVal/*, oldVal*/) {
       if(newVal) {
         let keymap = this.keymap['open_workspace_tab']
                     ? ' ('+this.keymap['open_workspace_tab']+')'
@@ -399,7 +401,7 @@ export default {
     },
 
     iconMap() {
-      return this.list.map((item, index) => {
+      return this.list.map((item/*, index*/) => {
         return this.getIcon(item.favIconUrl, item.url, this.currentThemeConfig.item_height*3/5);
         // return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
@@ -456,7 +458,7 @@ export default {
     }
   },
   methods: {
-    itemStyle({ index, item, isActive, isSelected }) {
+    itemStyle({/* index,*/ item, /*isActive, */isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.id == this.activeTabId) {
         if(isSelected) {
@@ -633,7 +635,7 @@ export default {
 
       if(keyType == 'meta/ctrl') {
         // 移动到当前标签的下一个位置，但不激活
-        chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, (tab) => {
+        chrome.tabs.move(this.selectedTabId, {windowId: this.currentWindowId, index: this.activeTab.index+1}, (/*tab*/) => {
           // 位置一旦变动，很多 tab 的 index 都会发生改变，仅仅靠下面这个是完全不够的
           // Object.assign(this.selectedTab, tab);
           // 只需更新数据，无需重新 search

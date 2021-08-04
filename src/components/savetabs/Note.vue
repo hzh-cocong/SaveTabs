@@ -162,10 +162,11 @@
                     ? 'transparent'
                     : currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+            <!-- index-$refs.list.scrollLines+1 < 1 -->
             <font
               style="display:inline-block;text-align:left;"
               :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-              >{{ index-$refs.list.scrollLines+1 < 1
+              >{{ index-$refs.list.scrollLines+1 &lt; 1
                 ? 1
                 : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
           </span>
@@ -219,10 +220,11 @@
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+          <!-- index-$refs.list.scrollLines+1 < 1 -->
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-            >{{ index-$refs.list.scrollLines+1 < 1
+            >{{ index-$refs.list.scrollLines+1 &lt; 1
               ? 1
               : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
         </span>
@@ -319,18 +321,18 @@ export default {
     List,
   },
   watch: {
-    "note.visible": function(newVal, oldVal) {
+    "note.visible": function(/*newVal, oldVal*/) {
       this.search();
     },
 
-    cacheList(newVal, oldVal) {
+    cacheList(newVal/*, oldVal*/) {
       this.$emit('update:searchTotal', newVal.length)
     },
-    list(newVal, oldVal) {
+    list(newVal/*, oldVal*/) {
       this.$emit('update:listCount', newVal.length)
     },
 
-    workspaceSwitch(newVal, oldVal) {
+    workspaceSwitch(newVal/*, oldVal*/) {
       if(newVal) {
         let keymap = this.keymap['open_workspace_note']
                     ? ' ('+this.keymap['open_workspace_note']+')'
@@ -379,7 +381,7 @@ export default {
     },
 
     iconMap() {
-      return this.list.map((item, index) => {
+      return this.list.map((item/*, index*/) => {
         return this.getIcon(item.icon, item.url, this.currentThemeConfig.item_height*3/5);
       })
     },
@@ -423,7 +425,7 @@ export default {
     }
   },
   methods: {
-    itemStyle({ index, item, isActive, isSelected }) {
+    itemStyle({/* index, */ item/*, isActive*/, isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.url == this.currentTab.url) {
         if(isSelected) {
@@ -962,7 +964,7 @@ export default {
     // 便签只需要知道标签状态，不需要其详细详细，所以 onUpdated 并不需要
     // 网页被覆盖 onCreated 或 onRemoved 是不会被触发的，所以 openWindow 要自己处理
     // 再加上 timer ，openWindow 自己可以防止重复点击
-    chrome.tabs.onCreated.addListener((tab) => {
+    chrome.tabs.onCreated.addListener((/*tab*/) => {
       clearTimeout(this.w.timer);
       this.w.timer = setTimeout(() => {
         this.refreshTabs();

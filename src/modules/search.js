@@ -17,12 +17,12 @@ let search = {
       this.isInit = true;
     },
 
-    search({keywords, length, config, localConfig, originKeyword}) {
+    search({/*keywords, */length,/* config, */localConfig, originKeyword}) {
       return new Promise((resolve) => {
         if(this.isInit) resolve();
         else resolve(this.init(localConfig))
       }).then(() => {
-        this.cacheList = this.storageList.map((item, index) => {
+        this.cacheList = this.storageList.map((item/*, index*/) => {
           item.url = encodeURI(item.formate).replace(new RegExp(encodeURI('{query}'), 'g'), encodeURIComponent(originKeyword));
           // item.url = encodeURI(item.formate.replace(new RegExp('{query}', 'g'), encodeURIComponent(originKeyword)));
           // item.title = `Search ${item.name} for '<strong>${originKeyword.escape()}</strong>'`;
@@ -72,7 +72,7 @@ let search = {
       let currentItem = this.cacheList[index];
 
       return new Promise(resolve => {
-        window.$open(currentItem.url, keyType, (tab, type) => {
+        window.$open(currentItem.url, keyType, (/*tab, type*/) => {
           resolve();
         })
       })

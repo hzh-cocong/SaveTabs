@@ -14,7 +14,7 @@ let advertising = {
 
     isInit: false,
 
-    init: function(localConfig) {
+    init: function(/*localConfig*/) {
       let country = this.country == 'zh_CN' ? COUNTRY.CHINA : COUNTRY.OTHER;
 
       this.searchAdvertising = [{
@@ -41,7 +41,7 @@ let advertising = {
       this.isInit = true;
     },
 
-    search({keywords, length, config, localConfig, originKeyword}) {
+    search({keywords, length,/* config,*/ localConfig, originKeyword}) {
       return new Promise((resolve) => {
         if(this.isInit) resolve();
         else resolve(this.init(localConfig))
@@ -107,7 +107,7 @@ let advertising = {
       let currentItem = this.cacheList[index];
 
       return new Promise(resolve => {
-        window.$open(currentItem.url, keyType, (tab, type) => {
+        window.$open(currentItem.url, keyType, (/*tab, type*/) => {
           resolve();
         })
       })

@@ -179,10 +179,11 @@
                     ? 'transparent'
                     : currentThemeConfig.list_keymap_color }">
             <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+            <!-- index-$refs.list.scrollLines+1 < 1 -->
             <font
               style="display:inline-block;text-align:left;"
               :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-              >{{ index-$refs.list.scrollLines+1 < 1
+              >{{ index-$refs.list.scrollLines+1 &lt; 1
                 ? 1
                 : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
           </span>
@@ -236,10 +237,11 @@
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+          <!-- index-$refs.list.scrollLines+1 < 1 -->
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-            >{{ index-$refs.list.scrollLines+1 < 1
+            >{{ index-$refs.list.scrollLines+1 &lt; 1
               ? 1
               : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
         </span>
@@ -503,18 +505,18 @@ export default {
     List,
   },
   watch: {
-    "window.visible": function(newVal, oldVal) {
+    "window.visible": function(/*newVal, oldVal*/) {
       this.search();
     },
 
-    cacheList(newVal, oldVal) {
+    cacheList(newVal/*, oldVal*/) {
       this.$emit('update:searchTotal', newVal.length)
     },
-    list(newVal, oldVal) {
+    list(newVal/*, oldVal*/) {
       this.$emit('update:listCount', newVal.length)
     },
 
-    workspaceSwitch(newVal, oldVal) {
+    workspaceSwitch(newVal/*, oldVal*/) {
       if(newVal) {
         let keymap = this.keymap['open_workspace_window']
                     ? ' ('+this.keymap['open_workspace_window']+')'
@@ -575,7 +577,7 @@ export default {
     },
 
     iconMap() {
-      return this.list.map((item, index) => {
+      return this.list.map((item/*, index*/) => {
         return this.getIcon(item.tabs[0].icon, item.tabs[0].url, this.currentThemeConfig.item_height*3/5);
       })
     },
@@ -640,7 +642,7 @@ export default {
     }
   },
   methods: {
-    itemStyle({ index, item, isActive, isSelected }) {
+    itemStyle({/* index, */item, /*isActive, */isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(item.windowId == this.currentWindowId) {
         if(isSelected) {
@@ -1330,7 +1332,7 @@ export default {
       // let group = this.list[this.currentIndex];
       let filename = this.currentGroup.name + '.tabs.html';
 
-      let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
+      let patt = /^(?!\.)[^\\/:*?"<>|]{1,250}$/;
       if( ! patt.test(filename)) {
         filename = 'InvalidWindowName.tabs.html';
       }

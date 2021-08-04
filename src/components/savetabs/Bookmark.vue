@@ -127,10 +127,11 @@
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+          <!-- index-$refs.list.scrollLines+1 < 1 -->
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-            >{{ index-$refs.list.scrollLines+1 < 1
+            >{{ index-$refs.list.scrollLines+1 &lt; 1
               ? 1
               : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
         </span>
@@ -183,10 +184,11 @@
                   ? 'transparent'
                   : currentThemeConfig.list_keymap_color }">
           <font>{{ (_device.platform == 'Mac' ? '⌘' : 'Alt') }}</font>
+          <!-- index-$refs.list.scrollLines+1 < 1 -->
           <font
             style="display:inline-block;text-align:left;"
             :style="{ width: (currentThemeConfig.list_keymap_size/2)+'px' }"
-            >{{ index-$refs.list.scrollLines+1 < 1
+            >{{ index-$refs.list.scrollLines+1 &lt; 1
               ? 1
               : Math.min(index-$refs.list.scrollLines+1, currentThemeConfig.item_show_count, 9) }}</font>
         </span>
@@ -281,22 +283,22 @@ export default {
     List,
   },
   watch: {
-    currentIndex(newVal, oldVal) {
+    currentIndex(newVal/*, oldVal*/) {
       if( ! this.isSearching) {
         // this.position.visiualIndex = this.$refs.list.visiualIndex; // 此时 visiualIndex 那边拿到的 currentIndex 还是老的
         this.positionRecord(newVal, newVal-this.$refs.list.scrollLines);
       }
     },
-    "bookmark.visible": function(newVal, oldVal) {
+    "bookmark.visible": function(/*newVal, oldVal*/) {
       this.search();
     },
-    "bookmark.fold": function(newVal, oldVal) {
+    "bookmark.fold": function(/*newVal, oldVal*/) {
       if( ! this.bookmark.fold) return;
 
       this.fold(0);
       this.bookmark.fold = false;
     },
-    "bookmark.unfold": function(newVal, oldVal) {
+    "bookmark.unfold": function(/*newVal, oldVal*/) {
       if( ! this.bookmark.unfold) return;
 
       this.unfold();
@@ -306,11 +308,11 @@ export default {
     // cacheList(newVal, oldVal) {
     //   this.$emit('update:searchTotal', newVal.length)
     // },
-    list(newVal, oldVal) {
+    list(newVal/*, oldVal*/) {
       this.$emit('update:listCount', newVal.length)
     },
 
-    workspaceSwitch(newVal, oldVal) {
+    workspaceSwitch(newVal/*, oldVal*/) {
       if(newVal) {
         let keymap = this.keymap['open_workspace_bookmark']
                     ? ' ('+this.keymap['open_workspace_bookmark']+')'
@@ -359,7 +361,7 @@ export default {
     },
 
     iconMap() {
-      return this.list.map((item, index) => {
+      return this.list.map((item/*, index*/) => {
         return this.getIcon('', item.url, this.currentThemeConfig.item_height*3/5);
       })
     },
@@ -514,7 +516,7 @@ export default {
     }
   },
   methods: {
-    itemStyle({ index, item, isActive, isSelected }) {
+    itemStyle({ /*index, item, isActive,*/ isSelected }) {
       // 由于 vue 以组件为粒度进行更新，这里会被频繁调用
       if(isSelected) {
         return {
@@ -1040,7 +1042,7 @@ export default {
       // 全部展开（包括子目录）
 
       this.state = {};
-      let parentId = this.originList.length <= 0 ? -1 : this.originList[0].parentId;
+      // let parentId = this.originList.length <= 0 ? -1 : this.originList[0].parentId;
       for(let currentIndex = 0; currentIndex < this.originList.length; currentIndex++) {
         let bookmark = this.originList[currentIndex];
 

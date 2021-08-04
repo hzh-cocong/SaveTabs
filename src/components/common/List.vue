@@ -309,13 +309,13 @@ export default {
         this.$emit('change', newVal.length-1);
       }
     },
-    scrollLines(newVal, oldVal) {
+    scrollLines(newVal/*, oldVal*/) {
       if(newVal < this.rangeUp || newVal > this.rangeDown) {
         this.rangeUp = this.getRangeUp();
         this.rangeDown = this.getRangeDown();
       }
     },
-    itemShowCount(newVal, oldVal) {
+    itemShowCount(/*newVal, oldVal*/) {
       this.rangeUp = this.getRangeUp();
       this.rangeDown = this.getRangeDown();
     },

@@ -59,8 +59,25 @@
     <!-- maxHeight: '457px' -->
     <el-card
       class="box-card"
-      :header="lang('commodityPromotion')"
       :body-style="{ overflow: 'auto' }">
+      <div slot="header" style="font-size: 16px;color:#303133;">
+        <span>{{ lang('commodityPromotion') }}</span>
+        <el-select
+          size="mini"
+          placeholder=""
+          v-model="sortWay"
+          style="float:right;">
+          <el-option
+            :label="lang('recommendSort')"
+            :value="0"></el-option>
+          <el-option
+            :label="lang('lowToHightSort')"
+            :value="-1"></el-option>
+          <el-option
+            :label="lang('highToLowSort')"
+            :value="1"></el-option>
+        </el-select>
+      </div>
       <div
         v-for="(goods, index) in allGoods"
         :key="index"
@@ -73,7 +90,7 @@
             :title="lang('advertisingTip2')"
             @click="$open(goods.url, getKeyType($event))" />
         </span>
-        <span style="flex: 1;margin-left: 10px;padding: 10px;height: 100%;display: flex;flex-direction: column;">
+        <span style="flex: 1;margin-left: 10px;padding: 10px;height: 100%;width: 100%;overflow:hidden;display: flex;flex-direction: column;">
           <div
             class="goods-name"
             :title="lang('advertisingTip3')"
@@ -81,6 +98,8 @@
           <div
             class="goods-description"
             v-html="goods.description"
+            @mouseenter="$refs.goods_description[index].className='goods-description beautify-scrollbar'"
+            @mouseleave="$refs.goods_description[index].scrollLeft=0;$refs.goods_description[index].className='goods-description'"
             ref="goods_description"></div>
           <div style="color:red;margin-top: 5px;margin-bottom: 5px;">
             <span :title="lang('advertisingTip4')">{{ goods.unit+goods.price }}</span>
@@ -110,10 +129,34 @@
                 <div>{{ lang('goodsScanTip').replace('[platform]', goods.platform.text) }}</div>
               </div>
             </el-tooltip>
+            <el-tooltip
+              v-if="goods.coupon"
+              placement="top"
+              effect="light"
+              transition="">
+              <span
+                title="点击获取优惠券"
+                class="hover2"
+                style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 5px;background-color:#E1251B;color:#ffffff;"
+                @click="$open(goods.coupon, getKeyType($event))"
+                @mouseenter="getCoupon(index)">券</span>
+              <div
+                slot="content"
+                class="qrcode-box"
+                @mousedown.prevent>
+                <img
+                  class="goods-qrcode"
+                  :src="couponImgUrls[index]"
+                  :title="goods.coupon"
+                  @click="$open(goods.coupon, getKeyType($event))" />
+                <div>领取优惠券</div>
+                <div>使用 京东APP “扫一扫”</div>
+              </div>
+            </el-tooltip>
             <span
               :title="lang('platform').replace('[platform]', goods.platform.text)"
               class="hover2"
-              style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
+              style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 5px;"
               :style="{ backgroundColor: goods.platform.background_color,
                         color: goods.platform.color }"
               @click="openPlatform(goods.platform.text, goods.name, getKeyType($event))">{{ goods.platform.text }}</span>
@@ -142,15 +185,19 @@ export default {
   data() {
     return {
       country: this.lang('@@ui_locale'), // 'zh_CN',
-      amazonSearchValue: 'mobile',
+      amazonSearchValue: '',
       JDSearchValue: '',
       qrcodeImgUrls: {},
+      couponImgUrls: {},
+      sortWay: 0,
     }
   },
   computed: {
     allGoods() {
       let country = this.country == 'zh_CN' ? COUNTRY.CHINA : COUNTRY.OTHER;
-      return advertising_config.filter(item => item.country == country);
+      return advertising_config.filter(item => item.country == country).sort((a, b) => {
+        return (b.price - a.price) * this.sortWay;
+      })
     }
   },
   methods: {
@@ -168,6 +215,22 @@ export default {
 
         // this.qrcodeImgUrls[index] = url;
         this.$set(this.qrcodeImgUrls, index, url);
+      })
+    },
+    getCoupon(index) {
+      if(this.couponImgUrls[index]) return;
+
+      let goods  = this.allGoods[index];
+      QRCode.toDataURL(goods.coupon, {
+        errorCorrectionLevel: 'L',
+        quality: 1,
+        margin: 0,
+        width: 200,
+      },(error, url)=>{
+        if(error) return;
+
+        // this.couponImgUrls[index] = url;
+        this.$set(this.couponImgUrls, index, url);
       })
     },
 
@@ -192,7 +255,11 @@ export default {
   mounted() {
     if(this.allGoods.length > 0) {
       let index = Math.floor(Math.random()*this.allGoods.length);
-      this.JDSearchValue = this.allGoods[index].name;
+      if(this.country == 'zh_CN') {
+        this.JDSearchValue = this.allGoods[index].name;
+      } else {
+        this.amazonSearchValue = this.allGoods[index].name;
+      }
     }
   }
 }
@@ -211,10 +278,10 @@ export default {
 .good-box {
   display: flex;
   width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  /* overflow-x: auto;
+  overflow-y: hidden; */
   align-items: center;
-  height: 125px;
+  height: 140px;
   cursor: default;
   padding: 20px 0;
   border-bottom: 1px solid #ddd;
@@ -239,6 +306,10 @@ export default {
   text-align: left;
   margin-bottom: 10px;
   cursor: pointer;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .goods-name:hover {
   color: #E1251B;
@@ -247,6 +318,7 @@ export default {
   flex: 1;
   font-size: 14px;
   white-space: nowrap;
+  overflow: hidden;
 }
 .goods-qrcode {
   width: 200px;

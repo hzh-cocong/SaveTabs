@@ -14,7 +14,7 @@ let history = {
     this.isInit = true;
   },
 
-  search({keywords, length, originKeyword, parent}) {
+  search({/*keywords, */length, originKeyword, parent}) {
     this.parent = parent;
 
     return new Promise((resolve) => {
@@ -312,7 +312,7 @@ let history = {
   },
 
   getRealIndex(i) {
-    return this.cacheList.findIndex((history, index) => {
+    return this.cacheList.findIndex((history/*, index*/) => {
       return history.realIndex == i;
     })
   },

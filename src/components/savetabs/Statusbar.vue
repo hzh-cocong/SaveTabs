@@ -117,15 +117,8 @@
                   slot="content"
                   class="qrcode-box"
                   @mousedown.prevent>
-                  <!-- <div
-                    id="goods-qrcode"
-                    style="width: 200px; height: 200px;margin-bottom: 10px;cursor: pointer"
-                    @click="$open(goods.url, getKeyType($event))"></div> -->
-                  <!-- <canvas
-                    id="goods-qrcode"
-                    @click="$open(goods.url, getKeyType($event))"></canvas> -->
                   <img
-                    id="goods-qrcode"
+                    class="goods-qrcode"
                     :src="qrcodeImgUrl"
                     :title="goods.url"
                     @click="$open(goods.url, getKeyType($event))" />
@@ -133,10 +126,34 @@
                   <div>{{ lang('goodsScanTip').replace('[platform]', goods.platform.text) }}</div>
                 </div>
               </el-tooltip>
+              <el-tooltip
+                v-if="goods.coupon"
+                placement="top"
+                effect="light"
+                transition="">
+                <span
+                  title="点击获取优惠券"
+                  class="hover2"
+                  style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 5px;background-color:#E1251B;color:#ffffff;"
+                  @click="$open(goods.coupon, getKeyType($event))"
+                  @mouseenter="getCoupon">券</span>
+                <div
+                  slot="content"
+                  class="qrcode-box"
+                  @mousedown.prevent>
+                  <img
+                    class="goods-qrcode"
+                    :src="couponImgUrl"
+                    :title="goods.coupon"
+                    @click="$open(goods.coupon, getKeyType($event))" />
+                  <div>领取优惠券</div>
+                  <div>使用 京东APP “扫一扫”</div>
+                </div>
+              </el-tooltip>
               <span
                 :title="lang('platform').replace('[platform]', goods.platform.text)"
                 class="hover2"
-                style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 10px;"
+                style="border-radius: 2px;font-size:12px;padding:1px 4px;float:right;margin-right: 5px;"
                 :style="{ backgroundColor: goods.platform.background_color,
                           color: goods.platform.color }"
                 @click="openPlatform(goods.platform.text, goods.name, getKeyType($event))">{{ goods.platform.text }}</span>
@@ -312,8 +329,9 @@ export default {
 
       tip: '',
 
-      qrcode: null,
+      // qrcode: null,
       qrcodeImgUrl: '',
+      couponImgUrl: '',
 
       weChatUrl: '',
 
@@ -406,6 +424,26 @@ export default {
         this.qrcodeImgUrl = url;
       })
     },
+    getCoupon() {
+      if(this.w.couponUrl == this.goods.coupon) return;
+      this.w.couponUrl = this.goods.coupon;
+
+      QRCode.toDataURL(this.goods.coupon, {
+        errorCorrectionLevel: 'L',
+        quality: 1,
+        margin: 0,
+        width: 200,
+      },(error, url)=>{
+
+        if(error) {
+          this.couponImgUrl = '';
+          this.w.couponUrl = '';
+          return;
+        }
+
+        this.couponImgUrl = url;
+      })
+    },
     getWeChatUrl() {
       if(this.weChatUrl != '') return;
 
@@ -446,6 +484,7 @@ export default {
     },
 
     changeGoods() {
+      // this.goodsIndex--;return;
       if(this.allGoods.length == 0) return;
       if(this.allGoods.length == 1 && this.goodsIndex != -1) return;
 
@@ -499,6 +538,7 @@ export default {
   },
   mounted() {
     this.changeGoods();
+    // this.goodsIndex = this.allGoods.length-1;
   }
 }
 </script>
@@ -623,6 +663,10 @@ input[type=checkbox]:checked:after {
   text-align: center;
   margin-bottom: 10px;
   cursor: pointer;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 #goods-name:hover {
   color: #E1251B;
@@ -633,7 +677,7 @@ input[type=checkbox]:checked:after {
   white-space: nowrap;
   overflow: hidden;
 }
-#goods-qrcode {
+.goods-qrcode {
   width: 200px;
   height: 200px;
   margin-bottom: 5px;

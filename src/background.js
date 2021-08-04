@@ -31,7 +31,7 @@ ${href}
   download(filename, data);
 }
 
-function download(filename, data, path)
+function download(filename, data)
 {
   var urlObject = window.URL || window.webkitURL || window;
   var blob = new Blob([data], {type: "text/html"});
@@ -41,7 +41,6 @@ function download(filename, data, path)
       url: url,
       filename: filename,
       //saveAs: false,
-  }, (downloadId) => {
   });
 }
 
@@ -277,7 +276,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       // 多个窗口间的切换
 
       // 先查询被选中的标签的窗口信息
-      chrome.windows.get(destination.windowId, {populate: true}, (window) => {
+      chrome.windows.get(destination.windowId, {populate: true}, (/*window*/) => {
         // 新增标签，防止在交换过程中因为焦点变化而导致顺序混乱
 
         chrome.tabs.create({windowId: target.windowId, index: target.index+1, active: false}, (tab) => {
@@ -373,8 +372,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           count: request.count,
         })
       }
-    } catch(e) {
-    } finally {
+    }/* catch(e) {
+    } */finally {
       input.remove();
     }
   } else if(request.type == 'restartExtension') {

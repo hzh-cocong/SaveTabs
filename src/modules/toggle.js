@@ -77,7 +77,7 @@ let search = {
     // do nothing
   },
 
-  openWindow(index, keyType) {
+  openWindow(index/*, keyType*/) {
     let currentItem = this.cacheList[index];
     return new Promise(resolve => {
       let keywords;

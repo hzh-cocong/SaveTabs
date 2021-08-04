@@ -714,7 +714,7 @@ export default {
   },
   watch: {
     searchTotal: {
-      handler(newVal, oldVal) {
+      handler(/*newVal, oldVal*/) {
         if( ! this.currentThemeConfig.statusbar_show_search_total) return;
 
         let title = this.lang(this.currentWorkspace.title);
@@ -1341,7 +1341,7 @@ export default {
 
       // 输入框鼠标经过显示清除按钮
       this.originInputNode = this.$refs['input'].$el.querySelector("input[name='search-input']")
-      this.originInputNode.addEventListener('mouseenter', (event) => {
+      this.originInputNode.addEventListener('mouseenter', (/*event*/) => {
         // event.stopPropagation();
         // event.preventDefault();
         this.showClearButton = true;
@@ -1614,7 +1614,7 @@ export default {
 
     // 模拟 popup 行为（完美，调试都不行，哈哈）
     // 当插件获取不到焦点时无法发挥作用
-    window.addEventListener('blur', (event)=>{
+    window.addEventListener('blur', (/*event*/)=>{
       // event.stopPropagation();
       // event.preventDefault();
 

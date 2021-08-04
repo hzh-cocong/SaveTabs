@@ -185,7 +185,7 @@ let temporary = {
           })
         })
       }
-    }).then((window) => {
+    }).then((/*window*/) => {
       // 关闭空白标签
       if(blankTabId != -1) {
         chrome.tabs.remove(blankTabId);

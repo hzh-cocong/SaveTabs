@@ -47,7 +47,7 @@ validate.validators.object_array = function (value, options) {
 // 关联校验
   // Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script
   // 暂时去掉，后面再想办法
-validate.validators.association = function (self, options, _, attributes) {
+validate.validators.association = function (/*self, options, _, attributes*/) {
 //       if(typeof(self) == 'object') return 'formate error';
 //       for(let key in options) {
 // console.log('validate.validators.association', key, options, _);

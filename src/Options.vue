@@ -22,9 +22,16 @@
         </h3>
         <i
           :class="[ collapse ? 'el-icon-s-fold' : 'el-icon-s-unfold' ]"
+          :title="collapse ? lang('unfold') : lang('fold')"
           class="collapse"
           style="position: absolute;left: 0;top: 0;color:#6699CC;"
           @click="collapseChange"></i>
+        <i
+          :class="[ uniqueOpened ? 'el-icon-menu' : 'el-icon-s-grid' ]"
+          :title="uniqueOpened ? lang('submenuUniqueOpenTip') : lang('multipleSubmenuOpenTip')"
+          class="collapse"
+          style="position: absolute;left: 0;top: 18px;color:#6699CC;"
+          @click="uniqueOpenedChange"></i>
       </div>
       <el-menu
         id="app"
@@ -32,7 +39,7 @@
         :collapse-transition="false"
         :default-active="$route.name"
         style="flex: 1;overflow-x:hidden;overflow-y:auto;"
-        :unique-opened="true"
+        :unique-opened="uniqueOpened"
         router>
         <el-submenu
           v-for="menu in menus"
@@ -144,6 +151,7 @@ export default {
 
       // collapse: false,
       collapse: !! localStorage.getItem('collapse'),
+      uniqueOpened: localStorage.getItem('uniqueOpened') == null,
     }
   },
   computed: {
@@ -268,6 +276,14 @@ export default {
         localStorage.removeItem('collapse');
       }
     },
+    uniqueOpenedChange() {
+      this.uniqueOpened = ! this.uniqueOpened;
+      if(this.uniqueOpened) {
+        localStorage.removeItem('uniqueOpened');
+      } else {
+        localStorage.setItem('uniqueOpened', 1);
+      }
+    },
 
     store(type, tip=true) {
       if(type != 'local' && type != 'sync') return;
@@ -284,7 +300,6 @@ export default {
       });
     },
     storeTheme({config = true, theme = true, tip = true}={}) {
-      let setting =
       chrome.storage.local.set({
         'config': config ? this.localConfig : undefined,
         'theme': theme ? {
@@ -855,7 +870,7 @@ export default {
       });
     },
 
-    upgrade(syncItems, localItems) {
+    upgrade(syncItems, /*localItems*/) {
       // 老用户升级
 
       // 提取异步配置
@@ -1053,4 +1068,24 @@ body {
   max-width: 600px;
 }
 
+.beautify-scrollbar {
+  overflow: overlay !important;
+}
+.beautify-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+.beautify-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .6);
+}
+.beautify-scrollbar::-webkit-scrollbar-thumb:hover {
+  border-radius: 5px;
+  background-color: rgba(127, 127, 127, .9);;
+}
+/* 边角 */
+.beautify-scrollbar::-webkit-scrollbar-corner  {
+  background: transparent;
+}
 </style>

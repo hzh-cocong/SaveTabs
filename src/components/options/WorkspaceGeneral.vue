@@ -195,7 +195,7 @@ export default {
     }
   },
   watch: {
-    speed(newVal, oldValue) {
+    speed(newVal/*, oldValue*/) {
       localStorage.setItem('speed', newVal);
       this.$message({
         type: 'success',

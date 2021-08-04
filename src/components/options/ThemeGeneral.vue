@@ -2472,15 +2472,15 @@
 
 <script>
 
-import { nanoid } from 'nanoid'
+// import { nanoid } from 'nanoid'
 import Sortable from 'sortablejs';
 import projectConfig from '@/config/project_config.json'
 var validate = require("validate.js");
 
-const THEME_TYPWE = {
-  POPUP: 1,
-  INJECT: 2,
-}
+// const THEME_TYPWE = {
+//   POPUP: 1,
+//   INJECT: 2,
+// }
 export default {
   name: 'ThemeGeneral',
   inject: [
@@ -2619,7 +2619,7 @@ export default {
 
       let filename = this.currentTheme.name + '-SavetabsTheme.json';
 
-      let patt = /^(?!\.)[^\\\/:\*\?"<>\|]{1,250}$/;
+      let patt = /^(?!\.)[^\\/:*?"<>|]{1,250}$/;
       if( ! patt.test(filename)) {
         filename = 'SaveTabsTheme.json';
       }

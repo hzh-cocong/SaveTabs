@@ -439,6 +439,9 @@
     "supportTip": {"message": "Thank you for your support!"},
     "goodsScanTip": {"message": "Use [platform] APP \"Scan\" to purchase."},
     "platform": {"message": "From the [platform] platform."},
+    "recommendSort": {"message": "Recommend"},
+    "lowToHightSort": {"message": "Price from low to high"},
+    "highToLowSort": {"message": "Price from high to low"},
 
 
     "thanksSharing2": {"message": "Welcome to share"},
@@ -455,5 +458,9 @@
     "support3": {"message": "to give praise or provide suggestions."},
     "support4": {"message": "In addition, you can also"},
     "clickHere": {"message": "Click Here"},
-    "support5": {"message": "to buy some goods, the author will get some commission, thank you for your support."}
+    "support5": {"message": "to buy some goods, the author will get some commission, thank you for your support."},
+
+
+    "submenuUniqueOpenTip": {"message": "Keep only one submenu expanded"},
+    "multipleSubmenuOpenTip": {"message": "Multiple sub-menus can be expanded at the same time"}
 }

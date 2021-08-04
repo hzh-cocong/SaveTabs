@@ -78,6 +78,9 @@ const tool = {
     Vue.mixin({
       methods: {
         lang: function(key) {
+          if(key == '@@ui_locale') {
+            return 'zh_CN';
+          }
           if(Lang[key] == undefined) {
             return 'not-set:'+key;
           } else {

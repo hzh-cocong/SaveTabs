@@ -203,18 +203,18 @@ export default {
     AdvertisingItem,
   },
   watch: {
-    "all.visible": function(newVal, oldVal) {
+    "all.visible": function(/*newVal, oldVal*/) {
       this.search();
     },
 
     // cacheList(newVal, oldVal) {
     //   this.$emit('update:searchTotal', newVal.length)
     // },
-    list(newVal, oldVal) {
+    list(newVal/*, oldVal*/) {
       this.$emit('update:listCount', newVal.length)
     },
 
-    workspaceSwitch(newVal, oldVal) {
+    workspaceSwitch(newVal/*, oldVal*/) {
       if(newVal) {
         let keymap = this.keymap['open_workspace_all']
                     ? ' ('+this.keymap['open_workspace_all']+')'
@@ -581,7 +581,7 @@ export default {
   },
   mounted() {
     // 保持数据同步
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((request/*, sender, sendResponse*/) => {
       if(request.type == 'data_change') {
         // 被排除了则不处理
         if(request.exclude != undefined && request.exclude.indexOf('all') != -1) return;

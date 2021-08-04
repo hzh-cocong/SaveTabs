@@ -313,6 +313,7 @@
     "bookmarkManagement": {"message": "Bookmark Management"},
     "historyManagement": {"message": "History Management"},
     "oldVersionImport": {"message": "Old Version Import"},
+    "oldVersionSync": {"message": "Old Version Sync"},
 
 
     "themeImportTip": {"message": "Import (single or multiple themes)"},

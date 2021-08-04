@@ -896,7 +896,7 @@ export default {
       // 提取主题（旧版只有 popup）
       let theme_popup = {
         "id": "Old Version Sync",
-        "name": "Old Version Sync",
+        "name": this.lang("oldVersionSync"),
         "type": 1,
       }
 

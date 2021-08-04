@@ -10,7 +10,7 @@
         stripe
         border>
         <el-table-column :label="lang('type')" fixed prop="type" width="100"></el-table-column>
-        <el-table-column :label="lang('keymap')" fixed width="160">
+        <el-table-column :label="lang('keymap')" fixed width="165">
           <template slot-scope="scope">
             <span
               v-for="(data, index) in scope.row.keymaps"

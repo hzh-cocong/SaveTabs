@@ -312,6 +312,7 @@
     "invalidFileFormat": {"message": "File format error"},
     "bookmarkManagement": {"message": "Bookmark Management"},
     "historyManagement": {"message": "History Management"},
+    "oldVersionImport": {"message": "Old Version Import"},
 
 
     "themeImportTip": {"message": "Import (single or multiple themes)"},

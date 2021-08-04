@@ -2617,7 +2617,10 @@ export default {
         ]
       }
 
-      let filename = this.currentTheme.name + '-SavetabsTheme.json';
+      let filename = (this.currentTheme.is_system
+                    ? this.lang(this.currentTheme.name)
+                    : this.currentTheme.name)
+                    + '-SavetabsTheme.json';
 
       let patt = /^(?!\.)[^\\/:*?"<>|]{1,250}$/;
       if( ! patt.test(filename)) {

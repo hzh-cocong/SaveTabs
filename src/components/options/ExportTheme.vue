@@ -187,7 +187,7 @@ export default {
 
         data = {
           "id": nanoid(),
-          "name": "Old Version Import",
+          "name": this.lang("oldVersionImport"),
           "type": 1,
           "config": Object.assign({}, this.theme.system_theme_list[0].config, data),
         }

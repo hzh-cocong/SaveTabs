@@ -312,6 +312,7 @@
     "invalidFileFormat": {"message": "不是有效的文件格式"},
     "bookmarkManagement": {"message": "书签管理"},
     "historyManagement": {"message": "历史记录"},
+    "oldVersionImport": {"message": "旧版导入"},
 
 
     "themeImportTip": {"message": "导入（单个或多个主题）"},

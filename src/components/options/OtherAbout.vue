@@ -3,7 +3,7 @@
     class="other-about">
     <div class="main" style="color: #303133;flex: 1;">
       <div style="text-align: left;">{{ lang('name') }}: {{ lang('extension_name') }}</div>
-      <div style="text-align: left;">{{ lang('version') }}: 4.0.0</div>
+      <div style="text-align: left;">{{ lang('version') }}: {{ manifest.version }}</div>
     </div>
     <div class="copyright">
       <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">cocong.cn</a></span>
@@ -12,8 +12,16 @@
 </template>
 
 <script>
+import manifest from '@/../public/manifest.json'
+
+
 export default {
-  name: 'OtherAbout'
+  name: 'OtherAbout',
+  data() {
+    return {
+      manifest: manifest,
+    }
+  }
 }
 </script>
 

@@ -1,4 +1,14 @@
 {
+    "webStore": {
+        "chrome": {
+            "home": "https://chrome.google.com/webstore/detail/ikjiakenkeediiafhihmipcdafkkhdno",
+            "reviews": "https://chrome.google.com/webstore/detail/ikjiakenkeediiafhihmipcdafkkhdno/reviews"
+        },
+        "edge": {
+            "home": "https://microsoftedge.microsoft.com/addons/detail/ccjcedglnjinmmoggflicmjeggaplgee",
+            "reviews": "https://microsoftedge.microsoft.com/addons/detail/ccjcedglnjinmmoggflicmjeggaplgee"
+        }
+    },
     "allWorkspaces": {
         "all": {
             "type": "all",

@@ -218,7 +218,7 @@
           :title="lang('giveGoodComment')"
           class="el-icon-chat-dot-square hover"
           style="line-height: 16px;font-size: 12px;float:right; margin-right: 10px;cursor: pointer"
-          @click="$open('https://chrome.google.com/webstore/detail/savetabs/ikjiakenkeediiafhihmipcdafkkhdno/reviews', getKeyType($event))"></i>
+          @click="$open(projectConfig.webStore[$platform].reviews, getKeyType($event))"></i>
         <i
           :title="lang('rewardAuthor')"
           class="el-icon-coffee-cup hover"
@@ -321,6 +321,10 @@ export default {
     statusbarHeight: {
       type: Number,
       require: true,
+    },
+    projectConfig: {
+      type: Object,
+      required: true,
     },
   },
   data() {

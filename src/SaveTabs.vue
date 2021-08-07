@@ -546,6 +546,7 @@
     :isLoad="isLoad"
     :currentWorkspace="currentWorkspace == undefined ? {} : currentWorkspace"
     :statusbarHeight="statusbarHeight"
+    :projectConfig="projectConfig"
     @mousedown.native.prevent
     ref="statusbar"></Statusbar>
 

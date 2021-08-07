@@ -3,7 +3,7 @@
 
     <el-aside
       :width="collapse ? '65px' : '200px'"
-      style="display: flex;flex-direction: column;height: 100vh;">
+      style="display: flex;flex-direction: column;height: 100vh;position: fixed;">
       <div
         style="display: flex; flex-direction: column;justify-content: center;align-items: center;height: 120px;min-height: 120px;width: 100%;box-sizing: border-box;border-right:solid 1px #e6e6e6;text-align:center;">
         <img
@@ -59,7 +59,9 @@
       </el-menu>
     </el-aside>
 
-    <el-main style="padding: 0;height: 100vh;overflow: auto;">
+    <el-main
+      class="main"
+      :style="{ marginLeft: collapse ? '65px' : '200px' }">
       <router-view
         :syncConfig="syncConfig"
         :localConfig="localConfig"
@@ -1032,6 +1034,13 @@ export default {
   color: #0099CC !important;
   opacity: 1;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.main {
+  padding: 0;
+  min-height: 100vh;
+  /* height: 100vh;
+  overflow: auto; */
 }
 </style>
 

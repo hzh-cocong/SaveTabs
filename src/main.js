@@ -4,7 +4,7 @@ import './plugins/svg-sprite.js'
 import './plugins/element2.js'
 
 // 区分平台（未来要改为 npm 界面设置）
-/*
+//*
 window.$platform = Vue.prototype.$platform = 'chrome';
 /*/
 window.$platform = Vue.prototype.$platform = 'edge';

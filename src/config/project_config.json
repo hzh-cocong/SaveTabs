@@ -1,10 +1,12 @@
 {
     "webStore": {
         "chrome": {
+            "name": "chromeWebStore",
             "home": "https://chrome.google.com/webstore/detail/ikjiakenkeediiafhihmipcdafkkhdno",
             "reviews": "https://chrome.google.com/webstore/detail/ikjiakenkeediiafhihmipcdafkkhdno/reviews"
         },
         "edge": {
+            "name": "edgeWebStore",
             "home": "https://microsoftedge.microsoft.com/addons/detail/ccjcedglnjinmmoggflicmjeggaplgee",
             "reviews": "https://microsoftedge.microsoft.com/addons/detail/ccjcedglnjinmmoggflicmjeggaplgee"
         }

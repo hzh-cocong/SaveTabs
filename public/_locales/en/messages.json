@@ -457,6 +457,7 @@
     "support1": {"message": "If you think this plugin is good, you can buy me a cup of coffee. ￣▽￣"},
     "support2": {"message": "You can also log in"},
     "chromeWebStore": {"message": "Chrome Web Store"},
+    "edgeWebStore": {"message": "Microsoft Edge Add-ons"},
     "support3": {"message": "to give praise or provide suggestions."},
     "support4": {"message": "In addition, you can also"},
     "clickHere": {"message": "Click Here"},

@@ -457,6 +457,7 @@
     "support1": {"message": "如果你觉得这款插件还不错，可以请我喝杯咖啡。 ￣▽￣"},
     "support2": {"message": "你也可以登陆"},
     "chromeWebStore": {"message": "Chrome 网上应用店"},
+    "edgeWebStore": {"message": "Microsoft Edge 外接程序"},
     "support3": {"message": "给予好评 或 提供支持性建议"},
     "support4": {"message": "你还可以通过"},
     "clickHere": {"message": "点击这里"},

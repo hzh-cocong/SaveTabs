@@ -30,7 +30,7 @@
       <el-row>
         <el-col :span="24">
         <div class="describe">
-          <div>{{ lang('support2')}} <a :href="projectConfig.webStore[$platform].home" target="_blank">{{ lang('chromeWebStore') }}</a> {{ lang('support3') }}</div>
+          <div>{{ lang('support2')}} <a :href="projectConfig.webStore[$platform].home" target="_blank">{{ lang(projectConfig.webStore[$platform].name) }}</a> {{ lang('support3') }}</div>
           <div>{{ lang('support4')}} <a href="/options.html#/other-advertising" target="_self">{{ lang('clickHere')}}</a> {{ lang('support5')}}</div>
         </div>
         </el-col>

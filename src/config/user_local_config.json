@@ -54,7 +54,7 @@
             "name": "Google"
         },
         {
-            "formate": "https://cn.bing.com/search?q={query}",
+            "formate": "https://www.bing.com/search?q={query}",
             "name": "Bing"
         },
         {

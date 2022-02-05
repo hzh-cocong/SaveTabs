@@ -155,7 +155,9 @@ let history = {
       // 谷歌可能返回超出时间范围的结果，很容易被看出，这里我们给它过滤一下
       historys = historys.filter((history) => {
         // 去除末尾 /
-        history.url = history.url.replace(/(\/*$)/g,"");
+        // history.url = history.url.replace(/(\/*$)/g,"");
+        // history.url = history.url.replace(/^\/+|\/+$/g, '')
+        history.url = history.url.replace(/\/+$/g, "");
 
         return history.lastVisitTime < lastVisitTime;
       })

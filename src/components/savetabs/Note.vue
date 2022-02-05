@@ -1076,6 +1076,10 @@ export default {
   font-size: 20px;
   cursor: pointer;
 }
+/* 解决 direction: rtl造成的问题是特殊符号结尾会显示在文本的最左边。 */
+.list >>> .list-item .main .sub-title:after {
+  content: "\200E‎";
+}
 </style>
 
 <style>

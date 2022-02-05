@@ -306,6 +306,10 @@ export default {
   padding: 5px;
   cursor:pointer;
 }
+/* 解决 direction: rtl造成的问题是特殊符号结尾会显示在文本的最左边。 */
+.tab-item .sub-title:after {
+  content: "\200E‎";
+}
 </style>
 <style>
 .all .tab-item strong {

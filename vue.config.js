@@ -5,7 +5,7 @@ const path = require('path');
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
-
+//*
 module.exports = {
   pages: {
     options: {
@@ -68,6 +68,7 @@ module.exports = {
   },
 
   configureWebpack: {
+    //*
     output: {
       filename: (pathData) => {
         // console.log('ffffffffffffffffffff', pathData)
@@ -80,7 +81,7 @@ module.exports = {
 
         return 'js/[name].[contenthash:8].js';
       }
-    },
+    },//*/
     entry: {
       background: [
         resolve('src/background.js')
@@ -89,7 +90,7 @@ module.exports = {
         resolve('src/injected_script.js')
       ]
     },
-
+    /*
     optimization: {
       minimizer: [
         new UglifyJsPlugin({
@@ -110,6 +111,6 @@ module.exports = {
         }),
         new OptimizeCSSAssetsPlugin({})
       ]
-    }
+    }//*/
   }
-}
+}//*/

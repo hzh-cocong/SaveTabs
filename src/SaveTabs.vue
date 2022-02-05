@@ -663,7 +663,12 @@ export default {
       limited: false,
       isFocus: true,
 
-      speed: localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth',
+      // 当 cookie 被禁时 localStorage 方法虽然存在但是无法调用，会抛出异常
+      // 由于 localStorage 在 injected_script 无法获取，所以 speed 只针对 popup 模式
+      // 这个在一开始是生效的，只不过由于 mounted 里改变过快，看不出变化而已，如果换成 smooth 则设置无效
+      // 现在放到 beforeMounte 就不会有问题了，speed 的初始值是啥都没关系，不过以防万一还是取 fast
+      // 这个主要针对 popup，在 inject，fast 体验更好，smooth 反而会卡，但是因为 openWay 要在 mounted 之后才能获得，目前忽略处理
+      speed: 'fast',//localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth',
 
       history: {
         visible: false,
@@ -1356,6 +1361,15 @@ export default {
   // updated() {
   //   console.warn('savetabs:updated');
   // },
+  beforeMount() {
+    // 当 cookie 被禁时 localStorage 方法虽然存在但是无法调用，会抛出异常
+    // 由于 localStorage 在 injected_script 无法获取，所以 speed 只针对 popup 模式
+    try {
+      this.speed = localStorage.getItem('speed') == 'fast' ? 'fast' : 'smooth';
+    } catch(e) {
+      this.speed = 'smooth';
+    }
+  },
   mounted() {
     Promise.all([
       new Promise((resolve) => {

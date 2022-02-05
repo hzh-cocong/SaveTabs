@@ -222,8 +222,8 @@
     "bold": {"message": "加粗"},
 
     "listItemSelected": {"message": "列表项（选中时）"},
-    "currentWindowItem": {"message": "当前窗口项"},
-    "currentWindowItemSelected": {"message": "当前窗口项（选中时）"},
+    "currentWindowItem": {"message": "当前窗口或标签项"},
+    "currentWindowItemSelected": {"message": "当前窗口或标签项（选中时）"},
 
     "scrollBar": {"message": "滚动条"},
     "color": {"message": "颜色"},

@@ -222,8 +222,8 @@
     "bold": {"message": "Bold"},
 
     "listItemSelected": {"message": "List Item - On Focus"},
-    "currentWindowItem": {"message": "Current Window Item"},
-    "currentWindowItemSelected": {"message": "Current Window Item - On Focus"},
+    "currentWindowItem": {"message": "Current Window Or Tab Item"},
+    "currentWindowItemSelected": {"message": "Current Window Or Tab Item - On Focus"},
 
     "scrollBar": {"message": "Scroll Bar"},
     "color": {"message": "Color"},

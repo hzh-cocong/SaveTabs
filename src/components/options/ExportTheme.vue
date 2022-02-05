@@ -16,21 +16,9 @@
             @click="leadOut">{{ lang('themeExportTip') }}</el-button>
         </el-card>
       </el-col>
-      <el-col :xl="12">
-        <el-card
-          class="box-card"
-          :header="lang('oldVersionImportTip')"
-          :body-style="{ paddingBottom: '10px' }">
-          <el-button
-            icon="el-icon-upload2"
-            style="margin-bottom: 10px;margin-right: 10px;"
-            @click="leadIn('upload2')">{{ lang('import') }}</el-button>
-        </el-card>
-      </el-col>
     </el-row>
 
     <input type="file" id="upload" style="display:none">
-    <input type="file" id="upload2" style="display:none">
 
   </div>
 </template>
@@ -134,72 +122,6 @@ export default {
             items.theme = data;
           }
           total += data.user_theme_list.length;
-
-          chrome.storage.local.set(items, () => {
-            this.changeTheme(items.theme);
-            this.$message({
-              type: 'success',
-              message: this.lang('importSuccessTip').replace('[total]', total),
-            });
-          });
-        });
-      };
-    });
-
-    let fileInput2 = document.getElementById('upload2');
-    fileInput2.addEventListener('change', () => {
-      if (fileInput2.files.length === 0) {
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.readAsText(fileInput2.files[0]);
-      reader.onload = () => {
-        fileInput2.value = "";
-
-        let data = reader.result;
-        try {
-          data = JSON.parse(data);
-        } catch(e) {
-          this.$message({
-            type: 'warning',
-            message: this.lang('invalidFileFormat')
-          });
-          return;
-        }
-
-        if(this.$validate(data, this.colorAttributes) != undefined) {
-          this.$message({
-            type: 'warning',
-            message: this.lang('invalidFileFormat')
-          });
-          return;
-        }
-
-        data = this.$validate.cleanAttributes(data, this.colorAttributes);
-        if(Object.keys(data) == 0) {
-          this.$message({
-            type: 'info',
-            message: this.lang('noDataImport')
-          });
-          return;
-        }
-
-        data = {
-          "id": nanoid(),
-          "name": this.lang("oldVersionImport"),
-          "type": 1,
-          "config": Object.assign({}, this.theme.system_theme_list[0].config, data),
-        }
-
-        // 保存数据
-        let total = 1;
-        chrome.storage.local.get({ theme: {}}, items => {
-          if(Array.isArray(items.theme.user_theme_list)) {
-            items.theme.user_theme_list.push(data);
-          } else {
-            items.theme.user_theme_list = [ data ];
-          }
 
           chrome.storage.local.set(items, () => {
             this.changeTheme(items.theme);

@@ -153,7 +153,7 @@ export default {
 
       // collapse: false,
       collapse: !! localStorage.getItem('collapse'),
-      uniqueOpened: localStorage.getItem('uniqueOpened') == null,
+      uniqueOpened: !! localStorage.getItem('uniqueOpened'), // 默认保持多个子菜单的展开
     }
   },
   computed: {
@@ -281,9 +281,9 @@ export default {
     uniqueOpenedChange() {
       this.uniqueOpened = ! this.uniqueOpened;
       if(this.uniqueOpened) {
-        localStorage.removeItem('uniqueOpened');
-      } else {
         localStorage.setItem('uniqueOpened', 1);
+      } else {
+        localStorage.removeItem('uniqueOpened');
       }
     },
 

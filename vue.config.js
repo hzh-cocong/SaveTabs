@@ -68,7 +68,7 @@ module.exports = {
   },
 
   configureWebpack: {
-    /*
+    //*
     output: {
       filename: (pathData) => {
         // console.log('ffffffffffffffffffff', pathData)
@@ -90,7 +90,7 @@ module.exports = {
         resolve('src/injected_script.js')
       ]
     },
-    //*
+    /*
     optimization: {
       minimizer: [
         new UglifyJsPlugin({

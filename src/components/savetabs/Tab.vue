@@ -102,12 +102,16 @@
             class="el-icon-more hover"
             @click.stop="input( getDomain(item.url) )"
             :style="{
-              color:currentThemeConfig.list_focus_font_color}"></i>
+              color: item.id == activeTabId
+                    ? currentThemeConfig.list_current_focus_font_color
+                    : currentThemeConfig.list_focus_font_color}"></i>
           <i
             class="el-icon-close hover"
             @click.stop="closeTab"
             :style="{
-              color:currentThemeConfig.list_focus_font_color}"></i>
+              color: item.id == activeTabId
+                    ? currentThemeConfig.list_current_focus_font_color
+                    : currentThemeConfig.list_focus_font_color}"></i>
         </div>
         <template v-else-if="item.id == activeTabId">
           <span

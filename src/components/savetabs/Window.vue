@@ -139,7 +139,7 @@
                   borderColor: isSelected
                               ? currentThemeConfig.list_current_focus_state_color
                               : currentThemeConfig.list_current_state_color }">
-                <span style="margin-right: 5px;">{{ lang('current') }}</span>
+                <span style="margin-right: 7px;">{{ lang('current') }}</span>
               </el-badge>
             </template>
             <template v-else>

@@ -99,8 +99,12 @@
               class="number-button hover"
               @click.stop="input(item.url, 'tab')"
               :style="{
-                color:currentThemeConfig.list_focus_font_color,
-                borderColor:currentThemeConfig.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
+                color: item.url == currentTab.url
+                      ? currentThemeConfig.list_current_focus_font_color
+                      : currentThemeConfig.list_focus_font_color,
+                borderColor: item.url == currentTab.url
+                            ? currentThemeConfig.list_current_focus_font_color
+                            : currentThemeConfig.list_focus_font_color }">{{ activeTabs[item.url].count }}</div>
             <i
               v-if="activeTabs[item.url]
                 && (activeTabs[item.url].count > 1
@@ -108,14 +112,20 @@
               class="el-icon-close close-without-tab hover"
               @click.stop="deleteNote"
               :style="{
-                color:currentThemeConfig.list_focus_font_color,
-                borderColor:currentThemeConfig.list_focus_font_color }"></i>
+                color: item.url == currentTab.url
+                      ? currentThemeConfig.list_current_focus_font_color
+                      : currentThemeConfig.list_focus_font_color,
+                borderColor: item.url == currentTab.url
+                            ? currentThemeConfig.list_current_focus_font_color
+                            : currentThemeConfig.list_focus_font_color }"></i>
             <i
               v-else
               class="el-icon-close hover"
               @click.stop="deleteNote"
               :style="{
-                color:currentThemeConfig.list_focus_font_color}"></i>
+                color: item.url == currentTab.url
+                      ? currentThemeConfig.list_current_focus_font_color
+                      : currentThemeConfig.list_focus_font_color}"></i>
           </div>
           <div
             v-else-if="item.url == currentTab.url"

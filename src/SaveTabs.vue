@@ -163,7 +163,11 @@
                 :title="currentTheme.is_system ? lang(currentTheme.name) : currentTheme.name"
                 style="overflow: hidden; text-overflow:ellipsis; white-space:nowrap;"
                 @click.native="themeDialogVisible=true;"><!-- 顶部已继承了 click focus -->
-                <i class="el-icon-check"></i><span>{{ currentTheme.is_system ? lang(currentTheme.name) : currentTheme.name }}</span>
+                <svg-icon
+                  name="tshirt-solid"
+                  class="hover"
+                  style="color: #c0c4cc;width:16px;margin-right: 10px;vertical-align: -0.50em;"
+                ></svg-icon><span>{{ currentTheme.is_system ? lang(currentTheme.name) : currentTheme.name }}</span>
               </el-dropdown-item>
               <el-dropdown-item
                 divided

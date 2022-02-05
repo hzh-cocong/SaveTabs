@@ -314,7 +314,7 @@ export default {
         this.$notify({
           title: this.lang('theme'),
           message: this.lang('saveSuccess'),
-          position: 'bottom-left',
+          position: 'bottom-right',
           duration: 1000,
         });
       })
@@ -892,7 +892,6 @@ export default {
     ]).then(([syncItems, localItems, commands]) => {
       if(Object.keys(syncItems.config).length == 0) {
         // 新用户（第一次安装）
-console.log('a')
         if(this._device.platform == 'Win') {
           this.localConfig.adjust_window_width = 16;
           this.localConfig.adjust_window_height = 28+22;
@@ -901,7 +900,7 @@ console.log('a')
 
         chrome.storage.sync.set({'config': this.syncConfig});
         chrome.storage.local.set({'config': this.localConfig});
-      } else {console.log('b')
+      } else {
         // 新版（已安装过）
         Object.assign(this.syncConfig, syncItems.config);
         Object.assign(this.localConfig, localItems.config);

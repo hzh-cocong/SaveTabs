@@ -871,101 +871,6 @@ export default {
           //saveAs: false,
       });
     },
-
-    upgrade(syncItems, /*localItems*/) {
-      // 老用户升级
-
-      // 提取异步配置
-      let syncConfig = {};
-      if(syncItems.config.workspaces != undefined) {
-        syncItems.config.workspaces.unshift('all');
-        syncConfig.workspaces = syncItems.config.workspaces;
-
-        if(syncItems.config.button_follow_workspace == true) {
-          syncConfig.operationButtons = [];
-          for(let type of syncItems.config.workspaces) {
-            if(this.allOperationButtons.indexOf(type) != -1) {
-              syncConfig.operationButtons.push(type);
-            }
-          }
-        } else {
-          syncConfig.operationButtons = this.allOperationButtons.filter(type => {
-            return syncItems.config.workspaces.indexOf(type) != -1;
-          })
-        }
-      }
-
-      // 提取主题（旧版只有 popup）
-      let theme_popup = {
-        "id": "Old Version Sync",
-        "name": this.lang("oldVersionSync"),
-        "type": 1,
-      }
-
-      theme_popup.config = [
-        "list_font_size",
-        "list_state_size",
-        "list_keymap_size",
-        "list_explain_font_size",
-
-        "item_height",
-        "item_show_count",
-        "list_page_count",
-
-        "width",
-        "border_width",
-
-        ... Object.keys(this.projectConfig.colorAttributes)
-      ].reduce((accumulator, key) => {
-        if(syncItems.config[key] != undefined) {
-          accumulator[key] = syncItems.config[key]
-        }
-        return accumulator;
-      }, {});
-      // // 添加新增的属性，旧版虽然没有配置但有默认值
-      // theme_popup.config.toolbar_input_tip_show = true;
-      // theme_popup.config.toolbar_input_font_size = 14;
-      // theme_popup.config.toolbar_input_font_color = '#606266';
-      // theme_popup.config.toolbar_input_focus_border_color = '#ffffff';
-      // theme_popup.config.toolbar_icon_color = '#C1C4CB';
-      // theme_popup.config.toolbar_border_color = '#dcdfe6';
-      // theme_popup.config.toolbar_input_focus_border_color = '#c0c4cc';
-      // if(theme_popup.config.list_explain_font_color != undefined)
-      //   theme_popup.config.list_current_explain_font_color = theme_popup.config.list_explain_font_color;
-      // if(theme_popup.config.list_explain_focus_font_color != undefined)
-      //   theme_popup.config.list_current_explain_focus_font_color = theme_popup.config.list_explain_focus_font_color;
-
-      theme_popup.config = Object.assign({}, this.localConfig.theme_popup.config, theme_popup.config);
-
-      // 提取本地配置
-      let localConfig = {};
-      if(syncItems.config.active_workspace_type != undefined) {
-        localConfig.active_workspace_type = syncItems.config.active_workspace_type;
-      }
-      if(syncItems.config.pinned != undefined) {
-        localConfig.pinned = syncItems.config.pinned;
-      }
-      if(syncItems.config.theme_mode != undefined) {
-        localConfig.theme_mode = syncItems.config.theme_mode;
-      }
-      localConfig.theme_popup = theme_popup;
-      if(this._device.platform == 'Win') {
-        localConfig.adjust_window_width = 16;
-        localConfig.adjust_window_height = 28+22;
-        localConfig.adjust_window_top = 37;
-      }
-
-      Object.assign(this.syncConfig, syncConfig);
-      Object.assign(this.localConfig, localConfig);
-      this.theme.user_theme_list.push(theme_popup);
-
-      // 重新保存
-      chrome.storage.sync.set({'config': this.syncConfig});
-      chrome.storage.local.set({'config': this.localConfig, 'theme': this.theme});
-
-      // 避免异常
-      chrome.browserAction.setPopup({ popup: chrome.extension.getURL("savetabs.html") })
-    }
   },
   mounted() {
     Promise.all([
@@ -986,8 +891,8 @@ export default {
       })
     ]).then(([syncItems, localItems, commands]) => {
       if(Object.keys(syncItems.config).length == 0) {
-        // 新用户
-
+        // 新用户（第一次安装）
+console.log('a')
         if(this._device.platform == 'Win') {
           this.localConfig.adjust_window_width = 16;
           this.localConfig.adjust_window_height = 28+22;
@@ -996,11 +901,8 @@ export default {
 
         chrome.storage.sync.set({'config': this.syncConfig});
         chrome.storage.local.set({'config': this.localConfig});
-      } else if(localItems.config.theme_popup == undefined) {
-        // 老用户升级
-        this.upgrade(syncItems, localItems);
-      } else {
-        // 新版
+      } else {console.log('b')
+        // 新版（已安装过）
         Object.assign(this.syncConfig, syncItems.config);
         Object.assign(this.localConfig, localItems.config);
 

@@ -11,7 +11,7 @@ window.$platform = Vue.prototype.$platform = 'edge';
 //*/
 
 // 区分环境（未来要改为 npm 界面设置）
-/*
+//*
 import './plugins/tool-test.js'
 /*/
 import './plugins/tool.js'

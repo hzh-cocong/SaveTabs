@@ -865,8 +865,8 @@ export default {
             tabs: window.tabs.map((tab) => {
               // 去除末尾 /
               tab.url = tab.url == '' && tab.pendingUrl
-                      ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                      : tab.url.replace(/(\/*$)/g,"");
+                      ? tab.pendingUrl.replace(/\/+$/g, "")
+                      : tab.url.replace(/\/+$/g, "");
 
               return {
                 icon: tab.favIconUrl,
@@ -1037,7 +1037,7 @@ export default {
 
           // 关闭空白标签页（是工作窗口则不关闭）
           if( ! this.isInCurrentWindow
-          && this.currentTab.url.replace(/(\/*$)/g,"") == 'chrome://newtab') {
+          && this.currentTab.url.replace(/\/+$/g, "") == 'chrome://newtab') {
             chrome.tabs.remove(this.currentTab.id);
           }
         })
@@ -1348,8 +1348,8 @@ export default {
       chrome.windows.getCurrent({populate: true}, window => {
         window.tabs.forEach((tab) => {
           // 去除末尾 /
-          tab.url = tab.url.replace(/(\/*$)/g,"");
-          tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/(\/*$)/g,""));
+          tab.url = tab.url.replace(/\/+$/g, "");
+          tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/\/+$/g, ""));
         })
         this.currentWindow = window;
         // this.haveDifference = this.isDifference(this.oldGroup, window);
@@ -1409,8 +1409,8 @@ export default {
         chrome.windows.getCurrent({populate: true}, (window) => {
           window.tabs.forEach((tab) => {
             // 去除末尾 /
-            tab.url = tab.url.replace(/(\/*$)/g,"");
-            tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/(\/*$)/g,""));
+            tab.url = tab.url.replace(/\/+$/g, "");
+            tab.pendingUrl != undefined && (tab.pendingUrl = tab.pendingUrl.replace(/\/+$/g, ""));
           })
           this.currentWindow = window;
           resolve();

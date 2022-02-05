@@ -42,7 +42,7 @@ let note = {
         chrome.storage.local.get({tabs: []}, items => {
           this.storageList = items.tabs.map((note) => {
             // 兼容旧版（旧版没有自动去除末尾 /）
-            note.url = note.url.replace(/(\/*$)/g,"");
+            note.url = note.url.replace(/\/+$/g, "");
             // 去除旧版一些没用的数据
             delete note.tabId;
             delete note.windowId;
@@ -57,8 +57,8 @@ let note = {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           // 去除末尾 / （pendingUrl 有可能不存在）
           tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
-                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
-                      : tabs[0].url.replace(/(\/*$)/g,"");
+                      ? tabs[0].pendingUrl.replace(/\/+$/g, "")
+                      : tabs[0].url.replace(/\/+$/g, "");
           this.currentTab = tabs[0];
           resolve()
         })
@@ -69,8 +69,8 @@ let note = {
           for(let tab of tabs) {
             // 去除末尾 /
             tab.url = tab.url == '' && tab.pendingUrl
-                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                    : tab.url.replace(/(\/*$)/g,"");
+                    ? tab.pendingUrl.replace(/\/+$/g, "")
+                    : tab.url.replace(/\/+$/g, "");
             if(this.activeTabs[ tab.url ] == undefined) {
               tab.count = 1;
               tab.other = [];
@@ -141,8 +141,8 @@ let note = {
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           // 去除末尾 / （pendingUrl 有可能不存在）
           tabs[0].url = tabs[0].url == '' && tabs[0].pendingUrl
-                      ? tabs[0].pendingUrl.replace(/(\/*$)/g,"")
-                      : tabs[0].url.replace(/(\/*$)/g,"");
+                      ? tabs[0].pendingUrl.replace(/\/+$/g, "")
+                      : tabs[0].url.replace(/\/+$/g, "");
           this.currentTab = tabs[0];
           resolve()
         })
@@ -154,8 +154,8 @@ let note = {
           for(let tab of tabs) {
             // 去除末尾 /
             tab.url = tab.url == '' && tab.pendingUrl
-                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                    : tab.url.replace(/(\/*$)/g,"");
+                    ? tab.pendingUrl.replace(/\/+$/g, "")
+                    : tab.url.replace(/\/+$/g, "");
             if(this.activeTabs[ tab.url ] == undefined) {
               tab.count = 1;
               tab.other = [];
@@ -186,7 +186,7 @@ let note = {
       chrome.storage.local.get({tabs: []}, items => {
         this.storageList = items.tabs.map((note) => {
           // 兼容旧版（旧版没有自动去除末尾 /）
-          note.url = note.url.replace(/(\/*$)/g,"");
+          note.url = note.url.replace(/\/+$/g, "");
           // 去除旧版一些没用的数据
           delete note.tabId;
           delete note.windowId;
@@ -288,8 +288,8 @@ let note = {
         window.$open(currentNote.url, keyType, (tab, type) => {
           // 去除末尾 /
           tab.url = tab.url == '' && tab.pendingUrl
-                  ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                  : tab.url.replace(/(\/*$)/g,"");
+                  ? tab.pendingUrl.replace(/\/+$/g, "")
+                  : tab.url.replace(/\/+$/g, "");
 
           if(type == 'cover') {
             for(let i = 0; i < this.cacheList.length; i++) {

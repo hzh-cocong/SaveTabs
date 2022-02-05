@@ -821,8 +821,8 @@ export default {
           tabs: tabs.map(tab => {
             // 去除末尾 /
             tab.url = tab.url == '' && tab.pendingUrl
-                    ? tab.pendingUrl.replace(/(\/*$)/g,"")
-                    : tab.url.replace(/(\/*$)/g,"");
+                    ? tab.pendingUrl.replace(/\/+$/g, "")
+                    : tab.url.replace(/\/+$/g, "");
 
             return {
               icon: tab.favIconUrl,
@@ -902,7 +902,7 @@ export default {
         // 获取当前标签信息
         chrome.tabs.query({active: true, currentWindow: true}, tabs => {
           // 记录空白标签
-          if(tabs[0].url.replace(/(\/*$)/g,"") == "chrome://newtab") {
+          if(tabs[0].url.replace(/\/+$/g, "") == "chrome://newtab") {
             blankTabId = tabs[0].id;
           }
           resolve();

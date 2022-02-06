@@ -1445,6 +1445,7 @@ export default {
 
         if(this.limited) {
           this.$message({
+            showClose: true,
             type: 'warning',
             message: this.lang('limitedFunctionality'),
             customClass: 'window-message-box',
@@ -1476,7 +1477,7 @@ export default {
             message: this.lang('noFocusTip'),
             customClass: 'window-message-box',
             offset: 69,
-            duration: 3000,
+            duration: 1000,
           });
         }
 
@@ -1544,6 +1545,7 @@ export default {
             if(index != -1) this.$refs.carousel.setActiveItem(index);
 
             this.$message({
+              showClose: true,
               type: 'warning',
               message: this.lang('limitedFunctionality'),
               customClass: 'window-message-box',

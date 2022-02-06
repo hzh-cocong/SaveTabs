@@ -42,10 +42,10 @@
 
     <span class="divider"></span>
 
+    <!-- 去除广告
     <span
       v-if="tip == storageTip && goods"
       class="advertising animate__animated animate__flipInX">
-        <!-- :close-delay="500" -->
       <el-popover
         placement="top"
         title=""
@@ -172,11 +172,16 @@
         style="margin-left: 5px;vertical-align: middle;"
         @click.native="$open('./options.html?type=workspace#/other-advertising', getKeyType($event))"
       ></svg-icon>
-    </span>
+    </span>-->
+    <!-- 替代广告 -->
+    <span
+      v-if="tip == storageTip"
+      class="advertising animate__animated animate__flipInX"
+      >{{ tip }}</span>
     <span
       v-else
       class="tip"
-      >{{ tip }} </span>
+      >{{ tip }}</span>
 
     <span class="divider"></span>
 
@@ -357,7 +362,8 @@ export default {
       return this.allGoods[this.goodsIndex];
     },
     storageTip() {
-      return this.goods ? this.goods.name : '';
+      return this.lang('extension_name'); // 替代广告
+      // return this.goods ? this.goods.name : '';
     },
 
     weiboUrl() {
@@ -541,7 +547,7 @@ export default {
     },
   },
   mounted() {
-    this.changeGoods();
+    // this.changeGoods(); // 去除广告
     // this.goodsIndex = this.allGoods.length-1;
   }
 }

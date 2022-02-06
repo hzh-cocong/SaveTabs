@@ -302,7 +302,7 @@ export default {
   color:#f5da55;
 }
 .babel-box:before {
-  background: url('/img/babel-black.svg') no-repeat 60%;
+  background: url('/svg/babel-black.svg') no-repeat 60%;
   background-size: cover;
   content: "";
   display: block;

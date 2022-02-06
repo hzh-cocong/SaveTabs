@@ -89,10 +89,10 @@ export default [{
       'name': 'share',
       'title': 'share',
     },
-    {
-      'name': 'advertising',
-      'title': 'advertising',
-    },
+    // {
+    //   'name': 'advertising',
+    //   'title': 'advertising',
+    // },
     {
       'name': 'about',
       'title': 'about',

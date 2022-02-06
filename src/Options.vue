@@ -314,7 +314,7 @@ export default {
         this.$notify({
           title: this.lang('theme'),
           message: this.lang('saveSuccess'),
-          position: 'bottom-right',
+          position: 'top-right',
           duration: 1000,
         });
       })

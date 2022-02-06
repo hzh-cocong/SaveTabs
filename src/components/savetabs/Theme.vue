@@ -17,16 +17,22 @@
       slot="title"
       style="font-size: 16px;position: relative;">
       <svg-icon
-        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
+        name="tshirt-solid"
         class="hover"
         style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;"
-        @click.native="popupChange"
+        @click.native="$open('./options.html?type=workspace#/theme-general', getKeyType($event))"
       ></svg-icon>
       <span>{{ lang('chooseTheme') }}</span>
-      <i
+      <!-- <i
         class="el-icon-s-tools hover"
         style="color: #b8b8b9;position: absolute;top: 3px;right: -5px;"
-        @click="$open('./options.html?type=workspace#/theme-general', getKeyType($event))"></i>
+        @click="$open('./options.html?type=workspace#/theme-general', getKeyType($event))"></i> -->
+      <svg-icon
+        :name="localConfig.popup ? 'fly-brands' : 'ship-solid'"
+        class="hover"
+        style="width: 16px;height: 16px;color:#b8b8b9;position: absolute;top: 2px;right: -5px;"
+        @click.native="popupChange"
+      ></svg-icon>
     </div>
     <SelectX
       v-if="visible2"

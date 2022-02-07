@@ -4,9 +4,7 @@
         "tab",
         "window",
         "note",
-        "temporary",
-        "history",
-        "bookmark"
+        "temporary"
     ],
     "operationButtons": [ "window", "note", "temporary" ],
 

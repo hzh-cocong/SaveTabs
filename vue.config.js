@@ -90,7 +90,7 @@ module.exports = {
         resolve('src/injected_script.js')
       ]
     },
-    /*
+    //*
     optimization: {
       minimizer: [
         new UglifyJsPlugin({

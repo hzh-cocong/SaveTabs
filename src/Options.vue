@@ -369,6 +369,11 @@ export default {
         // 重选 active_workspace_type
         this.localConfig.active_workspace_type = this.syncConfig.workspaces[0];
         this.store('local', false)
+      } else {
+        // 有可能 active_workspace_type 和实际存储的不一样
+        // popup 切换窗口就会不同
+        // 再保存一次可以避免一些问题
+        this.store('local', false)
       }
       // 去除对应的操作按钮
       index = this.syncConfig.operationButtons.indexOf(type);

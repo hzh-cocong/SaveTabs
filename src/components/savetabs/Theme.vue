@@ -19,7 +19,7 @@
       <svg-icon
         name="tshirt-solid"
         class="hover"
-        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 10px;"
+        style="width: 16px;height: 16px;color: gray;position: relative;top: 2px;margin-right: 8px;"
         @click.native="$open('./options.html?type=workspace#/theme-general', getKeyType($event))"
       ></svg-icon>
       <span>{{ lang('chooseTheme') }}</span>

@@ -68,7 +68,7 @@ module.exports = {
   },
 
   configureWebpack: {
-    /*
+    //*
     output: {
       filename: (pathData) => {
         // console.log('ffffffffffffffffffff', pathData)

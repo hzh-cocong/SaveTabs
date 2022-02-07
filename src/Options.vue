@@ -6,12 +6,19 @@
       style="display: flex;flex-direction: column;height: 100vh;position: fixed;">
       <div
         style="display: flex; flex-direction: column;justify-content: center;align-items: center;height: 120px;min-height: 120px;width: 100%;box-sizing: border-box;border-right:solid 1px #e6e6e6;text-align:center;">
-        <img
+        <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">
+          <img
+          src="@/assets/icon-128.png"
+          style="cursor: pointer;"
+          :style="{ width: collapse ? '20px' : '32px',
+                    height: collapse ? '20px' : '32px', }" />
+        </a>
+        <!-- <img
           src="@/assets/icon-128.png"
           style="cursor: pointer;"
           :style="{ width: collapse ? '20px' : '32px',
                     height: collapse ? '20px' : '32px', }"
-          @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))" />
+          @click="$open('https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale'), getKeyType($event))" /> -->
         <h3
           class="hover"
           style="margin-bottom:0;font-weight:500;"

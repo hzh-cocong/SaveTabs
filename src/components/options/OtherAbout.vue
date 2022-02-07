@@ -4,6 +4,7 @@
     <div class="main" style="color: #303133;flex: 1;">
       <div style="text-align: left;">{{ lang('name') }}: {{ lang('extension_name') }}</div>
       <div style="text-align: left;">{{ lang('version') }}: {{ manifest.version }}</div>
+      <div style="text-align: left;">{{ lang('website') }}: <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">{{ 'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale') }}</a></div>
     </div>
     <div class="copyright">
       <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">cocong.cn</a></span>

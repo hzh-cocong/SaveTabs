@@ -358,6 +358,7 @@
 
 
     "version": {"message": "版本"},
+    "website": {"message": "官网"},
 
 
     "commonKeymap": {"message": "常用快捷键"},

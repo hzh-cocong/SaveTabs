@@ -77,7 +77,7 @@ import HistoryItem from './all/HistoryItem.vue'
 import BookmarkItem from './all/BookmarkItem.vue'
 import SearchItem from './all/SearchItem.vue'
 import ToggleItem from './all/ToggleItem.vue'
-import AdvertisingItem from './all/AdvertisingItem.vue'
+// import AdvertisingItem from './all/AdvertisingItem.vue' // 去除广告
 
 import Window from '../../modules/window.js'
 import Temporary from '../../modules/temporary.js'
@@ -87,7 +87,7 @@ import History from '../../modules/history.js'
 import Bookmark from '../../modules/bookmark.js'
 import Search from '../../modules/search.js'
 import Toggle from '../../modules/toggle.js'
-import Advertising from '../../modules/advertising.js'
+// import Advertising from '../../modules/advertising.js' // 去除广告
 
 export default {
   name: 'All',
@@ -200,7 +200,7 @@ export default {
     BookmarkItem,
     SearchItem,
     ToggleItem,
-    AdvertisingItem,
+    // AdvertisingItem, // 去除广告
   },
   watch: {
     "all.visible": function(/*newVal, oldVal*/) {
@@ -388,7 +388,7 @@ export default {
 
       let condition = conditions[index];
       return Promise.all(this.localConfig.all_include.concat(
-        ...this.advertisingOptions
+        // ...this.advertisingOptions // 去除广告
       ).filter(workspace => {
         return Object.keys(condition).every((attr) => {
           return workspace[attr] == condition[attr];
@@ -575,7 +575,7 @@ export default {
         case 'bookmark': return Bookmark;
         case 'search': return Search;
         case 'toggle': return Toggle;
-        case 'advertising': return Advertising;
+        // case 'advertising': return Advertising; // 去除广告
       }
     },
   },

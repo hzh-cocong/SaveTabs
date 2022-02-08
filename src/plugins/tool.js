@@ -198,11 +198,17 @@ const tool = {
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
             chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1, active: false }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              chrome.runtime.lastError;
+
               callback != undefined && callback(tab, 'tab');
             });
           } else {
             // 理论上不可能发生
             chrome.tabs.create({ url: url, active: false }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              chrome.runtime.lastError;
+
               callback != undefined && callback(tab, 'tab');
             });
           }
@@ -210,6 +216,9 @@ const tool = {
       } else if(keyType == 'shift') {
         // 新窗口打开
         chrome.windows.create({ url: [ url ], focused: true, type: 'normal' }, (window) => {
+          // 捕获错误，这样插件就不会显示错误
+          // chrome.runtime.lastError;
+
           callback != undefined && callback(window.tabs[0], 'window');
         });
       } else if(keyType == 'alt') {
@@ -217,6 +226,9 @@ const tool = {
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
             chrome.tabs.update(tabs[0].id, { url: url }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              // chrome.runtime.lastError;
+
               // tab 并没有更新 url，我们来修复它，title其实也不对，不过并没有用到它，这里也无法修复
               tab.url = url;
               callback != undefined && callback(tab, 'cover');
@@ -224,6 +236,9 @@ const tool = {
           } else {
             // 理论上不可能发生
             chrome.tabs.create({ url: url }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              chrome.runtime.lastError;
+
               callback != undefined && callback(tab, 'tab');
             });
           }
@@ -233,11 +248,17 @@ const tool = {
         chrome.tabs.query({ active:true, currentWindow: true }, (tabs) => {
           if(tabs.length == 1) {
             chrome.tabs.create({url: url, openerTabId: tabs[0].id, index: tabs[0].index+1 }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              chrome.runtime.lastError;
+
               callback != undefined && callback(tab, 'tab');
             });
           } else {
             // 理论上不可能发生
             chrome.tabs.create({ url: url }, (tab) => {
+              // 捕获错误，这样插件就不会显示错误
+              chrome.runtime.lastError;
+
               callback != undefined && callback(tab, 'tab');
             });
           }

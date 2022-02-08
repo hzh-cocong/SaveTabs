@@ -828,6 +828,21 @@ export default {
         let currentThemeType = this.currentTheme.type;
         let currentThemeId = this.currentThemeId;
 
+        // 先删除上一个主题
+        this.theme.user_theme_list = this.theme.user_theme_list.filter(theme => {
+          return theme.id != currentThemeId
+        });
+
+        // 注意：user_theme_list 的变动会导致 themeList 变动
+        //      themeList 变动引起 currentTheme 变动
+        //      currentTheme 重新计算会调用 currentThemeId 和 themeList，即在 themeList 中找出 currentThemeId
+        //      currentThemeId 的值是通过 localConfig 计算来的
+        //      由于 localConfig 还未修改，所以 currentThemeId 不变，但是 themeList 中对应的 currentThemeId 已经被前面删除了
+        //      所以 currentTheme 是 undefined 的，导致相关调用报错
+        //      但实际并不会报错，因为 currentTheme 是在 dom 中被调用的，而 Vue 在更新 DOM 时是**异步**执行的
+        //      也就是下面 localConfig 修改并存储后，Vue 才会更新 DOM，此时才会去获取 currentTheme 的值，这时就不会 undefined
+        //      反过来说，如果现在直接在这里获取 currentTheme 的值，则会立刻进行计算，最终导致报错。
+
         // 重新选一个主题
         if((currentThemeType & THEME_TYPWE.POPUP)
           && this.localConfig.theme_popup.id == currentThemeId) {
@@ -837,11 +852,6 @@ export default {
           && this.localConfig.theme_inject.id == currentThemeId) {
           this.localConfig.theme_inject = this.injectThemeList[0];
         }
-
-        // 再删除上一个主题
-        this.theme.user_theme_list = this.theme.user_theme_list.filter(theme => {
-          return theme.id != currentThemeId
-        });
 
         // 重新排序
         this.theme.rank.popup = this.popupThemeList.reduce((accumulator, key, index) => {
@@ -885,6 +895,7 @@ export default {
     },
   },
   mounted() {
+    window.ss = this;
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {

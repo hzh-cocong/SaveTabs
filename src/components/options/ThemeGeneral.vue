@@ -2636,9 +2636,9 @@ export default {
       var url = urlObject.createObjectURL(blob);
 
       chrome.downloads.download({
-          url: url,
-          filename: filename,
-          //saveAs: false,
+        url: url,
+        filename: filename,
+        //saveAs: false,
       });
     }
   },

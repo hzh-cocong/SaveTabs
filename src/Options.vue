@@ -895,7 +895,6 @@ export default {
     },
   },
   mounted() {
-    window.ss = this;
     Promise.all([
       new Promise((resolve) => {
         chrome.storage.sync.get({'config': {}}, items => {

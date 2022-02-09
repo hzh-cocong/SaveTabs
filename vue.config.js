@@ -41,7 +41,7 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production', //
 
   chainWebpack: config => {
-    // 禁止代码分离
+    // 禁止代码分离（实测启动速度更快）
     config.optimization.delete("splitChunks");
 
     // 处理 svg

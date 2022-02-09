@@ -86,8 +86,7 @@
     }
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
+    "chrome >= 89",
+    "edge >= 89"
   ]
 }

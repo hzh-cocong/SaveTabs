@@ -176,8 +176,12 @@
     <!-- 替代广告 -->
     <span
       v-if="tip == storageTip"
-      class="advertising animate__animated animate__flipInX"
-      >{{ tip }}</span>
+      class="advertising open animate__animated animate__flipInX"
+      @click="$open('https://github.com/hzh-cocong/SaveTabs', getKeyType($event))"
+      >{{ tip }}<svg-icon
+                  name="github-brands"
+                  style="width:16px;margin-left: 10px;"
+                ></svg-icon></span>
     <span
       v-else
       class="tip"
@@ -578,6 +582,9 @@ export default {
   display:flex;
   align-items:center;
   justify-content: center;
+}
+.open {
+  cursor: pointer;
 }
 .tip {
   display: inline-block;

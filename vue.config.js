@@ -71,7 +71,6 @@ module.exports = {
     //*
     output: {
       filename: (pathData) => {
-        // console.log('ffffffffffffffffffff', pathData)
         if(pathData.chunk.name == 'background') {
           return 'js/background.js';
         } else if(pathData.chunk.name == 'injected_script') {

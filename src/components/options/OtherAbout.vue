@@ -5,6 +5,7 @@
       <div style="text-align: left;">{{ lang('name') }}: {{ lang('extension_name') }}</div>
       <div style="text-align: left;">{{ lang('version') }}: {{ manifest.version }}</div>
       <div style="text-align: left;">{{ lang('website') }}: <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">{{ 'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale') }}</a></div>
+      <div style="text-align: left;">GitHub: <a href="https://github.com/hzh-cocong/SaveTabs" target="_blank">https://github.com/hzh-cocong/SaveTabs</a></div>
     </div>
     <div class="copyright">
       <span>Copyright © 胡镇华 <a :href="'https://www.cocong.cn/savetabs/#/'+lang('@@ui_locale')" target="_blank">cocong.cn</a></span>
@@ -47,6 +48,9 @@ export default {
   background: url('/icons/icon-128.png');
   background-size: cover;
   z-index: -1;
+}
+.other-about .main {
+  line-height: 150%;
 }
 
 .copyright {
